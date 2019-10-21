@@ -1,0 +1,46 @@
+{
+  "type": "datasource",
+  "name": "grafana-opcua-datasource",
+  "id": "grafana-opcua-datasource",
+  "info": {
+    "description": "Reads data from OPC UA Servers",
+    "author": {
+      "name": "srclosson@gmail.com",
+      "url": "https://grafana.com"
+    },
+    "keywords": [
+      "opc",
+      "opcua",
+      "ua",
+      "da",
+      "hda",
+      "ae"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/simple-datasource"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/simple-datasource/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaVersion": "6.3.x",
+    "plugins": []
+  },
+  "metrics": true,
+  "annotations": true,
+  "backend": true,
+  "executable": "grafana-opcua-datasource",
+  "alerting": true
+}
