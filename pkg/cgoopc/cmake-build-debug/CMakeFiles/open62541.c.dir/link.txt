@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/open62541.c.dir/cgoua_api.c.o  -o open62541.c 
