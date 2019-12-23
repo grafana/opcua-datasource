@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MicrosoftOpcUa.Client.Core\MicrosoftOpcUa.Client.Core.csproj" />
+    <ProjectReference Include="..\MicrosoftOpcUa.Client.Utils\MicrosoftOpcUa.Client.Utility.csproj" />
+  </ItemGroup>
+
+</Project>
