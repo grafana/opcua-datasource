@@ -8,13 +8,13 @@ import { Transfer, Tree } from 'antd';
 import { TransferProps, TransferItem } from 'antd/lib/transfer';
 import 'QueryEditor.css';
 
-const rootNode: string = 'i=84';
-const loadingText: string = 'Loading Data...';
+const rootNode = 'i=84';
+const loadingText = 'Loading Data...';
 const loadingItem: TransferItem = {
   key: loadingText,
   title: loadingText,
   children: [],
-}
+};
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 
@@ -109,8 +109,8 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TransferProps) =
 // ];
 
 interface State {
-  dataSource: TransferItem[],
-  targetKeys: string[],
+  dataSource: TransferItem[];
+  targetKeys: string[];
   listStyle: any;
 }
 
@@ -122,7 +122,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       dataSource: this.getTreeData(rootNode),
       targetKeys: [],
       listStyle: {},
-    }
+    };
   }
 
   onChange = (targetKeys: string[]) => {
@@ -131,8 +131,8 @@ export class QueryEditor extends PureComponent<Props, State> {
   };
 
   onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
-    console.log("Source", sourceSelectedKeys, "target", targetSelectedKeys);
-  }
+    console.log('Source', sourceSelectedKeys, 'target', targetSelectedKeys);
+  };
 
   updateDataSource = (ds: TransferItem[]) => {
     this.setState({
@@ -148,16 +148,18 @@ export class QueryEditor extends PureComponent<Props, State> {
 
   getTreeData = (nodeId: string): TransferItem[] => {
     this.props.datasource.browse(nodeId).then((results: OpcUaBrowseResults[]) => {
-      this.updateDataSource(results.map((item: OpcUaBrowseResults) => {
-        return {
-          key: item.nodeId,
-          title: item.displayName,
-          children: [ loadingItem ],
-        };
-      }));
+      this.updateDataSource(
+        results.map((item: OpcUaBrowseResults) => {
+          return {
+            key: item.nodeId,
+            title: item.displayName,
+            children: [loadingItem],
+          };
+        })
+      );
     });
 
-    return [ loadingItem ];
+    return [loadingItem];
   };
 
   render() {
