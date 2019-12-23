@@ -1,42 +1,20 @@
-import React, { PureComponent, ChangeEvent } from 'react';
-import { DataSourcePluginOptionsEditorProps, DataSourceSettings, FormField } from '@grafana/ui';
-import { MyDataSourceOptions } from './types';
+import React, { PureComponent } from 'react';
+import { DataSourceHttpSettings } from '@grafana/ui';
+import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
+import { OpcUaDataSourceOptions } from './types';
 
-type Settings = DataSourceSettings<MyDataSourceOptions>;
+interface Props extends DataSourcePluginOptionsEditorProps<OpcUaDataSourceOptions> {}
 
-interface Props extends DataSourcePluginOptionsEditorProps<Settings> {}
-
-interface State {}
-
-export class ConfigEditor extends PureComponent<Props, State> {
-  componentDidMount() {}
-
-  OnUrlChanged = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log("Url change event", event);
-    const { onOptionsChange, options } = this.props;
-    const jsonData = {
-      ...options.jsonData,
-      url: event.target.value,
-    };
-    onOptionsChange({ ...options, jsonData });
-  };
-
+export class ConfigEditor extends PureComponent<Props> {
   render() {
-    const { options } = this.props;
-    const { jsonData } = options;
-
+    const { options, onOptionsChange } = this.props;
     return (
       <div className="gf-form-group">
-        <div className="gf-form max-width-100">
-          <FormField 
-            label="OPC UA URL" 
-            labelWidth={10} 
-            inputWidth={32} 
-            onChange={this.OnUrlChanged} 
-            value={jsonData.url || ''} 
-            placeholder="opc.tcp://localhost:48400/UA/ComServerWrapper" 
-          />
-        </div>
+        <DataSourceHttpSettings
+          defaultUrl={'opc.tcp://nodename.host.net:62550/Path/OpcUAServer'}
+          dataSourceConfig={options}
+          onChange={onOptionsChange}
+        />
       </div>
     );
   }
