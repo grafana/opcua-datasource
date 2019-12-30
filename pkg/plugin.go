@@ -67,7 +67,7 @@ func main() {
 	m.HandleFunc("/healthz", healthcheckHandler)
 	registerPProfHandlers(m)
 	go func() {
-		if err := http.ListenAndServe(":6060", m); err != nil {
+		if err := http.ListenAndServe(":6061", m); err != nil {
 			log.Fatal(err)
 		}
 	}()
