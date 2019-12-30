@@ -1,0 +1,3 @@
+H:/src/grafana_plugins/grafana-opcua-datasource/pkg/cgoopc/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+H:/src/grafana_plugins/grafana-opcua-datasource/pkg/cgoopc/out/build/x64-Debug/CMakeFiles/open62541.c.dir
+H:/src/grafana_plugins/grafana-opcua-datasource/pkg/cgoopc/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

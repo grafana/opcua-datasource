@@ -11907,13 +11907,13 @@ span.ant-radio + * {
   left: -25px;
 }
 .ant-carousel .slick-prev::before {
-  content: 'â†';
+  content: 'Ã¢â€ Â';
 }
 .ant-carousel .slick-next {
   right: -25px;
 }
 .ant-carousel .slick-next::before {
-  content: 'â†’';
+  content: 'Ã¢â€ â€™';
 }
 .ant-carousel .slick-dots {
   position: absolute;

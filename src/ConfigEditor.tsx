@@ -12,7 +12,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
   componentDidMount() {}
 
   OnUrlChanged = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log("Url change event", event);
+    console.log('Url change event', event);
     const { onOptionsChange, options } = this.props;
     const jsonData = {
       ...options.jsonData,
@@ -28,13 +28,13 @@ export class ConfigEditor extends PureComponent<Props, State> {
     return (
       <div className="gf-form-group">
         <div className="gf-form max-width-100">
-          <FormField 
-            label="OPC UA URL" 
-            labelWidth={10} 
-            inputWidth={32} 
-            onChange={this.OnUrlChanged} 
-            value={jsonData.url || ''} 
-            placeholder="opc.tcp://localhost:48400/UA/ComServerWrapper" 
+          <FormField
+            label="OPC UA URL"
+            labelWidth={10}
+            inputWidth={32}
+            onChange={this.OnUrlChanged}
+            value={jsonData.url || ''}
+            placeholder="opc.tcp://localhost:48400/UA/ComServerWrapper"
           />
         </div>
       </div>

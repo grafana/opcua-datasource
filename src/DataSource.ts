@@ -5,15 +5,12 @@ import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceS
 import { MyQuery, MyDataSourceOptions, defaultQuery } from './types';
 import { MutableDataFrame, FieldType } from '@grafana/data';
 
-
-export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {  
+export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
   jsonData: MyDataSourceOptions;
   browseData: any;
-  constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>,
-    private backendSrv: any,
-  ) {
+  constructor(instanceSettings: DataSourceInstanceSettings<MyDataSourceOptions>, private backendSrv: any) {
     super(instanceSettings);
-    console.log("instanceSettings", instanceSettings);
+    console.log('instanceSettings', instanceSettings);
     this.backendSrv = backendSrv;
     this.jsonData = instanceSettings.jsonData;
     this.browseData = [];
@@ -39,23 +36,25 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
     return Promise.resolve({ data });
   }
 
-  getTreeData() : Promise<any> {
+  getTreeData(): Promise<any> {
     return this.backendSrv.datasourceRequest({
       url: '/api/tsdb/query',
       method: 'POST',
       data: {
         from: '5m',
         to: 'now',
-        queries: [{
-          refId: 'A',
-          intervalMs: 1,
-          maxDataPoints: 1,
-          datasourceId: this.id,
-          format: 'table',
-          call: 'GetTree',
-          endpoint: this.jsonData.url, 
-        }],
-      }
+        queries: [
+          {
+            refId: 'A',
+            intervalMs: 1,
+            maxDataPoints: 1,
+            datasourceId: this.id,
+            format: 'table',
+            call: 'GetTree',
+            endpoint: this.jsonData.url,
+          },
+        ],
+      },
     });
   }
 
@@ -68,34 +67,38 @@ export class DataSource extends DataSourceApi<MyQuery, MyDataSourceOptions> {
       });
     }
 
-    return this.backendSrv.datasourceRequest({
-      url: '/api/tsdb/query',
-      method: 'POST',
-      data: {
-        from: '5m',
-        to: 'now',
-        queries: [{
-          refId: 'A',
-          intervalMs: 1,
-          maxDataPoints: 1,
-          datasourceId: this.id,
-          format: 'table',
-          call: 'GetTree',
-          endpoint: this.jsonData.url, 
-        }],
-      }
-    }).then((resp: DataQueryResponse) => {
-      // Save the browse for future reference
-      console.log("We got browseData", resp);
-      this.browseData = resp;
-      return Promise.resolve({
-        status: 'success',
-        message: 'Connection successful',
+    return this.backendSrv
+      .datasourceRequest({
+        url: '/api/tsdb/query',
+        method: 'POST',
+        data: {
+          from: '5m',
+          to: 'now',
+          queries: [
+            {
+              refId: 'A',
+              intervalMs: 1,
+              maxDataPoints: 1,
+              datasourceId: this.id,
+              format: 'table',
+              call: 'GetTree',
+              endpoint: this.jsonData.url,
+            },
+          ],
+        },
+      })
+      .then((resp: DataQueryResponse) => {
+        // Save the browse for future reference
+        console.log('We got browseData', resp);
+        this.browseData = resp;
+        return Promise.resolve({
+          status: 'success',
+          message: 'Connection successful',
+        });
+      })
+      .catch((err: any) => {
+        console.log('We caught error', err);
+        throw err;
       });
-    }).catch((err: any) => {
-      console.log("We caught error", err);
-      throw err;
-    });
   }
-      
 }

@@ -19,14 +19,13 @@ const isChecked = (selectedKeys: any[], eventKey: any): any => {
   return selectedKeys.indexOf(eventKey) !== -1;
 };
 
-const generateTree = (treeNodes: Array<any> = [], checkedKeys: Array<any> = []) => {
+const generateTree = (treeNodes: any[] = [], checkedKeys: any[] = []) => {
   return treeNodes.map(({ children, ...props }) => (
     <TreeNode {...props} disabled={checkedKeys.includes(props.key)} key={props.key}>
       {generateTree(children, checkedKeys)}
     </TreeNode>
   ));
 };
-
 
 const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TransferProps) => {
   const transferDataSource: TransferItem[] = [];
@@ -63,9 +62,9 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TransferProps) =
                   node: {
                     props: { eventKey },
                   },
-                },
+                }
               ) => {
-                if (typeof eventKey !== "undefined") {
+                if (typeof eventKey !== 'undefined') {
                   onItemSelect(eventKey, !isChecked(checkedKeys, eventKey));
                 }
               }}
@@ -75,9 +74,9 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TransferProps) =
                   node: {
                     props: { eventKey },
                   },
-                },
+                }
               ) => {
-                if (typeof eventKey !== "undefined") {
+                if (typeof eventKey !== 'undefined') {
                   onItemSelect(eventKey, !isChecked(checkedKeys, eventKey));
                 }
               }}
@@ -92,7 +91,6 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TransferProps) =
     </Transfer>
   );
 };
-
 
 // const treeData: Array<TransferItem> = [
 //   { key: '0-0', title: '0-0' },
@@ -113,34 +111,33 @@ export class QueryEditor extends PureComponent<Props, State> {
   isLoading = false;
 
   onChange = (targetKeys: string[]) => {
-    console.log("onChange", targetKeys);
+    console.log('onChange', targetKeys);
     this.setState({ targetKeys });
   };
 
-  updateDataSource = (ds: Array<TransferItem>) => {
+  updateDataSource = (ds: TransferItem[]) => {
     this.setState({
       dataSource: ds,
-    })
+    });
   };
 
-  updateTargetKeys = (tk: Array<string>) => {
+  updateTargetKeys = (tk: string[]) => {
     this.setState({
       targetKeys: tk,
-    })
+    });
   };
 
-  getTreeData = (): Array<TransferItem> => {
-    if ((typeof this.state.dataSource === "undefined" || this.state.dataSource.length == 0) && !this.isLoading) {
+  getTreeData = (): TransferItem[] => {
+    if ((typeof this.state.dataSource === 'undefined' || this.state.dataSource.length === 0) && !this.isLoading) {
       this.isLoading = true;
-      this.props.datasource.getTreeData()
-      .then((resp): any => {
-        let keys: Array<string> =  resp.data.results['A'].tables[0].rows.map((item: any) => {
-          console.log("iterating item", item);
+      this.props.datasource.getTreeData().then((resp): any => {
+        const keys: string[] = resp.data.results['A'].tables[0].rows.map((item: any) => {
+          console.log('iterating item', item);
           return item[1];
         });
-        let newDatasource = keys.map((item: string) => {        
-          return { 
-            key: item, 
+        const newDatasource = keys.map((item: string) => {
+          return {
+            key: item,
             title: item,
           };
         });
@@ -152,21 +149,21 @@ export class QueryEditor extends PureComponent<Props, State> {
     }
 
     return this.state.dataSource;
-  }
+  };
 
   render() {
-    var { targetKeys } = this.state;
-    
+    const { targetKeys } = this.state;
+
     return (
       <div className="gf-form">
-        <TreeTransfer 
-          showSearch={true} 
+        <TreeTransfer
+          showSearch={true}
           filterOption={(inputValue, item) => item.title.includes(inputValue)}
-          dataSource={this.getTreeData()} 
-          targetKeys={targetKeys} 
-          onChange={this.onChange} 
+          dataSource={this.getTreeData()}
+          targetKeys={targetKeys}
+          onChange={this.onChange}
         />
       </div>
-    );     
+    );
   }
 }
