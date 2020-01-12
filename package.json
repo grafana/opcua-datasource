@@ -12,16 +12,19 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@grafana/data": "next",
+    "@grafana/runtime": "next",
     "@grafana/toolkit": "next",
     "@grafana/ui": "next",
-    "@grafana/runtime": "next",
     "@types/lodash": "^4.14.134",
     "lodash": "^4.17.15",
     "node-opcua": "^2.1.9"
   },
   "dependencies": {
+    "@ant-design/dark-theme": "^1.0.3",
+    "@types/react-select": "^3.0.8",
     "antd": "^3.24.1",
     "grpc": "^1.24.0",
-    "node-opcua-samples": "^2.1.9"
+    "node-opcua-samples": "^2.1.9",
+    "react-select": "^3.0.8"
   }
 }

@@ -29,6 +29,7 @@ namespace plugin_dotnet
         public string browseName { get; set; }
         public string nodeId { get; set; }
 
+        public BrowseResultsEntry() {}
         public BrowseResultsEntry(string displayName, string browseName, string nodeId)
         {
             this.displayName = displayName;
@@ -41,43 +42,115 @@ namespace plugin_dotnet
     {
         private OpcUaClient client = null;
         private readonly Serilog.Core.Logger log;
+        private const string rootNode = "i=84";
+        private const string objectsNode = "i=85";
+        private string browseResults = null;
 
         public OpcUaDatasource(Serilog.Core.Logger logIn)
         {
             log = logIn;
         }
 
-        public async override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
+        public BrowseResultsEntry[] FlatBrowse(string nodeToBrowse = objectsNode)
         {
-            log.Information("got a request: {0}", request);
-            List<OpcUAQuery> queries = ParseJSONQueries(request);
+            List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
 
-            // Prepare a response
-            DatasourceResponse response = new DatasourceResponse { };
-            if (this.client == null)
+            foreach (ReferenceDescription entry in this.client.BrowseNodeReference(nodeToBrowse))
             {
-                this.client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
+                BrowseResultsEntry bre = new BrowseResultsEntry();
+                log.Information("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
+                if (entry.NodeClass == NodeClass.Variable)
+                {
+                    bre.displayName = entry.DisplayName.ToString();
+                    bre.browseName = entry.BrowseName.ToString();
+                    bre.nodeId = entry.NodeId.ToString();
+                    browseResults.Add(bre);
+                }
+                browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
             }
 
-            // Process the queries
-            foreach (OpcUAQuery query in queries)
+            return browseResults.ToArray();
+        }
+
+        public async override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
+        {
+            DatasourceResponse response = new DatasourceResponse { };
+
+            try
             {
-                QueryResult queryResult = new QueryResult();
-                queryResult.RefId = query.refId;
-                switch (query.call)
+                log.Information("got a request: {0}", request);
+                List<OpcUAQuery> queries = ParseJSONQueries(request);
+
+                // Prepare a response
+                if (this.client == null)
                 {
-                    case "Browse":
-                        var results = client.BrowseNodeReference(query.callParams["nodeId"]);
-                        log.Information("Browse result => {0}", results);
-                        BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
-                        for (int i = 0; i < results.Length; i++) {
-                            browseResults[i] = new BrowseResultsEntry(results[i].DisplayName.ToString(), results[i].BrowseName.ToString(), results[i].NodeId.ToString());
-                        }
-                        var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
-                        queryResult.MetaJson = jsonResults;
-                        break;
+                    this.client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
                 }
-                response.Results.Add(queryResult);
+
+                // Process the queries
+                foreach (OpcUAQuery query in queries)
+                {
+                    QueryResult queryResult = new QueryResult();
+                    queryResult.RefId = query.refId;
+                    switch (query.call)
+                    {
+                        case "Browse":
+                            {
+                                var results = client.BrowseNodeReference(query.callParams["nodeId"]);
+                                BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
+                                for (int i = 0; i < results.Length; i++)
+                                {
+                                    browseResults[i] = new BrowseResultsEntry(results[i].DisplayName.ToString(), results[i].BrowseName.ToString(), results[i].NodeId.ToString());
+                                }
+                                var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
+                                queryResult.MetaJson = jsonResults;
+                            }
+                            break;
+                        case "FlatBrowse":
+                            {
+                                if (this.browseResults == null)
+                                {
+                                    var browseResults = this.FlatBrowse();
+                                    var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
+                                    this.browseResults = jsonResults;
+                                }
+                                queryResult.MetaJson = this.browseResults;
+
+                            }
+                            break;
+                        case "ReadDataRaw":
+                            {
+                                var readResults = client.ReadHistoryRawDataValues(
+                                    query.callParams["nodeId"],
+                                    DateTime.Parse(request.TimeRange.FromRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    (uint)query.maxDataPoints,
+                                    true);
+                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
+                                log.Information("Results: {0}", readResults);
+                                queryResult.MetaJson = jsonResults;
+                            }
+                            break;
+                        case "ReadDataProcessed":
+                            {
+                                var readResults = client.ReadHistoryProcessed(
+                                    query.callParams["nodeId"],
+                                    DateTime.Parse(request.TimeRange.FromRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    (uint)query.maxDataPoints,
+                                    true);
+                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
+                                log.Information("Results: {0}", readResults);
+                                queryResult.MetaJson = jsonResults;
+                            }
+                            break;
+                    }
+                    response.Results.Add(queryResult);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.Information("Caught exception {0}", ex);
             }
 
             return response;
@@ -93,8 +166,6 @@ namespace plugin_dotnet
                 {
                     log.Information("Handling {0}", query.ModelJson);
                     OpcUAQuery uaq = JsonSerializer.Deserialize<OpcUAQuery>(query.ModelJson);
-                    log.Information("Query Item {0} {1}", uaq.call, uaq.datasourceId);
-
                     ret.Add(uaq);
                 }
                 catch (Exception ex)

@@ -1,9 +1,7 @@
-import defaults from 'lodash/defaults';
-
 import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings } from '@grafana/data';
 
 import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaResponse, OpcUaBrowseResults } from './types';
-import { MutableDataFrame, FieldType } from '@grafana/data';
+//import { FieldType } from '@grafana/data';
 import { getBackendSrv, BackendSrv } from '@grafana/runtime';
 
 export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions> {
@@ -18,24 +16,38 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
     this.browseData = [];
   }
 
-  query(options: DataQueryRequest<OpcUaQuery>): Promise<DataQueryResponse> {
+  async query(options: DataQueryRequest<OpcUaQuery>): Promise<DataQueryResponse> {
     const { range } = options;
-    const from = range.from.valueOf();
-    const to = range.to.valueOf();
+    const from = range.from.toISOString();
+    const to = range.to.toISOString();
 
-    // Return a constant for each query
-    const data = options.targets.map(target => {
-      const query = defaults(target);
-      return new MutableDataFrame({
-        refId: query.refId,
-        fields: [
-          { name: 'Time', values: [from, to], type: FieldType.time },
-          { name: 'Value', values: [6.5, 7.5], type: FieldType.number },
-        ],
+    console.log("options", options);
+    this.backendSrv
+      .datasourceRequest({
+        url: '/api/tsdb/query',
+        method: 'POST',
+        data: {
+          from,
+          to,
+          queries: options.targets.map(target => {
+            return {
+              refId: target.refId,
+              intervalMs: options.intervalMs,
+              maxDataPoints: options.maxDataPoints,
+              datasourceId: this.id,
+              call: 'ReadDataProcessed',
+              callParams: {
+                nodeId: target.metric.description,
+              }
+            }
+          }),
+        },
+      })
+      .then((results: OpcUaResponse) => {
+        console.log("results", results);
       });
-    });
 
-    return Promise.resolve({ data });
+    return Promise.resolve({ data: [] });
   }
 
   browse(nodeId: string): Promise<OpcUaBrowseResults[]> {
@@ -62,6 +74,32 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
       })
       .then((results: OpcUaResponse) => {
         const ret: OpcUaBrowseResults[] = (results.data.results['Browse'].meta as unknown) as OpcUaBrowseResults[];
+        return ret;
+      });
+  }
+
+  flatBrowse(): Promise<OpcUaBrowseResults[]> {
+    return this.backendSrv
+      .datasourceRequest({
+        url: '/api/tsdb/query',
+        method: 'POST',
+        data: {
+          from: '5m',
+          to: 'now',
+          queries: [
+            {
+              refId: 'FlatBrowse',
+              intervalMs: 1,
+              maxDataPoints: 1,
+              datasourceId: this.id,
+              call: 'FlatBrowse',
+            },
+          ],
+        },
+      })
+      .then((results: OpcUaResponse) => {
+        console.log("We got results", results);
+        const ret: OpcUaBrowseResults[] = (results.data.results['FlatBrowse'].meta as unknown) as OpcUaBrowseResults[];
         return ret;
       });
   }

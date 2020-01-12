@@ -247,7 +247,7 @@ namespace MicrosoftOpcUa.Client.Utility
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -274,9 +274,9 @@ namespace MicrosoftOpcUa.Client.Utility
                 // raise any additional notifications.
                 m_ReconnectComplete?.Invoke(this, e);
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
-                throw;
+                throw ex;
             }
         }
 
@@ -937,6 +937,49 @@ namespace MicrosoftOpcUa.Client.Utility
                 NumValuesPerNode = count,
                 IsReadModified = false,
                 ReturnBounds = containBound
+            };
+
+            HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
+            nodesToRead.Add(m_nodeToContinue);
+
+
+            m_session.HistoryRead(
+                null,
+                new ExtensionObject(m_details),
+                TimestampsToReturn.Both,
+                false,
+                nodesToRead,
+                out HistoryReadResultCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
+
+            ClientBase.ValidateResponse(results, nodesToRead);
+            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
+
+            if (StatusCode.IsBad(results[0].StatusCode))
+            {
+                throw new ServiceResultException(results[0].StatusCode);
+            }
+
+            HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
+            foreach (var value in values.DataValues)
+            {
+                yield return value;
+            }
+        }
+
+        public IEnumerable<DataValue> ReadHistoryProcessed(string tag, DateTime start, DateTime end, uint count = 1, bool containBound = false)
+        {
+            HistoryReadValueId m_nodeToContinue = new HistoryReadValueId()
+            {
+                NodeId = new NodeId(tag),
+            };
+
+            AggregateConfiguration aggregate = new AggregateConfiguration();
+            ReadProcessedDetails m_details = new ReadProcessedDetails
+            {
+                StartTime = start,
+                EndTime = end,
+                AggregateConfiguration = aggregate,
             };
 
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
