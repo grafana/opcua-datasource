@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -29,7 +29,7 @@ namespace plugin_dotnet
             // ILogger<Plugin> logger = loggerFactory.CreateLogger<Plugin>();
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.File("/home/stephanie/tmp/log.txt")
+                .WriteTo.File("/tmp/log.txt")
                 .CreateLogger();
 
             // Build a server to host the plugin over gRPC

@@ -1,8 +1,8 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export interface OpcUaQuery extends DataQuery {
-  queryText?: string;
-  call: string;
+  readType: string;
+  aggregate: string;
 }
 
 export interface OpcUaResultsEntry {
