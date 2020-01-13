@@ -1,7 +1,8 @@
-import { DataQuery, DataSourceJsonData, SelectableValue } from '@grafana/data';
+import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export interface OpcUaQuery extends DataQuery {
-  metric: SelectableValue<string>;
+  readType: string;
+  aggregate: string;
 }
 
 export interface OpcUaResultsEntry {

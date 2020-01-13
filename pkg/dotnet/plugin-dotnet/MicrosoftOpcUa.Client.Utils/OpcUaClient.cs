@@ -1,4 +1,4 @@
-﻿using MicrosoftOpcUa.Client.Core;
+using MicrosoftOpcUa.Client.Core;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Configuration;
@@ -967,7 +967,7 @@ namespace MicrosoftOpcUa.Client.Utility
             }
         }
 
-        public IEnumerable<DataValue> ReadHistoryProcessed(string tag, DateTime start, DateTime end, uint count = 1, bool containBound = false)
+        public IEnumerable<DataValue> ReadHistoryProcessed(string tag, DateTime start, DateTime end, double processingInterval, uint count = 1, bool containBound = false)
         {
             HistoryReadValueId m_nodeToContinue = new HistoryReadValueId()
             {
@@ -975,11 +975,15 @@ namespace MicrosoftOpcUa.Client.Utility
             };
 
             AggregateConfiguration aggregate = new AggregateConfiguration();
+            NodeIdCollection aggregateTypes = new NodeIdCollection();
+            aggregateTypes.Add(new NodeId("i=2341"));
             ReadProcessedDetails m_details = new ReadProcessedDetails
             {
                 StartTime = start,
                 EndTime = end,
                 AggregateConfiguration = aggregate,
+                AggregateType = aggregateTypes,
+                ProcessingInterval = processingInterval,
             };
 
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();

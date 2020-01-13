@@ -8,20 +8,20 @@ const AddButton = (
 );
 
 export const SegmentLabel = ({ label }: any) => (
-    <>
-        <span className="gf-form-label query-keyword">{label}</span>
-    </>
+  <>
+    <span className="gf-form-label query-keyword">{label}</span>
+  </>
 );
 
 export const SegmentFrame = ({ label, onChange, loadOptions, children }: any) => (
   <>
+    {console.log('label', label)}
     <div className="gf-form-inline">
       <div className="gf-form">
-          <SegmentLabel label={label} />
+        <SegmentLabel label={label} />
       </div>
       {children}
       <SegmentAsync Component={AddButton} onChange={onChange} loadOptions={loadOptions} />
     </div>
   </>
 );
-

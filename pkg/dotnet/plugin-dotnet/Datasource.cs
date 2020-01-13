@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Models;
@@ -36,6 +36,23 @@ namespace plugin_dotnet
             this.browseName = browseName;
             this.nodeId = nodeId;
         }
+    }
+
+    class LogMessage
+    {
+      public string type { get; set; }
+      public string message { get; set; }
+
+      public LogMessage(string type, string message) 
+      {
+        this.type = type;
+        this.message = message;
+      }
+
+      public string ToJson()
+      {
+        return JsonSerializer.Serialize<LogMessage>(this);
+      }
     }
 
     class OpcUaDatasource : DatasourcePlugin.DatasourcePluginBase
@@ -82,9 +99,9 @@ namespace plugin_dotnet
                 List<OpcUAQuery> queries = ParseJSONQueries(request);
 
                 // Prepare a response
-                if (this.client == null)
+                if (client == null)
                 {
-                    this.client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
+                    client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
                 }
 
                 // Process the queries
@@ -96,6 +113,7 @@ namespace plugin_dotnet
                     {
                         case "Browse":
                             {
+                                log.Information("client {0}", client);
                                 var results = client.BrowseNodeReference(query.callParams["nodeId"]);
                                 BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
                                 for (int i = 0; i < results.Length; i++)
@@ -137,6 +155,7 @@ namespace plugin_dotnet
                                     query.callParams["nodeId"],
                                     DateTime.Parse(request.TimeRange.FromRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
                                     DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    query.intervalMs,
                                     (uint)query.maxDataPoints,
                                     true);
                                 var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
@@ -150,7 +169,10 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-                log.Information("Caught exception {0}", ex);
+                log.Information("Error: {0}", ex);
+                QueryResult queryResult = new QueryResult();
+                queryResult.Error = ex.ToString();
+                response.Results.Add(queryResult);
             }
 
             return response;
