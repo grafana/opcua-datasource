@@ -136,6 +136,12 @@ namespace plugin_dotnet
 
                             }
                             break;
+                        case "ReadNode": 
+                          {
+                              var readResults = client.ReadNode(query.callParams["nodeId"]);
+                              log.Information("Results: {0}", readResults);
+                          }
+                          break;
                         case "ReadDataRaw":
                             {
                                 var readResults = client.ReadHistoryRawDataValues(
@@ -144,8 +150,8 @@ namespace plugin_dotnet
                                     DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
                                     (uint)query.maxDataPoints,
                                     true);
-                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
                                 log.Information("Results: {0}", readResults);
+                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
                                 queryResult.MetaJson = jsonResults;
                             }
                             break;
@@ -155,6 +161,7 @@ namespace plugin_dotnet
                                     query.callParams["nodeId"],
                                     DateTime.Parse(request.TimeRange.FromRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
                                     DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    query.callParams["aggregate"],
                                     query.intervalMs,
                                     (uint)query.maxDataPoints,
                                     true);
