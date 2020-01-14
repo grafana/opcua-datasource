@@ -37,11 +37,12 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
             return {
               refId: target.refId,
               intervalMs: options.intervalMs,
-              maxDataPoints: options.maxDataPoints,
+              maxDataPoints: target.readType === 'Processed' ? options.maxDataPoints : -1,
               datasourceId: this.id,
-              call: 'ReadDataProcessed',
+              call: target.readType === 'Processed' ? 'ReadDataProcessed' : 'ReadDataRaw',
               callParams: {
-                nodeId: target.metric,
+                nodeId: target.metric.nodeId,
+                aggregate: target.aggregate.nodeId,
               },
             };
           }),
@@ -62,15 +63,15 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
                     type: FieldType.time,
                     values: new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp))),
                     config: {
-                      title: request.metric,
+                      title: request.metric.displayName,
                     },
                   },
                   {
-                    name: request.metric,
+                    name: request.metric.nodeId,
                     type: FieldType.number,
                     values: new ArrayVector(result.meta.map((e: any) => e.Value)),
                     config: {
-                      title: request.metric,
+                      title: request.metric.displayName,
                     },
                   },
                 ],
@@ -91,7 +92,7 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
         url: '/api/tsdb/query',
         method: 'POST',
         data: {
-          from: '5m',
+          from: '1m',
           to: 'now',
           queries: [
             {
@@ -139,12 +140,12 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
       });
   }
 
-  getTreeData(nodeId = 'i=85'): Promise<any> {
+  callFunction(call: string, nodeId = 'i=85'): Promise<any> {
     return this.backendSrv.datasourceRequest({
       url: '/api/tsdb/query',
       method: 'POST',
       data: {
-        from: '5m',
+        from: '1m',
         to: 'now',
         queries: [
           {
@@ -152,11 +153,18 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
             intervalMs: 1,
             maxDataPoints: 1,
             datasourceId: this.id,
-            call: 'Browse',
+            call,
+            callParams: {
+              nodeId,
+            },
           },
         ],
       },
     });
+  }
+
+  getTreeData(nodeId = 'i=85'): Promise<any> {
+    return this.callFunction('Browse', nodeId);
   }
 
   testDatasource(): Promise<any> {

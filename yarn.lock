@@ -7563,6 +7563,23 @@ node-opcua-address-space@^2.4.0:
     underscore "^1.9.1"
     xml-writer "^1.7.0"
 
+node-opcua-aggregates@^2.0.1:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-aggregates/-/node-opcua-aggregates-2.4.0.tgz#d068a0a7a1dc0debc7320616b93104c7eae99bfd"
+  integrity sha512-5bNUk5DqHBFQ4UINCjqWuqD+ZKIvlcFVjR5SNNCjdaUe2GFLEaLm+0E0nRtk2hFWcsbaavgNs2kzj3m4cvSMyA==
+  dependencies:
+    "@types/async" "^3.0.3"
+    node-opcua-address-space "^2.4.0"
+    node-opcua-constants "^2.1.6"
+    node-opcua-data-value "^2.4.0"
+    node-opcua-nodeid "^2.3.0"
+    node-opcua-nodesets "^2.1.5"
+    node-opcua-service-history "^2.4.0"
+    node-opcua-status-code "^2.3.0"
+    node-opcua-types "^2.4.0"
+    node-opcua-utils "^2.4.0"
+    node-opcua-variant "^2.4.0"
+
 node-opcua-assert@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/node-opcua-assert/-/node-opcua-assert-2.3.0.tgz#50c81ae7071788ee2cd58e85d571faa9e19405ed"
