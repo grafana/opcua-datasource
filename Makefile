@@ -17,7 +17,7 @@ test-in-docker: build-container
 		plugin-builder make test
 
 build:
-	go build -o ./dist/${DSNAME}_linux_amd64 -a -tags netgo -ldflags '-w' ./pkg
+	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ./dist --self-contained true
 
 build-darwin:
 	go build -o ./dist/${DSNAME}_darwin_amd64 -a -tags netgo -ldflags '-w' ./pkg

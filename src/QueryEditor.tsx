@@ -46,11 +46,11 @@ export class QueryEditor extends PureComponent<Props> {
             onChange={e => this.onChange('readType', e)}
           />
           <SegmentLabel label={'Aggregate'} />
-          <Segment value={this.props.query.aggregate || 'Interpolative'} 
-            options={[
-              { label: 'Interpolative', value: 'Interpolative' },
-            ]} 
-            onChange={e => this.onChange('aggregate', e)} />
+          <Segment
+            value={this.props.query.aggregate || 'Interpolative'}
+            options={[{ label: 'Interpolative', value: 'Interpolative' }]}
+            onChange={e => this.onChange('aggregate', e)}
+          />
           <FormField label={'Interval'} value={'$__interval'} />
         </SegmentFrame>
       </>

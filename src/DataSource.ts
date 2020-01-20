@@ -49,38 +49,40 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
       })
       .then((results: OpcUaResponse) => {
         console.log('results', results);
-        return { data: Object.values(results.data.results).map((result: any) => {
-          const request = options.targets.find(target => target.refId === result.refId);
-          let entry: DataFrame = { fields: [], length: 0};
-          if (request && request.metric) {
-            entry = {
-              refId: result.refId,
-              fields: [
-                {
-                  name: 'Time',
-                  type: FieldType.time,
-                  values: new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp))),
-                  config: {
-                    title: request.metric,
+        return {
+          data: Object.values(results.data.results).map((result: any) => {
+            const request = options.targets.find(target => target.refId === result.refId);
+            let entry: DataFrame = { fields: [], length: 0 };
+            if (request && request.metric) {
+              entry = {
+                refId: result.refId,
+                fields: [
+                  {
+                    name: 'Time',
+                    type: FieldType.time,
+                    values: new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp))),
+                    config: {
+                      title: request.metric,
+                    },
                   },
-                },
-                {
-                  name: request.metric,
-                  type: FieldType.number,
-                  values: new ArrayVector(result.meta.map((e: any) => e.Value)),
-                  config: {
-                    title: request.metric,
+                  {
+                    name: request.metric,
+                    type: FieldType.number,
+                    values: new ArrayVector(result.meta.map((e: any) => e.Value)),
+                    config: {
+                      title: request.metric,
+                    },
                   },
-                },
-              ],
-              length: result.meta.length,
-          };
-        }
-        console.log('entry', entry);
+                ],
+                length: result.meta.length,
+              };
+            }
+            console.log('entry', entry);
 
-        return entry;
-      })
-    }});
+            return entry;
+          }),
+        };
+      });
   }
 
   browse(nodeId: string): Promise<OpcUaBrowseResults[]> {
