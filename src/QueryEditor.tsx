@@ -15,7 +15,7 @@ export class QueryEditor extends PureComponent<Props> {
   }
 
   onChange = (variable: string, value: any) => {
-    console.log("changing", variable, value);
+    console.log('changing', variable, value);
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, [variable]: value });
     onRunQuery(); // executes the query
@@ -43,13 +43,15 @@ export class QueryEditor extends PureComponent<Props> {
     });
   };
 
-
-
   render() {
     return (
       <>
         <SegmentFrame label="Tag">
-          <SegmentAsync value={this.props.query.metric ? this.props.query.metric.displayName : selectText('metric')} loadOptions={this.getTreeData} onChange={e => this.onChange('metric', e)} />
+          <SegmentAsync
+            value={this.props.query.metric ? this.props.query.metric.displayName : selectText('metric')}
+            loadOptions={this.getTreeData}
+            onChange={e => this.onChange('metric', e)}
+          />
           <SegmentLabel label={'Read Type'} />
           <Segment
             value={this.props.query.readType || 'Processed'}
