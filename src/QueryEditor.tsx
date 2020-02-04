@@ -50,7 +50,7 @@ export class QueryEditor extends PureComponent<Props> {
           <SegmentAsync
             value={this.props.query.metric ? this.props.query.metric.displayName : selectText('metric')}
             loadOptions={this.getTreeData}
-            onChange={e => this.onChange('metric', e)}
+            onChange={e => e.value && this.onChange('metric', e.value)}
           />
           <SegmentLabel label={'Read Type'} />
           <Segment
@@ -59,13 +59,13 @@ export class QueryEditor extends PureComponent<Props> {
               { label: 'Raw', value: 'Raw' },
               { label: 'Processed', value: 'Processed' },
             ]}
-            onChange={e => this.onChange('readType', e)}
+            onChange={e => e && this.onChange('readType', e)}
           />
           <SegmentLabel label={'Aggregate'} />
           <SegmentAsync
             value={this.props.query.aggregate ? this.props.query.aggregate.displayName : selectText('aggregate')}
             loadOptions={() => this.browseNode('i=2997')}
-            onChange={e => this.onChange('aggregate', e)}
+            onChange={e => e.value && this.onChange('aggregate', e.value)}
           />
           <FormField label={'Interval'} value={'$__interval'} />
         </SegmentFrame>
