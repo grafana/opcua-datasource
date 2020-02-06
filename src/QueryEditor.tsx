@@ -1,38 +1,74 @@
 import React, { PureComponent } from 'react';
 import { SegmentAsync, Segment, FormField } from '@grafana/ui';
+import { Cascader, CascaderOption } from './components/Cascader';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from './DataSource';
 import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 
+const separator = ' / ';
+const rootNode = 'i=84';
 const selectText = (t: string): string => `Select <${t}>`;
+const loadingOption: CascaderOption<OpcUaBrowseResults> = {
+  label: 'Loading Options...',
+  value: {
+    displayName: 'Loading...',
+    browseName: 'Loading...',
+    nodeId: 'Loading...',
+  },
+};
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 
 export class QueryEditor extends PureComponent<Props> {
+  metric: OpcUaBrowseResults;
+  selectedOptions: Array<CascaderOption<OpcUaBrowseResults>>;
   constructor(props: Props) {
     super(props);
+    const { onChange, query } = this.props;
+
+    if (!query.readType) {
+      onChange({ ...query, readType: 'Processed' });
+    }
+    this.metric = this.props.query.metric;
+    this.selectedOptions = [];
   }
 
-  onChange = (variable: string, value: any) => {
-    console.log('changing', variable, value);
+  onChange = (...args: any[]) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, [variable]: value });
+    console.log("change", args);
+    const changes: Record<string, any> = {};
+    for (var i = 0; i < args.length; i += 2) {
+      const variable: string = args[i];
+      const value: any = args[i+1]
+      changes[variable] = value;
+    }
+    onChange({ ...query, ...changes });
     onRunQuery(); // executes the query
   };
 
-  getTreeData = (): Promise<Array<SelectableValue<any>>> => {
-    return this.props.datasource.flatBrowse().then((results: OpcUaBrowseResults[]) => {
+  onSelect = (browseResults: OpcUaBrowseResults[], selectedOptions: Array<CascaderOption<OpcUaBrowseResults>>) => {
+    this.metric = browseResults[browseResults.length - 1];
+    this.selectedOptions = selectedOptions;
+  };
+
+  onCascadeClose = () => {
+    const displayName = this.selectedOptions.map(o => o.label).join(separator);
+    this.onChange('metric', this.metric, 'displayName', displayName);
+  };
+
+  browseNode = (queryItem?: OpcUaBrowseResults): Promise<Array<CascaderOption<OpcUaBrowseResults>>> => {
+    return this.props.datasource.browse(queryItem ? queryItem.nodeId : rootNode).then((results: OpcUaBrowseResults[]) => {
       return results.map((item: OpcUaBrowseResults) => ({
         label: item.displayName,
-        key: item.nodeId,
-        description: item.nodeId,
         value: item,
+        items: [loadingOption],
+        title: item.nodeId,
       }));
     });
   };
 
-  browseNode = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
+  browseNodeSV = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
     return this.props.datasource.browse(nodeId).then((results: OpcUaBrowseResults[]) => {
       return results.map((item: OpcUaBrowseResults) => ({
         label: item.displayName,
@@ -44,27 +80,30 @@ export class QueryEditor extends PureComponent<Props> {
   };
 
   render() {
+    const { query } = this.props;
     return (
       <>
         <SegmentFrame label="Tag">
-          <SegmentAsync
-            value={this.props.query.metric ? this.props.query.metric.displayName : selectText('metric')}
-            loadOptions={this.getTreeData}
-            onChange={e => e.value && this.onChange('metric', e.value)}
+          <Cascader
+            initialValue={query.displayName ? query.displayName : ''}
+            loadData={this.browseNode}
+            onSelect={this.onSelect}
+            onCascadeClose={this.onCascadeClose}
+            separator={separator}
           />
           <SegmentLabel label={'Read Type'} />
-          <Segment
-            value={this.props.query.readType || 'Processed'}
+          <Segment<any>
+            value={query.readType ? this.props.query.readType : 'Processed'}
             options={[
               { label: 'Raw', value: 'Raw' },
               { label: 'Processed', value: 'Processed' },
             ]}
-            onChange={e => e && this.onChange('readType', e)}
+            onChange={e => e.value && this.onChange('readType', e.value)}
           />
           <SegmentLabel label={'Aggregate'} />
           <SegmentAsync
-            value={this.props.query.aggregate ? this.props.query.aggregate.displayName : selectText('aggregate')}
-            loadOptions={() => this.browseNode('i=2997')}
+            value={query.aggregate ? this.props.query.aggregate.displayName : selectText('aggregate')}
+            loadOptions={() => this.browseNodeSV('i=2997')}
             onChange={e => e.value && this.onChange('aggregate', e.value)}
           />
           <FormField label={'Interval'} value={'$__interval'} />

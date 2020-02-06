@@ -17,6 +17,8 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
   }
 
   async query(options: DataQueryRequest<OpcUaQuery>): Promise<DataQueryResponse> {
+    console.log("query options", options);
+
     if (!options.targets || !(options.targets.length > 0) || !options.targets[0].metric) {
       return Promise.resolve({ data: [] });
     }
@@ -24,8 +26,28 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
     const { range } = options;
     const from = range.from.toISOString();
     const to = range.to.toISOString();
+    const queries: any[] = [];
 
-    console.log('options', options);
+    options.targets.forEach(target => {
+      if (target.metric && target.metric.hasOwnProperty('nodeId') && target.aggregate && target.aggregate.hasOwnProperty('nodeId')) {
+        queries.push({
+          refId: target.refId,
+          intervalMs: options.intervalMs,
+          maxDataPoints: target.readType === 'Processed' ? options.maxDataPoints : -1,
+          datasourceId: this.id,
+          call: target.readType === 'Processed' ? 'ReadDataProcessed' : 'ReadDataRaw',
+          callParams: {
+            nodeId: target.metric.nodeId,
+            aggregate: target.aggregate.nodeId,
+          },
+        });
+      }
+    });
+
+    if (queries.length === 0) {
+      return Promise.resolve({ data: [] });
+    }
+
     return this.backendSrv
       .datasourceRequest({
         url: '/api/tsdb/query',
@@ -33,19 +55,7 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
         data: {
           from,
           to,
-          queries: options.targets.map(target => {
-            return {
-              refId: target.refId,
-              intervalMs: options.intervalMs,
-              maxDataPoints: target.readType === 'Processed' ? options.maxDataPoints : -1,
-              datasourceId: this.id,
-              call: target.readType === 'Processed' ? 'ReadDataProcessed' : 'ReadDataRaw',
-              callParams: {
-                nodeId: target.metric.nodeId,
-                aggregate: target.aggregate.nodeId,
-              },
-            };
-          }),
+          queries,
         },
       })
       .then((results: OpcUaResponse) => {
@@ -87,6 +97,7 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
   }
 
   browse(nodeId: string): Promise<OpcUaBrowseResults[]> {
+    console.log('browsing', nodeId);
     return this.backendSrv
       .datasourceRequest({
         url: '/api/tsdb/query',

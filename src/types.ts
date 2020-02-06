@@ -2,6 +2,7 @@ import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export interface OpcUaQuery extends DataQuery {
   metric: OpcUaBrowseResults;
+  displayName: string;
   readType: string;
   aggregate: OpcUaBrowseResults;
 }
