@@ -1,5 +1,5 @@
 {
-  "coveragePathIgnorePatterns": [
+  coveragePathIgnorePatterns: [
     "/node_modules/"
   ]
 }

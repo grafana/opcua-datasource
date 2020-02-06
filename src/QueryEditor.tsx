@@ -7,7 +7,7 @@ import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults } from './types'
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 
 const separator = ' / ';
-const rootNode = 'i=84';
+const rootNode = 'i=85';
 const selectText = (t: string): string => `Select <${t}>`;
 const loadingOption: CascaderOption<OpcUaBrowseResults> = {
   label: 'Loading Options...',
@@ -36,11 +36,11 @@ export class QueryEditor extends PureComponent<Props> {
 
   onChange = (...args: any[]) => {
     const { onChange, query, onRunQuery } = this.props;
-    console.log("change", args);
+    console.log('change', args);
     const changes: Record<string, any> = {};
-    for (var i = 0; i < args.length; i += 2) {
+    for (let i = 0; i < args.length; i += 2) {
       const variable: string = args[i];
-      const value: any = args[i+1]
+      const value: any = args[i + 1];
       changes[variable] = value;
     }
     onChange({ ...query, ...changes });

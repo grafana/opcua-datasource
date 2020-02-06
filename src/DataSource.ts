@@ -17,7 +17,7 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
   }
 
   async query(options: DataQueryRequest<OpcUaQuery>): Promise<DataQueryResponse> {
-    console.log("query options", options);
+    console.log('query options', options);
 
     if (!options.targets || !(options.targets.length > 0) || !options.targets[0].metric) {
       return Promise.resolve({ data: [] });

@@ -79,7 +79,7 @@ export class Cascader<T> extends React.PureComponent<CascaderProps<T>, CascaderS
   };
 
   setInitialValue(searchableOptions: Array<SelectableValue<string[]>>, initValue?: string) {
-    if (typeof initValue === "undefined") {
+    if (typeof initValue === 'undefined') {
       return { rcValue: [], activeLabel: '' };
     }
 
