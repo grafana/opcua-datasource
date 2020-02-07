@@ -1,6 +1,6 @@
 {
   "type": "datasource",
-  "name": "grafana-opcua-datasource",
+  "name": "OPC UA (Unified Architecture)",
   "id": "grafana-opcua-datasource",
   "info": {
     "description": "Reads data from OPC UA Servers",

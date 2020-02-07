@@ -290,7 +290,7 @@ namespace MicrosoftOpcUa.Client.Utility
         /// <summary>
         /// a name of application name show on server
         /// </summary>
-        public string OpcUaName { get; set; } = "Microsoft Opc Ua Client";
+        public string OpcUaName { get; set; } = "Grafana Opc Ua Client";
 
         /// <summary>
         /// Whether to use security when connecting.
@@ -967,7 +967,7 @@ namespace MicrosoftOpcUa.Client.Utility
             }
         }
 
-        public IEnumerable<DataValue> ReadHistoryProcessed(string tag, DateTime start, DateTime end, double processingInterval, uint count = 1, bool containBound = false)
+        public IEnumerable<DataValue> ReadHistoryProcessed(string tag, DateTime start, DateTime end, string aggregateFunction, double processingInterval, uint count = 1, bool containBound = false)
         {
             HistoryReadValueId m_nodeToContinue = new HistoryReadValueId()
             {
@@ -976,7 +976,7 @@ namespace MicrosoftOpcUa.Client.Utility
 
             AggregateConfiguration aggregate = new AggregateConfiguration();
             NodeIdCollection aggregateTypes = new NodeIdCollection();
-            aggregateTypes.Add(new NodeId("i=2341"));
+            aggregateTypes.Add(new NodeId(aggregateFunction));
             ReadProcessedDetails m_details = new ReadProcessedDetails
             {
                 StartTime = start,

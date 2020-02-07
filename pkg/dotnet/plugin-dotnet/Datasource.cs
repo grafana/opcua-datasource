@@ -40,24 +40,24 @@ namespace plugin_dotnet
 
     class LogMessage
     {
-      public string type { get; set; }
-      public string message { get; set; }
+        public string type { get; set; }
+        public string message { get; set; }
 
-      public LogMessage(string type, string message) 
-      {
-        this.type = type;
-        this.message = message;
-      }
+        public LogMessage(string type, string message) 
+        {
+            this.type = type;
+            this.message = message;
+        }
 
-      public string ToJson()
-      {
-        return JsonSerializer.Serialize<LogMessage>(this);
-      }
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize<LogMessage>(this);
+        }
     }
 
     class OpcUaDatasource : DatasourcePlugin.DatasourcePluginBase
     {
-        private OpcUaClient client = null;
+        private Dictionary<string, OpcUaClient> clientConnections = new Dictionary<string, OpcUaClient>();
         private readonly Serilog.Core.Logger log;
         private const string rootNode = "i=84";
         private const string objectsNode = "i=85";
@@ -68,11 +68,11 @@ namespace plugin_dotnet
             log = logIn;
         }
 
-        public BrowseResultsEntry[] FlatBrowse(string nodeToBrowse = objectsNode)
+        public BrowseResultsEntry[] FlatBrowse(OpcUaClient client, string nodeToBrowse = objectsNode)
         {
             List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
 
-            foreach (ReferenceDescription entry in this.client.BrowseNodeReference(nodeToBrowse))
+            foreach (ReferenceDescription entry in client.BrowseNodeReference(nodeToBrowse))
             {
                 BrowseResultsEntry bre = new BrowseResultsEntry();
                 log.Information("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
@@ -83,7 +83,7 @@ namespace plugin_dotnet
                     bre.nodeId = entry.NodeId.ToString();
                     browseResults.Add(bre);
                 }
-                browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
+                browseResults.AddRange(FlatBrowse(client, entry.NodeId.ToString()));
             }
 
             return browseResults.ToArray();
@@ -97,9 +97,14 @@ namespace plugin_dotnet
             {
                 log.Information("got a request: {0}", request);
                 List<OpcUAQuery> queries = ParseJSONQueries(request);
+                OpcUaClient client;
 
                 // Prepare a response
-                if (client == null)
+                try 
+                {
+                    client = clientConnections[request.Datasource.Url];
+                }
+                catch(System.Collections.Generic.KeyNotFoundException) 
                 {
                     client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
                 }
@@ -128,12 +133,18 @@ namespace plugin_dotnet
                             {
                                 if (this.browseResults == null)
                                 {
-                                    var browseResults = this.FlatBrowse();
+                                    var browseResults = this.FlatBrowse(client);
                                     var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
                                     this.browseResults = jsonResults;
                                 }
                                 queryResult.MetaJson = this.browseResults;
 
+                            }
+                            break;
+                        case "ReadNode": 
+                            {
+                                var readResults = client.ReadNode(query.callParams["nodeId"]);
+                                log.Information("Results: {0}", readResults);
                             }
                             break;
                         case "ReadDataRaw":
@@ -144,8 +155,8 @@ namespace plugin_dotnet
                                     DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
                                     (uint)query.maxDataPoints,
                                     true);
-                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
                                 log.Information("Results: {0}", readResults);
+                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
                                 queryResult.MetaJson = jsonResults;
                             }
                             break;
@@ -155,6 +166,7 @@ namespace plugin_dotnet
                                     query.callParams["nodeId"],
                                     DateTime.Parse(request.TimeRange.FromRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
                                     DateTime.Parse(request.TimeRange.ToRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                                    query.callParams["aggregate"],
                                     query.intervalMs,
                                     (uint)query.maxDataPoints,
                                     true);
