@@ -14,7 +14,7 @@
     "@grafana/data": "next",
     "@grafana/runtime": "next",
     "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
+    "@grafana/ui": "canary",
     "@types/lodash": "^4.14.134",
     "lodash": "^4.17.15",
     "node-opcua": "^2.1.9"
