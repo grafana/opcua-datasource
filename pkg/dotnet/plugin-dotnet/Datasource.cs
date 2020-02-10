@@ -106,7 +106,12 @@ namespace plugin_dotnet
                 }
                 catch(System.Collections.Generic.KeyNotFoundException) 
                 {
-                    client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
+                    if (request.Datasource.DecryptedSecureJsonData.ContainsKey("tlsClientCert")) {
+                        client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
+                    } else {
+                        client = await ConnectAsync(request.Datasource.Url);
+                    }
+                    
                 }
 
                 // Process the queries
@@ -181,6 +186,9 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
+                // Close out the client connection.
+                clientConnections[request.Datasource.Url].Disconnect();
+                clientConnections[request.Datasource.Url] = null;
                 log.Information("Error: {0}", ex);
                 QueryResult queryResult = new QueryResult();
                 queryResult.Error = ex.ToString();
@@ -222,6 +230,13 @@ namespace plugin_dotnet
             client.UseSecurity = true;
             client.ApplicationCertificate = certificateIdentifier;
 
+            await client.ConnectServer(endpoint);
+            return client;
+        }
+
+        private static async Task<OpcUaClient> ConnectAsync(string endpoint)
+        {
+            var client = new OpcUaClient();
             await client.ConnectServer(endpoint);
             return client;
         }
