@@ -23,6 +23,12 @@ namespace plugin_dotnet
         public Dictionary<string, string> callParams { get; set; }
     }
 
+    class OpcUaJsonData
+    {
+        public bool tlsAuth { get; set; }
+        public bool tlsSkipVerify { get; set; }
+    }
+
     class BrowseResultsEntry
     {
         public string displayName { get; set; }
@@ -97,6 +103,7 @@ namespace plugin_dotnet
             {
                 log.Information("got a request: {0}", request);
                 List<OpcUAQuery> queries = ParseJSONQueries(request);
+                OpcUaJsonData jsonData = JsonSerializer.Deserialize<OpcUaJsonData>(request.Datasource.JsonData);
                 OpcUaClient client;
 
                 // Prepare a response
@@ -106,9 +113,13 @@ namespace plugin_dotnet
                 }
                 catch(System.Collections.Generic.KeyNotFoundException) 
                 {
-                    if (request.Datasource.DecryptedSecureJsonData.ContainsKey("tlsClientCert")) {
+                    log.Information("jsonData {0}", jsonData.tlsAuth);
+                    if (jsonData.tlsAuth) 
+                    {
                         client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
-                    } else {
+                    } 
+                    else 
+                    {
                         client = await ConnectAsync(request.Datasource.Url);
                     }
                     
@@ -154,6 +165,8 @@ namespace plugin_dotnet
                             break;
                         case "ReadDataRaw":
                             {
+                                log.Information("Query: {0}", query.maxDataPoints);
+
                                 var readResults = client.ReadHistoryRawDataValues(
                                     query.callParams["nodeId"],
                                     DateTime.Parse(request.TimeRange.FromRaw, null, System.Globalization.DateTimeStyles.RoundtripKind),
@@ -188,7 +201,7 @@ namespace plugin_dotnet
             {
                 // Close out the client connection.
                 clientConnections[request.Datasource.Url].Disconnect();
-                clientConnections[request.Datasource.Url] = null;
+                clientConnections[request.Datasource.Url] = null;                log.Information("Error: {0}", ex);
                 log.Information("Error: {0}", ex);
                 QueryResult queryResult = new QueryResult();
                 queryResult.Error = ex.ToString();
@@ -237,6 +250,7 @@ namespace plugin_dotnet
         private static async Task<OpcUaClient> ConnectAsync(string endpoint)
         {
             var client = new OpcUaClient();
+            client.UseSecurity = false;
             await client.ConnectServer(endpoint);
             return client;
         }
