@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ChangeEvent } from 'react';
 import { SegmentAsync, Segment, FormField } from '@grafana/ui';
 import { Cascader, CascaderOption } from './components/Cascader';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
@@ -52,6 +52,11 @@ export class QueryEditor extends PureComponent<Props> {
     this.selectedOptions = selectedOptions;
   };
 
+  onChangeInterval = (event: ChangeEvent<HTMLInputElement>) => {
+    const { onChange, query } = this.props;
+    onChange({ ...query, interval: event.target.value });
+  };
+
   onCascadeClose = () => {
     const displayName = this.selectedOptions.map(o => o.label).join(separator);
     this.onChange('metric', this.metric, 'displayName', displayName);
@@ -80,7 +85,7 @@ export class QueryEditor extends PureComponent<Props> {
   };
 
   render() {
-    const { query } = this.props;
+    const { query, onRunQuery } = this.props;
     return (
       <>
         <SegmentFrame label="Tag">
@@ -106,7 +111,7 @@ export class QueryEditor extends PureComponent<Props> {
             loadOptions={() => this.browseNodeSV('i=2997')}
             onChange={e => e.value && this.onChange('aggregate', e.value)}
           />
-          <FormField label={'Interval'} value={'$__interval'} />
+          <FormField label={'Interval'} value={query.interval} onChange={this.onChangeInterval} onBlur={() => onRunQuery()} />
         </SegmentFrame>
       </>
     );

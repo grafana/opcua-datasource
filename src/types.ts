@@ -5,6 +5,7 @@ export interface OpcUaQuery extends DataQuery {
   displayName: string;
   readType: string;
   aggregate: OpcUaBrowseResults;
+  interval: string;
 }
 
 export interface OpcUaResultsEntry {

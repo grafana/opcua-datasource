@@ -29,16 +29,16 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
     const queries: any[] = [];
 
     options.targets.forEach(target => {
-      if (target.metric && target.metric.hasOwnProperty('nodeId') && target.aggregate && target.aggregate.hasOwnProperty('nodeId')) {
+      if (target.metric && target.metric.hasOwnProperty('nodeId')) {
         queries.push({
           refId: target.refId,
-          intervalMs: options.intervalMs,
+          intervalMs: Number(target.interval),
           maxDataPoints: target.readType === 'Processed' ? options.maxDataPoints : -1,
           datasourceId: this.id,
           call: target.readType === 'Processed' ? 'ReadDataProcessed' : 'ReadDataRaw',
           callParams: {
             nodeId: target.metric.nodeId,
-            aggregate: target.aggregate.nodeId,
+            aggregate: target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId') ? target.aggregate.nodeId : '',
           },
         });
       }
