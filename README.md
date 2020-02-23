@@ -1,7 +1,7 @@
 # grafana-opcua-datasource
 An OPC UA datasource for reading from OPC UA servers (DA/HDA/AE) into Grafana directly
 
-![full dashboard](https://)
+![full dashboard](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/dashboard1.png)
 
 # Important
 Currently beta quality
