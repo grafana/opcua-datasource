@@ -11,9 +11,9 @@
   "author": "srclosson@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "next",
-    "@grafana/runtime": "next",
-    "@grafana/toolkit": "next",
+    "@grafana/data": "canary",
+    "@grafana/runtime": "canary",
+    "@grafana/toolkit": "canary",
     "@grafana/ui": "canary",
     "@types/lodash": "^4.14.134",
     "lodash": "^4.17.15",

@@ -10,7 +10,6 @@ using MicrosoftOpcUa.Client.Utility;
 using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
 using Google.Protobuf;
-using System.Diagnostics;
 
 namespace plugin_dotnet
 {
@@ -73,41 +72,7 @@ namespace plugin_dotnet
         public OpcUaDatasource(Serilog.Core.Logger logIn)
         {
             log = logIn;
-            clientConnections = new Dictionary<string, OpcUaClient>();
         }
-
-        public OpcUaClient GetClient(DatasourceRequest request, OpcUaJsonData jsonData) 
-        {
-            OpcUaClient client = null;
-
-            try 
-            {
-                client = clientConnections[request.Datasource.Url];
-            }
-            catch(System.Collections.Generic.KeyNotFoundException) 
-            {
-                Task<OpcUaClient> connectTask;
-                if (jsonData.tlsAuth) 
-                {
-                    connectTask = ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
-                } 
-                else 
-                {
-                    connectTask = ConnectAsync(request.Datasource.Url);
-                }
-
-                connectTask.Wait();
-                client = connectTask.Result;
-                clientConnections[request.Datasource.Url] = client;
-            }
-            catch(System.NullReferenceException)
-            {
-                clientConnections = new Dictionary<string, OpcUaClient>();
-            }
-            
-            return client;
-        }
-
 
         public BrowseResultsEntry[] FlatBrowse(OpcUaClient client, string nodeToBrowse = objectsNode)
         {
@@ -139,8 +104,26 @@ namespace plugin_dotnet
                 log.Information("got a request: {0}", request);
                 List<OpcUAQuery> queries = ParseJSONQueries(request);
                 OpcUaJsonData jsonData = JsonSerializer.Deserialize<OpcUaJsonData>(request.Datasource.JsonData);
-                OpcUaClient client = GetClient(request, jsonData);
-                log.Information("got a client {0}", client);
+                OpcUaClient client;
+
+                // Prepare a response
+                try 
+                {
+                    client = clientConnections[request.Datasource.Url];
+                }
+                catch(System.Collections.Generic.KeyNotFoundException) 
+                {
+                    log.Information("jsonData {0}", jsonData.tlsAuth);
+                    if (jsonData.tlsAuth) 
+                    {
+                        client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
+                    } 
+                    else 
+                    {
+                        client = await ConnectAsync(request.Datasource.Url);
+                    }
+                    
+                }
 
                 // Process the queries
                 foreach (OpcUAQuery query in queries)

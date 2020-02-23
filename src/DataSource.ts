@@ -1,44 +1,37 @@
 import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, DataFrame, FieldType, ArrayVector } from '@grafana/data';
 
-import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaResponse, OpcUaBrowseResults } from './types';
+import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaResults, OpcUaResponse, OpcUaBrowseResults } from './types';
 //import { FieldType } from '@grafana/data';
-import { getBackendSrv, BackendSrv } from '@grafana/runtime';
+import { getBackendSrv } from '@grafana/runtime';
 
 export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions> {
   config: DataSourceInstanceSettings<OpcUaDataSourceOptions>;
   browseData: any;
-  backendSrv: BackendSrv;
   constructor(instanceSettings: DataSourceInstanceSettings<OpcUaDataSourceOptions>) {
     super(instanceSettings);
     console.log('instanceSettings', instanceSettings);
-    this.backendSrv = getBackendSrv();
     this.config = instanceSettings;
     this.browseData = [];
   }
 
   async query(options: DataQueryRequest<OpcUaQuery>): Promise<DataQueryResponse> {
-    console.log('query options', options);
-
-    if (!options.targets || !(options.targets.length > 0) || !options.targets[0].metric) {
+      if (!options.targets || !(options.targets.length > 0) || !options.targets[0].metric) {
       return Promise.resolve({ data: [] });
     }
 
-    const { range } = options;
-    const from = range.from.toISOString();
-    const to = range.to.toISOString();
     const queries: any[] = [];
 
     options.targets.forEach(target => {
       if (target.metric && target.metric.hasOwnProperty('nodeId')) {
         queries.push({
           refId: target.refId,
-          intervalMs: Number(target.interval),
+          intervalMs: target.readType === 'Processed' ? Number(target.interval) : 0,
           maxDataPoints: target.readType === 'Processed' ? options.maxDataPoints : -1,
           datasourceId: this.id,
-          call: target.readType === 'Processed' ? 'ReadDataProcessed' : 'ReadDataRaw',
+          call: target.readType === 'Processed' ? 'ReadNode' : 'ReadDataRaw',
           callParams: {
             nodeId: target.metric.nodeId,
-            aggregate: target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId') ? target.aggregate.nodeId : '',
+            //aggregate: target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId') ? target.aggregate.nodeId : '',
           },
         });
       }
@@ -47,103 +40,114 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
     if (queries.length === 0) {
       return Promise.resolve({ data: [] });
     }
+    
+      return getBackendSrv()
+          .post('/api/tsdb/query', {
+              from: options.range?.from.valueOf().toString(),
+              to: options.range?.to.valueOf().toString(),
+              queries,
+          })
+          .then((results: OpcUaResults) => {
 
-    return this.backendSrv
-      .datasourceRequest({
-        url: '/api/tsdb/query',
-        method: 'POST',
-        data: {
-          from,
-          to,
-          queries,
-        },
-      })
-      .then((results: OpcUaResponse) => {
-        console.log('results', results);
-        return {
-          data: Object.values(results.data.results).map((result: any) => {
-            const request = options.targets.find(target => target.refId === result.refId);
-            let entry: DataFrame = { fields: [], length: 0 };
-            if (request && request.metric) {
-              entry = {
-                refId: result.refId,
-                fields: [
-                  {
-                    name: 'Time',
-                    type: FieldType.time,
-                    values: new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp))),
-                    config: {
-                      title: request.metric.displayName,
-                    },
-                  },
-                  {
-                    name: request.metric.nodeId,
-                    type: FieldType.number,
-                    values: new ArrayVector(result.meta.map((e: any) => e.Value)),
-                    config: {
-                      title: request.metric.displayName,
-                    },
-                  },
-                ],
-                length: result.meta.length,
+              return {
+                  data: Object.values(results.results)
+                      .filter(result => result.hasOwnProperty('meta'))
+                      .map((result: any) => {
+                          const request = options.targets.find(target => target.refId === result.refId);
+                          let entry: DataFrame = { fields: [], length: 0 };
+                          if (request && request.metric) {
+                              entry = {
+                                  refId: result.refId,
+                                  fields: [
+                                      {
+                                          name: 'Time',
+                                          type: FieldType.time,
+                                          values: Array.isArray(result.meta)
+                                              ? new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp)))
+                                              : new ArrayVector([new Date(result.meta.SourceTimestamp)]),
+                                          config: {
+                                              title: request.displayName,
+                                          },
+                                      },
+                                      {
+                                          name: request.displayName,
+                                          type: FieldType.number,
+                                          values: Array.isArray(result.meta)
+                                              ? new ArrayVector(result.meta.map((e: any) => e.Value))
+                                              : new ArrayVector([result.meta.Value]),
+                                          config: {
+                                              title: request.displayName,
+                                          },
+                                      },
+                                  ],
+                                  length: result.meta.length,
+                              };
+                          }
+
+                          return entry;
+                      }),
               };
-            }
-            console.log('entry', entry);
+          });
+  }
 
-            return entry;
-          }),
-        };
-      });
+  async doSingleQuery(query: OpcUaQuery): Promise<DataFrame> {
+    const opts = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(query),
+    };
+
+    console.log(this.config);
+    const res = await fetch(this.config.url!, opts);
+    console.log('res', res);
+    return Promise.resolve({
+      fields: [],
+      length: 0,
+    });
   }
 
   browse(nodeId: string): Promise<OpcUaBrowseResults[]> {
-    console.log('browsing', nodeId);
-    return this.backendSrv
-      .datasourceRequest({
+    return getBackendSrv()
+    .datasourceRequest({
         url: '/api/tsdb/query',
         method: 'POST',
         data: {
-          from: '1m',
-          to: 'now',
-          queries: [
+        from: '1m',
+        to: 'now',
+        queries: [
             {
-              refId: 'Browse',
-              intervalMs: 1,
-              maxDataPoints: 1,
-              datasourceId: this.id,
-              call: 'Browse',
-              callParams: {
+            refId: 'Browse',
+            intervalMs: 1,
+            maxDataPoints: 1,
+            datasourceId: this.id,
+            call: 'Browse',
+            callParams: {
                 nodeId,
-              },
             },
-          ],
+            },
+        ],
         },
-      })
-      .then((results: OpcUaResponse) => {
+    })
+    .then((results: OpcUaResponse) => {
         const ret: OpcUaBrowseResults[] = (results.data.results['Browse'].meta as unknown) as OpcUaBrowseResults[];
         return ret;
-      });
+    });
   }
 
   flatBrowse(): Promise<OpcUaBrowseResults[]> {
-    return this.backendSrv
-      .datasourceRequest({
-        url: '/api/tsdb/query',
-        method: 'POST',
-        data: {
-          from: '5m',
-          to: 'now',
-          queries: [
-            {
-              refId: 'FlatBrowse',
-              intervalMs: 1,
-              maxDataPoints: 1,
-              datasourceId: this.id,
-              call: 'FlatBrowse',
-            },
-          ],
-        },
-      })
+    let queries = [
+      {
+        refId: 'FlatBrowse',
+        intervalMs: 1,
+        maxDataPoints: 1,
+        datasourceId: this.id,
+        call: 'FlatBrowse',
+      },
+    ];
+    return getBackendSrv()
+      .post('/api/tsdb/query', { queries })
       .then((results: OpcUaResponse) => {
         console.log('We got results', results);
         const ret: OpcUaBrowseResults[] = (results.data.results['FlatBrowse'].meta as unknown) as OpcUaBrowseResults[];
@@ -152,26 +156,19 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
   }
 
   callFunction(call: string, nodeId = 'i=85'): Promise<any> {
-    return this.backendSrv.datasourceRequest({
-      url: '/api/tsdb/query',
-      method: 'POST',
-      data: {
-        from: '1m',
-        to: 'now',
-        queries: [
-          {
-            refId: 'A',
-            intervalMs: 1,
-            maxDataPoints: 1,
-            datasourceId: this.id,
-            call,
-            callParams: {
-              nodeId,
-            },
-          },
-        ],
+    let queries = [
+      {
+        refId: 'A',
+        intervalMs: 1,
+        maxDataPoints: 1,
+        datasourceId: this.id,
+        call,
+        callParams: {
+          nodeId,
+        },
       },
-    });
+    ];
+    return getBackendSrv().post('/api/tsdb/query', { queries });
   }
 
   getTreeData(nodeId = 'i=85'): Promise<any> {

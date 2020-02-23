@@ -6,6 +6,7 @@ using Google.Protobuf;
 using Grpc.Core;
 using Serilog;
 using Models;
+using Pluginv2;
 
 
 namespace plugin_dotnet
@@ -29,6 +30,7 @@ namespace plugin_dotnet
             // ILogger<Plugin> logger = loggerFactory.CreateLogger<Plugin>();
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
+                .WriteTo.File("C:/Users/stephanie/tmp/log.txt")
                 .WriteTo.File("/tmp/log.txt")
                 .CreateLogger();
 
@@ -38,7 +40,9 @@ namespace plugin_dotnet
                 Ports = { { ServiceHost, ServicePort, ServerCredentials.Insecure } },
                 Services = {
                     { HealthService.BindService(health) },
-                    { DatasourcePlugin.BindService(new OpcUaDatasource(logger)) },
+                    { DatasourcePlugin.BindService(new OpcUaDatasource(logger)) }
+                   // { Core.BindService(new CoreService(logger)) },
+                   // { StreamingPlugin.BindService(new OpcUaStreaming(logger)) }
                 },
             };
 

@@ -16,6 +16,8 @@ test-in-docker: build-container
 		-w /go/src/github.com/grafana/${DSNAME} \
 		plugin-builder make test
 
+restore: 
+	dotnet restore ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 
 build:
 	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ./dist --self-contained true
 
@@ -23,10 +25,10 @@ build-darwin:
 	go build -o ./dist/${DSNAME}_darwin_amd64 -a -tags netgo -ldflags '-w' ./pkg
 
 build-dev:
-	GOOS=linux GOARCH=amd64 go build -v -o ./dist/${DSNAME}_linux_amd64 ./pkg
+	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r win-x64 -o ./dist --self-contained true
 
 build-win:
-	GOOS=windows GOARCH=amd64 go build -o ./dist/${DSNAME}_windows_amd64.exe -a ./pkg
+	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r win-x64 -o ./dist --self-contained true
 
 build-in-circleci: build-in-circleci-linux build-in-circleci-windows
 

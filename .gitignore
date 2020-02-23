@@ -27,3 +27,6 @@ ci/
 e2e-results/
 
 yarn.lock
+.vs/
+pkg/cgoopc/out/
+pkg/dotnet/.vs/

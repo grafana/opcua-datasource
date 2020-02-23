@@ -1,0 +1,233 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package pluginv2;
+
+//-----------------------------------------------
+// Common
+//-----------------------------------------------
+
+message DataSourceConfig {
+  int64 id = 4;
+  string name = 5;
+  string url = 6;
+  string user = 7;
+  string database = 8;
+  bool basicAuthEnabled = 9;
+  string basicAuthUser = 10;
+}
+
+message PluginConfig {
+  int64 orgId = 1;
+  string pluginId = 2;
+  string pluginType = 3;
+  bytes jsonData = 4;
+  map<string,string> decryptedSecureJsonData = 5;
+  int64 updatedMS = 6;
+  DataSourceConfig datasourceConfig = 7;
+}
+
+//-----------------------------------------------
+// All Backend Plugins Implement
+//-----------------------------------------------
+
+service Core {
+  // HTTP Style request
+  rpc CallResource(CallResource.Request) returns (CallResource.Response);
+
+  // Well typed query interface
+  rpc DataQuery(DataQueryRequest) returns (DataQueryResponse);
+}
+
+//-----------------------------------------------
+// Data Query
+//-----------------------------------------------
+
+message TimeRange {
+  int64 fromEpochMS = 1;
+  int64 toEpochMS = 2;
+}
+
+message DataQuery {
+  string refId = 1;
+  int64 maxDataPoints = 2;
+  int64 intervalMS = 3;
+  TimeRange timeRange = 4; // NOTE: this moved from QueryRequest in v1
+  bytes json = 5; // Arbitrary structure (model?  modelJson in v1)
+}
+
+message DataQueryRequest {
+  // Plugin Configuration
+  PluginConfig config = 1;
+
+  // Environment info
+  map<string,string> headers = 2;
+
+  // List of queries
+  repeated DataQuery queries = 3;
+}
+
+message DataQueryResponse {
+  // Arrow encoded DataFrames
+  // Each frame encodes its own: Errors, meta, and refId
+  repeated bytes frames = 1;
+
+  // Additional response metadata
+  map<string,string> metadata = 2;
+}
+
+//-----------------------------------------------
+// HTTP style request
+//-----------------------------------------------
+
+message CallResource {
+  message StringList {
+    repeated string values = 1;
+ }
+
+  message Request {
+    PluginConfig config = 1;
+    string path = 2;
+    string method = 3;
+    string url = 4;
+    map<string,StringList> headers = 5;
+    bytes body = 6;
+  }
+
+  message Response {
+    int32 code = 1;
+    map<string,StringList> headers = 2;
+    bytes body = 3;
+  }
+}
+
+//-----------------------------------------------
+// Diagnostics
+//-----------------------------------------------
+
+service Diagnostics {
+  rpc CollectMetrics(CollectMetrics.Request) returns (CollectMetrics.Response);
+  rpc CheckHealth(CheckHealth.Request) returns (CheckHealth.Response);
+}
+
+message CollectMetrics {
+  message Request {
+  }
+
+  message Payload {
+    bytes prometheus = 1;
+  }
+
+  message Response {
+    Payload metrics = 1;
+  }
+}
+
+message CheckHealth {
+  message Request {
+  }
+
+  message Response {
+    enum HealthStatus {
+      UNKNOWN = 0; // starting etc
+      OK = 1;
+      ERROR = 2;
+    }
+
+    HealthStatus status = 1;
+    string info = 2;
+  }
+}
+
+//-----------------------------------------------
+// Allow plugins to access other plugins
+// (TODO: Streaming Signature, or Grafana-Server will be the Server for this)
+//
+//
+//-----------------------------------------------
+
+service GrafanaPlatform {
+  rpc Resource(CallResource.Request) returns (CallResource.Response);
+  rpc DataQuery(DataQueryRequest) returns (DataQueryResponse);
+}
+
+//-----------------------------------------------
+// Temp? for GEL Only.
+// Callback can maybe be replaced with Grafana Platform in future iteration.
+//-----------------------------------------------
+
+service Transform {
+  rpc DataQuery(DataQueryRequest) returns (DataQueryResponse);
+}
+
+service TransformCallBack {
+  rpc DataQuery(DataQueryRequest) returns (DataQueryResponse);
+}
+
+//-----------------------------------------------------------------
+// Streaming support aimed to support similar features to STOMP
+// consider Apache Flight for more complex/standard
+//-----------------------------------------------------------------
+
+message StreamingRequest {
+  int64 pluginId = 1; // match the id from connect request (app or datasource)
+
+  // Environment info
+  map<string,string> headers = 2;
+
+  // The topic we are talking to
+  string topic = 3;
+
+  // The message
+  string body = 4;
+
+  // Flag if the user is already listening
+  bool subscribed = 5;
+}
+
+message StreamingMessage {
+  int64 pluginId = 1;
+  string topic = 2; // will be broadcast to eveyone listening to this app|ds + topic
+  string message = 3; // JSON Blob
+}
+
+message StreamingClose {
+  int64 count = 1;
+}
+
+service StreamingPlugin {
+  // Called by grafana before the first request
+  // Grafana server will set up a websocket that will broadcast to all listeners
+  rpc Connect(PluginConfig) returns (stream StreamingMessage);
+
+  // If the message is not empty, send that to the user
+  // throwing an error will make sure the user is not subscribed
+  rpc Process(StreamingRequest) returns (StreamingMessage);
+
+  // Stop streaming to that instance, returns the number of open connections
+  rpc Disconnect(google.protobuf.Empty) returns (StreamingClose);
+}
+
+//-----------------------------------------------------------------
+// Renderer (do we want this definition here?)
+// OR -- can we do this via Request(PluginRequest)???
+//-----------------------------------------------------------------
+
+message RenderRequest {
+  string url = 1;
+  int32 width = 2;
+  int32 height = 3;
+  int32 timeout = 4;
+  string timezone = 5;
+  string encoding = 6;
+  string filePath = 7;
+  string renderKey = 8;
+  string domain = 9;
+}
+
+message RenderResponse {
+  string error = 1;
+}
+
+service Renderer {
+  rpc Render(RenderRequest) returns (RenderResponse);
+}

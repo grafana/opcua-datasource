@@ -108,6 +108,12 @@ namespace MicrosoftOpcUa.Client.Utility
             m_session = await Connect(serverUrl);
         }
 
+        public Serilog.Core.Logger Logger 
+        {
+            get { return m_logger; }
+            set { m_logger = value; }
+        }
+
 
         /// <summary>
         /// Creates a new session.
@@ -479,9 +485,9 @@ namespace MicrosoftOpcUa.Client.Utility
                     DataValueCollection results;
                     DiagnosticInfoCollection diag;
                     var response = m_session.EndRead(
-                      result: ar,
-                      results: out results,
-                      diagnosticInfos: out diag);
+                        result: ar,
+                        results: out results,
+                        diagnosticInfos: out diag);
 
                     try
                     {
@@ -651,9 +657,9 @@ namespace MicrosoftOpcUa.Client.Utility
                 callback: ar =>
                 {
                     var response = m_session.EndWrite(
-                      result: ar,
-                      results: out StatusCodeCollection results,
-                      diagnosticInfos: out DiagnosticInfoCollection diag);
+                        result: ar,
+                        results: out StatusCodeCollection results,
+                        diagnosticInfos: out DiagnosticInfoCollection diag);
 
                     try
                     {
@@ -930,10 +936,12 @@ namespace MicrosoftOpcUa.Client.Utility
                 NodeId = new NodeId(tag),
             };
 
+            RequestHeader requestHeader = new RequestHeader();
+            
             ReadRawModifiedDetails m_details = new ReadRawModifiedDetails
             {
-                StartTime = start,
-                EndTime = end,
+                StartTime = start.ToUniversalTime(),
+                EndTime = end.ToUniversalTime(),
                 NumValuesPerNode = count,
                 IsReadModified = false,
                 ReturnBounds = containBound
@@ -944,7 +952,7 @@ namespace MicrosoftOpcUa.Client.Utility
 
 
             m_session.HistoryRead(
-                null,
+                requestHeader,
                 new ExtensionObject(m_details),
                 TimestampsToReturn.Both,
                 false,
@@ -960,10 +968,17 @@ namespace MicrosoftOpcUa.Client.Utility
                 throw new ServiceResultException(results[0].StatusCode);
             }
 
-            HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
-            foreach (var value in values.DataValues)
-            {
-                yield return value;
+            if (results[0].HistoryData != null) {
+                HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
+                foreach (var value in values.DataValues)
+                {
+                    if (value.SourceTimestamp < m_details.StartTime || value.SourceTimestamp > m_details.EndTime)
+                    {
+                        var difference = (m_details.StartTime - value.SourceTimestamp).Hours;
+                        value.SourceTimestamp = value.SourceTimestamp.AddHours(difference);
+                    }
+                    yield return value;
+                }
             }
         }
 
@@ -979,12 +994,14 @@ namespace MicrosoftOpcUa.Client.Utility
             aggregateTypes.Add(new NodeId(aggregateFunction));
             ReadProcessedDetails m_details = new ReadProcessedDetails
             {
-                StartTime = start,
-                EndTime = end,
+                StartTime = start.ToUniversalTime(),
+                EndTime = end.ToUniversalTime(),
                 AggregateConfiguration = aggregate,
                 AggregateType = aggregateTypes,
                 ProcessingInterval = processingInterval,
             };
+
+            m_logger.Information("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
 
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
             nodesToRead.Add(m_nodeToContinue);
@@ -1039,6 +1056,7 @@ namespace MicrosoftOpcUa.Client.Utility
                 ReturnBounds = containBound
             };
 
+            m_logger.Information("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
             nodesToRead.Add(m_nodeToContinue);
 
@@ -1061,6 +1079,7 @@ namespace MicrosoftOpcUa.Client.Utility
             }
 
             HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
+            m_logger.Information("values {0}", values);
             foreach (var value in values.DataValues)
             {
                 yield return (T)value.Value;
@@ -1400,6 +1419,7 @@ namespace MicrosoftOpcUa.Client.Utility
         private bool m_IsConnected;                       //是否已经连接过
         private int m_reconnectPeriod = 10;               // 重连状态
         private bool m_useSecurity;
+        private Serilog.Core.Logger m_logger;
         private CertificateIdentifier m_applicationCertificate;
 
         private SessionReconnectHandler m_reconnectHandler;
