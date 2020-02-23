@@ -27,6 +27,9 @@ ci/
 e2e-results/
 
 yarn.lock
+
 .vs/
-pkg/cgoopc/out/
-pkg/dotnet/.vs/
+pkg/cgoopc/out/build/*
+pkg/dotnet/.vs
+pkg/dotnet/.vs/Greeter
+pkg/dotnet/plugin-dotnet/.vs

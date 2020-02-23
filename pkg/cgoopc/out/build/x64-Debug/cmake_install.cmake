@@ -1,8 +1,8 @@
-# Install script for directory: H:/src/grafana_plugins/grafana-opcua-datasource/pkg/cgoopc
+# Install script for directory: C:/Users/stephanie/src/plugins/grafana-opcua-datasource/pkg/cgoopc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "H:/src/grafana_plugins/grafana-opcua-datasource/pkg/cgoopc/out/install/x64-Debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/stephanie/src/plugins/grafana-opcua-datasource/pkg/cgoopc/out/install/x64-Debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "H:/src/grafana_plugins/grafana-opcua-datasource/pkg/cgoopc/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/stephanie/src/plugins/grafana-opcua-datasource/pkg/cgoopc/out/build/x64-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

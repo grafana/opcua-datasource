@@ -30,7 +30,7 @@ rule CUSTOM_COMMAND
 
 rule C_COMPILER__open62541.2ec
   deps = msvc
-  command = C:\PROGRA~2\MICROS~1\2019\PROFES~1\VC\Tools\MSVC\1423~1.281\bin\HostX64\x64\cl.exe  /nologo $DEFINES $INCLUDES $FLAGS /showIncludes /Fo$out /Fd$TARGET_COMPILE_PDB /FS -c $in
+  command = C:\PROGRA~2\MICROS~1\2019\PROFES~1\VC\Tools\MSVC\1424~1.283\bin\HostX64\x64\cl.exe  /nologo $DEFINES $INCLUDES $FLAGS /showIncludes /Fo$out /Fd$TARGET_COMPILE_PDB /FS -c $in
   description = Building C object $out
 
 
@@ -38,7 +38,7 @@ rule C_COMPILER__open62541.2ec
 # Rule for linking C executable.
 
 rule C_EXECUTABLE_LINKER__open62541.2ec
-  command = cmd.exe /C "$PRE_LINK && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E vs_link_exe --intdir=$OBJECT_DIR --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100183~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100183~1.0\x64\mt.exe --manifests $MANIFESTS -- C:\PROGRA~2\MICROS~1\2019\PROFES~1\VC\Tools\MSVC\1423~1.281\bin\Hostx64\x64\link.exe /nologo $in  /out:$TARGET_FILE /implib:$TARGET_IMPLIB /pdb:$TARGET_PDB /version:0.0  $LINK_FLAGS $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  command = cmd.exe /C "$PRE_LINK && "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E vs_link_exe --intdir=$OBJECT_DIR --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100183~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100183~1.0\x64\mt.exe --manifests $MANIFESTS -- C:\PROGRA~2\MICROS~1\2019\PROFES~1\VC\Tools\MSVC\1424~1.283\bin\Hostx64\x64\link.exe /nologo $in  /out:$TARGET_FILE /implib:$TARGET_IMPLIB /pdb:$TARGET_PDB /version:0.0  $LINK_FLAGS $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
   description = Linking C executable $TARGET_FILE
   restat = $RESTAT
 
@@ -47,7 +47,7 @@ rule C_EXECUTABLE_LINKER__open62541.2ec
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SH:\src\grafana_plugins\grafana-opcua-datasource\pkg\cgoopc -BH:\src\grafana_plugins\grafana-opcua-datasource\pkg\cgoopc\out\build\x64-Debug
+  command = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -SC:\Users\stephanie\src\plugins\grafana-opcua-datasource\pkg\cgoopc -BC:\Users\stephanie\src\plugins\grafana-opcua-datasource\pkg\cgoopc\out\build\x64-Debug
   description = Re-running CMake...
   generator = 1
 
