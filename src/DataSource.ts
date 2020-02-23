@@ -28,10 +28,10 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
           intervalMs: target.readType === 'Processed' ? Number(target.interval) : 0,
           maxDataPoints: target.readType === 'Processed' ? options.maxDataPoints : -1,
           datasourceId: this.id,
-          call: target.readType === 'Processed' ? 'ReadNode' : 'ReadDataRaw',
+          call: target.readType,
           callParams: {
             nodeId: target.metric.nodeId,
-            //aggregate: target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId') ? target.aggregate.nodeId : '',
+            aggregate: target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId') ? target.aggregate.nodeId : '',
           },
         });
       }

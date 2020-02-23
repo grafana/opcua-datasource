@@ -28,21 +28,18 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query } = this.props;
 
     if (!query.readType) {
-      onChange({ ...query, readType: 'Processed' });
+      onChange({ ...query, readType: 'Realtime' });
     }
     this.metric = this.props.query.metric;
     this.selectedOptions = [];
   }
 
-  onChange = (...args: any[]) => {
+  onChange = (field: string, sval: SelectableValue<any>, ...args: any[]) => {
     const { onChange, query, onRunQuery } = this.props;
     console.log('change', args);
     const changes: Record<string, any> = {};
-    for (let i = 0; i < args.length; i += 2) {
-      const variable: string = args[i];
-      const value: any = args[i + 1];
-      changes[variable] = value;
-    }
+
+    changes[field] = sval.value;
     onChange({ ...query, ...changes });
     onRunQuery(); // executes the query
   };
@@ -84,6 +81,48 @@ export class QueryEditor extends PureComponent<Props> {
     });
   };
 
+  get readTypeOptions(): Array<SelectableValue<string>> {
+    return [
+      { label: 'Raw', value: 'ReadDataRaw' },
+      { label: 'Processed', value: 'ReadDataProcessed' },
+      { label: 'Realtime', value: 'ReadNode' },
+    ]
+  }
+
+  readTypeValue = (readType: string): string => {
+    const foundVal: SelectableValue<string> | undefined = this.readTypeOptions.find((o: SelectableValue<string>) => o.value === readType)
+    if (foundVal && foundVal.label) {
+      return foundVal.label;
+    } else {
+      return "Processed";
+    }
+  }
+
+  optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
+    const readTypeValue = this.readTypeValue(query.readType);
+    switch (readTypeValue) {
+      case "Processed": {
+        return (
+          <>
+            <SegmentLabel label={'Aggregate'} />
+            <SegmentAsync
+              value={query.aggregate ? this.props.query.aggregate.displayName : selectText('aggregate')}
+              loadOptions={() => this.browseNodeSV('i=2997')}
+              onChange={e => this.onChange('aggregate', e)}
+            />
+            <FormField label={'Interval'} value={query.interval} onChange={this.onChangeInterval} onBlur={() => onRunQuery()} />
+          </>
+        )
+      };
+      case "Raw": {
+        return (<FormField label={'Max Values'} value={-1} onChange={() => { console.log("not implemented yet"); }} onBlur={() => onRunQuery()} />);
+      }
+      default: {
+        return (<></>);
+      }
+    }
+  }
+
   render() {
     const { query, onRunQuery } = this.props;
     return (
@@ -98,20 +137,11 @@ export class QueryEditor extends PureComponent<Props> {
           />
           <SegmentLabel label={'Read Type'} />
           <Segment<any>
-            value={query.readType ? this.props.query.readType : 'Processed'}
-            options={[
-              { label: 'Raw', value: 'Raw' },
-              { label: 'Processed', value: 'Processed' },
-            ]}
-            onChange={e => e.value && this.onChange('readType', e.value)}
+            value={this.readTypeValue(query.readType)}
+            options={this.readTypeOptions}
+            onChange={e => this.onChange('readType', e)}
           />
-          <SegmentLabel label={'Aggregate'} />
-          <SegmentAsync
-            value={query.aggregate ? this.props.query.aggregate.displayName : selectText('aggregate')}
-            loadOptions={() => this.browseNodeSV('i=2997')}
-            onChange={e => e.value && this.onChange('aggregate', e.value)}
-          />
-          <FormField label={'Interval'} value={query.interval} onChange={this.onChangeInterval} onBlur={() => onRunQuery()} />
+          {this.optionalParams(query, onRunQuery)}
         </SegmentFrame>
       </>
     );
