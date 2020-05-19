@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
   </PropertyGroup>
@@ -15,7 +15,7 @@
   <PropertyGroup>
     <!-- https://github.com/grpc/grpc/blob/master/src/csharp/BUILD-INTEGRATION.md#i-am-getting-a-warning-about-a-missing-expected-file -->
     <Protobuf_NoWarnMissingExpected>true</Protobuf_NoWarnMissingExpected>
-    <AssemblyName>grafana-opcua-datasource_windows_amd64</AssemblyName>
+    <AssemblyName>grafana-opcua-datasource_linux_amd64</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

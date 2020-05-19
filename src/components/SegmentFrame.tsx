@@ -1,18 +1,19 @@
 import React from 'react';
-import { SegmentAsync } from '@grafana/ui';
+//import { SegmentAsync } from '@grafana/ui';
 
-const AddButton = (
-  <a className="gf-form-label query-part">
-    <i className="fa fa-plus" />
-  </a>
-);
+// const AddButton = (
+//   <a className="gf-form-label query-part">
+//     <i className="fa fa-plus" />
+//   </a>
+// );
 
-export const SegmentLabel = ({ label }: any) => (
+export const SegmentLabel = ({ label, marginLeft }: any) => (
   <>
-    <span className="gf-form-label query-keyword">{label}</span>
+    <span style={marginLeft ? {marginLeft: "4px"} : {}} className="gf-form-label query-keyword">{label}</span>
   </>
 );
 
+//<SegmentAsync Component={AddButton} onChange={onChange} loadOptions={loadOptions} />
 export const SegmentFrame = ({ label, onChange, loadOptions, children }: any) => (
   <>
     <div className="gf-form-inline">
@@ -20,7 +21,6 @@ export const SegmentFrame = ({ label, onChange, loadOptions, children }: any) =>
         <SegmentLabel label={label} />
       </div>
       {children}
-      <SegmentAsync Component={AddButton} onChange={onChange} loadOptions={loadOptions} />
     </div>
   </>
 );

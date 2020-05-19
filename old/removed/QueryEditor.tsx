@@ -8,7 +8,7 @@ import { Transfer, Tree } from 'antd';
 import { TransferProps, TransferItem } from 'antd/lib/transfer';
 import 'QueryEditor.css';
 
-const rootNode = 'i=84';
+const rootNode = 'i=85';
 const loadingText = 'Loading Data...';
 const loadingItem: TransferItem = {
   key: loadingText,

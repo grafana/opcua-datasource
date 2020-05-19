@@ -35,13 +35,17 @@ namespace plugin_dotnet
         public string displayName { get; set; }
         public string browseName { get; set; }
         public string nodeId { get; set; }
+        public bool isForward { get; set; }
+        public uint nodeClass { get; set; }
 
         public BrowseResultsEntry() {}
-        public BrowseResultsEntry(string displayName, string browseName, string nodeId)
+        public BrowseResultsEntry(string displayName, string browseName, string nodeId, bool isForward, uint nodeClass)
         {
             this.displayName = displayName;
             this.browseName = browseName;
             this.nodeId = nodeId;
+            this.isForward = isForward;
+            this.nodeClass = nodeClass;
         }
     }
 
@@ -122,6 +126,8 @@ namespace plugin_dotnet
                     bre.displayName = entry.DisplayName.ToString();
                     bre.browseName = entry.BrowseName.ToString();
                     bre.nodeId = entry.NodeId.ToString();
+                    bre.isForward = entry.IsForward;
+                    bre.nodeClass = Convert.ToUInt32(entry.NodeClass);
                     browseResults.Add(bre);
                 }
                 browseResults.AddRange(FlatBrowse(client, entry.NodeId.ToString()));
@@ -130,7 +136,7 @@ namespace plugin_dotnet
             return browseResults.ToArray();
         }
 
-        public async override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
+        public override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
         {
             DatasourceResponse response = new DatasourceResponse { };
 
@@ -156,7 +162,12 @@ namespace plugin_dotnet
                                 BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
                                 for (int i = 0; i < results.Length; i++)
                                 {
-                                    browseResults[i] = new BrowseResultsEntry(results[i].DisplayName.ToString(), results[i].BrowseName.ToString(), results[i].NodeId.ToString());
+                                    browseResults[i] = new BrowseResultsEntry(
+                                        results[i].DisplayName.ToString(), 
+                                        results[i].BrowseName.ToString(), 
+                                        results[i].NodeId.ToString(),
+                                        results[i].IsForward,
+                                        Convert.ToUInt32(results[i].NodeClass));
                                 }
                                 var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
                                 queryResult.MetaJson = jsonResults;
@@ -218,7 +229,7 @@ namespace plugin_dotnet
                                     query.callParams["aggregate"],
                                     query.intervalMs,
                                     (uint)query.maxDataPoints,
-                                    true);
+                                    false);
                                 var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
                                 log.Information("Results: {0}", readResults);
                                 queryResult.MetaJson = jsonResults;

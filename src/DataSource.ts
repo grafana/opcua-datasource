@@ -1,6 +1,14 @@
-import { DataQueryRequest, DataQueryResponse, DataSourceApi, DataSourceInstanceSettings, DataFrame, FieldType, ArrayVector } from '@grafana/data';
+import {
+  DataQueryRequest,
+  DataQueryResponse,
+  DataSourceApi,
+  DataSourceInstanceSettings,
+  DataFrame,
+  FieldType,
+  ArrayVector,
+} from '@grafana/data';
 
-import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaResults, OpcUaResponse, OpcUaBrowseResults } from './types';
+import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaResults, OpcUaResponse, OpcUaBrowseResults, separator } from './types';
 //import { FieldType } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 
@@ -15,14 +23,14 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
   }
 
   async query(options: DataQueryRequest<OpcUaQuery>): Promise<DataQueryResponse> {
-      if (!options.targets || !(options.targets.length > 0) || !options.targets[0].metric) {
+    if (!options.targets || !(options.targets.length > 0) || !options.targets[0].nodeId) {
       return Promise.resolve({ data: [] });
     }
 
     const queries: any[] = [];
 
     options.targets.forEach(target => {
-      if (target.metric && target.metric.hasOwnProperty('nodeId')) {
+      if (target.nodeId) {
         queries.push({
           refId: target.refId,
           intervalMs: target.readType === 'Processed' ? Number(target.interval) : 0,
@@ -30,8 +38,11 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
           datasourceId: this.id,
           call: target.readType,
           callParams: {
-            nodeId: target.metric.nodeId,
-            aggregate: target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId') ? target.aggregate.nodeId : '',
+            nodeId: target.nodeId,
+            aggregate:
+              target.readType === 'Processed' && target.aggregate.hasOwnProperty('nodeId')
+                ? target.aggregate.nodeId
+                : '',
           },
         });
       }
@@ -40,54 +51,54 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
     if (queries.length === 0) {
       return Promise.resolve({ data: [] });
     }
-    
-      return getBackendSrv()
-          .post('/api/tsdb/query', {
-              from: options.range?.from.valueOf().toString(),
-              to: options.range?.to.valueOf().toString(),
-              queries,
-          })
-          .then((results: OpcUaResults) => {
 
-              return {
-                  data: Object.values(results.results)
-                      .filter(result => result.hasOwnProperty('meta'))
-                      .map((result: any) => {
-                          const request = options.targets.find(target => target.refId === result.refId);
-                          let entry: DataFrame = { fields: [], length: 0 };
-                          if (request && request.metric) {
-                              entry = {
-                                  refId: result.refId,
-                                  fields: [
-                                      {
-                                          name: 'Time',
-                                          type: FieldType.time,
-                                          values: Array.isArray(result.meta)
-                                              ? new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp)))
-                                              : new ArrayVector([new Date(result.meta.SourceTimestamp)]),
-                                          config: {
-                                              title: request.displayName,
-                                          },
-                                      },
-                                      {
-                                          name: request.displayName,
-                                          type: FieldType.number,
-                                          values: Array.isArray(result.meta)
-                                              ? new ArrayVector(result.meta.map((e: any) => e.Value))
-                                              : new ArrayVector([result.meta.Value]),
-                                          config: {
-                                              title: request.displayName,
-                                          },
-                                      },
-                                  ],
-                                  length: result.meta.length,
-                              };
-                          }
+    return getBackendSrv()
+      .post('/api/tsdb/query', {
+        from: options.range?.from.valueOf().toString(),
+        to: options.range?.to.valueOf().toString(),
+        queries,
+      })
+      .then((results: OpcUaResults) => {
+        return {
+          data: Object.values(results.results)
+            .filter(result => result.hasOwnProperty('meta'))
+            .map((result: any) => {
+              const request = options.targets.find(target => target.refId === result.refId);
+              let entry: DataFrame = { fields: [], length: 0 };
+              if (request && request.value) {
+                const displayName = request.value.join(separator);
+                entry = {
+                  refId: result.refId,
+                  fields: [
+                    {
+                      name: 'Time',
+                      type: FieldType.time,
+                      values: Array.isArray(result.meta)
+                        ? new ArrayVector(result.meta.map((e: any) => new Date(e.SourceTimestamp)))
+                        : new ArrayVector([new Date(result.meta.SourceTimestamp)]),
+                      config: {
+                        title: displayName,
+                      },
+                    },
+                    {
+                      name: displayName,
+                      type: FieldType.number,
+                      values: Array.isArray(result.meta)
+                        ? new ArrayVector(result.meta.map((e: any) => e.Value))
+                        : new ArrayVector([result.meta.Value]),
+                      config: {
+                        title: displayName,
+                      },
+                    },
+                  ],
+                  length: result.meta.length,
+                };
+              }
 
-                          return entry;
-                      }),
-              };
-          });
+              return entry;
+            }),
+        };
+      });
   }
 
   async doSingleQuery(query: OpcUaQuery): Promise<DataFrame> {
@@ -110,30 +121,30 @@ export class DataSource extends DataSourceApi<OpcUaQuery, OpcUaDataSourceOptions
 
   browse(nodeId: string): Promise<OpcUaBrowseResults[]> {
     return getBackendSrv()
-    .datasourceRequest({
+      .datasourceRequest({
         url: '/api/tsdb/query',
         method: 'POST',
         data: {
-        from: '1m',
-        to: 'now',
-        queries: [
+          from: '1m',
+          to: 'now',
+          queries: [
             {
-            refId: 'Browse',
-            intervalMs: 1,
-            maxDataPoints: 1,
-            datasourceId: this.id,
-            call: 'Browse',
-            callParams: {
+              refId: 'Browse',
+              intervalMs: 1,
+              maxDataPoints: 1,
+              datasourceId: this.id,
+              call: 'Browse',
+              callParams: {
                 nodeId,
+              },
             },
-            },
-        ],
+          ],
         },
-    })
-    .then((results: OpcUaResponse) => {
+      })
+      .then((results: OpcUaResponse) => {
         const ret: OpcUaBrowseResults[] = (results.data.results['Browse'].meta as unknown) as OpcUaBrowseResults[];
         return ret;
-    });
+      });
   }
 
   flatBrowse(): Promise<OpcUaBrowseResults[]> {

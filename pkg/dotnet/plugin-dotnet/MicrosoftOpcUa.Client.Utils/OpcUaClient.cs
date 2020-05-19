@@ -1001,8 +1001,6 @@ namespace MicrosoftOpcUa.Client.Utility
                 ProcessingInterval = processingInterval,
             };
 
-            m_logger.Information("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
-
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
             nodesToRead.Add(m_nodeToContinue);
 
@@ -1024,10 +1022,17 @@ namespace MicrosoftOpcUa.Client.Utility
                 throw new ServiceResultException(results[0].StatusCode);
             }
 
-            HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
-            foreach (var value in values.DataValues)
-            {
-                yield return value;
+            if (results[0].HistoryData != null) {
+                HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
+                foreach (var value in values.DataValues)
+                {
+                    if (value.SourceTimestamp < m_details.StartTime || value.SourceTimestamp > m_details.EndTime)
+                    {
+                        var difference = (m_details.StartTime - value.SourceTimestamp).Hours;
+                        value.SourceTimestamp = value.SourceTimestamp.AddHours(difference);
+                    }
+                    yield return value;
+                }
             }
         }
 

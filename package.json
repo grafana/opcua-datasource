@@ -11,10 +11,10 @@
   "author": "srclosson@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "canary",
-    "@grafana/runtime": "canary",
-    "@grafana/toolkit": "canary",
-    "@grafana/ui": "canary",
+    "@grafana/data": "next",
+    "@grafana/runtime": "next",
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "next",
     "@types/lodash": "^4.14.134",
     "lodash": "^4.17.15",
     "node-opcua": "^2.1.9"
@@ -25,6 +25,7 @@
     "antd": "^3.24.1",
     "grpc": "^1.24.0",
     "node-opcua-samples": "^2.1.9",
-    "react-select": "^3.0.8"
+    "react-select": "^3.0.8",
+    "rc-cascader": "1.0.1"
   }
 }

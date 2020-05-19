@@ -30,7 +30,6 @@ namespace plugin_dotnet
             // ILogger<Plugin> logger = loggerFactory.CreateLogger<Plugin>();
             var logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .WriteTo.File("C:/Users/stephanie/tmp/log.txt")
                 .WriteTo.File("/tmp/log.txt")
                 .CreateLogger();
 
