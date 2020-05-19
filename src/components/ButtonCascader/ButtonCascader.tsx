@@ -38,13 +38,7 @@ export const ButtonCascader: React.FC<ButtonCascaderProps> = props => {
   const styles = getStyles(theme);
 
   return (
-    <RCCascader
-      onChange={onChange}
-      loadData={loadData}
-      popupClassName={styles.popup}
-      {...rest}
-      expandIcon={null}
-    >
+    <RCCascader onChange={onChange} loadData={loadData} popupClassName={styles.popup} {...rest} expandIcon={null}>
       <button className={cx('gf-form-label', className)} disabled={props.disabled}>
         {props.children} <Icon name="angle-down" className={styles.icon} />
       </button>

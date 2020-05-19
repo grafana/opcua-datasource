@@ -8,7 +8,14 @@ import {
   ArrayVector,
 } from '@grafana/data';
 
-import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaResults, OpcUaResponse, OpcUaBrowseResults, separator } from './types';
+import {
+  OpcUaQuery,
+  OpcUaDataSourceOptions,
+  OpcUaResults,
+  OpcUaResponse,
+  OpcUaBrowseResults,
+  separator,
+} from './types';
 //import { FieldType } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 

@@ -9,7 +9,9 @@ import React from 'react';
 
 export const SegmentLabel = ({ label, marginLeft }: any) => (
   <>
-    <span style={marginLeft ? {marginLeft: "4px"} : {}} className="gf-form-label query-keyword">{label}</span>
+    <span style={marginLeft ? { marginLeft: '4px' } : {}} className="gf-form-label query-keyword">
+      {label}
+    </span>
   </>
 );
 

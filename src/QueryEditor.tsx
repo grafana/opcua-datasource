@@ -16,23 +16,22 @@ type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
   options: CascaderOption[];
   value: string[];
-}
+};
 
 export class QueryEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    
+
     this.state = {
       options: [],
       value: this.props.query.value || ['Select to browse OPC UA Server'],
-    }
+    };
 
     props.datasource.browse(rootNode).then((results: OpcUaBrowseResults[]) => {
       this.setState({
         options: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
       });
     });
-
   }
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
@@ -45,16 +44,16 @@ export class QueryEditor extends PureComponent<Props, State> {
     } else {
       changes[field] = sval.value;
     }
-    
+
     onChange({ ...query, ...changes });
     onRunQuery(); // executes the query
   };
 
   onChange = (selected: string[], selectedItems: CascaderOption[]) => {
     const { query, onChange, onRunQuery } = this.props;
-    const value = selectedItems.map(item => item.label ? item.label.toString() : '');
-    const nodeId = selected[selected.length-1];
-    this.setState({value});
+    const value = selectedItems.map(item => (item.label ? item.label.toString() : ''));
+    const nodeId = selected[selected.length - 1];
+    this.setState({ value });
     onChange({
       ...query,
       value,
@@ -64,8 +63,8 @@ export class QueryEditor extends PureComponent<Props, State> {
   };
 
   onSelect = (val: string) => {
-    console.log("onSelect", val);
-  }
+    console.log('onSelect', val);
+  };
 
   onChangeInterval = (event: ChangeEvent<HTMLInputElement>) => {
     const { onChange, query } = this.props;
@@ -76,7 +75,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     return {
       label: opcBrowseResult.displayName,
       value: opcBrowseResult.nodeId,
-      isLeaf: (!opcBrowseResult.isForward || opcBrowseResult.nodeClass == 2) //!opcBrowseResult.isForward,
+      isLeaf: !opcBrowseResult.isForward || opcBrowseResult.nodeClass === 2, //!opcBrowseResult.isForward,
     };
   };
 
@@ -90,7 +89,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         this.setState({
           options: [...this.state.options],
         });
-      })
+      });
     }
   };
 
@@ -185,13 +184,8 @@ export class QueryEditor extends PureComponent<Props, State> {
           />
           {this.optionalParams(query, onRunQuery)}
         </SegmentFrame>
-        <SegmentFrame label='Alias'>
-          <Input 
-            value={undefined}
-            placeholder={'alias'}
-            onChange={e => this.onChangeField('alias', e)}
-            width={30}
-          />
+        <SegmentFrame label="Alias">
+          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
         </SegmentFrame>
       </>
     );
