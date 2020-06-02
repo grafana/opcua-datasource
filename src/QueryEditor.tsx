@@ -1,6 +1,7 @@
 import React, { PureComponent, ChangeEvent } from 'react';
-import { SegmentAsync, RadioButtonGroup, Input } from '@grafana/ui';
+import { SegmentAsync, RadioButtonGroup, Input, TabsBar, TabContent, Tab } from '@grafana/ui';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
+import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 //import { Cascader } from './components/Cascader/Cascader';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
@@ -8,6 +9,7 @@ import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 import { DataSource } from './DataSource';
 import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
+import { css } from 'emotion';
 
 const rootNode = 'i=85';
 const selectText = (t: string): string => `Select <${t}>`;
@@ -16,7 +18,21 @@ type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
   options: CascaderOption[];
   value: string[];
+  tabs: Array<{ label: string; active: boolean }>;
 };
+
+const tabMarginBox = css(`
+{
+  border-left: 1px solid #202226;
+  border-right: 1px solid #202226;
+  border-bottom: 1px solid #202226;
+  background: #141414;
+}
+`);
+
+const tabMarginHeader = css(`
+  background: #141414;
+`);
 
 export class QueryEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
@@ -25,9 +41,14 @@ export class QueryEditor extends PureComponent<Props, State> {
     this.state = {
       options: [],
       value: this.props.query.value || ['Select to browse OPC UA Server'],
+      tabs: [
+        { label: 'Traditional', active: true },
+        { label: 'Tree view', active: false },
+      ],
     };
 
-    props.datasource.browse(rootNode).then((results: OpcUaBrowseResults[]) => {
+    props.datasource.getResource(rootNode).then((results: OpcUaBrowseResults[]) => {
+      console.log('Results', results);
       this.setState({
         options: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
       });
@@ -72,6 +93,7 @@ export class QueryEditor extends PureComponent<Props, State> {
   };
 
   toCascaderOption = (opcBrowseResult: OpcUaBrowseResults, children?: CascaderOption[]): CascaderOption => {
+    console.log('browse Result', opcBrowseResult);
     return {
       label: opcBrowseResult.displayName,
       value: opcBrowseResult.nodeId,
@@ -83,7 +105,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const targetOption = selectedOptions[selectedOptions.length - 1];
     targetOption.loading = true;
     if (targetOption.value) {
-      this.props.datasource.browse(targetOption.value).then((results: OpcUaBrowseResults[]) => {
+      this.props.datasource.getResource(targetOption.value).then((results: OpcUaBrowseResults[]) => {
         targetOption.loading = false;
         targetOption.children = results.map(r => this.toCascaderOption(r));
         this.setState({
@@ -94,7 +116,7 @@ export class QueryEditor extends PureComponent<Props, State> {
   };
 
   browseNodeSV = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
-    return this.props.datasource.browse(nodeId).then((results: OpcUaBrowseResults[]) => {
+    return this.props.datasource.getResource(nodeId).then((results: OpcUaBrowseResults[]) => {
       return results.map((item: OpcUaBrowseResults) => ({
         label: item.displayName,
         key: item.nodeId,
@@ -157,10 +179,9 @@ export class QueryEditor extends PureComponent<Props, State> {
     }
   };
 
-  render() {
+  renderOriginal = () => {
     const { query, onRunQuery } = this.props;
     const { options, value } = this.state;
-    console.log('QueryEditor::render');
 
     return (
       <>
@@ -187,6 +208,41 @@ export class QueryEditor extends PureComponent<Props, State> {
         <SegmentFrame label="Alias">
           <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
         </SegmentFrame>
+      </>
+    );
+  };
+
+  renderTreeEditor = () => {
+    return <TreeEditor {...this.props} />;
+  };
+
+  render() {
+    const { tabs } = this.state;
+    console.log('QueryEditor::render');
+
+    return (
+      <>
+        <TabsBar className={tabMarginHeader}>
+          {tabs.map((tab, index) => {
+            return (
+              <Tab
+                key={index}
+                label={tab.label}
+                active={tab.active}
+                onChangeTab={() => {
+                  this.setState({
+                    ...this.state,
+                    tabs: tabs.map((tab, idx) => ({ ...tab, active: idx === index })),
+                  });
+                }}
+              />
+            );
+          })}
+        </TabsBar>
+        <TabContent className={tabMarginBox}>
+          {tabs[0].active && this.renderOriginal()}
+          {tabs[1].active && this.renderTreeEditor()}
+        </TabContent>
       </>
     );
   }

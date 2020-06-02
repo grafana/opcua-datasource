@@ -24,7 +24,6 @@
     "@types/react-select": "^3.0.8",
     "antd": "^3.24.1",
     "grpc": "^1.24.0",
-    "node-opcua-samples": "^2.1.9",
     "react-select": "^3.0.8",
     "rc-cascader": "1.0.1"
   }

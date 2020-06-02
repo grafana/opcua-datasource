@@ -60,7 +60,7 @@ export class QueryEditor extends PureComponent<Props> {
   };
 
   browseNode = (queryItem?: OpcUaBrowseResults): Promise<Array<CascaderOption<OpcUaBrowseResults>>> => {
-    return this.props.datasource.browse(queryItem ? queryItem.nodeId : rootNode).then((results: OpcUaBrowseResults[]) => {
+    return this.props.datasource.getResource(queryItem ? queryItem.nodeId : rootNode).then((results: OpcUaBrowseResults[]) => {
       return results.map((item: OpcUaBrowseResults) => ({
         label: item.displayName,
         value: item,

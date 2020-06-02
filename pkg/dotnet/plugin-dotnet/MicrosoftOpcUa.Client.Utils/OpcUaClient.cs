@@ -1,3 +1,4 @@
+using Grpc.Core.Logging;
 using MicrosoftOpcUa.Client.Core;
 using Opc.Ua;
 using Opc.Ua.Client;
@@ -108,7 +109,7 @@ namespace MicrosoftOpcUa.Client.Utility
             m_session = await Connect(serverUrl);
         }
 
-        public Serilog.Core.Logger Logger 
+        public ILogger Logger 
         {
             get { return m_logger; }
             set { m_logger = value; }
@@ -1061,7 +1062,7 @@ namespace MicrosoftOpcUa.Client.Utility
                 ReturnBounds = containBound
             };
 
-            m_logger.Information("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
+            m_logger.Debug("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
             nodesToRead.Add(m_nodeToContinue);
 
@@ -1084,7 +1085,7 @@ namespace MicrosoftOpcUa.Client.Utility
             }
 
             HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
-            m_logger.Information("values {0}", values);
+            m_logger.Debug("values {0}", values);
             foreach (var value in values.DataValues)
             {
                 yield return (T)value.Value;
@@ -1424,7 +1425,7 @@ namespace MicrosoftOpcUa.Client.Utility
         private bool m_IsConnected;                       //是否已经连接过
         private int m_reconnectPeriod = 10;               // 重连状态
         private bool m_useSecurity;
-        private Serilog.Core.Logger m_logger;
+        private ILogger m_logger;
         private CertificateIdentifier m_applicationCertificate;
 
         private SessionReconnectHandler m_reconnectHandler;

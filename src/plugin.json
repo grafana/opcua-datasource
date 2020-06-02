@@ -2,6 +2,12 @@
   "type": "datasource",
   "name": "OPC UA (Unified Architecture)",
   "id": "grafana-opcua-datasource",
+  "metrics": true,
+  "annotations": true,
+  "backend": true,
+  "executable": "gpx_opcua",
+  "alerting": true,
+  "streaming": true,
   "info": {
     "description": "Reads data from OPC UA Servers",
     "author": {
@@ -37,10 +43,5 @@
   "dependencies": {
     "grafanaVersion": "6.3.x",
     "plugins": []
-  },
-  "metrics": true,
-  "annotations": true,
-  "backend": true,
-  "executable": "grafana-opcua-datasource",
-  "alerting": true
+  }
 }

@@ -19,7 +19,7 @@ test-in-docker: build-container
 restore: 
 	dotnet restore ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 
 build:
-	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ./dist --self-contained true
+	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r osx-x64 -o ./dist --self-contained true
 
 build-darwin:
 	go build -o ./dist/${DSNAME}_darwin_amd64 -a -tags netgo -ldflags '-w' ./pkg

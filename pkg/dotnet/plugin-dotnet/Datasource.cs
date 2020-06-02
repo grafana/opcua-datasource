@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Models;
-using Serilog;
 using Grpc.Core;
+using Grpc.Core.Logging;
 using System.Threading.Tasks;
 using Opc.Ua;
 using MicrosoftOpcUa.Client.Utility;
 using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
 using Google.Protobuf;
+using Pluginv2;
 
 namespace plugin_dotnet
 {
@@ -19,14 +19,55 @@ namespace plugin_dotnet
         public Int64 maxDataPoints { get; set; }
         public Int64 intervalMs { get; set; }
         public Int64 datasourceId { get; set; }
-        public string call { get; set; }
-        public Dictionary<string, string> callParams { get; set; }
+        public TimeRange timeRange { get; set; }
+        public string nodeId { get; set; }
+        public string[] value { get; set; }
+        public string readType { get; set; }
+        public object aggregate { get; set; }
+        public string interval { get; set; }
+
+        public OpcUAQuery() { }
+
+        public OpcUAQuery(DataQuery dataQuery)
+        {
+            refId = dataQuery.RefId;
+            maxDataPoints = dataQuery.MaxDataPoints;
+            intervalMs = dataQuery.IntervalMS;
+            timeRange = dataQuery.TimeRange;
+            byte[] byDecoded = Convert.FromBase64String(dataQuery.Json.ToBase64());
+            OpcUAQuery query = JsonSerializer.Deserialize<OpcUAQuery>(byDecoded);
+            datasourceId = query.datasourceId;
+            nodeId = query.nodeId;
+            value = query.value;
+            readType = query.readType;
+            aggregate = query.aggregate;
+            interval = query.interval;
+        }
+
+        public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string nodeId)
+        {
+            this.refId = refId;
+            this.maxDataPoints = maxDataPoints;
+            this.intervalMs = intervalMs;
+            this.datasourceId = datasourceId;
+            this.nodeId = nodeId;
+        }
     }
 
     class OpcUaJsonData
     {
         public bool tlsAuth { get; set; }
+        public bool tlsAuthWithCACert { get; set; }
         public bool tlsSkipVerify { get; set; }
+
+        public OpcUaJsonData(ByteString base64encoded)
+        {
+            byte[] byDecoded = System.Convert.FromBase64String(base64encoded.ToString());
+            OpcUaJsonData jsonData = JsonSerializer.Deserialize<OpcUaJsonData>(byDecoded);
+            tlsAuth = jsonData.tlsAuth;
+            tlsAuthWithCACert = jsonData.tlsAuthWithCACert;
+            tlsSkipVerify = jsonData.tlsSkipVerify;
+        }
     }
 
     class BrowseResultsEntry
@@ -34,13 +75,17 @@ namespace plugin_dotnet
         public string displayName { get; set; }
         public string browseName { get; set; }
         public string nodeId { get; set; }
+        public bool isForward { get; set; }
+        public uint nodeClass { get; set; }
 
-        public BrowseResultsEntry() {}
-        public BrowseResultsEntry(string displayName, string browseName, string nodeId)
+        public BrowseResultsEntry() { }
+        public BrowseResultsEntry(string displayName, string browseName, string nodeId, bool isForward, uint nodeClass)
         {
             this.displayName = displayName;
             this.browseName = browseName;
             this.nodeId = nodeId;
+            this.isForward = isForward;
+            this.nodeClass = nodeClass;
         }
     }
 
@@ -49,7 +94,7 @@ namespace plugin_dotnet
         public string type { get; set; }
         public string message { get; set; }
 
-        public LogMessage(string type, string message) 
+        public LogMessage(string type, string message)
         {
             this.type = type;
             this.message = message;
@@ -61,15 +106,14 @@ namespace plugin_dotnet
         }
     }
 
-    class OpcUaDatasource : DatasourcePlugin.DatasourcePluginBase
+    class OpcUaDatasource
     {
-        private Dictionary<string, OpcUaClient> clientConnections = new Dictionary<string, OpcUaClient>();
-        private readonly Serilog.Core.Logger log;
+        private readonly ILogger log;
         private const string rootNode = "i=84";
         private const string objectsNode = "i=85";
         private string browseResults = null;
 
-        public OpcUaDatasource(Serilog.Core.Logger logIn)
+        public OpcUaDatasource(ILogger logIn)
         {
             log = logIn;
         }
@@ -81,7 +125,7 @@ namespace plugin_dotnet
             foreach (ReferenceDescription entry in client.BrowseNodeReference(nodeToBrowse))
             {
                 BrowseResultsEntry bre = new BrowseResultsEntry();
-                log.Information("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
+                log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
                 if (entry.NodeClass == NodeClass.Variable)
                 {
                     bre.displayName = entry.DisplayName.ToString();
@@ -95,178 +139,93 @@ namespace plugin_dotnet
             return browseResults.ToArray();
         }
 
-        public async override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
+        public async Task<string> Query(PluginContext context, DataQuery dataQuery)
         {
-            DatasourceResponse response = new DatasourceResponse { };
+            string result = "";
+            string url = context.DataSourceInstanceSettings.Url;
 
             try
             {
-                log.Information("got a request: {0}", request);
-                List<OpcUAQuery> queries = ParseJSONQueries(request);
-                OpcUaJsonData jsonData = JsonSerializer.Deserialize<OpcUaJsonData>(request.Datasource.JsonData);
-                OpcUaClient client;
+                OpcUAConnection connection = new OpcUAConnection(context.DataSourceInstanceSettings.Url);
 
-                // Prepare a response
-                try 
-                {
-                    client = clientConnections[request.Datasource.Url];
-                }
-                catch(System.Collections.Generic.KeyNotFoundException) 
-                {
-                    log.Information("jsonData {0}", jsonData.tlsAuth);
-                    if (jsonData.tlsAuth) 
-                    {
-                        client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
-                    } 
-                    else 
-                    {
-                        client = await ConnectAsync(request.Datasource.Url);
-                    }
-                    
-                }
+                
 
-                // Process the queries
-                foreach (OpcUAQuery query in queries)
-                {
-                    QueryResult queryResult = new QueryResult();
-                    queryResult.RefId = query.refId;
-                    switch (query.call)
-                    {
-                        case "Browse":
-                            {
-                                log.Information("client {0}", client);
-                                var results = client.BrowseNodeReference(query.callParams["nodeId"]);
-                                BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
-                                for (int i = 0; i < results.Length; i++)
-                                {
-                                    browseResults[i] = new BrowseResultsEntry(results[i].DisplayName.ToString(), results[i].BrowseName.ToString(), results[i].NodeId.ToString());
-                                }
-                                var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
-                                queryResult.MetaJson = jsonResults;
-                            }
-                            break;
-                        case "FlatBrowse":
-                            {
-                                if (this.browseResults == null)
-                                {
-                                    var browseResults = this.FlatBrowse(client);
-                                    var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
-                                    this.browseResults = jsonResults;
-                                }
-                                queryResult.MetaJson = this.browseResults;
+                OpcUAQuery query = new OpcUAQuery(dataQuery);
+            //    switch (query)
+            //    {
+            //        case "Browse":
+            //            {
+                            
+            //            }
+            //            break;
+            //        case "FlatBrowse":
+            //            {
+            //                if (this.browseResults == null)
+            //                {
+            //                    var browseResults = this.FlatBrowse(connection);
+            //                    var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
+            //                    this.browseResults = jsonResults;
+            //                }
+            //                result = this.browseResults;
 
-                            }
-                            break;
-                        case "ReadNode":
-                            {
-                                log.Information("ReadNode {0}", query.callParams["nodeId"]);
-                                var readResults = client.ReadNode(query.callParams["nodeId"]);
-                                log.Information("Results: {0}", readResults);
-                                var jsonResults = JsonSerializer.Serialize<DataValue>(readResults);
-                                queryResult.MetaJson = jsonResults;
-                            }
-                            break;
-/*                        case "Subscription":
-                            {
-                                client.AddSubscription(query.refId, query.callParams["nodeId"], SubCallback);
-                                queryResult.MetaJson = "";
-                            }
-                            break;*/
-                        case "ReadDataRaw":
-                            {
-                                log.Information("Query: {0}", request.TimeRange);
-                                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(request.TimeRange.FromEpochMs).UtcDateTime;
-                                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(request.TimeRange.ToEpochMs).UtcDateTime;
-                                log.Information("Parsed Time: {0} {1}", fromTime, toTime);
+            //            }
+            //            break;
+            //        case "ReadNode":
+            //            {
+            //                var readResults = connection.ReadNode(query.nodeId);
+            //                result = JsonSerializer.Serialize<DataValue>(readResults);
+            //            }
+            //            break;
+            //        /*                        case "Subscription":
+            //                                    {
+            //                                        client.AddSubscription(query.refId, query.callParams["nodeId"], SubCallback);
+            //                                        queryResult.MetaJson = "";
+            //                                    }
+            //                                    break;*/
+            //        case "ReadDataRaw":
+            //            {
+            //                log.Debug("Query: {0}", dataQuery.TimeRange);
+            //                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(dataQuery.TimeRange.FromEpochMS).UtcDateTime;
+            //                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(dataQuery.TimeRange.ToEpochMS).UtcDateTime;
+            //                log.Debug("Parsed Time: {0} {1}", fromTime, toTime);
 
-                                var readResults = client.ReadHistoryRawDataValues(
-                                    query.callParams["nodeId"],
-                                    fromTime,
-                                    toTime,
-                                    (uint)query.maxDataPoints,
-                                    false);
+            //                var readResults = connection.ReadHistoryRawDataValues(
+            //                    query.nodeId,
+            //                    fromTime,
+            //                    toTime,
+            //                    (uint)query.maxDataPoints,
+            //                    false);
 
-                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
-                                queryResult.MetaJson = jsonResults;
-                            }
-                            break;
-                        case "ReadDataProcessed":
-                            {
-                                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(request.TimeRange.FromEpochMs).UtcDateTime;
-                                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(request.TimeRange.ToEpochMs).UtcDateTime;
-                                var readResults = client.ReadHistoryProcessed(
-                                    query.callParams["nodeId"],
-                                    fromTime,
-                                    toTime,
-                                    query.callParams["aggregate"],
-                                    query.intervalMs,
-                                    (uint)query.maxDataPoints,
-                                    true);
-                                var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
-                                log.Information("Results: {0}", readResults);
-                                queryResult.MetaJson = jsonResults;
-                            }
-                            break;
-                    }
-                    response.Results.Add(queryResult);
-                }
+            //                result = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
+            //            }
+            //            break;
+            //        case "ReadDataProcessed":
+            //            {
+            //                //DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(dataQuery.TimeRange.FromEpochMS).UtcDateTime;
+            //                //DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(dataQuery.TimeRange.ToEpochMS).UtcDateTime;
+            //                //var readResults = connection.ReadHistoryProcessed(
+            //                //    query.nodeId
+            //                //    fromTime,
+            //                //    toTime,
+            //                //    query.callParams["aggregate"],
+            //                //    query.intervalMs,
+            //                //    (uint)query.maxDataPoints,
+            //                //    true);
+            //                //result = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
+            //                //log.Debug("Results: {0}", readResults);
+            //            }
+            //            break;
+            //    }
             }
             catch (Exception ex)
             {
-                // Close out the client connection.
-                clientConnections[request.Datasource.Url].Disconnect();
-                clientConnections.Remove(request.Datasource.Url);
-                log.Information("Error: {0}", ex);
-                QueryResult queryResult = new QueryResult();
-                queryResult.Error = ex.ToString();
-                response.Results.Add(queryResult);
+            //    // Close out the client connection.
+            //    //clientConnections[url].Disconnect();
+            //    //clientConnections.Remove(url);
+            //    log.Error("Error: {0}", ex);
             }
 
-            return response;
-        }
-
-        private List<OpcUAQuery> ParseJSONQueries(DatasourceRequest request)
-        {
-            List<OpcUAQuery> ret = new List<OpcUAQuery>();
-
-            foreach (Query query in request.Queries)
-            {
-                try
-                {
-                    log.Information("Handling {0}", query.ModelJson);
-                    OpcUAQuery uaq = JsonSerializer.Deserialize<OpcUAQuery>(query.ModelJson);
-                    ret.Add(uaq);
-                }
-                catch (Exception ex)
-                {
-                    Log.Information("Caught exception {0}", ex);
-                }
-            }
-
-            return ret;
-        }
-
-        private static async Task<OpcUaClient> ConnectAsync(string endpoint, string cert, string key)
-        {
-            X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(cert));
-            X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(key));
-            CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
-
-            var client = new OpcUaClient();
-            client.UserIdentity = new UserIdentity(certWithKey);
-            client.UseSecurity = true;
-            client.ApplicationCertificate = certificateIdentifier;
-
-            await client.ConnectServer(endpoint);
-            return client;
-        }
-
-        private static async Task<OpcUaClient> ConnectAsync(string endpoint)
-        {
-            var client = new OpcUaClient();
-            client.UseSecurity = false;
-            await client.ConnectServer(endpoint);
-            return client;
+            return await Task.FromResult(result);
         }
     }
 }
