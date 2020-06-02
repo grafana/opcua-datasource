@@ -10,7 +10,6 @@ using MicrosoftOpcUa.Client.Utility;
 using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
 using Google.Protobuf;
-using System.Diagnostics;
 
 namespace plugin_dotnet
 {
@@ -35,17 +34,13 @@ namespace plugin_dotnet
         public string displayName { get; set; }
         public string browseName { get; set; }
         public string nodeId { get; set; }
-        public bool isForward { get; set; }
-        public uint nodeClass { get; set; }
 
         public BrowseResultsEntry() {}
-        public BrowseResultsEntry(string displayName, string browseName, string nodeId, bool isForward, uint nodeClass)
+        public BrowseResultsEntry(string displayName, string browseName, string nodeId)
         {
             this.displayName = displayName;
             this.browseName = browseName;
             this.nodeId = nodeId;
-            this.isForward = isForward;
-            this.nodeClass = nodeClass;
         }
     }
 
@@ -77,41 +72,7 @@ namespace plugin_dotnet
         public OpcUaDatasource(Serilog.Core.Logger logIn)
         {
             log = logIn;
-            clientConnections = new Dictionary<string, OpcUaClient>();
         }
-
-        public OpcUaClient GetClient(DatasourceRequest request, OpcUaJsonData jsonData) 
-        {
-            OpcUaClient client = null;
-
-            try 
-            {
-                client = clientConnections[request.Datasource.Url];
-            }
-            catch(System.Collections.Generic.KeyNotFoundException) 
-            {
-                Task<OpcUaClient> connectTask;
-                if (jsonData.tlsAuth) 
-                {
-                    connectTask = ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
-                } 
-                else 
-                {
-                    connectTask = ConnectAsync(request.Datasource.Url);
-                }
-
-                connectTask.Wait();
-                client = connectTask.Result;
-                clientConnections[request.Datasource.Url] = client;
-            }
-            catch(System.NullReferenceException)
-            {
-                clientConnections = new Dictionary<string, OpcUaClient>();
-            }
-            
-            return client;
-        }
-
 
         public BrowseResultsEntry[] FlatBrowse(OpcUaClient client, string nodeToBrowse = objectsNode)
         {
@@ -126,8 +87,6 @@ namespace plugin_dotnet
                     bre.displayName = entry.DisplayName.ToString();
                     bre.browseName = entry.BrowseName.ToString();
                     bre.nodeId = entry.NodeId.ToString();
-                    bre.isForward = entry.IsForward;
-                    bre.nodeClass = Convert.ToUInt32(entry.NodeClass);
                     browseResults.Add(bre);
                 }
                 browseResults.AddRange(FlatBrowse(client, entry.NodeId.ToString()));
@@ -136,7 +95,7 @@ namespace plugin_dotnet
             return browseResults.ToArray();
         }
 
-        public override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
+        public async override Task<DatasourceResponse> Query(DatasourceRequest request, ServerCallContext context)
         {
             DatasourceResponse response = new DatasourceResponse { };
 
@@ -145,8 +104,26 @@ namespace plugin_dotnet
                 log.Information("got a request: {0}", request);
                 List<OpcUAQuery> queries = ParseJSONQueries(request);
                 OpcUaJsonData jsonData = JsonSerializer.Deserialize<OpcUaJsonData>(request.Datasource.JsonData);
-                OpcUaClient client = GetClient(request, jsonData);
-                log.Information("got a client {0}", client);
+                OpcUaClient client;
+
+                // Prepare a response
+                try 
+                {
+                    client = clientConnections[request.Datasource.Url];
+                }
+                catch(System.Collections.Generic.KeyNotFoundException) 
+                {
+                    log.Information("jsonData {0}", jsonData.tlsAuth);
+                    if (jsonData.tlsAuth) 
+                    {
+                        client = await ConnectAsync(request.Datasource.Url, request.Datasource.DecryptedSecureJsonData["tlsClientCert"], request.Datasource.DecryptedSecureJsonData["tlsClientKey"]);
+                    } 
+                    else 
+                    {
+                        client = await ConnectAsync(request.Datasource.Url);
+                    }
+                    
+                }
 
                 // Process the queries
                 foreach (OpcUAQuery query in queries)
@@ -162,12 +139,7 @@ namespace plugin_dotnet
                                 BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
                                 for (int i = 0; i < results.Length; i++)
                                 {
-                                    browseResults[i] = new BrowseResultsEntry(
-                                        results[i].DisplayName.ToString(), 
-                                        results[i].BrowseName.ToString(), 
-                                        results[i].NodeId.ToString(),
-                                        results[i].IsForward,
-                                        Convert.ToUInt32(results[i].NodeClass));
+                                    browseResults[i] = new BrowseResultsEntry(results[i].DisplayName.ToString(), results[i].BrowseName.ToString(), results[i].NodeId.ToString());
                                 }
                                 var jsonResults = JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
                                 queryResult.MetaJson = jsonResults;
@@ -229,7 +201,7 @@ namespace plugin_dotnet
                                     query.callParams["aggregate"],
                                     query.intervalMs,
                                     (uint)query.maxDataPoints,
-                                    false);
+                                    true);
                                 var jsonResults = JsonSerializer.Serialize<IEnumerable<DataValue>>(readResults);
                                 log.Information("Results: {0}", readResults);
                                 queryResult.MetaJson = jsonResults;
