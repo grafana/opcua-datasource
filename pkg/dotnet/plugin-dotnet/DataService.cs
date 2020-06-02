@@ -57,40 +57,22 @@ namespace plugin_dotnet
                                 DataValue value = connection.ReadNode(query.nodeId);
                                 log.Debug("Got a value {0}, {1}", value.GetValue<double>(0), value.StatusCode);
 
-                                // DataFrame dataFrame = new DataFrame(query.nodeId);
-                                // Field timeField = dataFrame.AddField("Time");
-                                // Field valueField = dataFrame.AddField("Value");
-                                // timeField.Append(DateTime.Now.ToUniversalTime().Subtract(
-                                //     new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                                // ).TotalMilliseconds);
-                                // valueField.Append(value.GetValue<double>(0));
+                                List<double> valueColumnData = new List<double>();
+                                valueColumnData.Add(value.GetValue<double>(0));
 
-                                PrimitiveDataFrameColumn<long> timeColumn = new PrimitiveDataFrameColumn<long>("Time");
-                                PrimitiveDataFrameColumn<double> valueColumn = new PrimitiveDataFrameColumn<double>("Value");
-                                DataFrame dataFrame = new DataFrame(timeColumn, valueColumn);
-                                timeColumn.Append(Convert.ToInt64(DateTime.Now.ToUniversalTime().Subtract(
-                                   new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                                ).TotalMilliseconds));
-                                valueColumn.Append(value.GetValue<double>(0));
-                                log.Debug("IIIII");
-                                MemoryStream stream = new MemoryStream();
+                                DoubleDataFrameColumn valueColumn = new DoubleDataFrameColumn("Value", valueColumnData);
+                                DataFrame dataFrame = new DataFrame(valueColumn);
 
-                                foreach (RecordBatch recordBatch in dataFrame.ToArrowRecordBatches())
-                                {
-                                   ArrowStreamWriter writer = new ArrowStreamWriter(stream, recordBatch.Schema);
-                                   writer.WriteRecordBatchAsync(recordBatch).GetAwaiter().GetResult();
-
-                                   stream.Position = 0;
-
-                                   dataResponse.Frames.Add(ByteString.FromStream(stream));
-                                }
-
-                                //dataResponse.Frames.Add(await dataFrame.ToArrow());
-
+                                dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
                                 log.Debug("Data Response {0}", dataResponse);
                                 response.Responses[currRequest.RefId] = dataResponse;
                             }
                             break;
+                        case "Subscribe":
+                            {
+                                connection.AddSubscription(query.refId, query.nodeId, SubscriptionCallback);
+                            }
+                            break; 
                         case "ReadDataProcessed":
                             {
                                 DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
@@ -122,6 +104,11 @@ namespace plugin_dotnet
             }
 
             return await Task.FromResult(response);
+        }
+
+        private void SubscriptionCallback(string arg1, MonitoredItem arg2, MonitoredItemNotificationEventArgs arg3)
+        {
+            log.Debug("Got a callback {0} - {1} - {2}", arg1, arg2, arg3);
         }
     }
 }

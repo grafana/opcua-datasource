@@ -9,7 +9,7 @@ using Apache.Arrow.Ipc;
 using Apache.Arrow.Memory;
 using Google.Protobuf;
 using Grpc.Core.Logging;
-//using Microsoft.Data.Analysis;
+using Microsoft.Data.Analysis;
 
 namespace plugin_dotnet
 {
@@ -236,4 +236,24 @@ namespace plugin_dotnet
     //     public Field[] Fields => fields.ToArray();
 
     // }
+
+    class DataFrame : Microsoft.Data.Analysis.DataFrame
+    {
+        public DataFrame(IEnumerable<DataFrameColumn> columns) : base(columns) { }
+        public DataFrame(params DataFrameColumn[] columns) : base(columns) { }
+
+        public ByteString ToGprcArrowFrame()
+        {
+            MemoryStream stream = new MemoryStream();
+
+            foreach (RecordBatch recordBatch in this.ToArrowRecordBatches())
+            {
+                ArrowStreamWriter writer = new ArrowStreamWriter(stream, recordBatch.Schema);
+                writer.WriteRecordBatchAsync(recordBatch).GetAwaiter().GetResult();
+            }
+
+            stream.Position = 0;
+            return ByteString.FromStream(stream);
+        }
+    }
 }
