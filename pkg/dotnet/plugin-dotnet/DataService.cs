@@ -106,9 +106,11 @@ namespace plugin_dotnet
             return await Task.FromResult(response);
         }
 
-        private void SubscriptionCallback(string arg1, MonitoredItem arg2, MonitoredItemNotificationEventArgs arg3)
+        private void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs)
         {
-            log.Debug("Got a callback {0} - {1} - {2}", arg1, arg2, arg3);
+            QueryDataResponse response = new QueryDataResponse();
+            log.Debug("Got a callback {0} - {1} - {2}", refId, item, eventArgs);
+            
         }
     }
 }
