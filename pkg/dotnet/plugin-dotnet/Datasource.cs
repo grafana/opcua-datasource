@@ -70,21 +70,23 @@ namespace plugin_dotnet
         }
     }
 
-    class BrowseResultsEntry
+    public class BrowseResultsEntry
     {
         public string displayName { get; set; }
         public string browseName { get; set; }
         public string nodeId { get; set; }
         public bool isForward { get; set; }
         public uint nodeClass { get; set; }
-
+        public string typeId { get; set; }
+        
         public BrowseResultsEntry() { }
-        public BrowseResultsEntry(string displayName, string browseName, string nodeId, bool isForward, uint nodeClass)
+        public BrowseResultsEntry(string displayName, string browseName, string nodeId, ExpandedNodeId typeId, bool isForward, uint nodeClass)
         {
             this.displayName = displayName;
             this.browseName = browseName;
             this.nodeId = nodeId;
             this.isForward = isForward;
+            this.typeId = typeId.IdType.ToString();
             this.nodeClass = nodeClass;
         }
     }
@@ -116,27 +118,6 @@ namespace plugin_dotnet
         public OpcUaDatasource(ILogger logIn)
         {
             log = logIn;
-        }
-
-        public BrowseResultsEntry[] FlatBrowse(OpcUaClient client, string nodeToBrowse = objectsNode)
-        {
-            List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
-
-            foreach (ReferenceDescription entry in client.BrowseNodeReference(nodeToBrowse))
-            {
-                BrowseResultsEntry bre = new BrowseResultsEntry();
-                log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
-                if (entry.NodeClass == NodeClass.Variable)
-                {
-                    bre.displayName = entry.DisplayName.ToString();
-                    bre.browseName = entry.BrowseName.ToString();
-                    bre.nodeId = entry.NodeId.ToString();
-                    browseResults.Add(bre);
-                }
-                browseResults.AddRange(FlatBrowse(client, entry.NodeId.ToString()));
-            }
-
-            return browseResults.ToArray();
         }
 
         public async Task<string> Query(PluginContext context, DataQuery dataQuery)

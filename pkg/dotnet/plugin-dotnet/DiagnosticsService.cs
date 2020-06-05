@@ -30,11 +30,10 @@ namespace plugin_dotnet
             log.Debug("Check Health Request {0}", request);
 
             OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings.Url);
-            string browseResult = connection.Browse();
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse
             {
-                Status = CheckHealthResponse.Types.HealthStatus.Ok,
-                Message = browseResult
+                Status = connection.Connected ? CheckHealthResponse.Types.HealthStatus.Ok : CheckHealthResponse.Types.HealthStatus.Error,
+                Message = connection.Connected ? "Connected Successfully" : "Connection Failed",
             };
             return Task.FromResult(checkHealthResponse);
         }

@@ -19,12 +19,10 @@ import { Observable } from 'rxjs';
 
 export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourceOptions> {
   config: DataSourceInstanceSettings<OpcUaDataSourceOptions>;
-  browseData: any;
   constructor(instanceSettings: DataSourceInstanceSettings<OpcUaDataSourceOptions>) {
     super(instanceSettings);
     console.log('instanceSettings', instanceSettings);
     this.config = instanceSettings;
-    this.browseData = [];
   }
 
   query(request: DataQueryRequest<OpcUaQuery>): Observable<DataQueryResponse> {

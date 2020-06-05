@@ -180,7 +180,7 @@ export class TreeEditor extends PureComponent<Props, State> {
   };
 
   getTreeData = (nodeId: string): Promise<TransferItem[]> => {
-    return this.props.datasource.getResource(nodeId).then((results: OpcUaBrowseResults[]) =>
+    return this.props.datasource.getResource('browse', { nodeId }).then((results: OpcUaBrowseResults[]) =>
       results.map((item: OpcUaBrowseResults) => {
         if (item.nodeClass !== 2 && item.isForward) {
           return {

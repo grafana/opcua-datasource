@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Grpc.Core.Logging;
+using MicrosoftOpcUa.Client.Core;
 using MicrosoftOpcUa.Client.Utility;
 using Opc.Ua;
 
@@ -42,6 +43,8 @@ namespace plugin_dotnet
     {
         private const string rootNode = "i=84";
         private const string objectsNode = "i=85";
+        private const string typesNode = "i=86";
+        private const string viewsNode = "i=87";
         private string endpoint;
 
         private ILogger log;
@@ -54,7 +57,56 @@ namespace plugin_dotnet
             ConnectServer(endpoint).Wait();
         }
 
-        public string Browse(string nodeId = objectsNode)
+        public string BrowseTypes(string nodeToBrowse = typesNode)
+        {
+            OpcNodeAttribute[] attributes = ReadNodeAttributes(nodeToBrowse);
+            return JsonSerializer.Serialize<OpcNodeAttribute[]>(attributes);
+        }
+
+        public BrowseResultsEntry[] TypesBrowse(string nodeToBrowse = typesNode)
+        {
+            List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
+
+            foreach (ReferenceDescription entry in this.BrowseNodeReference(nodeToBrowse))
+            {
+                BrowseResultsEntry bre = new BrowseResultsEntry();
+                log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
+
+                bre.displayName = entry.DisplayName.ToString();
+                bre.browseName = entry.BrowseName.ToString();
+                bre.nodeId = entry.NodeId.ToString();
+                browseResults.Add(bre);
+                if (entry.TypeDefinition.IdType == IdType.Opaque)
+                {
+                    browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
+                }
+            }
+
+            return browseResults.ToArray();
+        }
+
+        public BrowseResultsEntry[] FlatBrowse(string nodeToBrowse = typesNode)
+        {
+            List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
+
+            foreach (ReferenceDescription entry in this.BrowseNodeReference(nodeToBrowse))
+            {
+                BrowseResultsEntry bre = new BrowseResultsEntry();
+                log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
+                if (entry.NodeClass == NodeClass.Variable)
+                {
+                    bre.displayName = entry.DisplayName.ToString();
+                    bre.browseName = entry.BrowseName.ToString();
+                    bre.nodeId = entry.NodeId.ToString();
+                    browseResults.Add(bre);
+                }
+                browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
+            }
+
+            return browseResults.ToArray();
+        }
+
+        public string Browse(string nodeId = typesNode)
         {
             log.Debug("Browsing node {0}", nodeId);
             var results = this.BrowseNodeReference(nodeId);
@@ -65,6 +117,7 @@ namespace plugin_dotnet
                     results[i].DisplayName.ToString(),
                     results[i].BrowseName.ToString(),
                     results[i].NodeId.ToString(),
+                    results[i].TypeId,
                     results[i].IsForward,
                     Convert.ToUInt32(results[i].NodeClass));
             }
