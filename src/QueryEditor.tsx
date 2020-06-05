@@ -47,7 +47,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       ],
     };
 
-    props.datasource.getResource('browse', { nodeId: rootNode }).then((results: OpcUaBrowseResults[]) => {
+    props.datasource.getResource(rootNode).then((results: OpcUaBrowseResults[]) => {
       console.log('Results', results);
       this.setState({
         options: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
@@ -56,10 +56,8 @@ export class QueryEditor extends PureComponent<Props, State> {
   }
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
-    const { datasource, query, onChange, onRunQuery } = this.props;
-    const { nodeId, refId } = query;
-
-    console.log('change', field, sval, args);
+    const { onChange, query, onRunQuery } = this.props;
+    console.log('change', args);
     const changes: Record<string, any> = {};
 
     if (typeof sval === 'string') {
@@ -68,16 +66,8 @@ export class QueryEditor extends PureComponent<Props, State> {
       changes[field] = sval.value;
     }
 
-    if (changes[field] === 'Subscribe') {
-      datasource.getResource('subscribe', { nodeId, refId }).then((results: any[]) => {
-        console.log('We got subscribe results', results);
-        onChange({ ...query, ...changes });
-        onRunQuery();
-      });
-    } else {
-      onChange({ ...query, ...changes });
-      onRunQuery();
-    }
+    onChange({ ...query, ...changes });
+    onRunQuery(); // executes the query
   };
 
   onChange = (selected: string[], selectedItems: CascaderOption[]) => {
@@ -115,15 +105,13 @@ export class QueryEditor extends PureComponent<Props, State> {
     const targetOption = selectedOptions[selectedOptions.length - 1];
     targetOption.loading = true;
     if (targetOption.value) {
-      this.props.datasource
-        .getResource('browse', { nodeId: targetOption.value })
-        .then((results: OpcUaBrowseResults[]) => {
-          targetOption.loading = false;
-          targetOption.children = results.map(r => this.toCascaderOption(r));
-          this.setState({
-            options: [...this.state.options],
-          });
+      this.props.datasource.getResource(targetOption.value).then((results: OpcUaBrowseResults[]) => {
+        targetOption.loading = false;
+        targetOption.children = results.map(r => this.toCascaderOption(r));
+        this.setState({
+          options: [...this.state.options],
         });
+      });
     }
   };
 
