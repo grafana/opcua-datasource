@@ -4,7 +4,7 @@ export interface OpcUaQuery extends DataQuery {
   nodeId: string;
   value: string[];
   readType: string;
-  aggregate: OpcUaBrowseResults;
+  aggregate: string;
   interval: string;
 }
 

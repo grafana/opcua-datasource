@@ -99,7 +99,7 @@ namespace plugin_dotnet
                             {
                                 DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
                                 DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
-                                log.Debug("Parsed Time: {0} {1}", fromTime, toTime);
+                                log.Debug("Parsed Time: {0} {1}, Aggregate {2}", fromTime, toTime, query.aggregate);
 
                                 IEnumerable<DataValue> readResults = connection.ReadHistoryProcessed(
                                     query.nodeId,

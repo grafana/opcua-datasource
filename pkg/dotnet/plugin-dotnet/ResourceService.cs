@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Text.Json;
@@ -7,6 +8,7 @@ using System.Web;
 using Google.Protobuf;
 using Grpc.Core;
 using Grpc.Core.Logging;
+using MicrosoftOpcUa.Client.Core;
 using Opc.Ua.Client;
 using Pluginv2;
 
@@ -51,6 +53,15 @@ namespace plugin_dotnet
                             string results = connection.BrowseTypes();
                             response.Code = 200;
                             response.Body = ByteString.CopyFromUtf8(results);
+                        }
+                        break;
+
+                    case "getAggregates":
+                        {
+                            Dictionary<string, OpcNodeAttribute> results = connection.ReadNodeAttributesAsDictionary(queryParams["nodeId"]);
+                            string jsonResults = JsonSerializer.Serialize<Dictionary<string, OpcNodeAttribute>>(results);
+                            response.Code = 200;
+                            response.Body = ByteString.CopyFromUtf8(jsonResults);
                         }
                         break;
 

@@ -128,13 +128,15 @@ export class QueryEditor extends PureComponent<Props, State> {
   };
 
   browseNodeSV = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
-    return this.props.datasource.getResource(nodeId).then((results: OpcUaBrowseResults[]) => {
-      return results.map((item: OpcUaBrowseResults) => ({
-        label: item.displayName,
-        key: item.nodeId,
-        description: item.displayName,
-        value: item,
-      }));
+    return this.props.datasource.getResource('browse', { nodeId }).then((results: OpcUaBrowseResults[]) => {
+      return results.map((item: OpcUaBrowseResults) => {
+        return {
+          label: item.displayName,
+          key: item.nodeId,
+          description: item.displayName,
+          value: item.displayName,
+        };
+      });
     });
   };
 
@@ -166,7 +168,7 @@ export class QueryEditor extends PureComponent<Props, State> {
           <>
             <SegmentLabel label={'Aggregate'} marginLeft />
             <SegmentAsync
-              value={query.aggregate ? this.props.query.aggregate.displayName : selectText('aggregate')}
+              value={query.aggregate ? this.props.query.aggregate : selectText('aggregate')}
               loadOptions={() => this.browseNodeSV('i=2997')}
               onChange={e => this.onChangeField('aggregate', e)}
             />
