@@ -134,7 +134,10 @@ export class QueryEditor extends PureComponent<Props, State> {
           label: item.displayName,
           key: item.nodeId,
           description: item.displayName,
-          value: item.displayName,
+          value: {
+            name: item.displayName,
+            nodeId: item.nodeId,
+          },
         };
       });
     });
@@ -168,7 +171,7 @@ export class QueryEditor extends PureComponent<Props, State> {
           <>
             <SegmentLabel label={'Aggregate'} marginLeft />
             <SegmentAsync
-              value={query.aggregate ? this.props.query.aggregate : selectText('aggregate')}
+              value={query.aggregate?.name ?? selectText('aggregate')}
               loadOptions={() => this.browseNodeSV('i=2997')}
               onChange={e => this.onChangeField('aggregate', e)}
             />

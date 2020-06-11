@@ -21,6 +21,12 @@ using MicrosoftOpcUa.Client.Core;
 
 namespace plugin_dotnet
 {
+    class OpcUaNodeDefinition
+    {
+        public string name { get; set; }
+        public string nodeId { get; set; }
+    }
+
     class DataService : Data.DataBase
     {
         private readonly ILogger log;
@@ -85,13 +91,16 @@ namespace plugin_dotnet
                                 Field valueField = null;
                                 foreach (DataValue entry in readResults)
                                 {
-                                    if (valueField == null)
+                                    if (valueField == null && entry.Value != null)
                                     {
                                         valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
                                     }
 
-                                    valueField.Append(entry.Value);
-                                    timeField.Append(entry.SourceTimestamp);
+                                    if (valueField != null)
+                                    {
+                                        valueField.Append(entry.Value);
+                                        timeField.Append(entry.SourceTimestamp);
+                                    }
                                 }
                             }
                             break;
@@ -100,31 +109,31 @@ namespace plugin_dotnet
                                 DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
                                 DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
                                 log.Debug("Parsed Time: {0} {1}, Aggregate {2}", fromTime, toTime, query.aggregate);
+                                OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
 
                                 IEnumerable<DataValue> readResults = connection.ReadHistoryProcessed(
                                     query.nodeId,
                                     fromTime,
                                     toTime,
-                                    query.aggregate.ToString(),
+                                    aggregate.nodeId,
                                     query.intervalMs,
                                     (uint)query.maxDataPoints,
                                     true);
 
-                                Field timeField = dataFrame.AddField<ulong>("Time");
+                                Field timeField = dataFrame.AddField<DateTime>("Time");
                                 Field valueField = null;
                                 foreach (DataValue entry in readResults)
                                 {
-                                    if (valueField == null)
+                                    if (valueField == null && entry.Value != null)
                                     {
                                         valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
                                     }
 
-                                    ulong epoch = Convert.ToUInt64(entry.SourceTimestamp.ToUniversalTime().Subtract(
-                                        new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                                    ).TotalMilliseconds);
-
-                                    valueField.Append(entry.Value);
-                                    timeField.Append(epoch);
+                                    if (valueField != null)
+                                    {
+                                        valueField.Append(entry.Value);
+                                        timeField.Append(entry.SourceTimestamp);
+                                    }
                                 }
                             }
                             break;

@@ -4,7 +4,7 @@ export interface OpcUaQuery extends DataQuery {
   nodeId: string;
   value: string[];
   readType: string;
-  aggregate: string;
+  aggregate: OpcUaNodeDefinition;
   interval: string;
 }
 
@@ -28,6 +28,11 @@ export interface OpcUaBrowseResults {
   nodeId: string;
   isForward: boolean;
   nodeClass: number;
+}
+
+export interface OpcUaNodeDefinition {
+  name: string;
+  nodeId: string;
 }
 
 export const separator = ' / ';
