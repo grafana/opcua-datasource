@@ -18,18 +18,16 @@ namespace plugin_dotnet
     public class DiagnosticsService : Diagnostics.DiagnosticsBase
     {
         private ILogger log;
-        private OpcUaDatasource datasource;
         public DiagnosticsService(ILogger logIn)
         {
             log = logIn;
-            datasource = new OpcUaDatasource(logIn);
         }
 
         public override Task<CheckHealthResponse> CheckHealth(CheckHealthRequest request, ServerCallContext context)
         {
             log.Debug("Check Health Request {0}", request);
 
-            OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings.Url);
+            OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse
             {
                 Status = connection.Connected ? CheckHealthResponse.Types.HealthStatus.Ok : CheckHealthResponse.Types.HealthStatus.Error,

@@ -31,7 +31,7 @@ namespace plugin_dotnet
             string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
             Uri uri = new Uri(fullUrl);
             NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
-            OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings.Url);
+            OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
             
             try
             {

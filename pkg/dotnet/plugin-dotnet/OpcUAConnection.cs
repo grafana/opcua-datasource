@@ -8,6 +8,7 @@ using Grpc.Core.Logging;
 using MicrosoftOpcUa.Client.Core;
 using MicrosoftOpcUa.Client.Utility;
 using Opc.Ua;
+using Pluginv2;
 
 namespace plugin_dotnet
 {
@@ -28,6 +29,18 @@ namespace plugin_dotnet
             }
         }
 
+        public static void Add(string url, string clientCert, string clientKey)
+        {
+            try
+            {
+                connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
+            }
+            catch (Exception ex)
+            {
+                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+            }
+        }
+
         public static OpcUAConnection Get(string url)
         {
             if (!connections.ContainsKey(url) || !connections[url].Connected)
@@ -36,6 +49,28 @@ namespace plugin_dotnet
             }
             
             return connections[url];
+        }
+
+        public static OpcUAConnection Get(DataSourceInstanceSettings settings)
+        {
+            if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Connected)
+            {
+                if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
+                {
+                    Add(settings.Url, settings.DecryptedSecureJsonData["tlsClientCert"], settings.DecryptedSecureJsonData["tlsClientKey"]);
+                }
+                else
+                {
+                    Add(settings.Url);
+                }
+            }
+
+            return connections[settings.Url];
+        }
+
+        public static void Remove(string url)
+        {
+            connections.Remove(url);
         }
     }
 
@@ -49,12 +84,29 @@ namespace plugin_dotnet
 
         private ILogger log;
 
-        public OpcUAConnection(string url) : base()
+        public OpcUAConnection()
         {
             log = new ConsoleLogger();
+        }
+
+        public OpcUAConnection(string url) : this()
+        {
             base.UseSecurity = false;
             endpoint = url;
             ConnectServer(endpoint).Wait();
+        }
+
+        public OpcUAConnection(string url, string cert, string key) : this()
+        {
+            base.UseSecurity = true;
+            endpoint = url;
+            Connect(endpoint, cert, key);
+        }
+
+        public void Close()
+        {
+            base.Disconnect();
+            Connections.Remove(endpoint);
         }
 
         public string BrowseTypes(string nodeToBrowse = typesNode)
@@ -123,11 +175,6 @@ namespace plugin_dotnet
             }
             return JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
         }
-
-        //private async void Connect()
-        //{
-        //     base.ConnectServer(endpoint);
-        //}
 
         private async void Connect(string endpoint, string cert, string key)
         {

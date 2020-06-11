@@ -30,128 +30,138 @@ namespace plugin_dotnet
     class DataService : Data.DataBase
     {
         private readonly ILogger log;
+        private Alias alias;
 
         public DataService(ILogger logIn)
         {
             log = logIn;
             log.Info("We are using the datasource");
+            alias = new Alias();
         }
 
         public override async Task<QueryDataResponse> QueryData(QueryDataRequest request, ServerCallContext context)
         {
             QueryDataResponse response = new QueryDataResponse();
+            OpcUAConnection connection = null;
 
             try
             {
-               log.Debug("got a request: {0}", request);
-               OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings.Url);
-
-               foreach (DataQuery currRequest in request.Queries)
-               {
-                    DataResponse dataResponse = new DataResponse();
-                    OpcUAQuery query = new OpcUAQuery(currRequest);
-                    DataFrame dataFrame = new DataFrame(query.refId);
-
-                    log.Debug("Processing a request: {0} {1} {2}", query.nodeId, query.value, query.readType);
-                    log.Debug("Query: {0}", query);
-
-                    switch (query.readType)
+                log.Debug("got a request: {0}", request);
+                connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
+                
+                foreach (DataQuery currRequest in request.Queries)
+                {
+                    try
                     {
-                        case "ReadNode":
-                            {
-                                log.Debug("Reading node");
-                                DataValue value = connection.ReadNode(query.nodeId);
-                                log.Debug("Got a value {0}, {1}", value.Value, value.Value.GetType());
+                        DataResponse dataResponse = new DataResponse();
+                        OpcUAQuery query = new OpcUAQuery(currRequest);
+                        DataFrame dataFrame = new DataFrame(query.refId);
 
-                                Field timeField = dataFrame.AddField("Time", value.SourceTimestamp.GetType());
-                                Field valueField = dataFrame.AddField(String.Join(" / ", query.value), value.Value.GetType());
-                                timeField.Append(value.SourceTimestamp);
-                                valueField.Append(value.Value);
-                            }
-                            break;
-                        case "Subscribe":
-                            {
-                                connection.AddSubscription(query.refId, query.nodeId, SubscriptionCallback);
-                            }
-                            break; 
-                        case "ReadDataRaw":
-                            {
-                                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
-                                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
-                                log.Debug("Parsed Time: {0} {1}", fromTime, toTime);
+                        log.Debug("Processing a request: {0} {1} {2}", query.nodeId, query.value, query.readType);
+                        log.Debug("Query: {0}", query);
 
-                                IEnumerable<DataValue> readResults = connection.ReadHistoryRawDataValues(
-                                    query.nodeId,
-                                    fromTime,
-                                    toTime,
-                                    (uint)query.maxDataPoints,
-                                    false);
-
-                                Field timeField = dataFrame.AddField<DateTime>("Time");
-                                Field valueField = null;
-                                foreach (DataValue entry in readResults)
+                        switch (query.readType)
+                        {
+                            case "ReadNode":
                                 {
-                                    if (valueField == null && entry.Value != null)
-                                    {
-                                        valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
-                                    }
+                                    log.Debug("Reading node");
+                                    DataValue value = connection.ReadNode(query.nodeId);
+                                    log.Debug("Got a value {0}, {1}", value.Value, value.Value.GetType());
 
-                                    if (valueField != null)
+                                    Field timeField = dataFrame.AddField("Time", value.SourceTimestamp.GetType());
+                                    Field valueField = dataFrame.AddField(String.Join(" / ", query.value), value.Value.GetType());
+                                    timeField.Append(value.SourceTimestamp);
+                                    valueField.Append(value.Value);
+                                }
+                                break;
+                            case "Subscribe":
+                                {
+                                    connection.AddSubscription(query.refId, query.nodeId, SubscriptionCallback);
+                                }
+                                break;
+                            case "ReadDataRaw":
+                                {
+                                    DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
+                                    DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
+                                    log.Debug("Parsed Time: {0} {1}", fromTime, toTime);
+
+                                    IEnumerable<DataValue> readResults = connection.ReadHistoryRawDataValues(
+                                        query.nodeId,
+                                        fromTime,
+                                        toTime,
+                                        (uint)query.maxDataPoints,
+                                        false);
+
+                                    Field timeField = dataFrame.AddField<DateTime>("Time");
+                                    Field valueField = null;
+                                    foreach (DataValue entry in readResults)
                                     {
-                                        valueField.Append(entry.Value);
-                                        timeField.Append(entry.SourceTimestamp);
+                                        if (valueField == null && entry.Value != null)
+                                        {
+                                            valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
+                                        }
+
+                                        if (valueField != null)
+                                        {
+                                            valueField.Append(entry.Value);
+                                            timeField.Append(entry.SourceTimestamp);
+                                        }
                                     }
                                 }
-                            }
-                            break;
-                        case "ReadDataProcessed":
-                            {
-                                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
-                                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
-                                log.Debug("Parsed Time: {0} {1}, Aggregate {2}", fromTime, toTime, query.aggregate);
-                                OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
-
-                                IEnumerable<DataValue> readResults = connection.ReadHistoryProcessed(
-                                    query.nodeId,
-                                    fromTime,
-                                    toTime,
-                                    aggregate.nodeId,
-                                    query.intervalMs,
-                                    (uint)query.maxDataPoints,
-                                    true);
-
-                                Field timeField = dataFrame.AddField<DateTime>("Time");
-                                Field valueField = null;
-                                foreach (DataValue entry in readResults)
+                                break;
+                            case "ReadDataProcessed":
                                 {
-                                    if (valueField == null && entry.Value != null)
-                                    {
-                                        valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
-                                    }
+                                    DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
+                                    DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
+                                    log.Debug("Parsed Time: {0} {1}, Aggregate {2}", fromTime, toTime, query.aggregate);
+                                    OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
 
-                                    if (valueField != null)
+                                    IEnumerable<DataValue> readResults = connection.ReadHistoryProcessed(
+                                        query.nodeId,
+                                        fromTime,
+                                        toTime,
+                                        aggregate.nodeId,
+                                        query.intervalMs,
+                                        (uint)query.maxDataPoints,
+                                        true);
+
+                                    Field timeField = dataFrame.AddField<DateTime>("Time");
+                                    Field valueField = null;
+                                    foreach (DataValue entry in readResults)
                                     {
-                                        valueField.Append(entry.Value);
-                                        timeField.Append(entry.SourceTimestamp);
+                                        if (valueField == null && entry.Value != null)
+                                        {
+                                            valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
+                                        }
+
+                                        if (valueField != null)
+                                        {
+                                            valueField.Append(entry.Value);
+                                            timeField.Append(entry.SourceTimestamp);
+                                        }
                                     }
                                 }
-                            }
-                            break;
+                                break;
+                        }
+
+                        dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
+
+                        // Handle the alias parsing
+
+                        // Deliver the response
+                        response.Responses[currRequest.RefId] = dataResponse;
                     }
-
-                    dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
-                    response.Responses[currRequest.RefId] = dataResponse;
+                    catch (Exception ex)
+                    {
+                        response.Responses[currRequest.RefId].Error = ex.Message;
+                    }
                 }
             }
             catch (Exception ex)
             {
                // Close out the client connection.
                log.Debug("Error: {0}", ex);
-               //clientConnections[request.Datasource.Url].Disconnect();
-               //clientConnections.Remove(request.Datasource.Url);
-               //QueryResult queryResult = new QueryResult();
-               //queryResult.Error = ex.ToString();
-               //response.Results.Add(queryResult);
+               connection.Disconnect();
             }
 
             return await Task.FromResult(response);
