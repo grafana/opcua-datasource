@@ -18,9 +18,11 @@ workflows:
   plugin_workflow:
     jobs:
       - build
+      - build_backend
       - report:
           requires:
             - build
+            - build_backend
       - approve_release:
           type: approval
           requires:
