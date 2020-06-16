@@ -81,8 +81,8 @@ jobs:
           keys:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
-          name: Build backend
-          command: make
+          name: Build backend (Linux)
+          command: dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ./dist --self-contained true
       - run:
           name: Move results to ci folder
           command: ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
