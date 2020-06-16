@@ -19,10 +19,13 @@ workflows:
     jobs:
       - build
       - build_backend
-      - report:
+      - package:
           requires:
             - build
             - build_backend
+      - report:
+          requires:
+            - package
       - approve_release:
           type: approval
           requires:
@@ -82,7 +85,24 @@ jobs:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Build backend (Linux)
-          command: dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ./dist --self-contained true
+          command: |
+            [ ! -d "ci/dist/linux" ] && mkdir -pv ci/dist/linux
+            dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ci/dist/linux --self-contained true
+      - persist_to_workspace:
+          root: .
+          paths:
+          - ci/dist/linux
+      - store_artifacts:
+          path: ci
+  
+  package:
+    executor: default_exec
+    steps:
+      - checkout
+      - restore_cache:
+        name: restore node_modules
+          keys:
+          - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Move results to ci folder
           command: ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
@@ -90,16 +110,6 @@ jobs:
           name: Package distribution
           command: |
             ./node_modules/.bin/grafana-toolkit plugin:ci-package
-      - persist_to_workspace:
-          root: .
-          paths:
-          - ci/jobs/package
-          - ci/packages
-          - ci/dist
-          - ci/grafana-test-env
-      - store_artifacts:
-          path: ci
-
 
   report:
     executor: default_exec
