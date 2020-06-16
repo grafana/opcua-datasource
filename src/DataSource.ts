@@ -1,13 +1,6 @@
-import {
-  DataQueryRequest,
-  DataQueryResponse,
-  DataSourceInstanceSettings,
-} from '@grafana/data';
+import { DataQueryRequest, DataQueryResponse, DataSourceInstanceSettings } from '@grafana/data';
 
-import {
-  OpcUaQuery,
-  OpcUaDataSourceOptions,
-} from './types';
+import { OpcUaQuery, OpcUaDataSourceOptions } from './types';
 import { DataSourceWithBackend } from '@grafana/runtime';
 import { Observable } from 'rxjs';
 
