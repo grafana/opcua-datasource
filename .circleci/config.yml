@@ -87,7 +87,7 @@ jobs:
           name: Build backend (Linux)
           command: |
             [ ! -d "ci/dist/linux" ] && mkdir -pv ci/dist/linux
-            dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 -o ci/dist/linux --self-contained true
+            dotnet publish ./pkg/dotnet/plugin-dotnet/.linux.build.csproj -r linux-x64 -o ci/dist/linux --self-contained true
       - persist_to_workspace:
           root: .
           paths:
@@ -100,7 +100,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-        name: restore node_modules
+          name: restore node_modules
           keys:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
