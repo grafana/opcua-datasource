@@ -38,6 +38,9 @@ executors:
   e2e_exec:
     docker:
       - image: srclosson/grafana-plugin-ci-e2e:latest
+  dotnet_exec:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/runtime:latest
 
 jobs:
   build:
@@ -66,6 +69,15 @@ jobs:
       - run:
           name: Build and test frontend
           command: ./node_modules/.bin/grafana-toolkit plugin:ci-build
+
+  build_backend:
+    executor: dotnet_exec
+    steps:
+      - checkout
+      - restore_cache:
+          name: restore node_modules
+          keys:
+          - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Build backend
           command: make
@@ -85,6 +97,7 @@ jobs:
           - ci/grafana-test-env
       - store_artifacts:
           path: ci
+
 
   report:
     executor: default_exec

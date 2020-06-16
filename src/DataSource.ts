@@ -1,19 +1,13 @@
 import {
   DataQueryRequest,
   DataQueryResponse,
-  //DataSourceApi,
   DataSourceInstanceSettings,
-  //FieldType,
-  //ArrayVector,
 } from '@grafana/data';
 
 import {
   OpcUaQuery,
   OpcUaDataSourceOptions,
-  //OpcUaResults,
-  //separator,
 } from './types';
-//import { FieldType } from '@grafana/data';
 import { DataSourceWithBackend } from '@grafana/runtime';
 import { Observable } from 'rxjs';
 
@@ -21,7 +15,6 @@ export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourc
   config: DataSourceInstanceSettings<OpcUaDataSourceOptions>;
   constructor(instanceSettings: DataSourceInstanceSettings<OpcUaDataSourceOptions>) {
     super(instanceSettings);
-    console.log('instanceSettings', instanceSettings);
     this.config = instanceSettings;
   }
 
