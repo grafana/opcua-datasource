@@ -1,10 +1,10 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export interface OpcUaQuery extends DataQuery {
-  metric: OpcUaBrowseResults;
-  displayName: string;
+  nodeId: string;
+  value: string[];
   readType: string;
-  aggregate: OpcUaBrowseResults;
+  aggregate: OpcUaNodeDefinition;
   interval: string;
 }
 
@@ -26,7 +26,16 @@ export interface OpcUaBrowseResults {
   displayName: string;
   browseName: string;
   nodeId: string;
+  isForward: boolean;
+  nodeClass: number;
 }
+
+export interface OpcUaNodeDefinition {
+  name: string;
+  nodeId: string;
+}
+
+export const separator = ' / ';
 
 /**
  * These are options configured for each DataSource instance

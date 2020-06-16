@@ -1,3 +1,4 @@
+using Grpc.Core.Logging;
 using MicrosoftOpcUa.Client.Core;
 using Opc.Ua;
 using Opc.Ua.Client;
@@ -108,7 +109,7 @@ namespace MicrosoftOpcUa.Client.Utility
             m_session = await Connect(serverUrl);
         }
 
-        public Serilog.Core.Logger Logger 
+        public ILogger Logger 
         {
             get { return m_logger; }
             set { m_logger = value; }
@@ -432,7 +433,7 @@ namespace MicrosoftOpcUa.Client.Utility
             m_session.Read(
                 null,
                 0,
-                TimestampsToReturn.Neither,
+                TimestampsToReturn.Both,
                 nodesToRead,
                 out DataValueCollection results,
                 out DiagnosticInfoCollection diagnosticInfos);
@@ -441,6 +442,32 @@ namespace MicrosoftOpcUa.Client.Utility
             ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
 
             return results[0];
+        }
+
+        public DataValueCollection ReadNodeAll(NodeId nodeId)
+        {
+            ReadValueIdCollection nodesToRead = new ReadValueIdCollection
+            {
+                new ReadValueId( )
+                {
+                    NodeId = nodeId,
+                    AttributeId = Attributes.Value
+                }
+            };
+
+            // read the current value
+            m_session.Read(
+                null,
+                0,
+                TimestampsToReturn.Both,
+                nodesToRead,
+                out DataValueCollection results,
+                out DiagnosticInfoCollection diagnosticInfos);
+
+            ClientBase.ValidateResponse(results, nodesToRead);
+            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
+
+            return results;
         }
 
         /// <summary>
@@ -1001,8 +1028,6 @@ namespace MicrosoftOpcUa.Client.Utility
                 ProcessingInterval = processingInterval,
             };
 
-            m_logger.Information("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
-
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
             nodesToRead.Add(m_nodeToContinue);
 
@@ -1024,10 +1049,17 @@ namespace MicrosoftOpcUa.Client.Utility
                 throw new ServiceResultException(results[0].StatusCode);
             }
 
-            HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
-            foreach (var value in values.DataValues)
-            {
-                yield return value;
+            if (results[0].HistoryData != null) {
+                HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
+                foreach (var value in values.DataValues)
+                {
+                    if (value.SourceTimestamp < m_details.StartTime || value.SourceTimestamp > m_details.EndTime)
+                    {
+                        var difference = (m_details.StartTime - value.SourceTimestamp).Hours;
+                        value.SourceTimestamp = value.SourceTimestamp.AddHours(difference);
+                    }
+                    yield return value;
+                }
             }
         }
 
@@ -1056,7 +1088,7 @@ namespace MicrosoftOpcUa.Client.Utility
                 ReturnBounds = containBound
             };
 
-            m_logger.Information("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
+            m_logger.Debug("start {0}/end {0}", m_details.StartTime, m_details.EndTime);
             HistoryReadValueIdCollection nodesToRead = new HistoryReadValueIdCollection();
             nodesToRead.Add(m_nodeToContinue);
 
@@ -1079,7 +1111,7 @@ namespace MicrosoftOpcUa.Client.Utility
             }
 
             HistoryData values = ExtensionObject.ToEncodeable(results[0].HistoryData) as HistoryData;
-            m_logger.Information("values {0}", values);
+            m_logger.Debug("values {0}", values);
             foreach (var value in values.DataValues)
             {
                 yield return (T)value.Value;
@@ -1138,7 +1170,7 @@ namespace MicrosoftOpcUa.Client.Utility
         /// </summary>
         /// <param name="tag">节点信息</param>
         /// <returns>节点的特性值</returns>
-        public OpcNodeAttribute[] ReadNoteAttributes(string tag)
+        public OpcNodeAttribute[] ReadNodeAttributes(string tag)
         {
             NodeId sourceId = new NodeId(tag);
             ReadValueIdCollection nodesToRead = new ReadValueIdCollection();
@@ -1292,9 +1324,165 @@ namespace MicrosoftOpcUa.Client.Utility
         /// <summary>
         /// 读取一个节点的所有属性
         /// </summary>
+        /// <param name="tag">节点信息</param>
+        /// <returns>节点的特性值</returns>
+        public Dictionary<string, OpcNodeAttribute> ReadNodeAttributesAsDictionary(string tag)
+        {
+            NodeId sourceId = new NodeId(tag);
+            ReadValueIdCollection nodesToRead = new ReadValueIdCollection();
+
+            // attempt to read all possible attributes.
+            // 尝试着去读取所有可能的特性
+            for (uint ii = Attributes.NodeClass; ii <= Attributes.UserExecutable; ii++)
+            {
+                ReadValueId nodeToRead = new ReadValueId();
+                nodeToRead.NodeId = sourceId;
+                nodeToRead.AttributeId = ii;
+                nodesToRead.Add(nodeToRead);
+            }
+
+            int startOfProperties = nodesToRead.Count;
+
+            // find all of the pror of the node.
+            BrowseDescription nodeToBrowse1 = new BrowseDescription();
+
+            nodeToBrowse1.NodeId = sourceId;
+            nodeToBrowse1.BrowseDirection = BrowseDirection.Forward;
+            nodeToBrowse1.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+            nodeToBrowse1.IncludeSubtypes = true;
+            nodeToBrowse1.NodeClassMask = 0;
+            nodeToBrowse1.ResultMask = (uint)BrowseResultMask.All;
+
+            BrowseDescriptionCollection nodesToBrowse = new BrowseDescriptionCollection();
+            nodesToBrowse.Add(nodeToBrowse1);
+
+            // fetch property references from the server.
+            ReferenceDescriptionCollection references = FormUtils.Browse(m_session, nodesToBrowse, false);
+
+            if (references == null)
+            {
+                return null;
+            }
+
+            for (int ii = 0; ii < references.Count; ii++)
+            {
+                // ignore external references.
+                if (references[ii].NodeId.IsAbsolute)
+                {
+                    continue;
+                }
+
+                ReadValueId nodeToRead = new ReadValueId();
+                nodeToRead.NodeId = (NodeId)references[ii].NodeId;
+                nodeToRead.AttributeId = Attributes.Value;
+                nodesToRead.Add(nodeToRead);
+            }
+
+            // read all values.
+            DataValueCollection results = null;
+            DiagnosticInfoCollection diagnosticInfos = null;
+
+            m_session.Read(
+                null,
+                0,
+                TimestampsToReturn.Neither,
+                nodesToRead,
+                out results,
+                out diagnosticInfos);
+
+            ClientBase.ValidateResponse(results, nodesToRead);
+            ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToRead);
+
+            // process results.
+
+
+            Dictionary<string, OpcNodeAttribute> nodeAttribute = new Dictionary<string, OpcNodeAttribute>();
+            for (int ii = 0; ii < results.Count; ii++)
+            {
+                OpcNodeAttribute item = new OpcNodeAttribute();
+
+                // process attribute value.
+                if (ii < startOfProperties)
+                {
+                    // ignore attributes which are invalid for the node.
+                    if (results[ii].StatusCode == StatusCodes.BadAttributeIdInvalid)
+                    {
+                        continue;
+                    }
+
+                    // get the name of the attribute.
+                    item.Name = Attributes.GetBrowseName(nodesToRead[ii].AttributeId);
+
+                    // display any unexpected error.
+                    if (StatusCode.IsBad(results[ii].StatusCode))
+                    {
+                        item.Type = Utils.Format("{0}", Attributes.GetDataTypeId(nodesToRead[ii].AttributeId));
+                        item.Value = Utils.Format("{0}", results[ii].StatusCode);
+                    }
+
+                    // display the value.
+                    else
+                    {
+                        TypeInfo typeInfo = TypeInfo.Construct(results[ii].Value);
+
+                        item.Type = typeInfo.BuiltInType.ToString();
+
+                        if (typeInfo.ValueRank >= ValueRanks.OneOrMoreDimensions)
+                        {
+                            item.Type += "[]";
+                        }
+
+                        item.Value = results[ii].Value;//Utils.Format("{0}", results[ii].Value);
+                    }
+                }
+
+                // process property value.
+                else
+                {
+                    // ignore properties which are invalid for the node.
+                    if (results[ii].StatusCode == StatusCodes.BadNodeIdUnknown)
+                    {
+                        continue;
+                    }
+
+                    // get the name of the property.
+                    item.Name = Utils.Format("{0}", references[ii - startOfProperties]);
+
+                    // display any unexpected error.
+                    if (StatusCode.IsBad(results[ii].StatusCode))
+                    {
+                        item.Type = String.Empty;
+                        item.Value = Utils.Format("{0}", results[ii].StatusCode);
+                    }
+
+                    // display the value.
+                    else
+                    {
+                        TypeInfo typeInfo = TypeInfo.Construct(results[ii].Value);
+
+                        item.Type = typeInfo.BuiltInType.ToString();
+
+                        if (typeInfo.ValueRank >= ValueRanks.OneOrMoreDimensions)
+                        {
+                            item.Type += "[]";
+                        }
+
+                        item.Value = results[ii].Value; //Utils.Format("{0}", results[ii].Value);
+                    }
+                }
+
+                nodeAttribute[item.Name] = item;
+            }
+
+            return nodeAttribute;
+        }
+
+        /// <summary>
+        /// 读取一个节点的所有属性
+        /// </summary>
         /// <param name="tag">节点值</param>
         /// <returns>所有的数据</returns>
-        public DataValue[] ReadNoteDataValueAttributes(string tag)
+        public DataValue[] ReadNodeDataValueAttributes(string tag)
         {
             NodeId sourceId = new NodeId(tag);
             ReadValueIdCollection nodesToRead = new ReadValueIdCollection();
@@ -1419,7 +1607,7 @@ namespace MicrosoftOpcUa.Client.Utility
         private bool m_IsConnected;                       //是否已经连接过
         private int m_reconnectPeriod = 10;               // 重连状态
         private bool m_useSecurity;
-        private Serilog.Core.Logger m_logger;
+        private ILogger m_logger;
         private CertificateIdentifier m_applicationCertificate;
 
         private SessionReconnectHandler m_reconnectHandler;

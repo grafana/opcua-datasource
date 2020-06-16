@@ -8,28 +8,19 @@
 using grpc = global::Grpc.Core;
 
 namespace Pluginv2 {
-  public static partial class Core
+  public static partial class Resource
   {
-    static readonly string __ServiceName = "pluginv2.Core";
+    static readonly string __ServiceName = "pluginv2.Resource";
 
-    static readonly grpc::Marshaller<global::Pluginv2.CallResource.Types.Request> __Marshaller_pluginv2_CallResource_Request = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResource.Types.Request.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CallResource.Types.Response> __Marshaller_pluginv2_CallResource_Response = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResource.Types.Response.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryRequest> __Marshaller_pluginv2_DataQueryRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryResponse> __Marshaller_pluginv2_DataQueryResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.CallResourceRequest> __Marshaller_pluginv2_CallResourceRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResourceRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.CallResourceResponse> __Marshaller_pluginv2_CallResourceResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResourceResponse.Parser.ParseFrom);
 
-    static readonly grpc::Method<global::Pluginv2.CallResource.Types.Request, global::Pluginv2.CallResource.Types.Response> __Method_CallResource = new grpc::Method<global::Pluginv2.CallResource.Types.Request, global::Pluginv2.CallResource.Types.Response>(
-        grpc::MethodType.Unary,
+    static readonly grpc::Method<global::Pluginv2.CallResourceRequest, global::Pluginv2.CallResourceResponse> __Method_CallResource = new grpc::Method<global::Pluginv2.CallResourceRequest, global::Pluginv2.CallResourceResponse>(
+        grpc::MethodType.ServerStreaming,
         __ServiceName,
         "CallResource",
-        __Marshaller_pluginv2_CallResource_Request,
-        __Marshaller_pluginv2_CallResource_Response);
-
-    static readonly grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse> __Method_DataQuery = new grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "DataQuery",
-        __Marshaller_pluginv2_DataQueryRequest,
-        __Marshaller_pluginv2_DataQueryResponse);
+        __Marshaller_pluginv2_CallResourceRequest,
+        __Marshaller_pluginv2_CallResourceResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -37,194 +28,86 @@ namespace Pluginv2 {
       get { return global::Pluginv2.BackendReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Base class for server-side implementations of Core</summary>
-    [grpc::BindServiceMethod(typeof(Core), "BindService")]
-    public abstract partial class CoreBase
+    /// <summary>Base class for server-side implementations of Resource</summary>
+    [grpc::BindServiceMethod(typeof(Resource), "BindService")]
+    public abstract partial class ResourceBase
     {
-      /// <summary>
-      /// HTTP Style request
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.CallResource.Types.Response> CallResource(global::Pluginv2.CallResource.Types.Request request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      /// <summary>
-      /// Well typed query interface
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.DataQueryResponse> DataQuery(global::Pluginv2.DataQueryRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task CallResource(global::Pluginv2.CallResourceRequest request, grpc::IServerStreamWriter<global::Pluginv2.CallResourceResponse> responseStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
     }
 
-    /// <summary>Client for Core</summary>
-    public partial class CoreClient : grpc::ClientBase<CoreClient>
+    /// <summary>Client for Resource</summary>
+    public partial class ResourceClient : grpc::ClientBase<ResourceClient>
     {
-      /// <summary>Creates a new client for Core</summary>
+      /// <summary>Creates a new client for Resource</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public CoreClient(grpc::Channel channel) : base(channel)
+      public ResourceClient(grpc::ChannelBase channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for Core that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for Resource that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public CoreClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public ResourceClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected CoreClient() : base()
+      protected ResourceClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
-      protected CoreClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected ResourceClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
-      /// <summary>
-      /// HTTP Style request
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.CallResource.Types.Response CallResource(global::Pluginv2.CallResource.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.CallResourceResponse> CallResource(global::Pluginv2.CallResourceRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return CallResource(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      /// <summary>
-      /// HTTP Style request
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.CallResource.Types.Response CallResource(global::Pluginv2.CallResource.Types.Request request, grpc::CallOptions options)
+      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.CallResourceResponse> CallResource(global::Pluginv2.CallResourceRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_CallResource, null, options, request);
-      }
-      /// <summary>
-      /// HTTP Style request
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CallResource.Types.Response> CallResourceAsync(global::Pluginv2.CallResource.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return CallResourceAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// HTTP Style request
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CallResource.Types.Response> CallResourceAsync(global::Pluginv2.CallResource.Types.Request request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_CallResource, null, options, request);
-      }
-      /// <summary>
-      /// Well typed query interface
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return DataQuery(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// Well typed query interface
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_DataQuery, null, options, request);
-      }
-      /// <summary>
-      /// Well typed query interface
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return DataQueryAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// Well typed query interface
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_DataQuery, null, options, request);
+        return CallInvoker.AsyncServerStreamingCall(__Method_CallResource, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override CoreClient NewInstance(ClientBaseConfiguration configuration)
+      protected override ResourceClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new CoreClient(configuration);
+        return new ResourceClient(configuration);
       }
     }
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(CoreBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(ResourceBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_CallResource, serviceImpl.CallResource)
-          .AddMethod(__Method_DataQuery, serviceImpl.DataQuery).Build();
+          .AddMethod(__Method_CallResource, serviceImpl.CallResource).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, CoreBase serviceImpl)
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, ResourceBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_CallResource, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.CallResource.Types.Request, global::Pluginv2.CallResource.Types.Response>(serviceImpl.CallResource));
-      serviceBinder.AddMethod(__Method_DataQuery, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(serviceImpl.DataQuery));
+      serviceBinder.AddMethod(__Method_CallResource, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Pluginv2.CallResourceRequest, global::Pluginv2.CallResourceResponse>(serviceImpl.CallResource));
     }
 
   }
-  public static partial class Diagnostics
+  public static partial class Data
   {
-    static readonly string __ServiceName = "pluginv2.Diagnostics";
+    static readonly string __ServiceName = "pluginv2.Data";
 
-    static readonly grpc::Marshaller<global::Pluginv2.CollectMetrics.Types.Request> __Marshaller_pluginv2_CollectMetrics_Request = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CollectMetrics.Types.Request.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CollectMetrics.Types.Response> __Marshaller_pluginv2_CollectMetrics_Response = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CollectMetrics.Types.Response.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CheckHealth.Types.Request> __Marshaller_pluginv2_CheckHealth_Request = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CheckHealth.Types.Request.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CheckHealth.Types.Response> __Marshaller_pluginv2_CheckHealth_Response = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CheckHealth.Types.Response.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataResponse.Parser.ParseFrom);
 
-    static readonly grpc::Method<global::Pluginv2.CollectMetrics.Types.Request, global::Pluginv2.CollectMetrics.Types.Response> __Method_CollectMetrics = new grpc::Method<global::Pluginv2.CollectMetrics.Types.Request, global::Pluginv2.CollectMetrics.Types.Response>(
+    static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_QueryData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "CollectMetrics",
-        __Marshaller_pluginv2_CollectMetrics_Request,
-        __Marshaller_pluginv2_CollectMetrics_Response);
-
-    static readonly grpc::Method<global::Pluginv2.CheckHealth.Types.Request, global::Pluginv2.CheckHealth.Types.Response> __Method_CheckHealth = new grpc::Method<global::Pluginv2.CheckHealth.Types.Request, global::Pluginv2.CheckHealth.Types.Response>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "CheckHealth",
-        __Marshaller_pluginv2_CheckHealth_Request,
-        __Marshaller_pluginv2_CheckHealth_Response);
+        "QueryData",
+        __Marshaller_pluginv2_QueryDataRequest,
+        __Marshaller_pluginv2_QueryDataResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -232,16 +115,120 @@ namespace Pluginv2 {
       get { return global::Pluginv2.BackendReflection.Descriptor.Services[1]; }
     }
 
-    /// <summary>Base class for server-side implementations of Diagnostics</summary>
-    [grpc::BindServiceMethod(typeof(Diagnostics), "BindService")]
-    public abstract partial class DiagnosticsBase
+    /// <summary>Base class for server-side implementations of Data</summary>
+    [grpc::BindServiceMethod(typeof(Data), "BindService")]
+    public abstract partial class DataBase
     {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.CollectMetrics.Types.Response> CollectMetrics(global::Pluginv2.CollectMetrics.Types.Request request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.QueryDataResponse> QueryData(global::Pluginv2.QueryDataRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.CheckHealth.Types.Response> CheckHealth(global::Pluginv2.CheckHealth.Types.Request request, grpc::ServerCallContext context)
+    }
+
+    /// <summary>Client for Data</summary>
+    public partial class DataClient : grpc::ClientBase<DataClient>
+    {
+      /// <summary>Creates a new client for Data</summary>
+      /// <param name="channel">The channel to use to make remote calls.</param>
+      public DataClient(grpc::ChannelBase channel) : base(channel)
+      {
+      }
+      /// <summary>Creates a new client for Data that uses a custom <c>CallInvoker</c>.</summary>
+      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
+      public DataClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      {
+      }
+      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
+      protected DataClient() : base()
+      {
+      }
+      /// <summary>Protected constructor to allow creation of configured clients.</summary>
+      /// <param name="configuration">The client configuration.</param>
+      protected DataClient(ClientBaseConfiguration configuration) : base(configuration)
+      {
+      }
+
+      public virtual global::Pluginv2.QueryDataResponse QueryData(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return QueryData(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual global::Pluginv2.QueryDataResponse QueryData(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_QueryData, null, options, request);
+      }
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> QueryDataAsync(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return QueryDataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> QueryDataAsync(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_QueryData, null, options, request);
+      }
+      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
+      protected override DataClient NewInstance(ClientBaseConfiguration configuration)
+      {
+        return new DataClient(configuration);
+      }
+    }
+
+    /// <summary>Creates service definition that can be registered with a server</summary>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static grpc::ServerServiceDefinition BindService(DataBase serviceImpl)
+    {
+      return grpc::ServerServiceDefinition.CreateBuilder()
+          .AddMethod(__Method_QueryData, serviceImpl.QueryData).Build();
+    }
+
+    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
+    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
+    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
+    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, DataBase serviceImpl)
+    {
+      serviceBinder.AddMethod(__Method_QueryData, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(serviceImpl.QueryData));
+    }
+
+  }
+  public static partial class Diagnostics
+  {
+    static readonly string __ServiceName = "pluginv2.Diagnostics";
+
+    static readonly grpc::Marshaller<global::Pluginv2.CheckHealthRequest> __Marshaller_pluginv2_CheckHealthRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CheckHealthRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.CheckHealthResponse> __Marshaller_pluginv2_CheckHealthResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CheckHealthResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.CollectMetricsRequest> __Marshaller_pluginv2_CollectMetricsRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CollectMetricsRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.CollectMetricsResponse> __Marshaller_pluginv2_CollectMetricsResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CollectMetricsResponse.Parser.ParseFrom);
+
+    static readonly grpc::Method<global::Pluginv2.CheckHealthRequest, global::Pluginv2.CheckHealthResponse> __Method_CheckHealth = new grpc::Method<global::Pluginv2.CheckHealthRequest, global::Pluginv2.CheckHealthResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "CheckHealth",
+        __Marshaller_pluginv2_CheckHealthRequest,
+        __Marshaller_pluginv2_CheckHealthResponse);
+
+    static readonly grpc::Method<global::Pluginv2.CollectMetricsRequest, global::Pluginv2.CollectMetricsResponse> __Method_CollectMetrics = new grpc::Method<global::Pluginv2.CollectMetricsRequest, global::Pluginv2.CollectMetricsResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "CollectMetrics",
+        __Marshaller_pluginv2_CollectMetricsRequest,
+        __Marshaller_pluginv2_CollectMetricsResponse);
+
+    /// <summary>Service descriptor</summary>
+    public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
+    {
+      get { return global::Pluginv2.BackendReflection.Descriptor.Services[2]; }
+    }
+
+    /// <summary>Base class for server-side implementations of Diagnostics</summary>
+    [grpc::BindServiceMethod(typeof(Diagnostics), "BindService")]
+    public abstract partial class DiagnosticsBase
+    {
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.CheckHealthResponse> CheckHealth(global::Pluginv2.CheckHealthRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.CollectMetricsResponse> CollectMetrics(global::Pluginv2.CollectMetricsRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -253,7 +240,7 @@ namespace Pluginv2 {
     {
       /// <summary>Creates a new client for Diagnostics</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public DiagnosticsClient(grpc::Channel channel) : base(channel)
+      public DiagnosticsClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Diagnostics that uses a custom <c>CallInvoker</c>.</summary>
@@ -271,37 +258,37 @@ namespace Pluginv2 {
       {
       }
 
-      public virtual global::Pluginv2.CollectMetrics.Types.Response CollectMetrics(global::Pluginv2.CollectMetrics.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return CollectMetrics(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::Pluginv2.CollectMetrics.Types.Response CollectMetrics(global::Pluginv2.CollectMetrics.Types.Request request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_CollectMetrics, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CollectMetrics.Types.Response> CollectMetricsAsync(global::Pluginv2.CollectMetrics.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return CollectMetricsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CollectMetrics.Types.Response> CollectMetricsAsync(global::Pluginv2.CollectMetrics.Types.Request request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_CollectMetrics, null, options, request);
-      }
-      public virtual global::Pluginv2.CheckHealth.Types.Response CheckHealth(global::Pluginv2.CheckHealth.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Pluginv2.CheckHealthResponse CheckHealth(global::Pluginv2.CheckHealthRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return CheckHealth(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Pluginv2.CheckHealth.Types.Response CheckHealth(global::Pluginv2.CheckHealth.Types.Request request, grpc::CallOptions options)
+      public virtual global::Pluginv2.CheckHealthResponse CheckHealth(global::Pluginv2.CheckHealthRequest request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_CheckHealth, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CheckHealth.Types.Response> CheckHealthAsync(global::Pluginv2.CheckHealth.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CheckHealthResponse> CheckHealthAsync(global::Pluginv2.CheckHealthRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return CheckHealthAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CheckHealth.Types.Response> CheckHealthAsync(global::Pluginv2.CheckHealth.Types.Request request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CheckHealthResponse> CheckHealthAsync(global::Pluginv2.CheckHealthRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_CheckHealth, null, options, request);
+      }
+      public virtual global::Pluginv2.CollectMetricsResponse CollectMetrics(global::Pluginv2.CollectMetricsRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return CollectMetrics(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual global::Pluginv2.CollectMetricsResponse CollectMetrics(global::Pluginv2.CollectMetricsRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_CollectMetrics, null, options, request);
+      }
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CollectMetricsResponse> CollectMetricsAsync(global::Pluginv2.CollectMetricsRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return CollectMetricsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CollectMetricsResponse> CollectMetricsAsync(global::Pluginv2.CollectMetricsRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_CollectMetrics, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override DiagnosticsClient NewInstance(ClientBaseConfiguration configuration)
@@ -315,8 +302,8 @@ namespace Pluginv2 {
     public static grpc::ServerServiceDefinition BindService(DiagnosticsBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_CollectMetrics, serviceImpl.CollectMetrics)
-          .AddMethod(__Method_CheckHealth, serviceImpl.CheckHealth).Build();
+          .AddMethod(__Method_CheckHealth, serviceImpl.CheckHealth)
+          .AddMethod(__Method_CollectMetrics, serviceImpl.CollectMetrics).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
@@ -325,135 +312,8 @@ namespace Pluginv2 {
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, DiagnosticsBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_CollectMetrics, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.CollectMetrics.Types.Request, global::Pluginv2.CollectMetrics.Types.Response>(serviceImpl.CollectMetrics));
-      serviceBinder.AddMethod(__Method_CheckHealth, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.CheckHealth.Types.Request, global::Pluginv2.CheckHealth.Types.Response>(serviceImpl.CheckHealth));
-    }
-
-  }
-  public static partial class GrafanaPlatform
-  {
-    static readonly string __ServiceName = "pluginv2.GrafanaPlatform";
-
-    static readonly grpc::Marshaller<global::Pluginv2.CallResource.Types.Request> __Marshaller_pluginv2_CallResource_Request = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResource.Types.Request.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CallResource.Types.Response> __Marshaller_pluginv2_CallResource_Response = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResource.Types.Response.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryRequest> __Marshaller_pluginv2_DataQueryRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryResponse> __Marshaller_pluginv2_DataQueryResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryResponse.Parser.ParseFrom);
-
-    static readonly grpc::Method<global::Pluginv2.CallResource.Types.Request, global::Pluginv2.CallResource.Types.Response> __Method_Resource = new grpc::Method<global::Pluginv2.CallResource.Types.Request, global::Pluginv2.CallResource.Types.Response>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "Resource",
-        __Marshaller_pluginv2_CallResource_Request,
-        __Marshaller_pluginv2_CallResource_Response);
-
-    static readonly grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse> __Method_DataQuery = new grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "DataQuery",
-        __Marshaller_pluginv2_DataQueryRequest,
-        __Marshaller_pluginv2_DataQueryResponse);
-
-    /// <summary>Service descriptor</summary>
-    public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
-    {
-      get { return global::Pluginv2.BackendReflection.Descriptor.Services[2]; }
-    }
-
-    /// <summary>Base class for server-side implementations of GrafanaPlatform</summary>
-    [grpc::BindServiceMethod(typeof(GrafanaPlatform), "BindService")]
-    public abstract partial class GrafanaPlatformBase
-    {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.CallResource.Types.Response> Resource(global::Pluginv2.CallResource.Types.Request request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.DataQueryResponse> DataQuery(global::Pluginv2.DataQueryRequest request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-    }
-
-    /// <summary>Client for GrafanaPlatform</summary>
-    public partial class GrafanaPlatformClient : grpc::ClientBase<GrafanaPlatformClient>
-    {
-      /// <summary>Creates a new client for GrafanaPlatform</summary>
-      /// <param name="channel">The channel to use to make remote calls.</param>
-      public GrafanaPlatformClient(grpc::Channel channel) : base(channel)
-      {
-      }
-      /// <summary>Creates a new client for GrafanaPlatform that uses a custom <c>CallInvoker</c>.</summary>
-      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public GrafanaPlatformClient(grpc::CallInvoker callInvoker) : base(callInvoker)
-      {
-      }
-      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected GrafanaPlatformClient() : base()
-      {
-      }
-      /// <summary>Protected constructor to allow creation of configured clients.</summary>
-      /// <param name="configuration">The client configuration.</param>
-      protected GrafanaPlatformClient(ClientBaseConfiguration configuration) : base(configuration)
-      {
-      }
-
-      public virtual global::Pluginv2.CallResource.Types.Response Resource(global::Pluginv2.CallResource.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return Resource(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::Pluginv2.CallResource.Types.Response Resource(global::Pluginv2.CallResource.Types.Request request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_Resource, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CallResource.Types.Response> ResourceAsync(global::Pluginv2.CallResource.Types.Request request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return ResourceAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.CallResource.Types.Response> ResourceAsync(global::Pluginv2.CallResource.Types.Request request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_Resource, null, options, request);
-      }
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return DataQuery(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_DataQuery, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return DataQueryAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_DataQuery, null, options, request);
-      }
-      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override GrafanaPlatformClient NewInstance(ClientBaseConfiguration configuration)
-      {
-        return new GrafanaPlatformClient(configuration);
-      }
-    }
-
-    /// <summary>Creates service definition that can be registered with a server</summary>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(GrafanaPlatformBase serviceImpl)
-    {
-      return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_Resource, serviceImpl.Resource)
-          .AddMethod(__Method_DataQuery, serviceImpl.DataQuery).Build();
-    }
-
-    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
-    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
-    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, GrafanaPlatformBase serviceImpl)
-    {
-      serviceBinder.AddMethod(__Method_Resource, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.CallResource.Types.Request, global::Pluginv2.CallResource.Types.Response>(serviceImpl.Resource));
-      serviceBinder.AddMethod(__Method_DataQuery, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(serviceImpl.DataQuery));
+      serviceBinder.AddMethod(__Method_CheckHealth, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.CheckHealthRequest, global::Pluginv2.CheckHealthResponse>(serviceImpl.CheckHealth));
+      serviceBinder.AddMethod(__Method_CollectMetrics, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.CollectMetricsRequest, global::Pluginv2.CollectMetricsResponse>(serviceImpl.CollectMetrics));
     }
 
   }
@@ -461,15 +321,15 @@ namespace Pluginv2 {
   {
     static readonly string __ServiceName = "pluginv2.Transform";
 
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryRequest> __Marshaller_pluginv2_DataQueryRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryResponse> __Marshaller_pluginv2_DataQueryResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataResponse.Parser.ParseFrom);
 
-    static readonly grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse> __Method_DataQuery = new grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(
+    static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_TransformData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "DataQuery",
-        __Marshaller_pluginv2_DataQueryRequest,
-        __Marshaller_pluginv2_DataQueryResponse);
+        "TransformData",
+        __Marshaller_pluginv2_QueryDataRequest,
+        __Marshaller_pluginv2_QueryDataResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -481,7 +341,7 @@ namespace Pluginv2 {
     [grpc::BindServiceMethod(typeof(Transform), "BindService")]
     public abstract partial class TransformBase
     {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.DataQueryResponse> DataQuery(global::Pluginv2.DataQueryRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.QueryDataResponse> TransformData(global::Pluginv2.QueryDataRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -493,7 +353,7 @@ namespace Pluginv2 {
     {
       /// <summary>Creates a new client for Transform</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public TransformClient(grpc::Channel channel) : base(channel)
+      public TransformClient(grpc::ChannelBase channel) : base(channel)
       {
       }
       /// <summary>Creates a new client for Transform that uses a custom <c>CallInvoker</c>.</summary>
@@ -511,21 +371,21 @@ namespace Pluginv2 {
       {
       }
 
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Pluginv2.QueryDataResponse TransformData(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return DataQuery(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return TransformData(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
+      public virtual global::Pluginv2.QueryDataResponse TransformData(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_DataQuery, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_TransformData, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> TransformDataAsync(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return DataQueryAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return TransformDataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> TransformDataAsync(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_DataQuery, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_TransformData, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override TransformClient NewInstance(ClientBaseConfiguration configuration)
@@ -539,7 +399,7 @@ namespace Pluginv2 {
     public static grpc::ServerServiceDefinition BindService(TransformBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_DataQuery, serviceImpl.DataQuery).Build();
+          .AddMethod(__Method_TransformData, serviceImpl.TransformData).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
@@ -548,23 +408,23 @@ namespace Pluginv2 {
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     public static void BindService(grpc::ServiceBinderBase serviceBinder, TransformBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_DataQuery, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(serviceImpl.DataQuery));
+      serviceBinder.AddMethod(__Method_TransformData, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(serviceImpl.TransformData));
     }
 
   }
-  public static partial class TransformCallBack
+  public static partial class TransformDataCallBack
   {
-    static readonly string __ServiceName = "pluginv2.TransformCallBack";
+    static readonly string __ServiceName = "pluginv2.TransformDataCallBack";
 
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryRequest> __Marshaller_pluginv2_DataQueryRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.DataQueryResponse> __Marshaller_pluginv2_DataQueryResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.DataQueryResponse.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataResponse.Parser.ParseFrom);
 
-    static readonly grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse> __Method_DataQuery = new grpc::Method<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(
+    static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_QueryData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "DataQuery",
-        __Marshaller_pluginv2_DataQueryRequest,
-        __Marshaller_pluginv2_DataQueryResponse);
+        "QueryData",
+        __Marshaller_pluginv2_QueryDataRequest,
+        __Marshaller_pluginv2_QueryDataResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -572,420 +432,78 @@ namespace Pluginv2 {
       get { return global::Pluginv2.BackendReflection.Descriptor.Services[4]; }
     }
 
-    /// <summary>Base class for server-side implementations of TransformCallBack</summary>
-    [grpc::BindServiceMethod(typeof(TransformCallBack), "BindService")]
-    public abstract partial class TransformCallBackBase
+    /// <summary>Base class for server-side implementations of TransformDataCallBack</summary>
+    [grpc::BindServiceMethod(typeof(TransformDataCallBack), "BindService")]
+    public abstract partial class TransformDataCallBackBase
     {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.DataQueryResponse> DataQuery(global::Pluginv2.DataQueryRequest request, grpc::ServerCallContext context)
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.QueryDataResponse> QueryData(global::Pluginv2.QueryDataRequest request, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
     }
 
-    /// <summary>Client for TransformCallBack</summary>
-    public partial class TransformCallBackClient : grpc::ClientBase<TransformCallBackClient>
+    /// <summary>Client for TransformDataCallBack</summary>
+    public partial class TransformDataCallBackClient : grpc::ClientBase<TransformDataCallBackClient>
     {
-      /// <summary>Creates a new client for TransformCallBack</summary>
+      /// <summary>Creates a new client for TransformDataCallBack</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public TransformCallBackClient(grpc::Channel channel) : base(channel)
+      public TransformDataCallBackClient(grpc::ChannelBase channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for TransformCallBack that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for TransformDataCallBack that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public TransformCallBackClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public TransformDataCallBackClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected TransformCallBackClient() : base()
+      protected TransformDataCallBackClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
-      protected TransformCallBackClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected TransformDataCallBackClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Pluginv2.QueryDataResponse QueryData(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return DataQuery(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return QueryData(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Pluginv2.DataQueryResponse DataQuery(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
+      public virtual global::Pluginv2.QueryDataResponse QueryData(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_DataQuery, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_QueryData, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> QueryDataAsync(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return DataQueryAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return QueryDataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.DataQueryResponse> DataQueryAsync(global::Pluginv2.DataQueryRequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> QueryDataAsync(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_DataQuery, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_QueryData, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override TransformCallBackClient NewInstance(ClientBaseConfiguration configuration)
+      protected override TransformDataCallBackClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new TransformCallBackClient(configuration);
+        return new TransformDataCallBackClient(configuration);
       }
     }
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(TransformCallBackBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(TransformDataCallBackBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_DataQuery, serviceImpl.DataQuery).Build();
+          .AddMethod(__Method_QueryData, serviceImpl.QueryData).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, TransformCallBackBase serviceImpl)
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, TransformDataCallBackBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_DataQuery, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.DataQueryRequest, global::Pluginv2.DataQueryResponse>(serviceImpl.DataQuery));
-    }
-
-  }
-  public static partial class StreamingPlugin
-  {
-    static readonly string __ServiceName = "pluginv2.StreamingPlugin";
-
-    static readonly grpc::Marshaller<global::Pluginv2.PluginConfig> __Marshaller_pluginv2_PluginConfig = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.PluginConfig.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.StreamingMessage> __Marshaller_pluginv2_StreamingMessage = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.StreamingMessage.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.StreamingRequest> __Marshaller_pluginv2_StreamingRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.StreamingRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Google.Protobuf.WellKnownTypes.Empty> __Marshaller_google_protobuf_Empty = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Google.Protobuf.WellKnownTypes.Empty.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.StreamingClose> __Marshaller_pluginv2_StreamingClose = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.StreamingClose.Parser.ParseFrom);
-
-    static readonly grpc::Method<global::Pluginv2.PluginConfig, global::Pluginv2.StreamingMessage> __Method_Connect = new grpc::Method<global::Pluginv2.PluginConfig, global::Pluginv2.StreamingMessage>(
-        grpc::MethodType.ServerStreaming,
-        __ServiceName,
-        "Connect",
-        __Marshaller_pluginv2_PluginConfig,
-        __Marshaller_pluginv2_StreamingMessage);
-
-    static readonly grpc::Method<global::Pluginv2.StreamingRequest, global::Pluginv2.StreamingMessage> __Method_Process = new grpc::Method<global::Pluginv2.StreamingRequest, global::Pluginv2.StreamingMessage>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "Process",
-        __Marshaller_pluginv2_StreamingRequest,
-        __Marshaller_pluginv2_StreamingMessage);
-
-    static readonly grpc::Method<global::Google.Protobuf.WellKnownTypes.Empty, global::Pluginv2.StreamingClose> __Method_Disconnect = new grpc::Method<global::Google.Protobuf.WellKnownTypes.Empty, global::Pluginv2.StreamingClose>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "Disconnect",
-        __Marshaller_google_protobuf_Empty,
-        __Marshaller_pluginv2_StreamingClose);
-
-    /// <summary>Service descriptor</summary>
-    public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
-    {
-      get { return global::Pluginv2.BackendReflection.Descriptor.Services[5]; }
-    }
-
-    /// <summary>Base class for server-side implementations of StreamingPlugin</summary>
-    [grpc::BindServiceMethod(typeof(StreamingPlugin), "BindService")]
-    public abstract partial class StreamingPluginBase
-    {
-      /// <summary>
-      /// Called by grafana before the first request
-      /// Grafana server will set up a websocket that will broadcast to all listeners
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="responseStream">Used for sending responses back to the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>A task indicating completion of the handler.</returns>
-      public virtual global::System.Threading.Tasks.Task Connect(global::Pluginv2.PluginConfig request, grpc::IServerStreamWriter<global::Pluginv2.StreamingMessage> responseStream, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      /// <summary>
-      /// If the message is not empty, send that to the user
-      /// throwing an error will make sure the user is not subscribed
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.StreamingMessage> Process(global::Pluginv2.StreamingRequest request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      /// <summary>
-      /// Stop streaming to that instance, returns the number of open connections
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>The response to send back to the client (wrapped by a task).</returns>
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.StreamingClose> Disconnect(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-    }
-
-    /// <summary>Client for StreamingPlugin</summary>
-    public partial class StreamingPluginClient : grpc::ClientBase<StreamingPluginClient>
-    {
-      /// <summary>Creates a new client for StreamingPlugin</summary>
-      /// <param name="channel">The channel to use to make remote calls.</param>
-      public StreamingPluginClient(grpc::Channel channel) : base(channel)
-      {
-      }
-      /// <summary>Creates a new client for StreamingPlugin that uses a custom <c>CallInvoker</c>.</summary>
-      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public StreamingPluginClient(grpc::CallInvoker callInvoker) : base(callInvoker)
-      {
-      }
-      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected StreamingPluginClient() : base()
-      {
-      }
-      /// <summary>Protected constructor to allow creation of configured clients.</summary>
-      /// <param name="configuration">The client configuration.</param>
-      protected StreamingPluginClient(ClientBaseConfiguration configuration) : base(configuration)
-      {
-      }
-
-      /// <summary>
-      /// Called by grafana before the first request
-      /// Grafana server will set up a websocket that will broadcast to all listeners
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamingMessage> Connect(global::Pluginv2.PluginConfig request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return Connect(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// Called by grafana before the first request
-      /// Grafana server will set up a websocket that will broadcast to all listeners
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamingMessage> Connect(global::Pluginv2.PluginConfig request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncServerStreamingCall(__Method_Connect, null, options, request);
-      }
-      /// <summary>
-      /// If the message is not empty, send that to the user
-      /// throwing an error will make sure the user is not subscribed
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.StreamingMessage Process(global::Pluginv2.StreamingRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return Process(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// If the message is not empty, send that to the user
-      /// throwing an error will make sure the user is not subscribed
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.StreamingMessage Process(global::Pluginv2.StreamingRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_Process, null, options, request);
-      }
-      /// <summary>
-      /// If the message is not empty, send that to the user
-      /// throwing an error will make sure the user is not subscribed
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.StreamingMessage> ProcessAsync(global::Pluginv2.StreamingRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return ProcessAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// If the message is not empty, send that to the user
-      /// throwing an error will make sure the user is not subscribed
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.StreamingMessage> ProcessAsync(global::Pluginv2.StreamingRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_Process, null, options, request);
-      }
-      /// <summary>
-      /// Stop streaming to that instance, returns the number of open connections
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.StreamingClose Disconnect(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return Disconnect(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// Stop streaming to that instance, returns the number of open connections
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The response received from the server.</returns>
-      public virtual global::Pluginv2.StreamingClose Disconnect(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_Disconnect, null, options, request);
-      }
-      /// <summary>
-      /// Stop streaming to that instance, returns the number of open connections
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.StreamingClose> DisconnectAsync(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return DisconnectAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// Stop streaming to that instance, returns the number of open connections
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.StreamingClose> DisconnectAsync(global::Google.Protobuf.WellKnownTypes.Empty request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_Disconnect, null, options, request);
-      }
-      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override StreamingPluginClient NewInstance(ClientBaseConfiguration configuration)
-      {
-        return new StreamingPluginClient(configuration);
-      }
-    }
-
-    /// <summary>Creates service definition that can be registered with a server</summary>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(StreamingPluginBase serviceImpl)
-    {
-      return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_Connect, serviceImpl.Connect)
-          .AddMethod(__Method_Process, serviceImpl.Process)
-          .AddMethod(__Method_Disconnect, serviceImpl.Disconnect).Build();
-    }
-
-    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
-    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
-    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, StreamingPluginBase serviceImpl)
-    {
-      serviceBinder.AddMethod(__Method_Connect, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Pluginv2.PluginConfig, global::Pluginv2.StreamingMessage>(serviceImpl.Connect));
-      serviceBinder.AddMethod(__Method_Process, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.StreamingRequest, global::Pluginv2.StreamingMessage>(serviceImpl.Process));
-      serviceBinder.AddMethod(__Method_Disconnect, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Google.Protobuf.WellKnownTypes.Empty, global::Pluginv2.StreamingClose>(serviceImpl.Disconnect));
-    }
-
-  }
-  public static partial class Renderer
-  {
-    static readonly string __ServiceName = "pluginv2.Renderer";
-
-    static readonly grpc::Marshaller<global::Pluginv2.RenderRequest> __Marshaller_pluginv2_RenderRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.RenderRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.RenderResponse> __Marshaller_pluginv2_RenderResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.RenderResponse.Parser.ParseFrom);
-
-    static readonly grpc::Method<global::Pluginv2.RenderRequest, global::Pluginv2.RenderResponse> __Method_Render = new grpc::Method<global::Pluginv2.RenderRequest, global::Pluginv2.RenderResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "Render",
-        __Marshaller_pluginv2_RenderRequest,
-        __Marshaller_pluginv2_RenderResponse);
-
-    /// <summary>Service descriptor</summary>
-    public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
-    {
-      get { return global::Pluginv2.BackendReflection.Descriptor.Services[6]; }
-    }
-
-    /// <summary>Base class for server-side implementations of Renderer</summary>
-    [grpc::BindServiceMethod(typeof(Renderer), "BindService")]
-    public abstract partial class RendererBase
-    {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.RenderResponse> Render(global::Pluginv2.RenderRequest request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-    }
-
-    /// <summary>Client for Renderer</summary>
-    public partial class RendererClient : grpc::ClientBase<RendererClient>
-    {
-      /// <summary>Creates a new client for Renderer</summary>
-      /// <param name="channel">The channel to use to make remote calls.</param>
-      public RendererClient(grpc::Channel channel) : base(channel)
-      {
-      }
-      /// <summary>Creates a new client for Renderer that uses a custom <c>CallInvoker</c>.</summary>
-      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public RendererClient(grpc::CallInvoker callInvoker) : base(callInvoker)
-      {
-      }
-      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected RendererClient() : base()
-      {
-      }
-      /// <summary>Protected constructor to allow creation of configured clients.</summary>
-      /// <param name="configuration">The client configuration.</param>
-      protected RendererClient(ClientBaseConfiguration configuration) : base(configuration)
-      {
-      }
-
-      public virtual global::Pluginv2.RenderResponse Render(global::Pluginv2.RenderRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return Render(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::Pluginv2.RenderResponse Render(global::Pluginv2.RenderRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_Render, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.RenderResponse> RenderAsync(global::Pluginv2.RenderRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return RenderAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.RenderResponse> RenderAsync(global::Pluginv2.RenderRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_Render, null, options, request);
-      }
-      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override RendererClient NewInstance(ClientBaseConfiguration configuration)
-      {
-        return new RendererClient(configuration);
-      }
-    }
-
-    /// <summary>Creates service definition that can be registered with a server</summary>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(RendererBase serviceImpl)
-    {
-      return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_Render, serviceImpl.Render).Build();
-    }
-
-    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
-    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
-    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, RendererBase serviceImpl)
-    {
-      serviceBinder.AddMethod(__Method_Render, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.RenderRequest, global::Pluginv2.RenderResponse>(serviceImpl.Render));
+      serviceBinder.AddMethod(__Method_QueryData, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(serviceImpl.QueryData));
     }
 
   }
