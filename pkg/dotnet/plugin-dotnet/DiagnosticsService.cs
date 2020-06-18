@@ -17,17 +17,19 @@ namespace plugin_dotnet
 {
     public class DiagnosticsService : Diagnostics.DiagnosticsBase
     {
+        private IConnections _connections;
         private ILogger log;
-        public DiagnosticsService(ILogger logIn)
+        public DiagnosticsService(ILogger logIn, IConnections connections)
         {
             log = logIn;
+            _connections = connections;
         }
 
         public override Task<CheckHealthResponse> CheckHealth(CheckHealthRequest request, ServerCallContext context)
         {
             log.Debug("Check Health Request {0}", request);
 
-            OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
+            var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse
             {
                 Status = connection.Connected ? CheckHealthResponse.Types.HealthStatus.Ok : CheckHealthResponse.Types.HealthStatus.Error,
