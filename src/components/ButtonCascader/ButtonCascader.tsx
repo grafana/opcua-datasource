@@ -33,12 +33,12 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
 });
 
 export const ButtonCascader: React.FC<ButtonCascaderProps> = props => {
-  const { onChange, className, loadData, ...rest } = props;
+    const { onChange, className, loadData, ...rest } = props;
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  return (
-    <RCCascader onChange={onChange} loadData={loadData} popupClassName={styles.popup} {...rest} expandIcon={null}>
+    return (
+        <RCCascader onChange={onChange} loadData={loadData} changeOnSelect={true} popupClassName={styles.popup} {...rest} expandIcon={null}>
       <button className={cx('gf-form-label', className)} disabled={props.disabled}>
         {props.children} <Icon name="angle-down" className={styles.icon} />
       </button>

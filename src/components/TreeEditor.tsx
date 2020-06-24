@@ -187,7 +187,7 @@ export class TreeEditor extends PureComponent<Props, State> {
             key: item.nodeId,
             title: item.displayName,
             children: [loadingItem],
-            checkable: false,
+            checkable: true,
           };
         } else {
           console.log('item', item);

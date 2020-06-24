@@ -90,7 +90,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       value,
       nodeId,
     });
-    onRunQuery();
+      onRunQuery();
   };
 
   onSelect = (val: string) => {
@@ -149,6 +149,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Processed', value: 'ReadDataProcessed' },
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
+      { label: 'Events', value: 'ReadEvents' }
     ];
   }
 
