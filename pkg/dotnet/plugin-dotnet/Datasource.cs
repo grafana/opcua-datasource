@@ -26,6 +26,10 @@ namespace plugin_dotnet
         public object aggregate { get; set; }
         public string interval { get; set; }
 
+        public string eventTypeNodeId { get; set; }
+        public string[] eventTypes { get; set; }
+
+
         public OpcUAQuery() { }
 
         public OpcUAQuery(DataQuery dataQuery)
@@ -42,6 +46,8 @@ namespace plugin_dotnet
             readType = query.readType;
             aggregate = query.aggregate;
             interval = query.interval;
+            eventTypeNodeId = query.eventTypeNodeId;
+            eventTypes = query.eventTypes;
         }
 
         public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string nodeId)

@@ -80,6 +80,17 @@ namespace plugin_dotnet
                             log.Debug("We got a result from browse => {0}", result);
                         }
                         break;
+                    case "browseTypes":
+                        {
+                            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            var nId = Opc.Ua.NodeId.Parse(nodeId);
+                            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
+                            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a)).ToArray());
+                            response.Code = 200;
+                            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                            log.Debug("We got a result from browse => {0}", result);
+                        }
+                        break;
                 }
                 
             }

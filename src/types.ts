@@ -6,6 +6,8 @@ export interface OpcUaQuery extends DataQuery {
   readType: string;
   aggregate: OpcUaNodeDefinition;
   interval: string;
+  eventTypeNodeId: string;
+  eventTypes: string[];
 }
 
 export interface OpcUaResultsEntry {

@@ -203,6 +203,9 @@ namespace plugin_dotnet
             eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.ConfirmedState);
             eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.ConditionName);
 
+            if (!string.IsNullOrEmpty(query.eventTypeNodeId))
+                eventFilter.WhereClause.Push(FilterOperator.OfType, NodeId.Parse(query.eventTypeNodeId));
+
             return eventFilter;
         }
 

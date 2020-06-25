@@ -12,12 +12,15 @@ import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 import { css } from 'emotion';
 
 const rootNode = 'i=85';
+const eventTypesNode = "i=3048";
 const selectText = (t: string): string => `Select <${t}>`;
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
   options: CascaderOption[];
   value: string[];
+    eventTypes: string[];
+    eventOptions: CascaderOption[];
   tabs: Array<{ label: string; active: boolean }>;
 };
 
@@ -40,7 +43,9 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     this.state = {
       options: [],
-      value: this.props.query.value || ['Select to browse OPC UA Server'],
+        value: this.props.query.value || ['Select to browse OPC UA Server'],
+        eventTypes: [],
+        eventOptions: [],
       tabs: [
         { label: 'Traditional', active: true },
         { label: 'Tree view', active: false },
@@ -53,6 +58,14 @@ export class QueryEditor extends PureComponent<Props, State> {
         options: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
       });
     });
+
+    props.datasource.getResource('browseTypes', { nodeId: eventTypesNode }).then((results: OpcUaBrowseResults[]) => {
+        console.log('Results', results);
+        this.setState({
+            eventOptions: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
+        });
+    });
+
   }
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
@@ -91,7 +104,22 @@ export class QueryEditor extends PureComponent<Props, State> {
       nodeId,
     });
       onRunQuery();
-  };
+    };
+
+    onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
+        const { query, onChange, onRunQuery } = this.props;
+        const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
+        const nid = selected[selected.length - 1];
+        this.setState({ eventTypes: evtTypes });
+        onChange({
+            ...query,
+            eventTypeNodeId: nid,
+            eventTypes: evtTypes,
+        });
+        onRunQuery();
+    };
+
+
 
   onSelect = (val: string) => {
     console.log('onSelect', val);
@@ -125,7 +153,23 @@ export class QueryEditor extends PureComponent<Props, State> {
           });
         });
     }
-  };
+    };
+
+    getEventTypes = (selectedOptions: CascaderOption[]) => {
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+        targetOption.loading = true;
+        if (targetOption.value) {
+            this.props.datasource
+                .getResource('browseTypes', { nodeId: targetOption.value })
+                .then((results: OpcUaBrowseResults[]) => {
+                    targetOption.loading = false;
+                    targetOption.children = results.map(r => this.toCascaderOption(r));
+                    this.setState({
+                        eventOptions: [...this.state.eventOptions],
+                    });
+                });
+        }
+    };
 
   browseNodeSV = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
     return this.props.datasource.getResource('browse', { nodeId }).then((results: OpcUaBrowseResults[]) => {
@@ -191,7 +235,23 @@ export class QueryEditor extends PureComponent<Props, State> {
             />
           </>
         );
-      }
+        }
+        case 'Events': {
+            return (
+                <>
+                    <SegmentLabel label="Event Type" marginLeft />
+                    <ButtonCascader
+                        //className="query-part"
+                        value={this.state.eventTypes}
+                        loadData={this.getEventTypes}
+                        options={this.state.eventOptions}
+                        onChange={this.onChangeEventType}
+                    >
+                   {this.state.eventTypes.join(separator)}
+                    </ButtonCascader>                </>
+            );
+        }
+
       default: {
         return <></>;
       }
