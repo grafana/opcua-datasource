@@ -7,9 +7,11 @@ import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 //import { Cascader, CascaderOption } from './components/Cascader/Cascader';
 import { DataSource } from './DataSource';
-import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
+import { EventColumn, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 import { css } from 'emotion';
+import { EventField, SelectTable } from './components/SelectTable';
+import { SelectForm } from './components/SelectForm';
 
 const rootNode = 'i=85';
 const eventTypesNode = "i=3048";
@@ -18,9 +20,13 @@ const selectText = (t: string): string => `Select <${t}>`;
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
   options: CascaderOption[];
-  value: string[];
-    eventTypes: string[];
-    eventOptions: CascaderOption[];
+    value: string[];
+
+    eventTypeNodeId: string;
+  eventOptions: CascaderOption[];
+  eventTypes: string[];
+  eventColumns: Array<EventField>;
+
   tabs: Array<{ label: string; active: boolean }>;
 };
 
@@ -46,6 +52,13 @@ export class QueryEditor extends PureComponent<Props, State> {
         value: this.props.query.value || ['Select to browse OPC UA Server'],
         eventTypes: [],
         eventOptions: [],
+        eventColumns: [{ browsename: "Time", alias: "Tid" },
+            { browsename: "EventId", alias: "" },
+            { browsename: "EventType", alias: "" },
+            { browsename: "SourceName", alias: "" },
+            { browsename: "Message", alias: "" },
+            { browsename: "Severity", alias: "" }],
+        eventTypeNodeId: "",
       tabs: [
         { label: 'Traditional', active: true },
         { label: 'Tree view', active: false },
@@ -106,17 +119,18 @@ export class QueryEditor extends PureComponent<Props, State> {
       onRunQuery();
     };
 
+    toEventColumns = (r: EventField) : EventColumn => {
+        return {
+            browseName: r.browsename,
+            alias: r.alias
+        };
+    };
+
+
     onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
-        const { query, onChange, onRunQuery } = this.props;
         const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
         const nid = selected[selected.length - 1];
-        this.setState({ eventTypes: evtTypes });
-        onChange({
-            ...query,
-            eventTypeNodeId: nid,
-            eventTypes: evtTypes,
-        });
-        onRunQuery();
+        this.setState({ eventTypeNodeId: nid, eventTypes: evtTypes }, () => this.updateEventQuery());
     };
 
 
@@ -206,9 +220,43 @@ export class QueryEditor extends PureComponent<Props, State> {
     } else {
       return 'Processed';
     }
-  };
+    };
 
-  optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
+    handleDeleteSelectField = (idx: number) =>
+    {
+        let tempArray = this.state.eventColumns.slice();
+        tempArray.splice(idx, 1);
+        this.setState({ eventColumns: tempArray }, () => this.updateEventQuery());
+    }
+
+    updateEventQuery = () => 
+    {
+        const { query, onChange, onRunQuery } = this.props;
+
+        let eventColumns = this.state.eventColumns.map(a => this.toEventColumns(a));
+        let evtTypes = this.state.eventTypes;
+        let nid = this.state.eventTypeNodeId;
+        let eventQuery = {
+            eventTypeNodeId: nid,
+            eventTypes: evtTypes,
+            eventColumns: eventColumns
+        }
+        onChange({
+            ...query,
+            eventQuery: eventQuery
+        });
+        onRunQuery();
+    }
+
+    addSelectField = (browsename: string, alias: string) =>
+    {
+        let tempArray = this.state.eventColumns.slice();
+        tempArray.push({ browsename: browsename, alias: alias });
+        this.setState({ eventColumns: tempArray }, () => this.updateEventQuery());
+    }
+
+    optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
+        console.log(this.state.eventColumns.length);
     const readTypeValue = this.readTypeValue(query.readType);
     switch (readTypeValue) {
       case 'Processed': {
@@ -248,7 +296,10 @@ export class QueryEditor extends PureComponent<Props, State> {
                         onChange={this.onChangeEventType}
                     >
                    {this.state.eventTypes.join(separator)}
-                    </ButtonCascader>                </>
+                    </ButtonCascader>
+                    <SelectTable rows={this.state.eventColumns} ondelete={(idx: number) => this.handleDeleteSelectField(idx)}  />
+                    <SelectForm add={(browsename: string, alias: string) => this.addSelectField(browsename, alias)} />
+                </>
             );
         }
 

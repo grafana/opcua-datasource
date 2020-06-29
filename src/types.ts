@@ -6,8 +6,18 @@ export interface OpcUaQuery extends DataQuery {
   readType: string;
   aggregate: OpcUaNodeDefinition;
   interval: string;
-  eventTypeNodeId: string;
-  eventTypes: string[];
+  eventQuery: EventQuery;
+}
+
+export interface EventQuery {
+    eventTypeNodeId: string;
+    eventTypes: string[];
+    eventColumns: EventColumn[];
+}
+
+export interface EventColumn {
+    browseName: string;
+    alias: string
 }
 
 export interface OpcUaResultsEntry {

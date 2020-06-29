@@ -13,6 +13,20 @@ using Pluginv2;
 
 namespace plugin_dotnet
 {
+
+    public class EventQuery
+    {
+        public string eventTypeNodeId { get; set; }
+        public string[] eventTypes { get; set; }
+        public EventColumn[] eventColumns { get; set; }
+    }
+
+    public class EventColumn
+    { 
+        public string browseName { get; set; }
+        public string alias { get; set; }
+    }
+
     class OpcUAQuery
     {
         public string refId { get; set; }
@@ -25,9 +39,9 @@ namespace plugin_dotnet
         public string readType { get; set; }
         public object aggregate { get; set; }
         public string interval { get; set; }
-
-        public string eventTypeNodeId { get; set; }
-        public string[] eventTypes { get; set; }
+        public EventQuery eventQuery { get; set; }
+        //public string eventTypeNodeId { get; set; }
+        //public string[] eventTypes { get; set; }
 
 
         public OpcUAQuery() { }
@@ -46,8 +60,7 @@ namespace plugin_dotnet
             readType = query.readType;
             aggregate = query.aggregate;
             interval = query.interval;
-            eventTypeNodeId = query.eventTypeNodeId;
-            eventTypes = query.eventTypes;
+            eventQuery = query.eventQuery;
         }
 
         public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string nodeId)
