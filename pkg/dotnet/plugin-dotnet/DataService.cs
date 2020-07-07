@@ -192,19 +192,6 @@ namespace plugin_dotnet
             {
                 eventFilter.AddSelectClause(ObjectTypes.BaseEventType, column.browseName);
             }
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.Time);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.EventId);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.EventType);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.SourceNode);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.SourceName);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.ReceiveTime);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.LocalTime);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.Message);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.Severity);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.ActiveState);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.AckedState);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.ConfirmedState);
-            //eventFilter.AddSelectClause(ObjectTypes.BaseEventType, global::Opc.Ua.BrowseNames.ConditionName);
 
             if (!string.IsNullOrEmpty(query.eventQuery?.eventTypeNodeId))
                 eventFilter.WhereClause.Push(FilterOperator.OfType, NodeId.Parse(query.eventQuery?.eventTypeNodeId));
@@ -215,25 +202,11 @@ namespace plugin_dotnet
         private Dictionary<int, Field> AddEventFields(DataFrame dataFrame, OpcUAQuery query)
         {
             var fields = new Dictionary<int, Field>();
-            //int i = 0;
             for (int i = 0; i < query.eventQuery.eventColumns.Length; i++)
             {
                 var col = query.eventQuery.eventColumns[i];
                 fields.Add(i, dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? col.browseName : col.alias));
             }
-            //fields.Add(i++, dataFrame.AddField<DateTime>("Time"));
-            //fields.Add(i++, dataFrame.AddField<string>("Event Id"));
-            //fields.Add(i++, dataFrame.AddField<string>("Event Type"));
-            //fields.Add(i++, dataFrame.AddField<string>("Source Node"));
-            //fields.Add(i++, dataFrame.AddField<string>("Source Name"));
-            //fields.Add(i++, dataFrame.AddField<string>("Receive Time"));
-            //fields.Add(i++, dataFrame.AddField<string>("Local Time"));
-            //fields.Add(i++, dataFrame.AddField<string>("Message"));
-            //fields.Add(i++, dataFrame.AddField<string>("Severity"));
-            //fields.Add(i++, dataFrame.AddField<string>("ActiveState"));
-            //fields.Add(i++, dataFrame.AddField<string>("AckedState"));
-            //fields.Add(i++, dataFrame.AddField<string>("ConfirmedState"));
-            //fields.Add(i++, dataFrame.AddField<string>("ConditionName"));
             return fields;
         }
 

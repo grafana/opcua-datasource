@@ -1,7 +1,7 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
 
-export interface SelectFormProps {
+export interface AddEventFieldFormProps {
     add(browsename: string, alias: string): void;
 }
 
@@ -11,8 +11,8 @@ type State = {
 };
 
 
-export class SelectForm extends PureComponent<SelectFormProps, State> {
-    constructor(props: SelectFormProps) {
+export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, State> {
+    constructor(props: AddEventFieldFormProps) {
         super(props);
         this.state = {
             browsename: "",
@@ -60,7 +60,7 @@ export class SelectForm extends PureComponent<SelectFormProps, State> {
                     </SegmentFrame>
                     <SegmentFrame label="Alias" marginLeft >
                       <input
-                        name="numberOfGuests"
+                        name="alias"
                         type="input"
                         value={this.state.alias}
                         onChange={this.changeAlias} />
