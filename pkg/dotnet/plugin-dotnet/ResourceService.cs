@@ -14,11 +14,9 @@ using Pluginv2;
 
 namespace plugin_dotnet
 {
-    public class ResourceService : Resource.ResourceBase
+        public class ResourceService : Resource.ResourceBase
     {
         private ILogger log;
-        private IServerStreamWriter<CallResourceResponse> responseStream = null;
-
         public ResourceService()
         {
             log = new ConsoleLogger();
@@ -42,7 +40,6 @@ namespace plugin_dotnet
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
                             string refId = HttpUtility.UrlDecode(queryParams["refId"]);
                             log.Debug("Got a subscription: NodeId[{0}], RefId[{1}]", nodeId, refId);
-                            this.responseStream = responseStream;
                             connection.AddSubscription(refId, nodeId, SubscriptionCallback);
                             response.Code = 204;
                         }
@@ -85,16 +82,6 @@ namespace plugin_dotnet
              
             responseStream.WriteAsync(response);
             return Task.CompletedTask;
-        }
-
-        private void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs) {
-            CallResourceResponse response = new CallResourceResponse();
-            
-            string jsonData = JsonSerializer.Serialize<MonitoredItem>(item);
-            log.Debug("Subscription Response: {0}", jsonData);
-            response.Code = 200;
-            response.Body = ByteString.CopyFrom(jsonData, Encoding.ASCII);
-            responseStream.WriteAsync(response);
         }
     }
 }

@@ -86,12 +86,12 @@ jobs:
       - run:
           name: Build backend (Linux)
           command: |
-            [ ! -d "ci/dist/linux" ] && mkdir -pv ci/dist/linux
-            dotnet publish ./pkg/dotnet/plugin-dotnet/.linux.build.csproj -r linux-x64 -o ci/dist/linux --self-contained true
+            [ ! -d "ci/jobs/build_backend/linux" ] && mkdir -pv ci/jobs/build_backend/linux
+            dotnet publish ./pkg/dotnet/plugin-dotnet/.linux.build.csproj -r linux-x64 -o ci/jobs/build_backend/linux --self-contained true
       - persist_to_workspace:
           root: .
           paths:
-          - ci/dist/linux
+          - ci/jobs/build_backend/linux
       - store_artifacts:
           path: ci
     
@@ -102,12 +102,12 @@ jobs:
       - run:
           name: Build backend (OSX)
           command: |
-            [ ! -d "ci/dist/osx" ] && mkdir -pv ci/dist/osx
-            dotnet publish ./pkg/dotnet/plugin-dotnet/.osx.build.csproj -r osx-x64 -o ci/dist/osx --self-contained true
+            [ ! -d "ci/jobs/build_backend/osx" ] && mkdir -pv ci/jobs/build_backend/osx
+            dotnet publish ./pkg/dotnet/plugin-dotnet/.osx.build.csproj -r osx-x64 -o ci/jobs/build_backend/osx --self-contained true
       - persist_to_workspace:
           root: .
           paths:
-          - ci/dist/osx
+          - ci/jobs/build_backend/osx
       - store_artifacts:
           path: ci
 
@@ -118,12 +118,12 @@ jobs:
       - run:
           name: Build backend (Windows)
           command: |
-            [ ! -d "ci/dist/win" ] && mkdir -pv ci/dist/win
-            dotnet publish ./pkg/dotnet/plugin-dotnet/.win.build.csproj -r win-x64 -o ci/dist/win --self-contained true
+            [ ! -d "ci/jobs/build_backend/win" ] && mkdir -pv ci/jobs/build_backend/win
+            dotnet publish ./pkg/dotnet/plugin-dotnet/.win.build.csproj -r win-x64 -o ci/jobs/build_backend/win --self-contained true
       - persist_to_workspace:
           root: .
           paths:
-          - ci/dist/win
+          - ci/jobs/build_backend/win
       - store_artifacts:
           path: ci
   
@@ -141,6 +141,79 @@ jobs:
       - run:
           name: Package distribution
           command: |
+            #
+            # ci-package will create the zip file
+            #
+            PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+            VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            echo "Plugin Name: ${PLUGIN_NAME}"
+            echo "Plugin Version: ${VERSION}"
+            #
+            # Building separate linux and windows zip files
+            #
+            # 1. rename to linux package
+            #
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
+            #
+            # 2. update info.json with new zip file name
+            #
+            sed -i 's/zip/linux_amd64\.zip/g' ci/packages/info.json
+            #
+            # 3. move into linux subdir
+            #
+            mkdir -p temp_ci/packages/linux
+            cp -p ci/packages/info.json temp_ci/packages/linux
+            cp -p ci/packages/info.json temp_ci/packages/linux/info-linux.json
+            mv ci/packages/${PLUGIN_NAME}* temp_ci/packages/linux
+            #
+            # now create the windows package
+            #
+            # 4. re-run ci-package to create the windows-only zip
+            #
+            mv ci/jobs/build_backend/dist/gpx_newrelic_linux_amd64 .
+            mv gpx_newrelic_windows_amd64.exe ci/jobs/build_backend/dist
+            /usr/local/bin/grafana-toolkit plugin:ci-package
+            #
+            # 5. rename zip
+            #
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
+            #
+            # update info.json with new zip file name
+            #
+            sed -i 's/zip/windows_amd64\.zip/g' ci/packages/info.json
+            #
+            # 6. move into windows subdir
+            #
+            mkdir ci/packages/windows
+            # report needs info.json, so keep a copy here
+            cp ci/packages/info.json ci/packages/windows
+            cp ci/packages/info.json ci/packages/windows/info-windows.json
+            mv ci/packages/${PLUGIN_NAME}* ci/packages/windows
+            #
+            # 7. put the linux build back into place (it gets removed when running plugin:ci-package the second time)
+            #
+            mv temp_ci/packages/linux ci/packages
+            # DONE
+            ls -lR ci/packages
+            # put the executables back for GHR to use
+            mv gpx_newrelic_linux_amd64 ci/jobs/build_backend/dist
+            mv gpx_newrelic_darwin_amd64 ci/jobs/build_backend/dist
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ci/dist
+            - ci/jobs/package
+            - ci/grafana-test-env
+            - ci/packages
+            - instantclient
+      - store_artifacts:
+          path: ci/packages
             ./node_modules/.bin/grafana-toolkit plugin:ci-package
 
   report:

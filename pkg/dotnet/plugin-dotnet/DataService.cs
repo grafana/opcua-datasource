@@ -21,6 +21,16 @@ using MicrosoftOpcUa.Client.Core;
 
 namespace plugin_dotnet
 {
+    class SubscriptionResponse
+    {
+        public Opc.Ua.IEncodeable lastValue { get; set; }
+
+        public SubscriptionResponse(MonitoredItem item)
+        {
+            lastValue = item.LastValue;
+        }
+    }
+    
     class OpcUaNodeDefinition
     {
         public string name { get; set; }
@@ -167,11 +177,21 @@ namespace plugin_dotnet
             return await Task.FromResult(response);
         }
 
-        private void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs)
-        {
-            QueryDataResponse response = new QueryDataResponse();
-            log.Debug("Got a callback {0} - {1} - {2}", refId, item, eventArgs);
-            
-        }
+        void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs)
+            {
+                //CallResourceResponse response = new CallResourceResponse();
+                try
+                {
+                    string jsonData = JsonSerializer.Serialize<SubscriptionResponse>(new SubscriptionResponse(item));
+                    log.Debug("Got a callback {0}, {1}", refId, jsonData);
+                    response.Code = 200;
+                    response.Body = ByteString.CopyFrom(jsonData, Encoding.ASCII);
+                    responseStream.WriteAsync(response);
+                }
+                catch (Exception ex)
+                {
+                    log.Debug("Exception {0}", ex);
+                }
+            }
     }
 }
