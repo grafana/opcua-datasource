@@ -5,11 +5,15 @@ import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 import { DataSource } from './DataSource';
-import { EventColumn, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
+import { EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 import { css } from 'emotion';
 import { EventField, EventFieldTable } from './components/EventFieldTable';
 import { AddEventFieldForm } from './components/AddEventFieldForm';
+import { EventFilterTable } from './components/EventFilterTable';
+import { AddEventFilter } from './components/AddEventFilter';
+
+
 
 
 const rootNode = 'i=85';
@@ -24,6 +28,7 @@ type State = {
     eventOptions: CascaderOption[];
     eventTypes: string[];
     eventFields: EventField[];
+    eventFilters: EventFilter[];
 
   tabs: Array<{ label: string; active: boolean }>;
 };
@@ -52,6 +57,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         eventOptions: [],
         eventFields: this.buildEventFields(),
         eventTypeNodeId: "",
+        eventFilters: [],
       tabs: [
         { label: 'Traditional', active: true },
         { label: 'Tree view', active: false },
@@ -86,72 +92,6 @@ export class QueryEditor extends PureComponent<Props, State> {
         
     }
 
-
-        //const data = new MutableDataFrame( {
-        //    fields: [
-        //        { name: 'ColumnIndex', type: FieldType.number, config: { filterable: true }, values: [1, 2, 3, 4, 5, 6] }, // The time field
-        //        { name: 'BrowseName', type: FieldType.string, values: ["Time", "EventId", "EventType", "SourceName", "Message", "Severity"] }, // The time field
-        //        {
-        //            name: 'Alias',
-        //            type: FieldType.string,
-        //            values: ["Tid", "", "", "Kilde", "Melding", "Alvorlighetsgrad"],
-        //            config: { filterable: true }                    
-        //        },
-        //        {
-        //            name: 'Delete',
-        //            type: FieldType.string,
-        //            values: ["", "", "", "", "", ""],
-        //            config: {
-        //                filterable: true,
-        //                links: [{
-        //                    title: "test",
-        //                    //targetBlank?: true,
-        //                    url: "http://www.vg.no",
-        //                    onBuildUrl: (event) => "http://www.vg.no",
-        //                    onClick: (event) => { console.log("afdas"); },
-        //                },
-        //                    {
-        //                        title: "test",
-        //                        //targetBlank?: true,
-        //                        url: "http://www.vg.no",
-        //                        onBuildUrl: (event) => "http://www.vg.no",
-        //                        onClick: (event) => { console.log("afdas"); },
-        //                    },
-        //                    {
-        //                        title: "test",
-        //                        //targetBlank?: true,
-        //                        url: "http://www.vg.no",
-        //                        onBuildUrl: (event) => "http://www.vg.no",
-        //                        onClick: (event) => { console.log("afdas"); },
-        //                    },
-        //                    {
-        //                        title: "test",
-        //                        //targetBlank?: true,
-        //                        url: "http://www.vg.no",
-        //                        onBuildUrl: (event) => "http://www.vg.no",
-        //                        onClick: (event) => { console.log("afdas"); },
-        //                    },
-        //                    {
-        //                        title: "test",
-        //                        //targetBlank?: true,
-        //                        url: "http://www.vg.no",
-        //                        onBuildUrl: (event) => "http://www.vg.no",
-        //                        onClick: (event) => { console.log("afdas"); },
-        //                    },
-        //                    {
-        //                        title: "test",
-        //                        //targetBlank?: true,
-        //                        url: "http://www.vg.no",
-        //                        onBuildUrl: (event) => "http://www.vg.no",
-        //                        onClick: (event) => { console.log("afdas"); },
-        //                    },
-        //                ]
-        //            } 
-        //        },
-        //    ],
-        //});
-        //return data;
-    //}
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
     const { datasource, query, onChange, onRunQuery } = this.props;
@@ -197,6 +137,14 @@ export class QueryEditor extends PureComponent<Props, State> {
             alias: r.alias
         };
     };
+
+    //deep copy
+    toEventFilter = (r: EventFilter): EventFilter => {
+        return {
+            oper: r.oper,
+            operands: r.operands.slice()
+        }
+    }
 
 
     onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
@@ -301,6 +249,13 @@ export class QueryEditor extends PureComponent<Props, State> {
         this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
     }
 
+    handleDeleteEventFilter = (idx: number) =>
+    {
+        let tempArray = this.state.eventFilters.slice();
+        tempArray.splice(idx, 1);
+        this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+    }
+
     updateEventQuery = () => 
     {
         const { query, onChange, onRunQuery } = this.props;
@@ -308,10 +263,12 @@ export class QueryEditor extends PureComponent<Props, State> {
         let eventColumns = this.state.eventFields.map(c => this.toEventColumns(c));
         let evtTypes = this.state.eventTypes;
         let nid = this.state.eventTypeNodeId;
+        let eventFilters = this.state.eventFilters.map(c => this.toEventFilter(c));
         let eventQuery = {
             eventTypeNodeId: nid,
             eventTypes: evtTypes,
-            eventColumns: eventColumns
+            eventColumns: eventColumns,
+            eventFilters: eventFilters
         }
         onChange({
             ...query,
@@ -328,6 +285,12 @@ export class QueryEditor extends PureComponent<Props, State> {
         this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
     }
 
+    addEventFilter = (eventFilter: EventFilter) => {
+        let tempArray = this.state.eventFilters.slice();
+        tempArray.push(eventFilter);
+        this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+    }
+
     optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
         
     const readTypeValue = this.readTypeValue(query.readType);
@@ -338,7 +301,7 @@ export class QueryEditor extends PureComponent<Props, State> {
             <SegmentLabel label={'Aggregate'} marginLeft />
             <SegmentAsync
               value={query.aggregate?.name ?? selectText('aggregate')}
-              loadOptions={() => this.browseNodeSV('i=2997')}
+              loadOptions={() => this.browseNodeSV('i=11242')}
               onChange={e => this.onChangeField('aggregate', e)}
             />
           </>
@@ -403,6 +366,11 @@ export class QueryEditor extends PureComponent<Props, State> {
                 <EventFieldTable rows={this.state.eventFields} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
                 <br />
                 <AddEventFieldForm add={(browsename: string, alias: string) => this.addSelectField(browsename, alias)} />
+                <br />
+                <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
+                <br />
+                <AddEventFilter add={(eventFilter: EventFilter) => {  this.addEventFilter(eventFilter)  } } />
+                
             </>
         );
     }

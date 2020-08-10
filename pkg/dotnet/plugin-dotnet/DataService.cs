@@ -185,9 +185,9 @@ namespace plugin_dotnet
             return result;
         }
 
-        private EventFilter GetEventFilter(OpcUAQuery query)
+        private Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query)
         {
-            var eventFilter = new EventFilter();
+            var eventFilter = new Opc.Ua.EventFilter();
             foreach (var column in query.eventQuery?.eventColumns)
             {
                 eventFilter.AddSelectClause(ObjectTypes.BaseEventType, column.browseName);
@@ -195,6 +195,28 @@ namespace plugin_dotnet
 
             if (!string.IsNullOrEmpty(query.eventQuery?.eventTypeNodeId))
                 eventFilter.WhereClause.Push(FilterOperator.OfType, NodeId.Parse(query.eventQuery?.eventTypeNodeId));
+
+            uint rootIdx = 0;
+            foreach (var f in query.eventQuery.eventFilters)
+            {
+                switch (f.oper)
+                {
+                    case FilterOperator.GreaterThan:
+                    case FilterOperator.GreaterThanOrEqual:
+                    case FilterOperator.LessThan:
+                    case FilterOperator.LessThanOrEqual:
+                    case FilterOperator.Equals:
+                        {
+                            var attr = new SimpleAttributeOperand(new NodeId(ObjectTypes.BaseEventType), f.operands[0]);
+                            // TODO: Must use correct type for field.
+                            var lit = new LiteralOperand(f.operands[1]);
+                            eventFilter.WhereClause.Push(f.oper, attr, lit);
+                            eventFilter.WhereClause.Push(FilterOperator.And, new ElementOperand(rootIdx), new ElementOperand((uint)eventFilter.WhereClause.Elements.Count - 1));
+                            rootIdx = (uint)eventFilter.WhereClause.Elements.Count - 1;
+                        }
+                        break;
+                }
+            }
 
             return eventFilter;
         }

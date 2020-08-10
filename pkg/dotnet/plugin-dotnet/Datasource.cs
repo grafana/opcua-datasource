@@ -19,6 +19,7 @@ namespace plugin_dotnet
         public string eventTypeNodeId { get; set; }
         public string[] eventTypes { get; set; }
         public EventColumn[] eventColumns { get; set; }
+        public EventFilter[] eventFilters { get; set; }
     }
 
     public class EventColumn
@@ -26,6 +27,15 @@ namespace plugin_dotnet
         public string browseName { get; set; }
         public string alias { get; set; }
     }
+
+
+
+    public class EventFilter
+    {
+        public FilterOperator oper { get; set; }
+        public string[] operands { get; set; }
+    }
+
 
     class OpcUAQuery
     {
