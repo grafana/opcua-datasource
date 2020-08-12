@@ -156,7 +156,7 @@ namespace plugin_dotnet
             for (int i = 0; i < queries.Length; i++)
             {
                 var query = queries[i];
-                var resampleInterval = query.intervalMs / 1000.0;
+                var resampleInterval = query.intervalMs;
                 var tr = query.timeRange;
                 var nodeId = NodeId.Parse(query.nodeId);
                 OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());

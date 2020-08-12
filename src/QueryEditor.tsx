@@ -301,7 +301,7 @@ export class QueryEditor extends PureComponent<Props, State> {
             <SegmentLabel label={'Aggregate'} marginLeft />
             <SegmentAsync
               value={query.aggregate?.name ?? selectText('aggregate')}
-              loadOptions={() => this.browseNodeSV('i=11242')}
+              loadOptions={() => this.browseNodeSV('i=11201')}
               onChange={e => this.onChangeField('aggregate', e)}
             />
           </>

@@ -42,7 +42,7 @@ namespace plugin_dotnet
 	{
 		public ReadProcessedKey(DateTime startTime, DateTime endTime, Opc.Ua.NodeId aggregate, double resampleInterval)
 		{
-			StartTime = StartTime;
+			StartTime = startTime;
 			EndTime = endTime;
 			Aggregate = aggregate;
 			ResampleInterval = resampleInterval;
