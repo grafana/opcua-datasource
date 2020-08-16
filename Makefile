@@ -1,4 +1,10 @@
 DSNAME=grafana-opcua-datasource
+ifeq ($(OS),Windows_NT) 
+    BUILD_OS := windows
+else
+    BUILD_OS := $(shell sh -c '(uname 2>/dev/null | tr A-Z a-z) || echo linux')
+endif
+
 all: build
 
 test:
@@ -18,9 +24,33 @@ test-in-docker: build-container
 
 restore: 
 	dotnet restore ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r linux-x64 
-build:
-	dotnet publish ./pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj -r osx-x64 -o ./dist --self-contained true
 
+build:
+ifeq (${BUILD_OS},windows)
+	dotnet publish ./pkg/dotnet/plugin-dotnet/.windows.build.csproj -o ./dist --self-contained true
+endif
+ifeq (${BUILD_OS},darwin)
+	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
+	dotnet publish ./pkg/dotnet/plugin-dotnet/.osx.build.csproj -o ./dist --self-contained true
+endif
+ifeq (${BUILD_OS},linux)
+	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
+	dotnet publish ./pkg/dotnet/plugin-dotnet/.linux.build.csproj -o ./dist --self-contained true
+endif
+
+watch:
+ifeq (${BUILD_OS},windows)
+	dotnet watch -p ./pkg/dotnet/plugin-dotnet/.windows.build.csproj publish .windows.build.csproj -o ./dist --self-contained true
+endif
+ifeq (${BUILD_OS},darwin)
+	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
+	dotnet watch -p ./pkg/dotnet/plugin-dotnet/.osx.build.csproj publish .osx.build.csproj -o ./dist --self-contained true
+endif
+ifeq (${BUILD_OS},linux)
+	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
+	dotnet watch -p ./pkg/dotnet/plugin-dotnet/.linux.build.csproj publish .linux.build.csproj -o ./dist --self-contained true
+endif
+ 
 build-darwin:
 	go build -o ./dist/${DSNAME}_darwin_amd64 -a -tags netgo -ldflags '-w' ./pkg
 

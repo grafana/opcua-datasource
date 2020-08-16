@@ -1,9 +1,7 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "plugin-dotnet", "plugin-dotnet.csproj", "{15E5AB5B-257B-45BE-AED7-15152B13C234}"
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "plugin-dotnet", "plugin-dotnet.csproj", "{706B2444-1C51-48B3-B322-50B18C3DF764}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +9,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{15E5AB5B-257B-45BE-AED7-15152B13C234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15E5AB5B-257B-45BE-AED7-15152B13C234}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15E5AB5B-257B-45BE-AED7-15152B13C234}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15E5AB5B-257B-45BE-AED7-15152B13C234}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4CE23843-E847-4A01-AC66-45739DA651E4}
+		{706B2444-1C51-48B3-B322-50B18C3DF764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{706B2444-1C51-48B3-B322-50B18C3DF764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{706B2444-1C51-48B3-B322-50B18C3DF764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{706B2444-1C51-48B3-B322-50B18C3DF764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

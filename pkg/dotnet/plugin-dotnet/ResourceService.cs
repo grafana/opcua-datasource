@@ -36,6 +36,7 @@ namespace plugin_dotnet
             Uri uri = new Uri(fullUrl);
             NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
             var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
+            log.Debug("My connection is {0}", connection);
             
             try
             {

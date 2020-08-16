@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Pluginv2;
 using Grpc.Core;
 using Grpc.Core.Logging;
 using System.Threading.Tasks;
-using Opc.Ua;
-using Opc.Ua.Client;
-using MicrosoftOpcUa.Client.Utility;
-using System.Text.Json;
-using System.Security.Cryptography.X509Certificates;
-using Google.Protobuf;
-using System.Globalization;
 
 namespace plugin_dotnet
 {
