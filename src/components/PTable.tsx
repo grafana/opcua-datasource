@@ -34,7 +34,6 @@
 //    tableData: TableData;
 //}
 
-
 //export class PTable extends PureComponent<Props, State> {
 //    constructor(props: Props) {
 //        super(props);
@@ -85,16 +84,12 @@
 //        );
 //    }
 
-
-
-
 ////function getCellComponent(column: PColumn) {
 ////    return pwithTableStyles(DefaultCell, getTextColorStyle);
 ////}
 
 ////function getTextColorStyle(props: TableCellProps) {
 ////    const { /*column, cell,*/ tableStyles } = props;
-
 
 ////    if (!column.display) {
 ////        return tableStyles;
@@ -121,7 +116,7 @@
 ////    for (const [fieldIndex/*, column*/] of pcolumns.entries()) {
 ////        //const Cell = getCellComponent(column);
 ////        columns.push({
-            
+
 ////            id: fieldIndex.toString(),
 ////            Header: pcolumns[fieldIndex],
 ////            //accessor: (row: any, i: number) => {
@@ -143,6 +138,5 @@
 
 ////    return columns;
 ////}
-
 
 //}

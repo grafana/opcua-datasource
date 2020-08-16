@@ -13,22 +13,19 @@ import { AddEventFieldForm } from './components/AddEventFieldForm';
 import { EventFilterTable } from './components/EventFilterTable';
 import { AddEventFilter } from './components/AddEventFilter';
 
-
-
-
 const rootNode = 'i=85';
-const eventTypesNode = "i=3048";
+const eventTypesNode = 'i=3048';
 const selectText = (t: string): string => `Select <${t}>`;
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
   options: CascaderOption[];
-    value: string[];
-    eventTypeNodeId: string;
-    eventOptions: CascaderOption[];
-    eventTypes: string[];
-    eventFields: EventField[];
-    eventFilters: EventFilter[];
+  value: string[];
+  eventTypeNodeId: string;
+  eventOptions: CascaderOption[];
+  eventTypes: string[];
+  eventFields: EventField[];
+  eventFilters: EventFilter[];
 
   tabs: Array<{ label: string; active: boolean }>;
 };
@@ -52,12 +49,12 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     this.state = {
       options: [],
-        value: this.props.query.value || ['Select to browse OPC UA Server'],
-        eventTypes: [],
-        eventOptions: [],
-        eventFields: this.buildEventFields(),
-        eventTypeNodeId: "",
-        eventFilters: [],
+      value: this.props.query.value || ['Select to browse OPC UA Server'],
+      eventTypes: [],
+      eventOptions: [],
+      eventFields: this.buildEventFields(),
+      eventTypeNodeId: '',
+      eventFilters: [],
       tabs: [
         { label: 'Traditional', active: true },
         { label: 'Tree view', active: false },
@@ -72,26 +69,23 @@ export class QueryEditor extends PureComponent<Props, State> {
     });
 
     props.datasource.getResource('browseTypes', { nodeId: eventTypesNode }).then((results: OpcUaBrowseResults[]) => {
-        console.log('Results', results);
-        this.setState({
-            eventOptions: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
-        });
+      console.log('Results', results);
+      this.setState({
+        eventOptions: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
+      });
     });
+  }
 
-    }
-
-    buildEventFields = (): EventField[] => {
-        return [
-            { alias: "", browsename: "Time" },
-            { alias: "", browsename: "EventId" },
-            { alias: "", browsename: "EventType" },
-            { alias: "", browsename: "SourceName" },
-            { alias: "", browsename: "Message" },
-            { alias: "", browsename: "Severity" }
-            ];
-        
-    }
-
+  buildEventFields = (): EventField[] => {
+    return [
+      { alias: '', browsename: 'Time' },
+      { alias: '', browsename: 'EventId' },
+      { alias: '', browsename: 'EventType' },
+      { alias: '', browsename: 'SourceName' },
+      { alias: '', browsename: 'Message' },
+      { alias: '', browsename: 'Severity' },
+    ];
+  };
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
     const { datasource, query, onChange, onRunQuery } = this.props;
@@ -128,32 +122,29 @@ export class QueryEditor extends PureComponent<Props, State> {
       value,
       nodeId,
     });
-      onRunQuery();
+    onRunQuery();
+  };
+
+  toEventColumns = (r: EventField): EventColumn => {
+    return {
+      browseName: r.browsename,
+      alias: r.alias,
     };
+  };
 
-    toEventColumns = (r: EventField) : EventColumn => {
-        return {
-            browseName: r.browsename,
-            alias: r.alias
-        };
+  //deep copy
+  toEventFilter = (r: EventFilter): EventFilter => {
+    return {
+      oper: r.oper,
+      operands: r.operands.slice(),
     };
+  };
 
-    //deep copy
-    toEventFilter = (r: EventFilter): EventFilter => {
-        return {
-            oper: r.oper,
-            operands: r.operands.slice()
-        }
-    }
-
-
-    onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
-        const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
-        const nid = selected[selected.length - 1];
-        this.setState({ eventTypeNodeId: nid, eventTypes: evtTypes }, () => this.updateEventQuery());
-    };
-
-
+  onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
+    const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
+    const nid = selected[selected.length - 1];
+    this.setState({ eventTypeNodeId: nid, eventTypes: evtTypes }, () => this.updateEventQuery());
+  };
 
   onSelect = (val: string) => {
     console.log('onSelect', val);
@@ -187,23 +178,23 @@ export class QueryEditor extends PureComponent<Props, State> {
           });
         });
     }
-    };
+  };
 
-    getEventTypes = (selectedOptions: CascaderOption[]) => {
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-        targetOption.loading = true;
-        if (targetOption.value) {
-            this.props.datasource
-                .getResource('browseTypes', { nodeId: targetOption.value })
-                .then((results: OpcUaBrowseResults[]) => {
-                    targetOption.loading = false;
-                    targetOption.children = results.map(r => this.toCascaderOption(r));
-                    this.setState({
-                        eventOptions: [...this.state.eventOptions],
-                    });
-                });
-        }
-    };
+  getEventTypes = (selectedOptions: CascaderOption[]) => {
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+    targetOption.loading = true;
+    if (targetOption.value) {
+      this.props.datasource
+        .getResource('browseTypes', { nodeId: targetOption.value })
+        .then((results: OpcUaBrowseResults[]) => {
+          targetOption.loading = false;
+          targetOption.children = results.map(r => this.toCascaderOption(r));
+          this.setState({
+            eventOptions: [...this.state.eventOptions],
+          });
+        });
+    }
+  };
 
   browseNodeSV = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
     return this.props.datasource.getResource('browse', { nodeId }).then((results: OpcUaBrowseResults[]) => {
@@ -227,7 +218,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Processed', value: 'ReadDataProcessed' },
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
-      { label: 'Events', value: 'ReadEvents' }
+      { label: 'Events', value: 'ReadEvents' },
     ];
   }
 
@@ -240,59 +231,54 @@ export class QueryEditor extends PureComponent<Props, State> {
     } else {
       return 'Processed';
     }
+  };
+
+  handleDeleteSelectField = (idx: number) => {
+    let tempArray = this.state.eventFields.slice();
+    tempArray.splice(idx, 1);
+    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+  };
+
+  handleDeleteEventFilter = (idx: number) => {
+    let tempArray = this.state.eventFilters.slice();
+    tempArray.splice(idx, 1);
+    this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+  };
+
+  updateEventQuery = () => {
+    const { query, onChange, onRunQuery } = this.props;
+
+    let eventColumns = this.state.eventFields.map(c => this.toEventColumns(c));
+    let evtTypes = this.state.eventTypes;
+    let nid = this.state.eventTypeNodeId;
+    let eventFilters = this.state.eventFilters.map(c => this.toEventFilter(c));
+    let eventQuery = {
+      eventTypeNodeId: nid,
+      eventTypes: evtTypes,
+      eventColumns: eventColumns,
+      eventFilters: eventFilters,
     };
+    onChange({
+      ...query,
+      eventQuery: eventQuery,
+    });
+    onRunQuery();
+  };
 
-    handleDeleteSelectField = (idx: number) =>
-    {
-        let tempArray = this.state.eventFields.slice();
-        tempArray.splice(idx, 1);
-        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-    }
+  addSelectField = (browsename: string, alias: string) => {
+    let tempArray = this.state.eventFields.slice();
 
-    handleDeleteEventFilter = (idx: number) =>
-    {
-        let tempArray = this.state.eventFilters.slice();
-        tempArray.splice(idx, 1);
-        this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
-    }
+    tempArray.push({ browsename: browsename, alias: alias });
+    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+  };
 
-    updateEventQuery = () => 
-    {
-        const { query, onChange, onRunQuery } = this.props;
+  addEventFilter = (eventFilter: EventFilter) => {
+    let tempArray = this.state.eventFilters.slice();
+    tempArray.push(eventFilter);
+    this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+  };
 
-        let eventColumns = this.state.eventFields.map(c => this.toEventColumns(c));
-        let evtTypes = this.state.eventTypes;
-        let nid = this.state.eventTypeNodeId;
-        let eventFilters = this.state.eventFilters.map(c => this.toEventFilter(c));
-        let eventQuery = {
-            eventTypeNodeId: nid,
-            eventTypes: evtTypes,
-            eventColumns: eventColumns,
-            eventFilters: eventFilters
-        }
-        onChange({
-            ...query,
-            eventQuery: eventQuery
-        });
-        onRunQuery();
-    }
-
-    addSelectField = (browsename: string, alias: string) =>
-    {
-        let tempArray = this.state.eventFields.slice();
-
-        tempArray.push({ browsename: browsename, alias: alias });
-        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-    }
-
-    addEventFilter = (eventFilter: EventFilter) => {
-        let tempArray = this.state.eventFilters.slice();
-        tempArray.push(eventFilter);
-        this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
-    }
-
-    optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
-        
+  optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
     const readTypeValue = this.readTypeValue(query.readType);
     switch (readTypeValue) {
       case 'Processed': {
@@ -319,97 +305,104 @@ export class QueryEditor extends PureComponent<Props, State> {
             />
           </>
         );
-        }
-
+      }
 
       default: {
         return <></>;
       }
     }
-    };
+  };
 
-    renderEvents = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
-        const { options, value } = this.state;
-        return (
-            <>
-                <RadioButtonGroup
-                        options={this.readTypeOptions}
-                        value={query.readType}
-                        onChange={e => e && this.onChangeField('readType', e)}
-                />
-                <br/>
-                <SegmentFrame label="Event Source">
-                    <div onBlur={e => console.log('onBlur', e)}>
-                        <ButtonCascader
-                            //className="query-part"
-                            value={value}
-                            loadData={this.getChildren}
-                            options={options}
-                            onChange={this.onChange}
-                        >
-                            {value.join(separator)}
-                        </ButtonCascader>
-                    </div>
-                </SegmentFrame>
-                <SegmentFrame label="Event Type" >
-                    <ButtonCascader
-                        //className="query-part"
-                        value={this.state.eventTypes}
-                        loadData={this.getEventTypes}
-                        options={this.state.eventOptions}
-                        onChange={this.onChangeEventType}
-                    >
-                    {this.state.eventTypes.join(separator)}
-                    </ButtonCascader>
-                </SegmentFrame>
-                <br />
-                <EventFieldTable rows={this.state.eventFields} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
-                <br />
-                <AddEventFieldForm add={(browsename: string, alias: string) => this.addSelectField(browsename, alias)} />
-                <br />
-                <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
-                <br />
-                <AddEventFilter add={(eventFilter: EventFilter) => {  this.addEventFilter(eventFilter)  } } />
-                
-            </>
-        );
-    }
+  renderEvents = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
+    const { options, value } = this.state;
+    return (
+      <>
+        <RadioButtonGroup
+          options={this.readTypeOptions}
+          value={query.readType}
+          onChange={e => e && this.onChangeField('readType', e)}
+        />
+        <br />
+        <SegmentFrame label="Event Source">
+          <div onBlur={e => console.log('onBlur', e)}>
+            <ButtonCascader
+              //className="query-part"
+              value={value}
+              loadData={this.getChildren}
+              options={options}
+              onChange={this.onChange}
+            >
+              {value.join(separator)}
+            </ButtonCascader>
+          </div>
+        </SegmentFrame>
+        <SegmentFrame label="Event Type">
+          <ButtonCascader
+            //className="query-part"
+            value={this.state.eventTypes}
+            loadData={this.getEventTypes}
+            options={this.state.eventOptions}
+            onChange={this.onChangeEventType}
+          >
+            {this.state.eventTypes.join(separator)}
+          </ButtonCascader>
+        </SegmentFrame>
+        <br />
+        <EventFieldTable rows={this.state.eventFields} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
+        <br />
+        <AddEventFieldForm add={(browsename: string, alias: string) => this.addSelectField(browsename, alias)} />
+        <br />
+        <EventFilterTable
+          rows={this.state.eventFilters}
+          ondelete={(idx: number) => {
+            this.handleDeleteEventFilter(idx);
+          }}
+        />
+        <br />
+        <AddEventFilter
+          add={(eventFilter: EventFilter) => {
+            this.addEventFilter(eventFilter);
+          }}
+        />
+      </>
+    );
+  };
 
   renderOriginal = () => {
     const { query, onRunQuery } = this.props;
     const { options, value } = this.state;
-      const readTypeValue = this.readTypeValue(query.readType);
-      if (readTypeValue === "Events") {
-          return this.renderEvents(query, onRunQuery);
-      }
-      else
-      {
-          return (<>
-              <SegmentFrame label="Tag">
-                  <div onBlur={e => console.log('onBlur', e)}>
-                      <ButtonCascader
-                          //className="query-part"
-                          value={value}
-                          loadData={this.getChildren}
-                          options={options}
-                          onChange={this.onChange}
-                      >
-                          {value.join(separator)}
-                      </ButtonCascader>
-                  </div>
+    const readTypeValue = this.readTypeValue(query.readType);
+    if (readTypeValue === 'Events') {
+      return this.renderEvents(query, onRunQuery);
+    } else {
+      return (
+        <>
+          <SegmentFrame label="Tag">
+            <div onBlur={e => console.log('onBlur', e)}>
+              <ButtonCascader
+                //className="query-part"
+                value={value}
+                loadData={this.getChildren}
+                options={options}
+                onChange={this.onChange}
+              >
+                {value.join(separator)}
+              </ButtonCascader>
+            </div>
 
-                  <RadioButtonGroup
-                      options={this.readTypeOptions}
-                      value={query.readType}
-                      onChange={e => e && this.onChangeField('readType', e)}
-                  />
-                  {this.optionalParams(query, onRunQuery)}
-              </SegmentFrame>
-              <SegmentFrame label="Alias">
-                  <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
-              </SegmentFrame>
-          </>);
-      }
+            <RadioButtonGroup
+              options={this.readTypeOptions}
+              value={query.readType}
+              onChange={e => e && this.onChangeField('readType', e)}
+            />
+            {this.optionalParams(query, onRunQuery)}
+          </SegmentFrame>
+          <SegmentFrame label="Alias">
+            <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
+          </SegmentFrame>
+        </>
+      );
+    }
   };
 
   renderTreeEditor = () => {

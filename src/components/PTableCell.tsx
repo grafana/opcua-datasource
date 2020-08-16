@@ -10,7 +10,6 @@
 ////import { TableStyles } from '@grafana/ui/components/Table/styles';
 //import { ColumnData, CellData } from './PTable';
 
-
 //export interface Props {
 //    cell: Cell;
 //    column: PColumn;
@@ -21,13 +20,13 @@
 
 //export const PTableCell: FC<Props> = ({ cell, column, /*tableStyles,*/ onCellClick }) => {
 //    const cellProps = cell.getCellProps();
-    
+
 //    //var style = useStyles((theme?: GrafanaTheme) => {
 //    //    if (!theme) {
 //    //        theme = {} as GrafanaTheme;
 //    //    }
 //    //});
-    
+
 //  let onClick: ((event: React.SyntheticEvent) => void) | undefined = undefined;
 
 //  if (onCellClick) {
