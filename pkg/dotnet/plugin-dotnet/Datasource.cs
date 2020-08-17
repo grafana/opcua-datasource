@@ -17,7 +17,6 @@ namespace plugin_dotnet
     public class EventQuery
     {
         public string eventTypeNodeId { get; set; }
-        public string[] eventTypes { get; set; }
         public EventColumn[] eventColumns { get; set; }
         public EventFilter[] eventFilters { get; set; }
     }
@@ -36,6 +35,17 @@ namespace plugin_dotnet
         public string[] operands { get; set; }
     }
 
+    public class NSNodeId
+    { 
+        /// <summary>
+        /// The Url of the namespace the node belongs to.
+        /// </summary>
+        public string namespaceUrl { get; set; }
+        /// <summary>
+        /// The string representation of the node id. The namespace index may not be valid if it is something different from 0.
+        /// </summary>
+        public string id { get; set; }  
+    }
 
     class OpcUAQuery
     {

@@ -9,16 +9,35 @@ namespace plugin_dotnet
 {
 	public static class Converter
 	{
-		public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription)
+		public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription, NamespaceTable namespaceTable)
 		{
-			return new BrowseResultsEntry(
+            var nsUrl = namespaceTable.GetString(referenceDescription.NodeId.NamespaceIndex);
+            var nsNodeId = new NSNodeId() { id = referenceDescription.NodeId.ToString(), namespaceUrl = nsUrl };
+            var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
+            return new BrowseResultsEntry(
 				referenceDescription.DisplayName.ToString(),
 				referenceDescription.BrowseName.ToString(),
-				referenceDescription.NodeId.ToString(),
+                nid,
 				referenceDescription.TypeId,
 				referenceDescription.IsForward,
 				Convert.ToUInt32(referenceDescription.NodeClass));
 		}
+
+
+        public static NodeId GetNodeId(string nid, NamespaceTable namespaceTable)
+        {
+            try
+            {
+                var nsNodeId = System.Text.Json.JsonSerializer.Deserialize<NSNodeId>(nid);
+                NodeId nId = NodeId.Parse(nsNodeId.id);
+                var idx = (ushort)namespaceTable.GetIndex(nsNodeId.namespaceUrl);
+                return new NodeId(nId.Identifier, idx);
+            }
+            catch
+            {
+                return NodeId.Parse(nid);
+            }
+        }
 	}
 
 	internal static class DataFrameColumnFactory

@@ -36,9 +36,10 @@ namespace plugin_dotnet
             Uri uri = new Uri(fullUrl);
             NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
             var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
-            
             try
             {
+                connection.FetchNamespaceTables();
+                var nsTable = connection.NamespaceUris;
                 switch (request.Path)
                 {
                     //case "subscribe":
@@ -72,9 +73,9 @@ namespace plugin_dotnet
                     case "browse":
                         {
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-                            var nId = Opc.Ua.NodeId.Parse(nodeId);
+                            var nId = Converter.GetNodeId(nodeId, nsTable);
                             var browseResult = connection.Browse(nId);
-                            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a)).ToArray());
+                            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                             log.Debug("We got a result from browse => {0}", result);
@@ -83,9 +84,9 @@ namespace plugin_dotnet
                     case "browseTypes":
                         {
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-                            var nId = Opc.Ua.NodeId.Parse(nodeId);
+                            var nId = Converter.GetNodeId(nodeId, nsTable);
                             var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
-                            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a)).ToArray());
+                            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                             log.Debug("We got a result from browse => {0}", result);

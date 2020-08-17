@@ -42,10 +42,16 @@ namespace plugin_dotnet
             alias = new Alias();
         }
 
-        private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries)
+
+        private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var results = new Result<DataResponse>[queries.Length];
-            var nodeIds = queries.Select(a => NodeId.Parse(a.nodeId)).ToArray();
+            
+            //var expandedNodeIds = queries.Select(a => ExpandedNodeId.Parse(a.nodeId)).ToArray();
+
+            //namespaceTable.GetIndex()
+
+            var nodeIds = queries.Select(a => Converter.GetNodeId(a.nodeId, namespaceTable)).ToArray();
             var dvs = session.ReadNodeValues(nodeIds);
             for (int i = 0; i < dvs.Length; i++)
             {
@@ -86,7 +92,7 @@ namespace plugin_dotnet
             }
         }
 
-        private Result<DataResponse>[] ReadHistoryRaw(Session session, OpcUAQuery[] queries)
+        private Result<DataResponse>[] ReadHistoryRaw(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var indexMap = new Dictionary<ReadRawKey, List<int>>();
             var queryMap = new Dictionary<ReadRawKey, List<NodeId>>();
@@ -95,7 +101,7 @@ namespace plugin_dotnet
                 var query = queries[i];
                 var maxValues = query.maxDataPoints;
                 var tr = query.timeRange;
-                var nodeId = NodeId.Parse(query.nodeId);
+                var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
                 DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                 DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
                 var key = new ReadRawKey(fromTime, toTime, Convert.ToInt32(maxValues));
@@ -149,7 +155,7 @@ namespace plugin_dotnet
             }
         }
 
-        private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries)
+        private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var indexMap = new Dictionary<ReadProcessedKey, List<int>>();
             var queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
@@ -158,9 +164,9 @@ namespace plugin_dotnet
                 var query = queries[i];
                 var resampleInterval = query.intervalMs;
                 var tr = query.timeRange;
-                var nodeId = NodeId.Parse(query.nodeId);
+                var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
                 OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
-                var aggregateNodeId = NodeId.Parse(aggregate.nodeId);
+                var aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
                 DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                 DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
                 var key = new ReadProcessedKey(fromTime, toTime, aggregateNodeId, resampleInterval);
@@ -185,16 +191,17 @@ namespace plugin_dotnet
             return result;
         }
 
-        private Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query)
+        private Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query, NamespaceTable namespaceTable)
         {
             var eventFilter = new Opc.Ua.EventFilter();
             foreach (var column in query.eventQuery?.eventColumns)
             {
                 eventFilter.AddSelectClause(ObjectTypes.BaseEventType, column.browseName);
             }
+            
 
-            if (!string.IsNullOrEmpty(query.eventQuery?.eventTypeNodeId))
-                eventFilter.WhereClause.Push(FilterOperator.OfType, NodeId.Parse(query.eventQuery?.eventTypeNodeId));
+            if (query.eventQuery?.eventTypeNodeId != null)
+                eventFilter.WhereClause.Push(FilterOperator.OfType, Converter.GetNodeId(query.eventQuery?.eventTypeNodeId, namespaceTable));
 
             uint rootIdx = 0;
             foreach (var f in query.eventQuery.eventFilters)
@@ -278,7 +285,7 @@ namespace plugin_dotnet
         }
 
 
-        private Result<DataResponse>[] ReadEvents(Session session, OpcUAQuery[] opcUAQuery)
+        private Result<DataResponse>[] ReadEvents(Session session, OpcUAQuery[] opcUAQuery, NamespaceTable namespaceTable)
         {
             var results = new Result<DataResponse>[opcUAQuery.Length];
             // Do one by one for now. unsure of use-case with multiple node ids for same filter.
@@ -286,10 +293,10 @@ namespace plugin_dotnet
             {
                 var query = opcUAQuery[i];
                 var tr = query.timeRange;
-                var nodeId = NodeId.Parse(query.nodeId);
+                var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
                 DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                 DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                var eventFilter = GetEventFilter(query);
+                var eventFilter = GetEventFilter(query, namespaceTable);
                 var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeId });
                 results[i] = CreateEventDataResponse(response[0], query);
             }
@@ -309,7 +316,7 @@ namespace plugin_dotnet
                 connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
 
                 var queryGroups = request.Queries.Select(q => new OpcUAQuery(q)).ToLookup(o => o.readType);
-
+                var nsTable = connection.NamespaceUris;
                 foreach (var queryGroup in queryGroups)
                 {
                     var queries = queryGroup.ToArray();
@@ -319,20 +326,20 @@ namespace plugin_dotnet
                         switch (queryGroup.Key)
                         {
                             case "ReadNode":
-                                responses = ReadNodes(connection, queries);
+                                responses = ReadNodes(connection, queries, nsTable);
                                 break;
                             case "Subscribe":
                                 // TODO:
                                 // connection.AddSubscription(query.refId, query.nodeId, SubscriptionCallback);
                                 break;
                             case "ReadDataRaw":
-                                responses = ReadHistoryRaw(connection, queries);
+                                responses = ReadHistoryRaw(connection, queries, nsTable);
                                 break;
                             case "ReadDataProcessed":
-                                responses = ReadHistoryProcessed(connection, queries);
+                                responses = ReadHistoryProcessed(connection, queries, nsTable);
                                 break;
                             case "ReadEvents":
-                                responses = ReadEvents(connection, queries);
+                                responses = ReadEvents(connection, queries, nsTable);
                                 break;
 
                         }
