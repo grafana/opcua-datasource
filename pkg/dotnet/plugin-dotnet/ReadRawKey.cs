@@ -8,7 +8,7 @@ namespace plugin_dotnet
 	{
 		public ReadRawKey(DateTime startTime, DateTime endTime, int maxValues)
 		{
-			StartTime = StartTime;
+			StartTime = startTime;
 			EndTime = endTime;
 			MaxValues = maxValues;
 		}
@@ -76,7 +76,7 @@ namespace plugin_dotnet
 	{
 		public ReadEventKey(DateTime startTime, DateTime endTime, uint numValuesPerNode)
 		{
-			StartTime = StartTime;
+			StartTime = startTime;
 			EndTime = endTime;
 			NumValuesPerNode = numValuesPerNode;
 		}
