@@ -191,39 +191,108 @@ namespace plugin_dotnet
             return result;
         }
 
+        private LiteralOperand GetLiteralOperand(LiteralOp literop, NamespaceTable namespaceTable)
+        {
+            var nodeId = Converter.GetNodeId(literop.typeId, namespaceTable);
+            if (nodeId.NamespaceIndex == 0 && nodeId.IdType == IdType.Numeric)
+            {
+                var id = Convert.ToInt32(nodeId.Identifier);
+                if (id == 17)  // NodeId: TODO use constant.
+                {
+                    var nodeIdVal = Converter.GetNodeId(literop.value, namespaceTable);
+                    return new LiteralOperand(nodeIdVal);
+                }
+            }
+            return new LiteralOperand(literop.value);
+        }
+
+        private SimpleAttributeOperand GetSimpleAttributeOperand(SimpleAttributeOp literop, NamespaceTable namespaceTable)
+        {
+            NodeId typeId = null;
+            if (!string.IsNullOrWhiteSpace(literop.typeId))
+            {
+                typeId = Converter.GetNodeId(literop.typeId, namespaceTable);
+            }
+            return new SimpleAttributeOperand(typeId, literop.browsePath.Select(a => Converter.GetQualifiedName(a, namespaceTable)).ToList());
+        }
+
+
+        private object GetOperand(FilterOperand operand, NamespaceTable namespaceTable)
+        {
+            JsonElement el = (JsonElement)operand.value;
+            switch (operand.type)
+            {
+                case FilterOperandEnum.Literal:
+                    
+                    //return GetLiteralOperand(JsonSerializer.Deserialize<LiteralOp>(operand.value), namespaceTable);
+                    return GetLiteralOperand(el.ToObject<LiteralOp>(), namespaceTable);
+                case FilterOperandEnum.Element:
+                    {
+                        //var elementOp = JsonSerializer.Deserialize<ElementOp>(operand.value);
+                        var elementOp = el.ToObject<ElementOp>();
+                        return new ElementOperand(elementOp.index);
+                    }
+                case FilterOperandEnum.SimpleAttribute:
+                    return GetSimpleAttributeOperand(el.ToObject<SimpleAttributeOp>(), namespaceTable);
+                //return GetSimpleAttributeOperand(JsonSerializer.Deserialize<SimpleAttributeOp>(operand.value), namespaceTable);
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        private object[] GetOperands(EventFilter f, NamespaceTable namespaceTable)
+        {
+            var operands = new object[f.operands.Length];
+            for (int i = 0; i < f.operands.Length; i++)
+                operands[i] = GetOperand(f.operands[i], namespaceTable);
+            return operands;
+        
+        }
+
         private Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query, NamespaceTable namespaceTable)
         {
             var eventFilter = new Opc.Ua.EventFilter();
             foreach (var column in query.eventQuery?.eventColumns)
             {
-                eventFilter.AddSelectClause(ObjectTypes.BaseEventType, column.browseName);
+                var nsIdx = string.IsNullOrWhiteSpace(column.browsename.namespaceUrl) ? 0 : namespaceTable.GetIndex(column.browsename.namespaceUrl);
+                eventFilter.AddSelectClause(ObjectTypes.BaseEventType, new Opc.Ua.QualifiedName(column.browsename.name, (ushort)nsIdx));
             }
-            
 
-            if (query.eventQuery?.eventTypeNodeId != null)
-                eventFilter.WhereClause.Push(FilterOperator.OfType, Converter.GetNodeId(query.eventQuery?.eventTypeNodeId, namespaceTable));
 
-            uint rootIdx = 0;
-            foreach (var f in query.eventQuery.eventFilters)
+            if (query.eventQuery?.eventFilters != null)
             {
-                switch (f.oper)
+                for (int i = 0; i < query.eventQuery.eventFilters.Length; i++ )
                 {
-                    case FilterOperator.GreaterThan:
-                    case FilterOperator.GreaterThanOrEqual:
-                    case FilterOperator.LessThan:
-                    case FilterOperator.LessThanOrEqual:
-                    case FilterOperator.Equals:
-                        {
-                            var attr = new SimpleAttributeOperand(new NodeId(ObjectTypes.BaseEventType), f.operands[0]);
-                            // TODO: Must use correct type for field.
-                            var lit = new LiteralOperand(f.operands[1]);
-                            eventFilter.WhereClause.Push(f.oper, attr, lit);
-                            eventFilter.WhereClause.Push(FilterOperator.And, new ElementOperand(rootIdx), new ElementOperand((uint)eventFilter.WhereClause.Elements.Count - 1));
-                            rootIdx = (uint)eventFilter.WhereClause.Elements.Count - 1;
-                        }
-                        break;
+                    var filter = query.eventQuery.eventFilters[i];
+                    eventFilter.WhereClause.Push(filter.oper, GetOperands(filter, namespaceTable));
                 }
             }
+
+
+            //if (query.eventQuery?.eventTypeNodeId != null)
+            //    eventFilter.WhereClause.Push(FilterOperator.OfType, Converter.GetNodeId(query.eventQuery?.eventTypeNodeId, namespaceTable));
+
+            //uint rootIdx = 0;
+            //foreach (var f in query.eventQuery.eventFilters)
+            //{
+            //    switch (f.oper)
+            //    {
+            //        case FilterOperator.GreaterThan:
+            //        case FilterOperator.GreaterThanOrEqual:
+            //        case FilterOperator.LessThan:
+            //        case FilterOperator.LessThanOrEqual:
+            //        case FilterOperator.Equals:
+            //            {
+            //                var attr = new SimpleAttributeOperand(new NodeId(ObjectTypes.BaseEventType), f.operands[0]);
+            //                // TODO: Must use correct type for field.
+            //                var lit = new LiteralOperand(f.operands[1]);
+            //                eventFilter.WhereClause.Push(f.oper, attr, lit);
+            //                eventFilter.WhereClause.Push(FilterOperator.And, new ElementOperand(rootIdx), new ElementOperand((uint)eventFilter.WhereClause.Elements.Count - 1));
+            //                rootIdx = (uint)eventFilter.WhereClause.Elements.Count - 1;
+            //            }
+            //            break;
+            //    }
+            //}
 
             return eventFilter;
         }
@@ -234,7 +303,7 @@ namespace plugin_dotnet
             for (int i = 0; i < query.eventQuery.eventColumns.Length; i++)
             {
                 var col = query.eventQuery.eventColumns[i];
-                fields.Add(i, dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? col.browseName : col.alias));
+                fields.Add(i, dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? col.browsename.name : col.alias));
             }
             return fields;
         }

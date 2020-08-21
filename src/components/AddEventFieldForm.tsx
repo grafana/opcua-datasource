@@ -1,12 +1,14 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
+import { QualifiedName } from '../types';
 
 export interface AddEventFieldFormProps {
-    add(browsename: string, alias: string): void;
+    add(browsename: QualifiedName, alias: string): void;
 }
 
 type State = {
     browsename: string;
+    namespaceUrl: string;
     alias: string;
 };
 
@@ -16,6 +18,7 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
         super(props);
         this.state = {
             browsename: "",
+            namespaceUrl: "",
             alias: ""
         };
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,7 +27,7 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
     }
 
     handleSubmit(event: { preventDefault: () => void; }) {
-        this.props.add(this.state.browsename, this.state.alias);
+        this.props.add({ name: this.state.browsename, namespaceUrl: this.state.namespaceUrl }, this.state.alias);
         event.preventDefault();
     }
 
@@ -34,6 +37,15 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
        
         this.setState({
             browsename: value
+        });
+    }
+
+    changeNamespaceUrl(event: { target: any; }) {
+        const target = event.target;
+        const value = target.value;
+
+        this.setState({
+            namespaceUrl: value
         });
     }
 
@@ -50,7 +62,14 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
         return (
             <div>
                 <br/>
-            <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSubmit}>
+                    <SegmentFrame label="Namespace Url">
+                        <input
+                            name="namespaceUrl"
+                            type="input"
+                            value={this.state.namespaceUrl}
+                            onChange={this.changeNamespaceUrl} />
+                    </SegmentFrame>
                     <SegmentFrame label="Browse name">
                         <input
                         name="browsename"

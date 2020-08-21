@@ -39,9 +39,9 @@ export class EventFilterTable extends PureComponent<Props, State > {
 
     renderCompareOperatorRow(row: EventFilter , index: number) {
         return (<TableRow style={{ height: 14 }} key={index}>
-            <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {row.operands[0]} </TableCell>
+            <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {EventFilterOperatorUtil.GetOperandString(row.operands[0])} </TableCell>
             <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>{EventFilterOperatorUtil.GetString(row.oper)}</TableCell>
-            <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {row.operands[1]} </TableCell>
+            <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {EventFilterOperatorUtil.GetOperandString(row.operands[1])} </TableCell>
             <TableCell><button style={{ backgroundColor: 'gray' }} onClick={() => this.props.ondelete(index)}>Delete</button></TableCell>
         </TableRow>);
     }
@@ -50,7 +50,7 @@ export class EventFilterTable extends PureComponent<Props, State > {
     renderDefaultRow(row: EventFilter, index: number) {
         return (<TableRow style={{ height: 14 }} key={index}>
             <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>{row.oper}</TableCell>
-            {row.operands.map((oper, idx) => <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {oper[idx]} </TableCell>)}
+            {row.operands.map((oper, idx) => <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {EventFilterOperatorUtil.GetOperandString(oper)} </TableCell>)}
         </TableRow>);
     }
 

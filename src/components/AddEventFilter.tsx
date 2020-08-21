@@ -1,13 +1,17 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
-import { FilterOperator, EventFilter, EventFilterOperatorUtil } from '../types'; 
+import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp } from '../types'; 
 
 export interface Props {
     add(filter: EventFilter): void;
 }
 
 type State = {
-    eventFilter: EventFilter;
+    oper: FilterOperator;
+    fieldName: string;
+    namespaceUrl: string;
+    value: string;
+    typeId: string;
 };
 
 
@@ -15,16 +19,23 @@ export class AddEventFilter extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            eventFilter: {
-                oper: FilterOperator.GreaterThan, operands: [ "Severity", "500" ]
-            }
+            oper: FilterOperator.GreaterThan,
+            fieldName: "Severity",
+            namespaceUrl: "",
+            typeId: "i=10",
+            value: "500"
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.changeOperator = this.changeOperator.bind(this);
     }
 
     handleSubmit(event: { preventDefault: () => void; }) {
-        this.props.add(this.state.eventFilter);
+        let attr: SimpleAttributeOp = { attributeId: 13, typeId: "", browsePath: [{ name: this.state.fieldName, namespaceUrl: this.state.namespaceUrl }] };
+        let literal: LiteralOp = {
+            typeId: this.state.typeId, value: this.state.value };
+        let operands: FilterOperand[] = [{ type: FilterOperandEnum.SimpleAttribute, value: attr }, { type: FilterOperandEnum.Literal, value: literal } ];
+        var evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
+        this.props.add(evFilter);
         event.preventDefault();
     }
 
@@ -39,29 +50,48 @@ export class AddEventFilter extends PureComponent<Props, State> {
             case FilterOperator.LessThanOrEqual:
             case FilterOperator.Equals:
                 {
-                    var eventFilter = {
-                        oper: value,
-                        operands: ["", ""]
-                    };
-                    this.setState({ eventFilter: eventFilter });
+                    this.setState({ oper: value});
                 }
                 
         }
     }
 
-    changeOperand(event: { target: any; }, operandIdx: number) {
+    changeNamespaceUrl(event: { target: any; }) {
         const target = event.target;
         const value = target.value;
 
-        var operands = this.state.eventFilter.operands.slice();
-        operands[operandIdx] = value;
-        var eventFilter = {
-            oper: this.state.eventFilter.oper,
-            operands: operands
-        };
-        this.setState({ eventFilter: eventFilter });
+        this.setState({
+            namespaceUrl: value
+        });
     }
 
+
+    changeFieldName(event: { target: any; }) {
+        const target = event.target;
+        const value = target.value;
+
+        this.setState({
+            fieldName: value
+        });
+    }
+
+    changeValueType(event: { target: any; }) {
+        const target = event.target;
+        const value = target.value;
+
+        this.setState({
+            typeId: value
+        });
+    }
+
+    changeValue(event: { target: any; }) {
+        const target = event.target;
+        const value = target.value;
+
+        this.setState({
+            value: value
+        });
+    }
 
 
     renderDropdown() {
@@ -84,19 +114,34 @@ export class AddEventFilter extends PureComponent<Props, State> {
             case FilterOperator.LessThan:
             case FilterOperator.LessThanOrEqual:
             case FilterOperator.Equals:
-                return (<><SegmentFrame label="Event Field">
-                    <input
-                        name="browsename"
-                        type="input"
-                        value={this.state.eventFilter.operands[0]}
-                        onChange={(ev) => this.changeOperand(ev, 0)} />
-                </SegmentFrame>
-                    <SegmentFrame label="Alias" marginLeft >
+                return (<><SegmentFrame label="Namespace Url">
                         <input
-                            name="alias"
+                            name="ns"
                             type="input"
-                            value={this.state.eventFilter.operands[1]}
-                            onChange={(ev) => this.changeOperand(ev, 1)} />
+                            value={this.state.namespaceUrl}
+                        onChange={(ev) => this.changeNamespaceUrl(ev)} />
+                    </SegmentFrame>
+                    <SegmentFrame label="Name">
+                        <input
+                            name="evField"
+                            type="input"
+                            value={this.state.fieldName}
+                            onChange={(ev) => this.changeFieldName(ev)} />
+                    </SegmentFrame>
+                    <SegmentFrame label="Value Type" marginLeft >
+                        <input
+                            name="type"
+                            type="input"
+                            value={this.state.typeId}
+                            onChange={(ev) => this.changeValueType(ev) } />
+                    </SegmentFrame>
+
+                    <SegmentFrame label="Value" marginLeft >
+                        <input
+                            name="value"
+                            type="input"
+                            value={this.state.value}
+                            onChange={(ev) => this.changeValue(ev)} />
                     </SegmentFrame></>);
         }
         return <></>;
@@ -108,7 +153,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
                 <br/>
                 <form onSubmit={this.handleSubmit}>
                     {this.renderDropdown()}
-                    {this.renderOperands(this.state.eventFilter.oper)}
+                    {this.renderOperands(this.state.oper)}
                     <input type="submit" value="Add Filter" />
                 </form>
             </div>

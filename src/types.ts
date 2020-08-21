@@ -16,9 +16,14 @@ export interface EventQuery {
     eventFilters: EventFilter[];
 }
 
+export interface QualifiedName {
+    namespaceUrl: string;
+    name: string;
+}
+
 export interface EventColumn {
-    browseName: string;
-    alias: string
+    browsename: QualifiedName;
+    alias: string;
 }
 
 export interface OpcUaResultsEntry {
@@ -50,8 +55,41 @@ export interface OpcUaNodeDefinition {
 
 export interface EventFilter {
     oper: FilterOperator;
-    operands: string[];
+    operands: FilterOperand[];
 }
+
+export interface FilterOperand {
+    type: FilterOperandEnum;
+    value: object;
+}
+
+export enum FilterOperandEnum {
+    Literal = 1,
+    Element = 2,
+    Attribute = 3,
+    SimpleAttribute = 4
+}
+
+export interface LiteralOp {
+    typeId: string;
+    value: string;
+}
+
+export interface ElementOp {
+    index: number;
+}
+
+export interface AttributeOp {
+    //TODO
+}
+
+
+export interface SimpleAttributeOp {
+    typeId: string;
+    browsePath: QualifiedName[];
+    attributeId: number;
+}
+
 
 export enum FilterOperator {
     Equals = 0,
@@ -78,6 +116,39 @@ export class EventFilterOperatorUtil {
     public static operNames: string[] = ["==", "IsNull", ">", "<", ">=", "<=", "Like", "Not", "Between", "InList", "And", "Or", "Cast", "InView", "OfType", "RelatedTo", "BitwiseAnd", "BitwiseOr"];
     static GetString(oper: FilterOperator): string {
         return EventFilterOperatorUtil.operNames[oper];
+    }
+
+    static GetQualifiedNameString(qm: QualifiedName): string {
+        if (qm.namespaceUrl != null && qm.namespaceUrl.length > 0)
+            return qm.namespaceUrl + ":" + qm.name;
+        else
+            return qm.name;
+    }
+
+
+
+    static GetLiteralString(op: LiteralOp): string {
+        return "Data type node: " + op.typeId + " Value: " + op.value;
+    }
+
+    static GetSimpleAttributeString(op: SimpleAttributeOp): string {
+        let s = "Type definition node: " + op.typeId + "  BrowsePath: ";
+        for (var i = 0; i < op.browsePath.length; i++) {
+            s += this.GetQualifiedNameString(op.browsePath[i]);
+            if (i < op.browsePath.length - 1)
+                s += "/";
+        }
+        return s;
+    }
+
+    static GetOperandString(operand: FilterOperand): string {
+        switch (operand.type) {
+            case FilterOperandEnum.SimpleAttribute:
+                return this.GetSimpleAttributeString(operand.value as SimpleAttributeOp);
+            case FilterOperandEnum.Literal:
+                return this.GetLiteralString(operand.value as LiteralOp);
+        }
+        return "";
     }
 }
 

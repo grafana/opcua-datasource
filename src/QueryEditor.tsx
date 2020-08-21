@@ -5,10 +5,10 @@ import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 import { DataSource } from './DataSource';
-import { EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
+import { QualifiedName, FilterOperator, EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator, LiteralOp, FilterOperandEnum, ElementOp } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 import { css } from 'emotion';
-import { EventField, EventFieldTable } from './components/EventFieldTable';
+import { EventFieldTable } from './components/EventFieldTable';
 import { AddEventFieldForm } from './components/AddEventFieldForm';
 import { EventFilterTable } from './components/EventFilterTable';
 import { AddEventFilter } from './components/AddEventFilter';
@@ -27,7 +27,7 @@ type State = {
     eventTypeNodeId: string;
     eventOptions: CascaderOption[];
     eventTypes: string[];
-    eventFields: EventField[];
+    eventFields: EventColumn[];
     eventFilters: EventFilter[];
 
   tabs: Array<{ label: string; active: boolean }>;
@@ -80,14 +80,14 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     }
 
-    buildEventFields = (): EventField[] => {
+    buildEventFields = (): EventColumn[] => {
         return [
-            { alias: "", browsename: "Time" },
-            { alias: "", browsename: "EventId" },
-            { alias: "", browsename: "EventType" },
-            { alias: "", browsename: "SourceName" },
-            { alias: "", browsename: "Message" },
-            { alias: "", browsename: "Severity" }
+            { alias: "", browsename: { name: "Time", namespaceUrl: "" } },
+            { alias: "", browsename: { name: "EventId", namespaceUrl: "" } },
+            { alias: "", browsename: { name: "EventType", namespaceUrl: "" }  },
+            { alias: "", browsename: { name: "SourceName", namespaceUrl: "" }  },
+            { alias: "", browsename: { name: "Message", namespaceUrl: "" } },
+            { alias: "", browsename: { name: "Severity", namespaceUrl: "" } }
             ];
         
     }
@@ -131,9 +131,12 @@ export class QueryEditor extends PureComponent<Props, State> {
       onRunQuery();
     };
 
-    toEventColumns = (r: EventField) : EventColumn => {
+    toEventColumns = (r: EventColumn) : EventColumn => {
         return {
-            browseName: r.browsename,
+            browsename: {
+                name: r.browsename.name,
+                namespaceUrl: r.browsename.namespaceUrl
+            },
             alias: r.alias
         };
     };
@@ -256,6 +259,35 @@ export class QueryEditor extends PureComponent<Props, State> {
         this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
     }
 
+
+    createFilterTree = (eventTypesNode: string, eventFilters: EventFilter[]): EventFilter[]  => 
+    {
+        var eventFilterTree: EventFilter[] = [];
+        if (eventTypesNode != null) {
+            var literal: LiteralOp = { typeId: "i=17", value: eventTypesNode };
+
+            let filterEventType: EventFilter = {
+                oper: FilterOperator.OfType, operands: [{
+                    type: FilterOperandEnum.Literal, value: literal
+                }]
+            };
+            eventFilterTree.push(filterEventType);
+        }
+
+        var rootIdx: number = 0;
+        for (var i = 0; i < eventFilters.length; i++) {
+            eventFilterTree.push(eventFilters[i]);
+            var left: ElementOp = { index: rootIdx };
+            var right: ElementOp = {
+                index: eventFilterTree.length - 1
+            };
+            var and: EventFilter = { oper: FilterOperator.And, operands: [{ type: FilterOperandEnum.Element, value: left }, { type: FilterOperandEnum.Element, value: right }] };
+            eventFilterTree.push(and);
+            rootIdx = eventFilterTree.length - 1;
+        }
+        return eventFilterTree;
+    }
+
     updateEventQuery = () => 
     {
         const { query, onChange, onRunQuery } = this.props;
@@ -263,7 +295,9 @@ export class QueryEditor extends PureComponent<Props, State> {
         let eventColumns = this.state.eventFields.map(c => this.toEventColumns(c));
         let evtTypes = this.state.eventTypes;
         let nid = this.state.eventTypeNodeId;
-        let eventFilters = this.state.eventFilters.map(c => this.toEventFilter(c));
+        //this.state.eventFilters.map(c => this.toEventFilter(c));
+        let eventFilters =  this.createFilterTree(this.state.eventTypeNodeId, this.state.eventFilters);
+
         let eventQuery = {
             eventTypeNodeId: nid,
             eventTypes: evtTypes,
@@ -277,11 +311,11 @@ export class QueryEditor extends PureComponent<Props, State> {
         onRunQuery();
     }
 
-    addSelectField = (browsename: string, alias: string) =>
+    addSelectField = (browsename: QualifiedName, alias: string) =>
     {
         let tempArray = this.state.eventFields.slice();
 
-        tempArray.push({ browsename: browsename, alias: alias });
+        tempArray.push({ browsename: { name: browsename.name, namespaceUrl: browsename.namespaceUrl }, alias: alias });
         this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
     }
 
@@ -365,7 +399,7 @@ export class QueryEditor extends PureComponent<Props, State> {
                 <br />
                 <EventFieldTable rows={this.state.eventFields} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
                 <br />
-                <AddEventFieldForm add={(browsename: string, alias: string) => this.addSelectField(browsename, alias)} />
+                <AddEventFieldForm add={(browsename: QualifiedName, alias: string) => this.addSelectField(browsename, alias)} />
                 <br />
                 <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
                 <br />

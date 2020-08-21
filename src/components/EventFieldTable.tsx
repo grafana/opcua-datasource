@@ -10,6 +10,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 //import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
+import { EventColumn } from './../types';
 //import { SegmentFrame } from './SegmentFrame';
 
 //const useStyles = makeStyles({
@@ -20,15 +21,15 @@ import { Paper } from '@material-ui/core';
 //});
 
 export interface EventFieldsProps {
-    rows: EventField[];
+    rows: EventColumn[];
     ondelete(idx: number): void;
 }
 
-export interface EventField
-{
-    browsename: string;
-    alias: string;
-}
+//export interface EventField
+//{
+//    browsename: string;
+//    alias: string;
+//}
 
 type State = {
 }
@@ -44,7 +45,8 @@ export class EventFieldTable extends PureComponent < EventFieldsProps, State > {
                 <Paper>
                     <Table>
                         <TableHead style={{ backgroundColor: 'black', color: 'white', }}>
-                            <TableRow style={{ height: 20}}>
+                            <TableRow style={{ height: 20 }}>
+                                <TableCell style={{ color: 'white', border: 0, padding: 0 }}>Namespace Url</TableCell>
                                 <TableCell style={{ color: 'white', border: 0, padding: 0}}>Browse Name</TableCell>
                                 <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right">Alias</TableCell>
                                 <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right"></TableCell>
@@ -54,7 +56,11 @@ export class EventFieldTable extends PureComponent < EventFieldsProps, State > {
                             {this.props.rows.map((row, index) => (
                                 <TableRow style={{ height: 14 }} key={index}>
                                     <TableCell style={{ color: 'white', border: 0, padding: 0 }}>
-                                        {row.browsename}
+                                        {row.browsename.namespaceUrl}
+                                    </TableCell>
+
+                                    <TableCell style={{ color: 'white', border: 0, padding: 0 }}>
+                                        {row.browsename.name}
                                     </TableCell>
                                     <TableCell align="right" style={{ color: 'white', border: 0, padding: 0}}>{row.alias}</TableCell>
                                     <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>

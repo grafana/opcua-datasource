@@ -4,9 +4,19 @@ using Opc.Ua;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace plugin_dotnet
 {
+    public static class JsonConverter
+    {
+        public static T ToObject<T>(this JsonElement element)
+        {
+            var json = element.GetRawText();
+            return JsonSerializer.Deserialize<T>(json);
+        }
+    }
+
 	public static class Converter
 	{
 		public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription, NamespaceTable namespaceTable)
@@ -38,7 +48,13 @@ namespace plugin_dotnet
                 return NodeId.Parse(nid);
             }
         }
-	}
+
+        internal static Opc.Ua.QualifiedName GetQualifiedName(QualifiedName qm, NamespaceTable namespaceTable)
+        {
+            var nsIdx = string.IsNullOrWhiteSpace(qm.namespaceUrl) ? 0 : namespaceTable.GetIndex(qm.namespaceUrl);
+            return new Opc.Ua.QualifiedName(qm.name, (ushort)nsIdx);
+        }
+    }
 
 	internal static class DataFrameColumnFactory
 	{

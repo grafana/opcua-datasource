@@ -21,18 +21,64 @@ namespace plugin_dotnet
         public EventFilter[] eventFilters { get; set; }
     }
 
-    public class EventColumn
-    { 
-        public string browseName { get; set; }
-        public string alias { get; set; }
+    public class QualifiedName
+    {
+        public string namespaceUrl { get; set; }
+        public string name { get; set; }
     }
 
-
+    public class EventColumn
+    { 
+        public QualifiedName browsename { get; set; }
+        public string alias { get; set; }
+    }
 
     public class EventFilter
     {
         public FilterOperator oper { get; set; }
-        public string[] operands { get; set; }
+        public FilterOperand[] operands { get; set; }
+    }
+
+    public enum FilterOperandEnum
+    { 
+        Literal = 1,
+        Element = 2,
+        Attribute = 3,
+        SimpleAttribute = 4
+    }
+
+    public class LiteralOp
+    {
+        public string typeId { get; set; }
+        public string value { get; set; }
+    }
+
+    public class ElementOp
+    { 
+        public uint index { get; set; }
+    }
+
+    public class AttributeOp
+    { 
+        //TODO
+    }
+
+
+    public class SimpleAttributeOp
+    {
+        public string typeId { get; set; }
+
+        public QualifiedName[] browsePath { get; set; }
+
+        public int attributeId { get; set; }
+        
+        //indexRange NumericRange 
+    }
+
+    public class FilterOperand
+    {
+        public FilterOperandEnum type { get; set; }
+        public object value { get; set; }
     }
 
     public class NSNodeId
