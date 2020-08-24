@@ -1,21 +1,22 @@
 import React, { PureComponent, ChangeEvent } from 'react';
 import { SegmentAsync, RadioButtonGroup, Input, TabsBar, TabContent, Tab } from '@grafana/ui';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
-import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 import { DataSource } from './DataSource';
 import { EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
-import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
+import { SegmentFrame, SegmentLabel, SegmentRow } from './components/SegmentFrame';
 import { css } from 'emotion';
 import { EventField, EventFieldTable } from './components/EventFieldTable';
 import { AddEventFieldForm } from './components/AddEventFieldForm';
 import { EventFilterTable } from './components/EventFilterTable';
 import { AddEventFilter } from './components/AddEventFilter';
+import { MultiSelect } from '@grafana/ui';
 
 const rootNode = 'i=85';
 const eventTypesNode = 'i=3048';
 const selectText = (t: string): string => `Select <${t}>`;
+const defaultTag = 'Select to browse OPC UA Server';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
@@ -49,16 +50,16 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     this.state = {
       options: [],
-      value: this.props.query.value || ['Select to browse OPC UA Server'],
+      value: this.props.query.value || [defaultTag],
       eventTypes: [],
       eventOptions: [],
-      eventFields: this.buildEventFields(),
+      eventFields: this.eventFields,
       eventTypeNodeId: '',
       eventFilters: [],
-      tabs: [
-        { label: 'Traditional', active: true },
-        { label: 'Tree view', active: false },
-      ],
+      tabs: this.readTypeOptions.map(o => ({
+        label: o.label || '',
+        active: o.active,
+      })),
     };
 
     props.datasource.getResource('browse', { nodeId: rootNode }).then((results: OpcUaBrowseResults[]) => {
@@ -76,7 +77,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     });
   }
 
-  buildEventFields = (): EventField[] => {
+  get eventFields(): EventField[] {
     return [
       { alias: '', browsename: 'Time' },
       { alias: '', browsename: 'EventId' },
@@ -85,7 +86,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       { alias: '', browsename: 'Message' },
       { alias: '', browsename: 'Severity' },
     ];
-  };
+  }
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
     const { datasource, query, onChange, onRunQuery } = this.props;
@@ -219,6 +220,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
       { label: 'Events', value: 'ReadEvents' },
+      { label: 'Events2', value: 'ReadEvents2' },
     ];
   }
 
@@ -278,42 +280,96 @@ export class QueryEditor extends PureComponent<Props, State> {
     this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
   };
 
-  optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
-    const readTypeValue = this.readTypeValue(query.readType);
-    switch (readTypeValue) {
-      case 'Processed': {
-        return (
-          <>
-            <SegmentLabel label={'Aggregate'} marginLeft />
-            <SegmentAsync
-              value={query.aggregate?.name ?? selectText('aggregate')}
-              loadOptions={() => this.browseNodeSV('i=11201')}
-              onChange={e => this.onChangeField('aggregate', e)}
-            />
-          </>
-        );
-      }
-      case 'Raw': {
-        return (
-          <>
-            <SegmentLabel label="Max Values" marginLeft />
-            <Input
-              width={10}
-              value={-1}
-              onChange={() => console.log('not implemented yet')}
-              onBlur={() => onRunQuery()}
-            />
-          </>
-        );
-      }
-
-      default: {
-        return <></>;
-      }
-    }
+  renderProcessedQueryOptions = () => {
+    const { query } = this.props;
+    return (
+      <>
+        <SegmentFrame label={'Aggregate'}>
+          <SegmentAsync
+            value={query.aggregate?.name ?? selectText('aggregate')}
+            loadOptions={() => this.browseNodeSV('i=11201')}
+            onChange={e => this.onChangeField('aggregate', e)}
+          />
+        </SegmentFrame>
+      </>
+    );
   };
 
-  renderEvents = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
+  renderRawQueryOptions = () => {
+    const { onRunQuery } = this.props;
+    return (
+      <>
+        <SegmentFrame label="Max Values">
+          <Input
+            width={10}
+            value={-1}
+            onChange={() => console.log('not implemented yet')}
+            onBlur={() => onRunQuery()}
+          />
+        </SegmentFrame>
+      </>
+    );
+  };
+
+  renderEventQueryOptions = () => {
+    const { query } = this.props;
+    return (
+      <>
+        <SegmentFrame label="Event Type">
+          <ButtonCascader
+            value={this.state.eventTypes}
+            loadData={this.getEventTypes}
+            options={this.state.eventOptions}
+            onChange={this.onChangeEventType}
+          >
+            {this.state.eventTypes.join(separator)}
+          </ButtonCascader>
+          <SegmentLabel label="Columns" />
+          <div className={'gf-form gf-form--grow'}>
+            <MultiSelect
+              value={this.getEventOptions(query.eventQuery?.eventColumns)}
+              options={this.getEventOptions()}
+              onChange={this.onChangeColumns}
+            />
+          </div>
+        </SegmentFrame>
+      </>
+    );
+  };
+
+  getEventOptions = (eventColumnsOrFields?: EventField[] | EventColumn[]): Array<SelectableValue<EventField>> => {
+    console.log('fields', eventColumnsOrFields);
+    let fields: EventField[] = this.state.eventFields;
+    if (eventColumnsOrFields && eventColumnsOrFields.length && eventColumnsOrFields[0].hasOwnProperty('displayname')) {
+      fields = eventColumnsOrFields as EventField[];
+    }
+    if (eventColumnsOrFields && eventColumnsOrFields.length && eventColumnsOrFields[0].hasOwnProperty('displayName')) {
+      fields = (eventColumnsOrFields as EventColumn[]).map((c: EventColumn) => ({
+        alias: c.alias,
+        browsename: c.browseName,
+      }));
+    }
+    return fields.map(item => ({
+      label: item.browsename,
+      value: item,
+    }));
+  };
+
+  onChangeColumns = (items: Array<SelectableValue<EventField>>) => {
+    console.log('onChangeColumns', items);
+    const { eventFields } = this.state;
+    items.forEach(item => {
+      if (
+        item.value &&
+        !eventFields.find(ef => ef.alias === item.value?.alias && ef.browsename === item.value?.browsename)
+      ) {
+        this.addSelectField(item.value.alias, item.value.browsename);
+      }
+    });
+  };
+
+  renderEvents = (): JSX.Element => {
+    const { query } = this.props;
     const { options, value } = this.state;
     return (
       <>
@@ -368,74 +424,67 @@ export class QueryEditor extends PureComponent<Props, State> {
     );
   };
 
-  renderOriginal = () => {
-    const { query, onRunQuery } = this.props;
-    const { options, value } = this.state;
-    const readTypeValue = this.readTypeValue(query.readType);
-    if (readTypeValue === 'Events') {
-      return this.renderEvents(query, onRunQuery);
-    } else {
-      return (
-        <>
-          <SegmentFrame label="Tag">
-            <div onBlur={e => console.log('onBlur', e)}>
-              <ButtonCascader
-                //className="query-part"
-                value={value}
-                loadData={this.getChildren}
-                options={options}
-                onChange={this.onChange}
-              >
-                {value.join(separator)}
-              </ButtonCascader>
-            </div>
-
-            <RadioButtonGroup
-              options={this.readTypeOptions}
-              value={query.readType}
-              onChange={e => e && this.onChangeField('readType', e)}
-            />
-            {this.optionalParams(query, onRunQuery)}
-          </SegmentFrame>
-          <SegmentFrame label="Alias">
-            <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
-          </SegmentFrame>
-        </>
-      );
-    }
-  };
-
-  renderTreeEditor = () => {
-    return <TreeEditor {...this.props} />;
+  renderTabs = () => {
+    const { query } = this.props;
+    return (
+      <>
+        <SegmentRow label="Query Options">
+          <TabsBar className={tabMarginHeader}>
+            {this.readTypeOptions.map((tab, index) => {
+              return (
+                <Tab
+                  key={index}
+                  label={tab.label || ''}
+                  active={tab.label === query.readType}
+                  onChangeTab={() => {
+                    this.onChangeField('readType', tab.label || '');
+                  }}
+                />
+              );
+            })}
+          </TabsBar>
+          <TabContent className={tabMarginBox}>
+            {(() => {
+              switch (query.readType) {
+                case 'Raw':
+                  return this.renderRawQueryOptions();
+                case 'Processed':
+                  return this.renderProcessedQueryOptions();
+                case 'Events':
+                  return this.renderEvents();
+                case 'Events2':
+                  return this.renderEventQueryOptions();
+                default:
+                  return <></>;
+              }
+            })()}
+          </TabContent>
+        </SegmentRow>
+      </>
+    );
   };
 
   render() {
-    const { tabs } = this.state;
-    console.log('QueryEditor::render');
+    const { options, value } = this.state;
 
     return (
       <>
-        <TabsBar className={tabMarginHeader}>
-          {tabs.map((tab, index) => {
-            return (
-              <Tab
-                key={index}
-                label={tab.label}
-                active={tab.active}
-                onChangeTab={() => {
-                  this.setState({
-                    ...this.state,
-                    tabs: tabs.map((tab, idx) => ({ ...tab, active: idx === index })),
-                  });
-                }}
-              />
-            );
-          })}
-        </TabsBar>
-        <TabContent className={tabMarginBox}>
-          {tabs[0].active && this.renderOriginal()}
-          {tabs[1].active && this.renderTreeEditor()}
-        </TabContent>
+        <SegmentFrame label="Tag">
+          <div onBlur={e => console.log('onBlur', e)}>
+            <ButtonCascader
+              //className="query-part"
+              value={value}
+              loadData={this.getChildren}
+              options={options}
+              onChange={this.onChange}
+            >
+              {value.join(separator)}
+            </ButtonCascader>
+          </div>
+          <SegmentLabel label="Alias" />
+          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
+        </SegmentFrame>
+        {value[0] === defaultTag ? <></> : this.renderTabs()}
       </>
     );
   }

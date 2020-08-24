@@ -6,7 +6,7 @@
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev && make",
-    "watch": "(grafana-toolkit plugin:dev --watch &); (make watch &)"
+    "watch": "$SHELL -c \"make watch &; grafana-toolkit plugin:dev --watch\""
   },
   "author": "srclosson@gmail.com",
   "license": "Apache-2.0",

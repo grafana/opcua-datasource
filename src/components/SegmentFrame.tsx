@@ -26,3 +26,14 @@ export const SegmentFrame = ({ label, onChange, loadOptions, children }: any) =>
     </div>
   </>
 );
+
+export const SegmentRow = ({ label, children }: any) => (
+  <>
+    <tr>
+      <td>
+        <div className="gf-form-label query-keyword">{label}</div>
+      </td>
+      <td>{children}</td>
+    </tr>
+  </>
+);

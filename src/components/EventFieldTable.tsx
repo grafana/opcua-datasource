@@ -38,36 +38,38 @@ export class EventFieldTable extends PureComponent<EventFieldsProps, State> {
 
   render() {
     return (
-      <div className="panel-container" style={{ width: '100' }}>
-        <Paper>
-          <Table>
-            <TableHead style={{ backgroundColor: 'black', color: 'white' }}>
-              <TableRow style={{ height: 20 }}>
-                <TableCell style={{ color: 'white', border: 0, padding: 0 }}>Browse Name</TableCell>
-                <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right">
-                  Alias
-                </TableCell>
-                <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right"></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody style={{ backgroundColor: 'black', color: 'white' }}>
-              {this.props.rows.map((row, index) => (
-                <TableRow style={{ height: 14 }} key={index}>
-                  <TableCell style={{ color: 'white', border: 0, padding: 0 }}>{row.browsename}</TableCell>
-                  <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>
-                    {row.alias}
+      <>
+        <div className="panel-container" style={{ width: '100' }}>
+          <Paper>
+            <Table>
+              <TableHead style={{ backgroundColor: 'black', color: 'white' }}>
+                <TableRow style={{ height: 20 }}>
+                  <TableCell style={{ color: 'white', border: 0, padding: 0 }}>Browse Name</TableCell>
+                  <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right">
+                    Alias
                   </TableCell>
-                  <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>
-                    <button style={{ backgroundColor: 'gray' }} onClick={() => this.props.ondelete(index)}>
-                      Delete
-                    </button>
-                  </TableCell>
+                  <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right"></TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Paper>
-      </div>
+              </TableHead>
+              <TableBody style={{ backgroundColor: 'black', color: 'white' }}>
+                {this.props.rows.map((row, index) => (
+                  <TableRow style={{ height: 14 }} key={index}>
+                    <TableCell style={{ color: 'white', border: 0, padding: 0 }}>{row.browsename}</TableCell>
+                    <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>
+                      {row.alias}
+                    </TableCell>
+                    <TableCell align="right" style={{ color: 'white', border: 0, padding: 0 }}>
+                      <button style={{ backgroundColor: 'gray' }} onClick={() => this.props.ondelete(index)}>
+                        Delete
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Paper>
+        </div>
+      </>
     );
   }
 }

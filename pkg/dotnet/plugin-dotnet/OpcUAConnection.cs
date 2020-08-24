@@ -5,8 +5,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Grpc.Core.Logging;
-//using MicrosoftOpcUa.Client.Core;
-//using MicrosoftOpcUa.Client.Utility;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Pluginv2;
@@ -30,17 +28,18 @@ namespace plugin_dotnet
         private ISessionFactory _sessionFactory;
         private Func<ApplicationConfiguration> _applicationConfiguration;
         private Dictionary<string, Session> connections = new Dictionary<string, Session>();
+        private ILogger log;
         public Connections(ISessionFactory sessionFactory, Func<ApplicationConfiguration> applicationConfiguration)
         {
             _sessionFactory = sessionFactory;
             _applicationConfiguration = applicationConfiguration;
+            log = new ConsoleLogger();
         }
 
         public void Add(string url, string clientCert, string clientKey)
         {
             try
             {
-                //connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
                 X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(clientCert));
                 X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(clientKey));
                 CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
@@ -57,7 +56,7 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-                //log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
@@ -72,7 +71,7 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-                //log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
