@@ -7,7 +7,6 @@ using Grpc.Core.Logging;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
-using MicrosoftOpcUa.Client.Utility;
 using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
 using Google.Protobuf;
