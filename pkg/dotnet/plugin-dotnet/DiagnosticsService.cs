@@ -31,8 +31,8 @@ namespace plugin_dotnet
             var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse
             {
-                Status = connection.Connected ? CheckHealthResponse.Types.HealthStatus.Ok : CheckHealthResponse.Types.HealthStatus.Error,
-                Message = connection.Connected ? "Connected Successfully" : "Connection Failed",
+                Status = connection.Session.Connected ? CheckHealthResponse.Types.HealthStatus.Ok : CheckHealthResponse.Types.HealthStatus.Error,
+                Message = connection.Session.Connected ? "Connected Successfully" : "Connection Failed",
             };
             return Task.FromResult(checkHealthResponse);
         }

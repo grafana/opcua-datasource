@@ -5,7 +5,7 @@ import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 import { DataSource } from './DataSource';
-import { QualifiedName, FilterOperator, EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator, LiteralOp, FilterOperandEnum, ElementOp } from './types';
+import { QualifiedName, FilterOperator, EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator, LiteralOp, FilterOperandEnum, ElementOp, EventFilterSer, FilterOperand, FilterOperandSer } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 import { css } from 'emotion';
 import { EventFieldTable } from './components/EventFieldTable';
@@ -230,7 +230,8 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Processed', value: 'ReadDataProcessed' },
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
-      { label: 'Events', value: 'ReadEvents' }
+        { label: 'Events', value: 'ReadEvents' },
+        { label: 'Subscribe Events', value: 'SubscribeEvents' }
     ];
   }
 
@@ -288,6 +289,17 @@ export class QueryEditor extends PureComponent<Props, State> {
         return eventFilterTree;
     }
 
+    serializeEventOperand = (filterOperand: FilterOperand): FilterOperandSer => {
+        return { type: filterOperand.type, value: JSON.stringify(filterOperand.value) };
+    }
+
+
+    serializeEventFilter = (eventFilter: EventFilter): EventFilterSer => {
+        return {
+            oper: eventFilter.oper, operands: eventFilter.operands.map(evf => this.serializeEventOperand(evf))
+        };
+    }
+
     updateEventQuery = () => 
     {
         const { query, onChange, onRunQuery } = this.props;
@@ -296,7 +308,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         let evtTypes = this.state.eventTypes;
         let nid = this.state.eventTypeNodeId;
         //this.state.eventFilters.map(c => this.toEventFilter(c));
-        let eventFilters =  this.createFilterTree(this.state.eventTypeNodeId, this.state.eventFilters);
+        let eventFilters = this.createFilterTree(this.state.eventTypeNodeId, this.state.eventFilters).map(x => this.serializeEventFilter(x));
 
         let eventQuery = {
             eventTypeNodeId: nid,
@@ -413,7 +425,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { query, onRunQuery } = this.props;
     const { options, value } = this.state;
       const readTypeValue = this.readTypeValue(query.readType);
-      if (readTypeValue === "Events") {
+      if (readTypeValue === "Events" || readTypeValue === "Subscribe Events") {
           return this.renderEvents(query, onRunQuery);
       }
       else

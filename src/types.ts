@@ -13,7 +13,7 @@ export interface EventQuery {
     eventTypeNodeId: string;
     eventTypes: string[];
     eventColumns: EventColumn[];
-    eventFilters: EventFilter[];
+    eventFilters: EventFilterSer[];
 }
 
 export interface QualifiedName {
@@ -61,6 +61,16 @@ export interface EventFilter {
 export interface FilterOperand {
     type: FilterOperandEnum;
     value: object;
+}
+
+export interface EventFilterSer {
+    oper: FilterOperator;
+    operands: FilterOperandSer[];
+}
+
+export interface FilterOperandSer {
+    type: FilterOperandEnum;
+    value: string;
 }
 
 export enum FilterOperandEnum {

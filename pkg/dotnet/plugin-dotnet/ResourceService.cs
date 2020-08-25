@@ -35,7 +35,7 @@ namespace plugin_dotnet
             string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
             Uri uri = new Uri(fullUrl);
             NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
-            var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
+            var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings).Session;
             try
             {
                 connection.FetchNamespaceTables();

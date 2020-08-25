@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Grpc.Core.Logging;
@@ -14,13 +15,279 @@ using Prediktor.UA.Client;
 
 namespace plugin_dotnet
 {
+    public interface IConnection
+    { 
+        Session Session { get; }
+
+        IEventSubscription EventSubscription { get; }
+
+        void Close();
+    }
+
+    public class Connection : IConnection
+    {
+        public Connection(Session session, IEventSubscription eventSubscription)
+        {
+            Session = session;
+            EventSubscription = eventSubscription;
+        }
+
+        public Session Session { get; }
+
+        public IEventSubscription EventSubscription { get; }
+
+        public void Close()
+        {
+            EventSubscription.Close();
+            Session.Close();
+        }
+    }
+
+    public interface IEventSubscription
+    {
+        void Close();
+        Result<DataResponse> GetEventData(OpcUAQuery query, NodeId nodeId, Opc.Ua.EventFilter eventFilter);
+    }
+
+    public class EventSubscription : IEventSubscription
+    {
+        internal class SourceAndEventTypeKey
+        {
+
+            public SourceAndEventTypeKey(NodeId sourceNode, NodeId eventType)
+            {
+                SourceNode = sourceNode;
+                EventType = eventType;
+            }
+
+            public NodeId SourceNode { get; }
+            public NodeId EventType { get; }
+
+            public override int GetHashCode()
+            {
+                return SourceNode.GetHashCode() + 31 * EventType.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                SourceAndEventTypeKey other = obj as SourceAndEventTypeKey;
+                if (other != null)
+                {
+                    return SourceNode.Equals(other.SourceNode) && EventType.Equals(other.EventType);
+                }
+                return base.Equals(obj);
+            }
+
+        }
+
+        internal class EventFilterValues
+        {
+            internal EventFilterValues(MonitoredItem monitoredItem, OpcUAQuery query, Opc.Ua.EventFilter filter)
+            {
+                MonitoredItem = monitoredItem;
+                Query = query;
+                Filter = filter;
+                Values = new Dictionary<SourceAndEventTypeKey, VariantCollection>();
+            }
+
+            internal MonitoredItem MonitoredItem { get; }
+            internal IDictionary<SourceAndEventTypeKey, VariantCollection> Values { get; }
+
+            internal OpcUAQuery Query { get; }
+
+            internal Opc.Ua.EventFilter Filter { get; }
+        }
+
+
+        private IDictionary<NodeId, List<EventFilterValues>> _eventData = new Dictionary<NodeId, List<EventFilterValues>>();
+        private Session _session;
+        private Subscription _subscription;
+        public EventSubscription(Session session)
+        {
+            _session = session;
+            // Hard coded for now
+            _subscription = new Subscription();
+            _subscription.DisplayName = null;
+            _subscription.PublishingInterval = 1000;
+            _subscription.KeepAliveCount = 10;
+            _subscription.LifetimeCount = 100;
+            _subscription.MaxNotificationsPerPublish = 1000;
+            _subscription.PublishingEnabled = true;
+            _subscription.TimestampsToReturn = TimestampsToReturn.Both;
+            _session.AddSubscription(_subscription);
+            _subscription.Create();
+        }
+
+        public void Close()
+        {
+            _session.RemoveSubscription(_subscription);
+            _subscription.Dispose();
+        }
+
+
+        private MonitoredItem CreateMonitoredItem(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
+        {
+
+            // create the item with the filter.
+            MonitoredItem monitoredItem = new MonitoredItem();
+
+            monitoredItem.DisplayName = null;
+            monitoredItem.StartNodeId = startNodeId;
+            monitoredItem.RelativePath = null;
+            monitoredItem.NodeClass = NodeClass.Object;
+            monitoredItem.AttributeId = Attributes.EventNotifier;
+            monitoredItem.IndexRange = null;
+            monitoredItem.Encoding = null;
+            monitoredItem.MonitoringMode = MonitoringMode.Reporting;
+            monitoredItem.SamplingInterval = 0;
+            monitoredItem.QueueSize = UInt32.MaxValue;
+            monitoredItem.DiscardOldest = true;
+            monitoredItem.Filter = eventFilter;
+
+            // save the definition as the handle.
+            //monitoredItem.Handle = this;
+
+            return monitoredItem;
+
+        }
+
+
+        private MonitoredItem AddMonitorItem(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
+        {
+
+            var monitorItem = CreateMonitoredItem(startNodeId, eventFilter);
+            monitorItem.Notification += MonitorItem_Notification;
+            _subscription.AddItem(monitorItem);
+            _subscription.ApplyChanges();
+            return monitorItem;
+        }
+
+
+        private void RemoveMonitorItem(MonitoredItem monitorItem)
+        {
+            monitorItem.Notification -= MonitorItem_Notification;
+            _subscription.RemoveItem(monitorItem);
+            _subscription.ApplyChanges();
+        }
+
+        private void MonitorItem_Notification(MonitoredItem monitoredItem, MonitoredItemNotificationEventArgs e)
+        {
+
+            try
+            {
+                EventFieldList notification = e.NotificationValue as EventFieldList;
+
+                if (notification == null)
+                {
+                    return;
+                }
+                var filter = monitoredItem.Filter as Opc.Ua.EventFilter;
+
+                if (filter != null)
+                {
+                    var values = GetEventFilterValues(monitoredItem.StartNodeId, filter);
+                    if (values != null)
+                    {
+                        var eventType = (NodeId)notification.EventFields[notification.EventFields.Count - 1].Value;
+                        var sourceNode = (NodeId)notification.EventFields[notification.EventFields.Count - 2].Value;
+                        var key = new SourceAndEventTypeKey(sourceNode, eventType);
+                        lock (_eventData)
+                        {
+                            List<EventFilterValues> eventFilterValuesList;
+                            if (_eventData.TryGetValue(monitoredItem.StartNodeId, out eventFilterValuesList))
+                            {
+                                var eventFilterValues = eventFilterValuesList.FirstOrDefault(a => a.Filter.IsEqual(filter));
+                                if (eventFilterValues != null)
+                                {
+                                    eventFilterValues.Values[key] = notification.EventFields;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch //(Exception exception)
+            { 
+                // Log.
+            }
+        }
+
+        private EventFilterValues GetEventFilterValues(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
+        {
+            lock (_eventData)
+            {
+                if (_eventData.TryGetValue(startNodeId, out List<EventFilterValues> values))
+                {
+                    return values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
+                }
+            }
+            return null;
+        }
+
+        public Result<DataResponse> GetEventData(OpcUAQuery query, NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
+        {
+            eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "SourceNode");
+            eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "EventType");
+
+            var eventFilterValues = GetEventFilterValues(startNodeId, eventFilter);
+            if (eventFilterValues == null)
+            {
+                var monitorItem = AddMonitorItem(startNodeId, eventFilter);
+                eventFilterValues = new EventFilterValues(monitorItem, query, eventFilter);
+                if (!TryAddEventFilterValues(startNodeId, eventFilterValues))
+                {
+                    RemoveMonitorItem(monitorItem);
+                    eventFilterValues = null;
+                }
+            }
+
+            lock (_eventData)
+            {
+                if (eventFilterValues == null)
+                {
+                    eventFilterValues = GetEventFilterValues(startNodeId, eventFilter);
+                }
+                if (eventFilterValues != null)
+                {
+                    return Converter.CreateEventSubscriptionDataResponse(eventFilterValues.Values.Values, query);
+                }
+            }
+            return new Result<DataResponse>(StatusCodes.BadUnexpectedError, "");
+        }
+
+        private bool TryAddEventFilterValues(NodeId startNodeId, EventFilterValues eventFilterValues)
+        {
+            lock (_eventData)
+            {
+                List<EventFilterValues> l;
+                if (!_eventData.TryGetValue(startNodeId, out l))
+                {
+                    l = new List<EventFilterValues>();
+                    l.Add(eventFilterValues);
+                    _eventData.Add(startNodeId, l);
+                    return true;
+                }
+                else
+                {
+                    if (!l.Any(a => a.Filter.IsEqual(eventFilterValues.Filter)))
+                    {
+                        l.Add(eventFilterValues);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
+
 
     public interface IConnections
     {
         void Add(string url, string clientCert, string clientKey);
         void Add(string url);
-        Session Get(DataSourceInstanceSettings settings);
-        Session Get(string url);
+        IConnection Get(DataSourceInstanceSettings settings);
+        IConnection Get(string url);
 
         void Remove(string url);
     }
@@ -29,7 +296,7 @@ namespace plugin_dotnet
     {
         private ISessionFactory _sessionFactory;
         private Func<ApplicationConfiguration> _applicationConfiguration;
-        private Dictionary<string, Session> connections = new Dictionary<string, Session>();
+        private Dictionary<string, IConnection> connections = new Dictionary<string, IConnection>();
         public Connections(ISessionFactory sessionFactory, Func<ApplicationConfiguration> applicationConfiguration)
         {
             _sessionFactory = sessionFactory;
@@ -50,9 +317,12 @@ namespace plugin_dotnet
 
                 var appConfig = _applicationConfiguration();
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
+                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
+                var eventSubscription = new EventSubscription(session);
                 lock (connections)
                 {
-                    connections[key: url] = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
+                    var conn = new Connection(session, eventSubscription);
+                    connections[key: url] = conn;
                 }
             }
             catch (Exception ex)
@@ -65,9 +335,12 @@ namespace plugin_dotnet
         {
             try
             {
+                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
+                var eventSubscription = new EventSubscription(session);
                 lock (connections)
                 {
-                    connections[key: url] = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
+                    var conn = new Connection(session, eventSubscription);
+                    connections[key: url] = conn;
                 }
             }
             catch (Exception ex)
@@ -76,12 +349,12 @@ namespace plugin_dotnet
             }
         }
 
-        public Session Get(string url)
+        public IConnection Get(string url)
         {
             lock (connections)
             {
 
-                if (!connections.ContainsKey(url) || !connections[url].Connected)
+                if (!connections.ContainsKey(url) || !connections[url].Session.Connected)
                 {
                     Add(url);
                 }
@@ -90,12 +363,12 @@ namespace plugin_dotnet
             }
         }
 
-        public Session Get(DataSourceInstanceSettings settings)
+        public IConnection Get(DataSourceInstanceSettings settings)
         {
             lock (connections)
             {
 
-                if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Connected)
+                if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Session.Connected)
                 {
                     if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
                     {
@@ -119,183 +392,4 @@ namespace plugin_dotnet
             }
         }
     }
-
-
-    //    public static class Connections
-    //    {
-    //        static ILogger log = new ConsoleLogger();
-    //        static Dictionary<string, Session> connections = new Dictionary<string, Session>();
-
-    //        public void Add(string url)
-    //        {
-    //            try
-    //            {
-    //                connections[key: url] = new OpcUAConnection(url);
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
-    //            }
-    //        }
-
-    //        public void Add(string url, string clientCert, string clientKey)
-    //        {
-    //            try
-    //            {
-    //                connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
-    //            }
-    //            catch (Exception ex)
-    //            {
-    //                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
-    //            }
-    //        }
-
-    //        public Session Get(string url)
-    //        {
-    //            if (!connections.ContainsKey(url) || !connections[url].Connected)
-    //            {
-    //                Add(url);
-    //            }
-
-    //            return connections[url];
-    //        }
-
-    //        public Session Get(DataSourceInstanceSettings settings)
-    //        {
-    //            if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Connected)
-    //            {
-    //                if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
-    //                {
-    //                    Add(settings.Url, settings.DecryptedSecureJsonData["tlsClientCert"], settings.DecryptedSecureJsonData["tlsClientKey"]);
-    //                }
-    //                else
-    //                {
-    //                    Add(settings.Url);
-    //                }
-    //            }
-
-    //            return connections[settings.Url];
-    //        }
-
-    //        public static void Remove(string url)
-    //        {
-    //            connections.Remove(url);
-    //        }
-    //    }
-
-    //public class OpcUAConnection : OpcUaClient
-    //{
-    //    private const string rootNode = "i=84";
-    //    private const string objectsNode = "i=85";
-    //    private const string typesNode = "i=86";
-    //    private const string viewsNode = "i=87";
-    //    private string endpoint;
-
-    //    private ILogger log;
-
-    //    public OpcUAConnection()
-    //    {
-    //        log = new ConsoleLogger();
-    //    }
-
-    //    public OpcUAConnection(string url) : this()
-    //    {
-    //        base.UseSecurity = false;
-    //        endpoint = url;
-    //        ConnectServer(endpoint).Wait();
-    //    }
-
-    //    public OpcUAConnection(string url, string cert, string key) : this()
-    //    {
-    //        base.UseSecurity = true;
-    //        endpoint = url;
-    //        Connect(endpoint, cert, key);
-    //    }
-
-    //    public void Close()
-    //    {
-    //        base.Disconnect();
-    //        Connections.Remove(endpoint);
-    //    }
-
-    //    public string BrowseTypes(string nodeToBrowse = typesNode)
-    //    {
-    //        OpcNodeAttribute[] attributes = ReadNodeAttributes(nodeToBrowse);
-    //        return JsonSerializer.Serialize<OpcNodeAttribute[]>(attributes);
-    //    }
-
-    //    public BrowseResultsEntry[] TypesBrowse(string nodeToBrowse = typesNode)
-    //    {
-    //        List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
-
-    //        foreach (ReferenceDescription entry in this.BrowseNodeReference(nodeToBrowse))
-    //        {
-    //            BrowseResultsEntry bre = new BrowseResultsEntry();
-    //            log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
-
-    //            bre.displayName = entry.DisplayName.ToString();
-    //            bre.browseName = entry.BrowseName.ToString();
-    //            bre.nodeId = entry.NodeId.ToString();
-    //            browseResults.Add(bre);
-    //            if (entry.TypeDefinition.IdType == IdType.Opaque)
-    //            {
-    //                browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
-    //            }
-    //        }
-
-    //        return browseResults.ToArray();
-    //    }
-
-    //    public BrowseResultsEntry[] FlatBrowse(string nodeToBrowse = typesNode)
-    //    {
-    //        List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
-
-    //        foreach (ReferenceDescription entry in this.BrowseNodeReference(nodeToBrowse))
-    //        {
-    //            BrowseResultsEntry bre = new BrowseResultsEntry();
-    //            log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
-    //            if (entry.NodeClass == NodeClass.Variable)
-    //            {
-    //                bre.displayName = entry.DisplayName.ToString();
-    //                bre.browseName = entry.BrowseName.ToString();
-    //                bre.nodeId = entry.NodeId.ToString();
-    //                browseResults.Add(bre);
-    //            }
-    //            browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
-    //        }
-
-    //        return browseResults.ToArray();
-    //    }
-
-    //    public string Browse(string nodeId = typesNode)
-    //    {
-    //        log.Debug("Browsing node {0}", nodeId);
-    //        var results = this.BrowseNodeReference(nodeId);
-    //        BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
-    //        for (int i = 0; i < results.Length; i++)
-    //        {
-    //            browseResults[i] = new BrowseResultsEntry(
-    //                results[i].DisplayName.ToString(),
-    //                results[i].BrowseName.ToString(),
-    //                results[i].NodeId.ToString(),
-    //                results[i].TypeId,
-    //                results[i].IsForward,
-    //                Convert.ToUInt32(results[i].NodeClass));
-    //        }
-    //        return JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
-    //    }
-
-    //    private async void Connect(string endpoint, string cert, string key)
-    //    {
-    //        X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(cert));
-    //        X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(key));
-    //        CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
-
-    //        UserIdentity = new UserIdentity(certWithKey);
-    //        UseSecurity = true;
-    //        ApplicationCertificate = certificateIdentifier;
-
-    //        await ConnectServer(endpoint);
-    //    }
-    //}
 }

@@ -77,7 +77,7 @@ namespace plugin_dotnet
     public class FilterOperand
     {
         public FilterOperandEnum type { get; set; }
-        public object value { get; set; }
+        public string value { get; set; }
     }
 
     public class NSNodeId
@@ -92,7 +92,7 @@ namespace plugin_dotnet
         public string id { get; set; }  
     }
 
-    class OpcUAQuery
+    public class OpcUAQuery
     {
         public string refId { get; set; }
         public Int64 maxDataPoints { get; set; }
