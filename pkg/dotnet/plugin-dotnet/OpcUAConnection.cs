@@ -159,6 +159,7 @@ namespace plugin_dotnet
             monitorItem.Notification += MonitorItem_Notification;
             _subscription.AddItem(monitorItem);
             _subscription.ApplyChanges();
+            monitorItem.Subscription.ConditionRefresh();
             return monitorItem;
         }
 
