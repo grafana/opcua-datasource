@@ -16,31 +16,13 @@ using Prediktor.UA.Client;
 namespace plugin_dotnet
 {
     public interface IConnection
-    { 
+    {
         Session Session { get; }
 
         IEventSubscription EventSubscription { get; }
+        IDataValueSubscription DataValueSubscription { get; }
 
         void Close();
-    }
-
-    public class Connection : IConnection
-    {
-        public Connection(Session session, IEventSubscription eventSubscription)
-        {
-            Session = session;
-            EventSubscription = eventSubscription;
-        }
-
-        public Session Session { get; }
-
-        public IEventSubscription EventSubscription { get; }
-
-        public void Close()
-        {
-            EventSubscription.Close();
-            Session.Close();
-        }
     }
 
     public interface IEventSubscription
@@ -49,235 +31,36 @@ namespace plugin_dotnet
         Result<DataResponse> GetEventData(OpcUAQuery query, NodeId nodeId, Opc.Ua.EventFilter eventFilter);
     }
 
-    public class EventSubscription : IEventSubscription
+
+    public interface IDataValueSubscription
     {
-        internal class SourceAndEventTypeKey
+        Result<DataValue>[] GetValues(NodeId[] nodeIds);
+
+        void Close();
+    }
+
+
+
+    public class Connection : IConnection
+    {
+        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription)
         {
-
-            public SourceAndEventTypeKey(NodeId sourceNode, NodeId eventType)
-            {
-                SourceNode = sourceNode;
-                EventType = eventType;
-            }
-
-            public NodeId SourceNode { get; }
-            public NodeId EventType { get; }
-
-            public override int GetHashCode()
-            {
-                return SourceNode.GetHashCode() + 31 * EventType.GetHashCode();
-            }
-
-            public override bool Equals(object obj)
-            {
-                SourceAndEventTypeKey other = obj as SourceAndEventTypeKey;
-                if (other != null)
-                {
-                    return SourceNode.Equals(other.SourceNode) && EventType.Equals(other.EventType);
-                }
-                return base.Equals(obj);
-            }
-
+            Session = session;
+            EventSubscription = eventSubscription;
+            DataValueSubscription = dataValueSubscription;
         }
 
-        internal class EventFilterValues
-        {
-            internal EventFilterValues(MonitoredItem monitoredItem, OpcUAQuery query, Opc.Ua.EventFilter filter)
-            {
-                MonitoredItem = monitoredItem;
-                Query = query;
-                Filter = filter;
-                Values = new Dictionary<SourceAndEventTypeKey, VariantCollection>();
-            }
+        public Session Session { get; }
 
-            internal MonitoredItem MonitoredItem { get; }
-            internal IDictionary<SourceAndEventTypeKey, VariantCollection> Values { get; }
+        public IEventSubscription EventSubscription { get; }
 
-            internal OpcUAQuery Query { get; }
-
-            internal Opc.Ua.EventFilter Filter { get; }
-        }
-
-
-        private IDictionary<NodeId, List<EventFilterValues>> _eventData = new Dictionary<NodeId, List<EventFilterValues>>();
-        private Session _session;
-        private Subscription _subscription;
-        public EventSubscription(Session session)
-        {
-            _session = session;
-            // Hard coded for now
-            _subscription = new Subscription();
-            _subscription.DisplayName = null;
-            _subscription.PublishingInterval = 1000;
-            _subscription.KeepAliveCount = 10;
-            _subscription.LifetimeCount = 100;
-            _subscription.MaxNotificationsPerPublish = 1000;
-            _subscription.PublishingEnabled = true;
-            _subscription.TimestampsToReturn = TimestampsToReturn.Both;
-            _session.AddSubscription(_subscription);
-            _subscription.Create();
-        }
+        public IDataValueSubscription DataValueSubscription { get; }
 
         public void Close()
         {
-            _session.RemoveSubscription(_subscription);
-            _subscription.Dispose();
-        }
-
-
-        private MonitoredItem CreateMonitoredItem(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
-        {
-
-            // create the item with the filter.
-            MonitoredItem monitoredItem = new MonitoredItem();
-
-            monitoredItem.DisplayName = null;
-            monitoredItem.StartNodeId = startNodeId;
-            monitoredItem.RelativePath = null;
-            monitoredItem.NodeClass = NodeClass.Object;
-            monitoredItem.AttributeId = Attributes.EventNotifier;
-            monitoredItem.IndexRange = null;
-            monitoredItem.Encoding = null;
-            monitoredItem.MonitoringMode = MonitoringMode.Reporting;
-            monitoredItem.SamplingInterval = 0;
-            monitoredItem.QueueSize = UInt32.MaxValue;
-            monitoredItem.DiscardOldest = true;
-            monitoredItem.Filter = eventFilter;
-
-            // save the definition as the handle.
-            //monitoredItem.Handle = this;
-
-            return monitoredItem;
-
-        }
-
-
-        private MonitoredItem AddMonitorItem(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
-        {
-
-            var monitorItem = CreateMonitoredItem(startNodeId, eventFilter);
-            monitorItem.Notification += MonitorItem_Notification;
-            _subscription.AddItem(monitorItem);
-            _subscription.ApplyChanges();
-            monitorItem.Subscription.ConditionRefresh();
-            return monitorItem;
-        }
-
-
-        private void RemoveMonitorItem(MonitoredItem monitorItem)
-        {
-            monitorItem.Notification -= MonitorItem_Notification;
-            _subscription.RemoveItem(monitorItem);
-            _subscription.ApplyChanges();
-        }
-
-        private void MonitorItem_Notification(MonitoredItem monitoredItem, MonitoredItemNotificationEventArgs e)
-        {
-
-            try
-            {
-                EventFieldList notification = e.NotificationValue as EventFieldList;
-
-                if (notification == null)
-                {
-                    return;
-                }
-                var filter = monitoredItem.Filter as Opc.Ua.EventFilter;
-
-                if (filter != null)
-                {
-                    var values = GetEventFilterValues(monitoredItem.StartNodeId, filter);
-                    if (values != null)
-                    {
-                        var eventType = (NodeId)notification.EventFields[notification.EventFields.Count - 1].Value;
-                        var sourceNode = (NodeId)notification.EventFields[notification.EventFields.Count - 2].Value;
-                        var key = new SourceAndEventTypeKey(sourceNode, eventType);
-                        lock (_eventData)
-                        {
-                            List<EventFilterValues> eventFilterValuesList;
-                            if (_eventData.TryGetValue(monitoredItem.StartNodeId, out eventFilterValuesList))
-                            {
-                                var eventFilterValues = eventFilterValuesList.FirstOrDefault(a => a.Filter.IsEqual(filter));
-                                if (eventFilterValues != null)
-                                {
-                                    eventFilterValues.Values[key] = notification.EventFields;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch //(Exception exception)
-            { 
-                // Log.
-            }
-        }
-
-        private EventFilterValues GetEventFilterValues(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
-        {
-            lock (_eventData)
-            {
-                if (_eventData.TryGetValue(startNodeId, out List<EventFilterValues> values))
-                {
-                    return values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
-                }
-            }
-            return null;
-        }
-
-        public Result<DataResponse> GetEventData(OpcUAQuery query, NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
-        {
-            eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "SourceNode");
-            eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "EventType");
-
-            var eventFilterValues = GetEventFilterValues(startNodeId, eventFilter);
-            if (eventFilterValues == null)
-            {
-                var monitorItem = AddMonitorItem(startNodeId, eventFilter);
-                eventFilterValues = new EventFilterValues(monitorItem, query, eventFilter);
-                if (!TryAddEventFilterValues(startNodeId, eventFilterValues))
-                {
-                    RemoveMonitorItem(monitorItem);
-                    eventFilterValues = null;
-                }
-            }
-
-            lock (_eventData)
-            {
-                if (eventFilterValues == null)
-                {
-                    eventFilterValues = GetEventFilterValues(startNodeId, eventFilter);
-                }
-                if (eventFilterValues != null)
-                {
-                    return Converter.CreateEventSubscriptionDataResponse(eventFilterValues.Values.Values, query);
-                }
-            }
-            return new Result<DataResponse>(StatusCodes.BadUnexpectedError, "");
-        }
-
-        private bool TryAddEventFilterValues(NodeId startNodeId, EventFilterValues eventFilterValues)
-        {
-            lock (_eventData)
-            {
-                List<EventFilterValues> l;
-                if (!_eventData.TryGetValue(startNodeId, out l))
-                {
-                    l = new List<EventFilterValues>();
-                    l.Add(eventFilterValues);
-                    _eventData.Add(startNodeId, l);
-                    return true;
-                }
-                else
-                {
-                    if (!l.Any(a => a.Filter.IsEqual(eventFilterValues.Filter)))
-                    {
-                        l.Add(eventFilterValues);
-                        return true;
-                    }
-                }
-            }
-            return false;
+            DataValueSubscription.Close();
+            EventSubscription.Close();
+            Session.Close();
         }
     }
 
@@ -295,11 +78,13 @@ namespace plugin_dotnet
 
     public class Connections : IConnections
     {
+        private ILogger _log;
         private ISessionFactory _sessionFactory;
         private Func<ApplicationConfiguration> _applicationConfiguration;
         private Dictionary<string, IConnection> connections = new Dictionary<string, IConnection>();
-        public Connections(ISessionFactory sessionFactory, Func<ApplicationConfiguration> applicationConfiguration)
+        public Connections(ILogger log, ISessionFactory sessionFactory, Func<ApplicationConfiguration> applicationConfiguration)
         {
+            _log = log;
             _sessionFactory = sessionFactory;
             _applicationConfiguration = applicationConfiguration;
         }
@@ -320,15 +105,16 @@ namespace plugin_dotnet
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
                 var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
                 var eventSubscription = new EventSubscription(session);
+                var dataValueSubscription = new DataValueSubscription(session);
                 lock (connections)
                 {
-                    var conn = new Connection(session, eventSubscription);
+                    var conn = new Connection(session, eventSubscription, dataValueSubscription);
                     connections[key: url] = conn;
                 }
             }
             catch (Exception ex)
             {
-                //log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                _log.Debug("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
@@ -338,15 +124,16 @@ namespace plugin_dotnet
             {
                 var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
                 var eventSubscription = new EventSubscription(session);
+                var dataValueSubscription = new DataValueSubscription(session);
                 lock (connections)
                 {
-                    var conn = new Connection(session, eventSubscription);
+                    var conn = new Connection(session, eventSubscription, dataValueSubscription);
                     connections[key: url] = conn;
                 }
             }
             catch (Exception ex)
             {
-                //log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                _log.Debug("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 

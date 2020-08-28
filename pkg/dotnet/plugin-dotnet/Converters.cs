@@ -22,7 +22,10 @@ namespace plugin_dotnet
 
 	public static class Converter
 	{
-		public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription, NamespaceTable namespaceTable)
+
+        private static readonly DateTime _lowLimit = new DateTime(2, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime _highLimit = new DateTime(9998, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription, NamespaceTable namespaceTable)
 		{
             var nsUrl = namespaceTable.GetString(referenceDescription.NodeId.NamespaceIndex);
             var nsNodeId = new NSNodeId() { id = referenceDescription.NodeId.ToString(), namespaceUrl = nsUrl };
@@ -237,6 +240,35 @@ namespace plugin_dotnet
             else
             {
                 return new Result<DataResponse>(valuesResult.StatusCode, valuesResult.Error);
+            }
+        }
+
+        private static DateTime LimitDateTime(DateTime dt)
+        {
+            if (dt.CompareTo(_lowLimit) < 0)
+                return _lowLimit;
+            if (dt.CompareTo(_highLimit) > 0)
+                return _highLimit;
+            return dt;
+        }
+
+        internal static Result<DataResponse> GetDataResponseForDataValue(DataValue dataValue, NodeId nodeId, OpcUAQuery query)
+        {
+            if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
+            {
+                DataResponse dataResponse = new DataResponse();
+                DataFrame dataFrame = new DataFrame(query.refId);
+
+                var timeField = dataFrame.AddField("Time", typeof(DateTime));
+                Field valueField = dataFrame.AddField(String.Join(" / ", query.value), dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
+                timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
+                valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
+                dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
+                return new Result<DataResponse>(dataResponse);
+            }
+            else
+            {
+                return new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}", nodeId.ToString()));
             }
         }
     }

@@ -81,7 +81,7 @@ namespace plugin_dotnet
         {
             // TODO: Use Ioc 
             ILogger logger = new ConsoleLogger();
-            var connections = new Connections(new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
+            var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
             // Build a server to host the plugin over gRPC
             Server server = new Server
             {

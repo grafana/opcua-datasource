@@ -94,8 +94,8 @@ export class QueryEditor extends PureComponent<Props, State> {
 
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
-    const { datasource, query, onChange, onRunQuery } = this.props;
-    const { nodeId, refId } = query;
+    const { /*datasource,*/ query, onChange, onRunQuery } = this.props;
+    const { /*nodeId, refId*/ } = query;
 
     console.log('change', field, sval, args);
     const changes: Record<string, any> = {};
@@ -106,16 +106,16 @@ export class QueryEditor extends PureComponent<Props, State> {
       changes[field] = sval.value;
     }
 
-    if (changes[field] === 'Subscribe') {
-      datasource.getResource('subscribe', { nodeId, refId }).then((results: any[]) => {
-        console.log('We got subscribe results', results);
-        onChange({ ...query, ...changes });
-        onRunQuery();
-      });
-    } else {
+    //if (changes[field] === 'Subscribe') {
+    //  datasource.getResource('subscribe', { nodeId, refId }).then((results: any[]) => {
+    //    console.log('We got subscribe results', results);
+    //    onChange({ ...query, ...changes });
+    //    onRunQuery();
+    //  });
+    //} else {
       onChange({ ...query, ...changes });
       onRunQuery();
-    }
+    //}
   };
 
   onChange = (selected: string[], selectedItems: CascaderOption[]) => {

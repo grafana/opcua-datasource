@@ -50,25 +50,11 @@ namespace plugin_dotnet
 
             var nodeIds = queries.Select(a => Converter.GetNodeId(a.nodeId, namespaceTable)).ToArray();
             var dvs = session.ReadNodeValues(nodeIds);
+
             for (int i = 0; i < dvs.Length; i++)
             {
                 var dataValue = dvs[i];
-                if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
-                {
-                    DataResponse dataResponse = new DataResponse();
-                    DataFrame dataFrame = new DataFrame(queries[i].refId);
-
-                    var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                    Field valueField = dataFrame.AddField(String.Join(" / ", queries[i].value), dataValue.Value.GetType());
-                    timeField.Append(dataValue.SourceTimestamp);
-                    valueField.Append(dataValue.Value);
-                    dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
-                    results[i] = new Result<DataResponse>(dataResponse);
-                }
-                else 
-                {
-                    results[i] = new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}", nodeIds[i].ToString()));
-                }
+                results[i] = Converter.GetDataResponseForDataValue(dataValue, nodeIds[i], queries[i]);
             }
             return results;
         }
@@ -207,8 +193,7 @@ namespace plugin_dotnet
                                 responses = ReadNodes(connection.Session, queries, nsTable);
                                 break;
                             case "Subscribe":
-                                // TODO:
-                                // connection.AddSubscription(query.refId, query.nodeId, SubscriptionCallback);
+                                responses = SubscribeDataValues(connection.DataValueSubscription, queries, nsTable);
                                 break;
                             case "ReadDataRaw":
                                 responses = ReadHistoryRaw(connection.Session, queries, nsTable);
@@ -256,6 +241,23 @@ namespace plugin_dotnet
             return await Task.FromResult(response);
         }
 
+        private Result<DataResponse>[] SubscribeDataValues(IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
+        {
+            var responses = new Result<DataResponse>[queries.Length];
+            var nodeIds = queries.Select(query => Converter.GetNodeId(query.nodeId, nsTable)).ToArray();
+            var dataValues = dataValueSubscription.GetValues(nodeIds);
+            var results = new Result<DataResponse>[nodeIds.Length];
+            for (int i = 0; i < nodeIds.Length; i++)
+            {
+                if (dataValues[i].Success)
+                    results[i] = Converter.GetDataResponseForDataValue(dataValues[i].Value, nodeIds[i], queries[i]);
+                else
+                    results[i] = new Result<DataResponse>(dataValues[i].StatusCode, dataValues[i].Error);
+            }
+            return results;
+
+        }
+
         private Result<DataResponse>[] SubscribeEvents(IEventSubscription eventSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
             var responses = new Result<DataResponse>[queries.Length];
@@ -278,13 +280,6 @@ namespace plugin_dotnet
                 }
             }
             return responses;
-        }
-
-        private void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs)
-        {
-            QueryDataResponse response = new QueryDataResponse();
-            log.Debug("Got a callback {0} - {1} - {2}", refId, item, eventArgs);
-            
         }
     }
 }
