@@ -1,4 +1,5 @@
-﻿using Opc.Ua;
+﻿using Microsoft.Extensions.Logging;
+using Opc.Ua;
 using Opc.Ua.Client;
 using Prediktor.UA.Client;
 using System;
@@ -16,13 +17,15 @@ namespace plugin_dotnet
 
     public class DataValueSubscription : IDataValueSubscription
     {
+        private ILogger _logger;
         private Session _session;
         private Subscription _subscription;
         private Dictionary<NodeId, VariableValue> _subscribedValues = new Dictionary<NodeId, VariableValue>();
 
 
-        public DataValueSubscription(Session session)
+        public DataValueSubscription(ILogger logger, Session session)
         {
+            _logger = logger;
             _session = session;
             // Hard coded for now
             _subscription = new Subscription();
@@ -74,6 +77,7 @@ namespace plugin_dotnet
             }
             if (monItems.Count > 0)
             {
+                _logger.LogInformation("Subscribing to {0} data values", monItems.Count);
                 _subscription.AddItems(monItems);
                 _subscription.ApplyChanges();
             }
@@ -115,6 +119,7 @@ namespace plugin_dotnet
 
         public void Close()
         {
+            _logger.LogInformation("Disposing DataValueSubscription");
             _subscription.Dispose();
         }
     }

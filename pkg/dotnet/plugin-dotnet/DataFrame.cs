@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Grpc.Core.Logging;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using Apache.Arrow;
@@ -12,6 +11,7 @@ using Microsoft.Data.Analysis;
 using System.Collections;
 using Microsoft.VisualBasic;
 using Apache.Arrow.Types;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
@@ -138,7 +138,7 @@ namespace plugin_dotnet
     [Serializable]
     class Field
     {
-        private ILogger log;
+        private ILogger _log;
         public string Name { get; set; }
         public Dictionary<string, string> Labels { get; set; }
 
@@ -146,9 +146,9 @@ namespace plugin_dotnet
         public Type Type { get;  }
         public List<object> Data { get; set; }
 
-        public Field(string name, Type type)
+        public Field(ILogger log, string name, Type type)
         {
-            log = new ConsoleLogger();
+            _log = log;
             Name = name;
             Type = type;
             Data = new List<object>();
@@ -172,7 +172,7 @@ namespace plugin_dotnet
             }
             catch (Exception e)
             {
-                log.Error(e.ToString());
+                _log.LogError(e.ToString());
                 //Data.
             }
         }
@@ -181,7 +181,7 @@ namespace plugin_dotnet
     [Serializable]
     class DataFrame
     {
-        private ILogger log;
+        private ILogger _log;
         public string Name { get; set; }
 
         protected List<Field> fields;
@@ -192,9 +192,9 @@ namespace plugin_dotnet
         // Meta is metadata about the Frame, and includes space for custom metadata.
         public FrameMeta Meta { get; set; }
 
-        public DataFrame(string name)
+        public DataFrame(ILogger log, string name)
         {
-            log = new ConsoleLogger();
+            _log = log;
             Name = name;
             fields = new List<Field>();
         }
@@ -206,7 +206,7 @@ namespace plugin_dotnet
 
         public Field AddField(string name, Type type)
         {
-            Field field = new Field(name, type);
+            Field field = new Field(_log, name, type);
             fields.Add(field);
             return field;
         }
@@ -249,12 +249,10 @@ namespace plugin_dotnet
 
     public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T : unmanaged
     {
-        ILogger log;
         List<T> _values;
         public OpcUaDataFrameColumn(string name, List<T> values) : base(name, values)
         {
             _values = values;
-            log = new ConsoleLogger();
         }
 
         private IArrowType GetArrowType()

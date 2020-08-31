@@ -8,17 +8,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
-    public static class JsonConverter
-    {
-        public static T ToObject<T>(this JsonElement element)
-        {
-            var json = element.GetRawText();
-            return JsonSerializer.Deserialize<T>(json);
-        }
-    }
 
 	public static class Converter
 	{
@@ -101,10 +94,10 @@ namespace plugin_dotnet
         }
 
 
-        internal static Result<DataResponse> CreateEventSubscriptionDataResponse(ICollection<VariantCollection> events, OpcUAQuery query)
+        internal static Result<DataResponse> CreateEventSubscriptionDataResponse(ILogger log, ICollection<VariantCollection> events, OpcUAQuery query)
         {
             var dataResponse = new DataResponse();
-            var dataFrame = new DataFrame(query.refId);
+            var dataFrame = new DataFrame(log, query.refId);
             var fields = AddEventFields(dataFrame, query);
             foreach (var ev in events)
             {
@@ -116,13 +109,13 @@ namespace plugin_dotnet
 
 
 
-        internal static Result<DataResponse> CreateEventDataResponse(Result<HistoryEvent> historyEventResult, OpcUAQuery query)
+        internal static Result<DataResponse> CreateEventDataResponse(ILogger log, Result<HistoryEvent> historyEventResult, OpcUAQuery query)
         {
             if (historyEventResult.Success)
             {
                 var historyEvent = historyEventResult.Value;
                 var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(query.refId);
+                var dataFrame = new DataFrame(log, query.refId);
                 if (historyEvent.Events.Count > 0)
                 {
                     var fields = AddEventFields(dataFrame, query);
@@ -213,12 +206,12 @@ namespace plugin_dotnet
             return eventFilter;
         }
 
-        internal static Result<DataResponse> CreateHistoryDataResponse(Result<HistoryData> valuesResult, OpcUAQuery query)
+        internal static Result<DataResponse> CreateHistoryDataResponse(ILogger log, Result<HistoryData> valuesResult, OpcUAQuery query)
         {
             if (valuesResult.Success)
             {
                 var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(query.refId);
+                var dataFrame = new DataFrame(log, query.refId);
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
                 Field valueField = null;
                 foreach (DataValue entry in valuesResult.Value.DataValues)
@@ -252,12 +245,12 @@ namespace plugin_dotnet
             return dt;
         }
 
-        internal static Result<DataResponse> GetDataResponseForDataValue(DataValue dataValue, NodeId nodeId, OpcUAQuery query)
+        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, DataValue dataValue, NodeId nodeId, OpcUAQuery query)
         {
             if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
             {
                 DataResponse dataResponse = new DataResponse();
-                DataFrame dataFrame = new DataFrame(query.refId);
+                DataFrame dataFrame = new DataFrame(log, query.refId);
 
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
                 Field valueField = dataFrame.AddField(String.Join(" / ", query.value), dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));

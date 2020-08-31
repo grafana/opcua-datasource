@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Pluginv2;
 using Grpc.Core;
-using Grpc.Core.Logging;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
@@ -11,6 +10,7 @@ using System.Text.Json;
 using System.Security.Cryptography.X509Certificates;
 using Google.Protobuf;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
@@ -26,7 +26,7 @@ namespace plugin_dotnet
 
         public override Task<CheckHealthResponse> CheckHealth(CheckHealthRequest request, ServerCallContext context)
         {
-            log.Debug("Check Health Request {0}", request);
+            log.LogDebug("Check Health Request {0}", request);
 
             var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse
@@ -39,7 +39,7 @@ namespace plugin_dotnet
 
         public override Task<CollectMetricsResponse> CollectMetrics(CollectMetricsRequest request, ServerCallContext context)
         {
-            log.Info(String.Format("Request Received: {0}", request));
+            log.LogInformation(String.Format("Request Received: {0}", request));
             return base.CollectMetrics(request, context);
         }
     }

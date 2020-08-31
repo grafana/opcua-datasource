@@ -5,13 +5,11 @@ using System.Text;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Grpc.Core.Logging;
-//using MicrosoftOpcUa.Client.Core;
-//using MicrosoftOpcUa.Client.Utility;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Pluginv2;
 using Prediktor.UA.Client;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
@@ -104,8 +102,8 @@ namespace plugin_dotnet
                 var appConfig = _applicationConfiguration();
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
                 var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
-                var eventSubscription = new EventSubscription(session);
-                var dataValueSubscription = new DataValueSubscription(session);
+                var eventSubscription = new EventSubscription(_log, session);
+                var dataValueSubscription = new DataValueSubscription(_log, session);
                 lock (connections)
                 {
                     var conn = new Connection(session, eventSubscription, dataValueSubscription);
@@ -114,7 +112,7 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-                _log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                _log.LogError("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
@@ -123,8 +121,8 @@ namespace plugin_dotnet
             try
             {
                 var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
-                var eventSubscription = new EventSubscription(session);
-                var dataValueSubscription = new DataValueSubscription(session);
+                var eventSubscription = new EventSubscription(_log, session);
+                var dataValueSubscription = new DataValueSubscription(_log, session);
                 lock (connections)
                 {
                     var conn = new Connection(session, eventSubscription, dataValueSubscription);
@@ -133,9 +131,10 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-                _log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                _log.LogError("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
+
 
         public IConnection Get(string url)
         {

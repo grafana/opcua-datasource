@@ -8,29 +8,29 @@ using System.Threading.Tasks;
 using System.Web;
 using Google.Protobuf;
 using Grpc.Core;
-using Grpc.Core.Logging;
 //using MicrosoftOpcUa.Client.Core;
 using Prediktor.UA.Client;
 using Opc.Ua.Client;
 using Pluginv2;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
     public class ResourceService : Resource.ResourceBase
     {
         private IConnections _connections;
-        private ILogger log;
         private IServerStreamWriter<CallResourceResponse> responseStream = null;
+        private ILogger _log;
 
-        public ResourceService(IConnections connections)
+        public ResourceService(ILogger log, IConnections connections)
         {
             _connections = connections;
-            log = new ConsoleLogger();
+            _log = log;
         }
 
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
         {
-            log.Debug("Call Resource {0} | {1}", request, context);
+            _log.LogDebug("Call Resource {0} | {1}", request, context);
             CallResourceResponse response = new CallResourceResponse();
             string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
             Uri uri = new Uri(fullUrl);
@@ -78,7 +78,7 @@ namespace plugin_dotnet
                             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-                            log.Debug("We got a result from browse => {0}", result);
+                            _log.LogDebug("We got a result from browse => {0}", result);
                         }
                         break;
                     case "browseTypes":
@@ -89,7 +89,7 @@ namespace plugin_dotnet
                             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-                            log.Debug("We got a result from browse => {0}", result);
+                            _log.LogDebug("We got a result from browse => {0}", result);
                         }
                         break;
                 }
@@ -97,7 +97,7 @@ namespace plugin_dotnet
             }
             catch(Exception ex)
             {
-                log.Debug("Got browse exception {0}", ex);
+                _log.LogError("Got browse exception {0}", ex);
                 throw ex;
             }
              
@@ -109,7 +109,7 @@ namespace plugin_dotnet
             CallResourceResponse response = new CallResourceResponse();
             
             string jsonData = JsonSerializer.Serialize<MonitoredItem>(item);
-            log.Debug("Subscription Response: {0}", jsonData);
+            _log.LogDebug("Subscription Response: {0}", jsonData);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(jsonData, Encoding.ASCII);
             responseStream.WriteAsync(response);

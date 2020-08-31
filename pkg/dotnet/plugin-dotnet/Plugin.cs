@@ -4,8 +4,9 @@ using System.IO;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Grpc.Core;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Pluginv2;
-using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -75,12 +76,23 @@ namespace plugin_dotnet
                 DisableHiResClock = true
             };
          }
-    
+
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddLogging(configure => configure.AddConsole())
+                .AddTransient<Plugin>();
+            services.Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Trace);
+        }
 
         static async Task Main(string[] args)
         {
-            // TODO: Use Ioc 
-            ILogger logger = new ConsoleLogger();
+            var serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            var serviceProvider = serviceCollection.BuildServiceProvider();
+
+            ILogger logger = serviceProvider.GetService<ILogger<Plugin>>(); ;
+            logger.LogDebug("Test log");
             var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
             // Build a server to host the plugin over gRPC
             Server server = new Server
@@ -88,7 +100,7 @@ namespace plugin_dotnet
                 Ports = { { ServiceHost, ServicePort, ServerCredentials.Insecure } },
                 Services = {
                     { Diagnostics.BindService(new DiagnosticsService(logger, connections)) },
-                    { Resource.BindService(new ResourceService(connections)) },
+                    { Resource.BindService(new ResourceService(logger, connections)) },
                     { Data.BindService(new DataService(logger, connections)) }
                 }
             };

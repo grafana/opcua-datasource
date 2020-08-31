@@ -1,4 +1,5 @@
-﻿using Opc.Ua;
+﻿using Microsoft.Extensions.Logging;
+using Opc.Ua;
 using Opc.Ua.Client;
 using Pluginv2;
 using Prediktor.UA.Client;
@@ -62,8 +63,10 @@ namespace plugin_dotnet
         private IDictionary<NodeId, List<EventFilterValues>> _eventData = new Dictionary<NodeId, List<EventFilterValues>>();
         private Session _session;
         private Subscription _subscription;
-        public EventSubscription(Session session)
+        private ILogger _log;
+        public EventSubscription(ILogger log, Session session)
         {
+            _log = log;
             _session = session;
             // Hard coded for now
             _subscription = new Subscription();
@@ -210,7 +213,7 @@ namespace plugin_dotnet
                 }
                 if (eventFilterValues != null)
                 {
-                    return Converter.CreateEventSubscriptionDataResponse(eventFilterValues.Values.Values, query);
+                    return Converter.CreateEventSubscriptionDataResponse(_log, eventFilterValues.Values.Values, query);
                 }
             }
             return new Result<DataResponse>(StatusCodes.BadUnexpectedError, "");

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using Pluginv2;
 using Grpc.Core;
-using Grpc.Core.Logging;
 using Google.Protobuf;
 using System.Threading.Tasks;
 using Opc.Ua;
@@ -18,6 +17,7 @@ using System.Linq;
 using Microsoft.Data.Analysis;
 using System.IO;
 using Prediktor.UA.Client;
+using Microsoft.Extensions.Logging;
 //using MicrosoftOpcUa.Client.Core;
 
 namespace plugin_dotnet
@@ -31,15 +31,15 @@ namespace plugin_dotnet
     class DataService : Data.DataBase
     {
         private IConnections _connections;
-        private readonly ILogger log;
+        private readonly ILogger _log;
         private Alias alias;
 
 
-        public DataService(ILogger logIn, IConnections connections)
+        public DataService(ILogger log, IConnections connections)
         {
             _connections = connections;
-            log = logIn;
-            log.Info("We are using the datasource");
+            _log = log;
+            _log.LogInformation("Data Service created");
             alias = new Alias();
         }
 
@@ -54,7 +54,7 @@ namespace plugin_dotnet
             for (int i = 0; i < dvs.Length; i++)
             {
                 var dataValue = dvs[i];
-                results[i] = Converter.GetDataResponseForDataValue(dataValue, nodeIds[i], queries[i]);
+                results[i] = Converter.GetDataResponseForDataValue(_log, dataValue, nodeIds[i], queries[i]);
             }
             return results;
         }
@@ -102,7 +102,7 @@ namespace plugin_dotnet
                 for (int i = 0; i < indices.Count; i++)
                 {
                     var idx = indices[i];
-                    result[idx] = Converter.CreateHistoryDataResponse(historyValues[i], queries[idx]);
+                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx]);
                 }
             }
             return result;
@@ -140,7 +140,7 @@ namespace plugin_dotnet
                 {
                     var idx = indices[i];
                     var valuesResult = historyValues[i];
-                    result[idx] = Converter.CreateHistoryDataResponse(historyValues[i], queries[idx]);
+                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx]);
                 }
             }
             return result;
@@ -162,7 +162,7 @@ namespace plugin_dotnet
                 DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
                 var eventFilter = Converter.GetEventFilter(query, namespaceTable);
                 var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeId });
-                results[i] = Converter.CreateEventDataResponse(response[0], query);
+                results[i] = Converter.CreateEventDataResponse(_log, response[0], query);
             }
             return results;
         }
@@ -176,7 +176,7 @@ namespace plugin_dotnet
 
             try
             {
-                log.Debug("got a request: {0}", request);
+                _log.LogDebug("got a request: {0}", request);
                 connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
 
                 var queryGroups = request.Queries.Select(q => new OpcUAQuery(q)).ToLookup(o => o.readType);
@@ -227,14 +227,14 @@ namespace plugin_dotnet
                         {
                             response.Responses[q.refId].Error = e.ToString();
                         }
-                        log.Error(e.ToString());
+                        _log.LogError(e.ToString());
                     }
                 }
             }
             catch (Exception ex)
             {
                // Close out the client connection.
-               log.Debug("Error: {0}", ex);
+               _log.LogError("Error: {0}", ex);
                connection.Close();
             }
 
@@ -250,7 +250,7 @@ namespace plugin_dotnet
             for (int i = 0; i < nodeIds.Length; i++)
             {
                 if (dataValues[i].Success)
-                    results[i] = Converter.GetDataResponseForDataValue(dataValues[i].Value, nodeIds[i], queries[i]);
+                    results[i] = Converter.GetDataResponseForDataValue(_log, dataValues[i].Value, nodeIds[i], queries[i]);
                 else
                     results[i] = new Result<DataResponse>(dataValues[i].StatusCode, dataValues[i].Error);
             }
