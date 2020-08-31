@@ -87,11 +87,15 @@ namespace plugin_dotnet
 
         static async Task Main(string[] args)
         {
+            
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
             ILogger logger = serviceProvider.GetService<ILogger<Plugin>>(); ;
+            var traceLogConverter = new TraceLogConverter(logger);
+            Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
+
             logger.LogDebug("Test log");
             var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
             // Build a server to host the plugin over gRPC
