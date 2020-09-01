@@ -96,7 +96,6 @@ namespace plugin_dotnet
             var traceLogConverter = new TraceLogConverter(logger);
             Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
 
-            logger.LogDebug("Test log");
             var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
             // Build a server to host the plugin over gRPC
             Server server = new Server

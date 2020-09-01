@@ -3,6 +3,7 @@ import { DataQueryRequest, DataQueryResponse, DataSourceInstanceSettings } from 
 import { OpcUaQuery, OpcUaDataSourceOptions } from './types';
 import { DataSourceWithBackend } from '@grafana/runtime';
 import { Observable } from 'rxjs';
+import { getTemplateSrv } from '@grafana/runtime';
 
 export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourceOptions> {
   config: DataSourceInstanceSettings<OpcUaDataSourceOptions>;
@@ -11,11 +12,21 @@ export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourc
     this.config = instanceSettings;
   }
 
-  query(request: DataQueryRequest<OpcUaQuery>): Observable<DataQueryResponse> {
-    return super.query(request);
-  }
+    query(request: DataQueryRequest<OpcUaQuery>): Observable<DataQueryResponse> {
+        return super.query(request);
+    }
 
-  getResource(path: string, params?: any): Promise<any> {
+    applyTemplateVariables(query: OpcUaQuery): OpcUaQuery {
+        let tmpltSrv = getTemplateSrv();
+        query.nodeId = tmpltSrv.replace(query.nodeId);
+        for (var i = 0; i < query.value.length; i++) {
+            query.value[i] = tmpltSrv.replace(query.value[i]);
+        }
+        return query;
+    }
+
+
+    getResource(path: string, params?: any): Promise<any> {
     return super.getResource(path, params);
-  }
+    }
 }
