@@ -80,7 +80,7 @@ namespace plugin_dotnet
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(configure => configure.AddConsole())
+            services.AddLogging(configure => configure.AddDebug())
                 .AddTransient<Plugin>();
             services.Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Trace);
         }
