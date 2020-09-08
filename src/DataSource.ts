@@ -27,6 +27,6 @@ export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourc
 
 
     getResource(path: string, params?: any): Promise<any> {
-    return super.getResource(path, params);
+        return super.getResource(path, params);
     }
 }

@@ -44,17 +44,79 @@ namespace plugin_dotnet
         }
 
 
+        private BrowsePath ResolveBrowsePath(OpcUAQuery query, NamespaceTable namespaceTable)
+        {
+            var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
+            var path = new BrowsePath();
+            path.StartingNode = nodeId;
+
+            if (query.browsepath != null && query.browsepath.Length > 0)
+            {
+                var r = new RelativePath();
+                path.RelativePath = r;
+                for (int i = 0; i < query.browsepath.Length; i++)
+                {
+                    r.Elements.Add(new RelativePathElement() { TargetName = Converter.GetQualifiedName(query.browsepath[i], namespaceTable), IncludeSubtypes = true, ReferenceTypeId = Opc.Ua.ReferenceTypes.References, IsInverse = false   }) ;
+                }
+            }
+            return path;
+        }
+
+        private Result<NodeId>[] GetNodeIds(Session session, BrowsePath[] browsePaths, NamespaceTable namespaceTable)
+        {
+            var results = new Result<NodeId>[browsePaths.Length];
+            var bps = browsePaths.Where(bp => bp.RelativePath.Elements.Count > 0).ToArray();
+            if (bps.Length == 0)
+                return browsePaths.Select(a => new Result<NodeId>(a.StartingNode)).ToArray();
+
+            session.TranslateBrowsePathsToNodeIds(null, new BrowsePathCollection(bps), out BrowsePathResultCollection bpr, out DiagnosticInfoCollection diag);
+            for (int i = 0, j = 0; i < browsePaths.Length; i++)
+            {
+                if (browsePaths[i].RelativePath.Elements.Count > 0)
+                {
+                    if (Opc.Ua.StatusCode.IsGood(bpr[j].StatusCode))
+                    {
+                        if (bpr[j].Targets.Count > 0)
+                        {
+                            var expandedNodeId = bpr[j].Targets[0].TargetId;
+                            results[i] = new Result<NodeId>(ExpandedNodeId.ToNodeId(expandedNodeId, namespaceTable));
+                        }
+                        else
+                            results[i] = new Result<NodeId>(Opc.Ua.StatusCodes.BadBrowseNameInvalid, "Could not find node id for browsepath");
+                    }
+                    else
+                        results[i] = new Result<NodeId>(bpr[j].StatusCode, "Could not find node id for browsepath");
+                    j++;
+                }
+                else
+                {
+                    results[i] = new Result<NodeId>(browsePaths[i].StartingNode);
+                }
+            }
+            return results;
+        }
+
+
         private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var results = new Result<DataResponse>[queries.Length];
-
-            var nodeIds = queries.Select(a => Converter.GetNodeId(a.nodeId, namespaceTable)).ToArray();
+            var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
+            var nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
             var dvs = session.ReadNodeValues(nodeIds);
 
-            for (int i = 0; i < dvs.Length; i++)
+            for (int i = 0, j = 0; i < browsePaths.Length; i++)
             {
-                var dataValue = dvs[i];
-                results[i] = Converter.GetDataResponseForDataValue(_log, dataValue, nodeIds[i], queries[i]);
+                if (nodeIdsResult[i].Success)
+                {
+                    var dataValue = dvs[j];
+                    results[i] = Converter.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i]);
+                    j++;
+                }
+                else
+                {
+                    results[i] = new Result<DataResponse>(nodeIdsResult[i].StatusCode, nodeIdsResult[i].Error);
+                }
             }
             return results;
         }
@@ -79,20 +141,32 @@ namespace plugin_dotnet
         {
             var indexMap = new Dictionary<ReadRawKey, List<int>>();
             var queryMap = new Dictionary<ReadRawKey, List<NodeId>>();
-            for (int i = 0; i < queries.Length; i++)
-            {
-                var query = queries[i];
-                var maxValues = query.maxDataPoints;
-                var tr = query.timeRange;
-                var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
-                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
-                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                var key = new ReadRawKey(fromTime, toTime, Convert.ToInt32(maxValues));
-                AddDict(indexMap, key, i);
-                AddDict(queryMap, key, nodeId);
-            }
+
+            var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
 
             var result = new Result<DataResponse>[queries.Length];
+            for (int i = 0; i < queries.Length; i++)
+            {
+                var nodeIdResult = nodeIdsResult[i];
+                if (nodeIdResult.Success)
+                {
+                    var query = queries[i];
+                    var maxValues = query.maxDataPoints;
+                    var tr = query.timeRange;
+                    DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
+                    DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
+                    var key = new ReadRawKey(fromTime, toTime, Convert.ToInt32(maxValues));
+                    AddDict(indexMap, key, i);
+                    AddDict(queryMap, key, nodeIdResult.Value);
+                }
+                else 
+                {
+                    result[i] = new Result<DataResponse>(nodeIdResult.StatusCode, nodeIdResult.Error);
+                }
+            }
+
+            
             foreach (var querygroup in queryMap)
             {
                 var key = querygroup.Key;
@@ -114,22 +188,39 @@ namespace plugin_dotnet
         {
             var indexMap = new Dictionary<ReadProcessedKey, List<int>>();
             var queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
+
+            var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
+            var result = new Result<DataResponse>[queries.Length];
+
+            
             for (int i = 0; i < queries.Length; i++)
             {
                 var query = queries[i];
-                var resampleInterval = query.intervalMs;
-                var tr = query.timeRange;
-                var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
+                var nodeIdResult = nodeIdsResult[i];
                 OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
-                var aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
-                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
-                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                var key = new ReadProcessedKey(fromTime, toTime, aggregateNodeId, resampleInterval);
-                AddDict(indexMap, key, i);
-                AddDict(queryMap, key, nodeId);
+                if (aggregate?.nodeId == null)
+                {
+                    result[i] = new Result<DataResponse>(StatusCodes.BadNodeIdInvalid, "Aggregate is not set");
+                }
+                else if (nodeIdResult.Success)
+                {
+                    var resampleInterval = query.intervalMs;
+                    var tr = query.timeRange;
+                    
+                    var aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
+                    DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
+                    DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
+                    var key = new ReadProcessedKey(fromTime, toTime, aggregateNodeId, resampleInterval);
+                    AddDict(indexMap, key, i);
+                    AddDict(queryMap, key, nodeIdResult.Value);
+                }
+                else 
+                {
+                    result[i] = new Result<DataResponse>(nodeIdResult.StatusCode, nodeIdResult.Error);
+                }
             }
-
-            var result = new Result<DataResponse>[queries.Length];
+            
             foreach (var querygroup in queryMap)
             {
                 var key = querygroup.Key;
@@ -151,18 +242,29 @@ namespace plugin_dotnet
 
         private Result<DataResponse>[] ReadEvents(Session session, OpcUAQuery[] opcUAQuery, NamespaceTable namespaceTable)
         {
+            var browsePaths = opcUAQuery.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
+
             var results = new Result<DataResponse>[opcUAQuery.Length];
             // Do one by one for now. unsure of use-case with multiple node ids for same filter.
             for (int i = 0; i < opcUAQuery.Length; i++)
             {
-                var query = opcUAQuery[i];
-                var tr = query.timeRange;
-                var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
-                DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
-                DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                var eventFilter = Converter.GetEventFilter(query, namespaceTable);
-                var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeId });
-                results[i] = Converter.CreateEventDataResponse(_log, response[0], query);
+                var nodeIdResult = nodeIdsResult[i];
+                if (nodeIdResult.Success)
+                {
+                    var query = opcUAQuery[i];
+                    var tr = query.timeRange;
+                    //var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
+                    DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
+                    DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
+                    var eventFilter = Converter.GetEventFilter(query, namespaceTable);
+                    var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeIdResult.Value });
+                    results[i] = Converter.CreateEventDataResponse(_log, response[0], query);
+                }
+                else 
+                {
+                    results[i] = new Result<DataResponse>(nodeIdResult.StatusCode, nodeIdResult.Error);
+                }
             }
             return results;
         }
@@ -193,7 +295,7 @@ namespace plugin_dotnet
                                 responses = ReadNodes(connection.Session, queries, nsTable);
                                 break;
                             case "Subscribe":
-                                responses = SubscribeDataValues(connection.DataValueSubscription, queries, nsTable);
+                                responses = SubscribeDataValues(connection.Session, connection.DataValueSubscription, queries, nsTable);
                                 break;
                             case "ReadDataRaw":
                                 responses = ReadHistoryRaw(connection.Session, queries, nsTable);
@@ -205,7 +307,7 @@ namespace plugin_dotnet
                                 responses = ReadEvents(connection.Session, queries, nsTable);
                                 break;
                             case "SubscribeEvents":
-                                responses = SubscribeEvents(connection.EventSubscription, queries, nsTable);
+                                responses = SubscribeEvents(connection.Session, connection.EventSubscription, queries, nsTable);
                                 break;
 
                         }
@@ -217,7 +319,11 @@ namespace plugin_dotnet
                                 if (dataResponse.Success)
                                     response.Responses[queries[i++].refId] = dataResponse.Value;
                                 else
-                                    response.Responses[queries[i++].refId].Error = dataResponse.Error;
+                                {
+                                    var dr = new DataResponse();
+                                    dr.Error = dataResponse.Error;
+                                    response.Responses[queries[i++].refId] = dr;
+                                }
                             }
                         }
                     }
@@ -225,7 +331,9 @@ namespace plugin_dotnet
                     {
                         foreach (var q in queries)
                         {
-                            response.Responses[q.refId].Error = e.ToString();
+                            var dr = new DataResponse();
+                            dr.Error = e.ToString();
+                            response.Responses[q.refId] = dr; 
                         }
                         _log.LogError(e.ToString());
                     }
@@ -241,38 +349,60 @@ namespace plugin_dotnet
             return await Task.FromResult(response);
         }
 
-        private Result<DataResponse>[] SubscribeDataValues(IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
+        private Result<DataResponse>[] SubscribeDataValues(Session session, IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
             var responses = new Result<DataResponse>[queries.Length];
-            var nodeIds = queries.Select(query => Converter.GetNodeId(query.nodeId, nsTable)).ToArray();
+            var browsePaths = queries.Select(a => ResolveBrowsePath(a, nsTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, nsTable);
+
+            var nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
+
             var dataValues = dataValueSubscription.GetValues(nodeIds);
             var results = new Result<DataResponse>[nodeIds.Length];
-            for (int i = 0; i < nodeIds.Length; i++)
+            for (int i = 0, j = 0; i < nodeIdsResult.Length; i++)
             {
-                if (dataValues[i].Success)
-                    results[i] = Converter.GetDataResponseForDataValue(_log, dataValues[i].Value, nodeIds[i], queries[i]);
+                if (nodeIdsResult[i].Success)
+                {
+                    if (dataValues[j].Success)
+                        results[i] = Converter.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i]);
+                    else
+                        results[i] = new Result<DataResponse>(dataValues[j].StatusCode, dataValues[j].Error);
+                    j++;
+                }
                 else
-                    results[i] = new Result<DataResponse>(dataValues[i].StatusCode, dataValues[i].Error);
+                {
+                    results[i] = new Result<DataResponse>(nodeIdsResult[i].StatusCode, nodeIdsResult[i].Error);
+                }
             }
             return results;
 
         }
 
-        private Result<DataResponse>[] SubscribeEvents(IEventSubscription eventSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
+        private Result<DataResponse>[] SubscribeEvents(Session session, IEventSubscription eventSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
             var responses = new Result<DataResponse>[queries.Length];
+            var browsePaths = queries.Select(a => ResolveBrowsePath(a, nsTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, nsTable);
+
             for (int i = 0; i < queries.Length; i++)
             {
                 try
                 {
-                    if (queries[i].eventQuery != null)
+                    if (nodeIdsResult[i].Success)
                     {
-                        var eventFilter = Converter.GetEventFilter(queries[i], nsTable);
-                        var nodeId = Converter.GetNodeId(queries[i].nodeId, nsTable);
-                        responses[i] = eventSubscription.GetEventData(queries[i], nodeId, eventFilter);
+                        var nodeId = nodeIdsResult[i].Value;
+                        if (queries[i].eventQuery != null)
+                        {
+                            var eventFilter = Converter.GetEventFilter(queries[i], nsTable);
+                            responses[i] = eventSubscription.GetEventData(queries[i], nodeId, eventFilter);
+                        }
+                        else
+                            responses[i] = new Result<DataResponse>(Opc.Ua.StatusCodes.BadUnknownResponse, "Event query null");
                     }
-                    else
-                        responses[i] = new Result<DataResponse>(Opc.Ua.StatusCodes.BadUnknownResponse, "Event query null");
+                    else 
+                    {
+                        responses[i] = new Result<DataResponse>(nodeIdsResult[i].StatusCode, nodeIdsResult[i].Error);
+                    }
                 }
                 catch (Exception e)
                 {

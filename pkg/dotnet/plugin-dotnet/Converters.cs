@@ -50,8 +50,12 @@ namespace plugin_dotnet
 
         internal static Opc.Ua.QualifiedName GetQualifiedName(QualifiedName qm, NamespaceTable namespaceTable)
         {
-            var nsIdx = string.IsNullOrWhiteSpace(qm.namespaceUrl) ? 0 : namespaceTable.GetIndex(qm.namespaceUrl);
-            return new Opc.Ua.QualifiedName(qm.name, (ushort)nsIdx);
+            ushort nsIdx;
+            if (ushort.TryParse(qm.namespaceUrl, out nsIdx))
+                return new Opc.Ua.QualifiedName(qm.name, nsIdx);
+            var insIdx = string.IsNullOrWhiteSpace(qm.namespaceUrl) ? 0 : namespaceTable.GetIndex(qm.namespaceUrl);
+            return new Opc.Ua.QualifiedName(qm.name, (ushort)insIdx);
+
         }
 
         internal static Dictionary<int, Field> AddEventFields(DataFrame dataFrame, OpcUAQuery query)
@@ -188,10 +192,13 @@ namespace plugin_dotnet
         internal static Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query, NamespaceTable namespaceTable)
         {
             var eventFilter = new Opc.Ua.EventFilter();
-            foreach (var column in query.eventQuery?.eventColumns)
+            if (query.eventQuery?.eventColumns != null)
             {
-                var nsIdx = string.IsNullOrWhiteSpace(column.browsename.namespaceUrl) ? 0 : namespaceTable.GetIndex(column.browsename.namespaceUrl);
-                eventFilter.AddSelectClause(ObjectTypes.BaseEventType, new Opc.Ua.QualifiedName(column.browsename.name, (ushort)nsIdx));
+                foreach (var column in query.eventQuery.eventColumns)
+                {
+                    var nsIdx = string.IsNullOrWhiteSpace(column.browsename.namespaceUrl) ? 0 : namespaceTable.GetIndex(column.browsename.namespaceUrl);
+                    eventFilter.AddSelectClause(ObjectTypes.BaseEventType, new Opc.Ua.QualifiedName(column.browsename.name, (ushort)nsIdx));
+                }
             }
 
 
@@ -218,7 +225,8 @@ namespace plugin_dotnet
                 {
                     if (valueField == null && entry.Value != null)
                     {
-                        valueField = dataFrame.AddField(String.Join(" / ", query.value), entry.Value.GetType());
+                        string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.value) : query.alias;
+                        valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
                     }
 
                     if (valueField != null)
@@ -253,7 +261,8 @@ namespace plugin_dotnet
                 DataFrame dataFrame = new DataFrame(log, query.refId);
 
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                Field valueField = dataFrame.AddField(String.Join(" / ", query.value), dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
+                string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.value) : query.alias;
+                Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
                 timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
                 valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
                 dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());

@@ -100,7 +100,10 @@ namespace plugin_dotnet
         public Int64 datasourceId { get; set; }
         public TimeRange timeRange { get; set; }
         public string nodeId { get; set; }
+        public QualifiedName[] browsepath { get; set; }
         public string[] value { get; set; }
+        public string alias { get; set; }
+
         public string readType { get; set; }
         public object aggregate { get; set; }
         public string interval { get; set; }
@@ -122,10 +125,12 @@ namespace plugin_dotnet
             datasourceId = query.datasourceId;
             nodeId = query.nodeId;
             value = query.value;
+            alias = query.alias;
             readType = query.readType;
             aggregate = query.aggregate;
             interval = query.interval;
             eventQuery = query.eventQuery;
+            browsepath = query.browsepath;
         }
 
         public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string nodeId)

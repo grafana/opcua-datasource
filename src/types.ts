@@ -1,12 +1,14 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export interface OpcUaQuery extends DataQuery {
-  nodeId: string;
-  value: string[];
-  readType: string;
-  aggregate: OpcUaNodeDefinition;
-  interval: string;
-  eventQuery: EventQuery;
+    nodeId: string;
+    browsepath: QualifiedName[];
+    alias: string;
+    value: string[];
+    readType: string;
+    aggregate: OpcUaNodeDefinition;
+    interval: string;
+    eventQuery: EventQuery;
 }
 
 export interface EventQuery {
