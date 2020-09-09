@@ -62,6 +62,7 @@ namespace plugin_dotnet
         private void Subscribe(NodeId[] nodeIds)
         {
             var monItems = new List<MonitoredItem>();
+            var newNodeIds = new List<NodeId>();
             lock (_subscribedValues)
             {
                 for (int i = 0; i < nodeIds.Length; i++)
@@ -71,15 +72,48 @@ namespace plugin_dotnet
                         var monitoredItem = CreateMonitoredItem(nodeIds[i]);
                         monitoredItem.Notification += MonitoredItem_Notification;
                         monItems.Add(monitoredItem);
+                        newNodeIds.Add(nodeIds[i]);
                         _subscribedValues.Add(nodeIds[i], new VariableValue() { LastRead = DateTimeOffset.UtcNow, Value = new DataValue(Variant.Null) });
                     }
                 }
             }
             if (monItems.Count > 0)
             {
+                // Force read of current value.
+                InitializeNodeValues(nodeIds);
                 _logger.LogInformation("Subscribing to {0} data values", monItems.Count);
                 _subscription.AddItems(monItems);
                 _subscription.ApplyChanges();
+            }
+        }
+
+
+        private void InitializeNodeValues(NodeId[] nodeIds)
+        {
+            try
+            {
+                var dataValues = _session.ReadNodeValues(nodeIds);
+                lock (_subscribedValues)
+                {
+                    for (int i = 0; i < dataValues.Length; i++)
+                    {
+                        if (StatusCode.IsGood(dataValues[i].StatusCode))
+                        {
+                            if (_subscribedValues.TryGetValue(nodeIds[i], out VariableValue value))
+                            {
+                                value.Value = dataValues[i];
+                            }
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Could not read node value for node: {0}. StatusCode: {1}", nodeIds[i], dataValues[i].StatusCode);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error reading node values for initialization");
             }
         }
 
