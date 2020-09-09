@@ -65,9 +65,17 @@ export class QueryEditor extends PureComponent<Props, State> {
           alias = "";
 
       let eventTypeNodeId = this.props.query?.eventQuery?.eventTypeNodeId;
-      if (typeof eventTypeNodeId === 'undefined')
+      let removeFirstEventFilter = true; // First event filter from props is event type node.
+      if (typeof eventTypeNodeId === 'undefined') {
           eventTypeNodeId = "";
-
+          removeFirstEventFilter = false;
+      }
+      let evFilters = this.props.query?.eventQuery?.eventFilters;
+      if (typeof evFilters === 'undefined') {
+          evFilters = [];
+      }
+      if (evFilters.length > 0 && removeFirstEventFilter)
+          evFilters = evFilters.slice(1, evFilters.length);
      
         this.state = {
           options: [],
@@ -78,7 +86,7 @@ export class QueryEditor extends PureComponent<Props, State> {
             eventOptions: [],
             eventFields: this.buildEventFields(this.props.query?.eventQuery?.eventColumns),
             eventTypeNodeId: eventTypeNodeId,
-            eventFilters: deserializeEventFilters(this.props.query?.eventQuery?.eventFilters),
+            eventFilters: deserializeEventFilters(evFilters),
           tabs: [
             { label: 'Traditional', active: true },
             { label: 'Tree view', active: false },
