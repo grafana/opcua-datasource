@@ -41,6 +41,7 @@ namespace plugin_dotnet
 
     public class Connection : IConnection
     {
+        private bool _closed = false;
         private ISubscriptionReaper _subscriptionReaper;
         public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper)
         {
@@ -58,11 +59,18 @@ namespace plugin_dotnet
 
         public void Close()
         {
-            _subscriptionReaper.Stop();
-            _subscriptionReaper.Dispose();
-            DataValueSubscription.Close();
-            EventSubscription.Close();
-            Session.Close();
+            lock (this)
+            {
+                if (!_closed)
+                {
+                    _closed = true;
+                    _subscriptionReaper.Stop();
+                    _subscriptionReaper.Dispose();
+                    DataValueSubscription.Close();
+                    EventSubscription.Close();
+                    Session.Close();
+                }
+            }
         }
     }
 
@@ -108,7 +116,7 @@ namespace plugin_dotnet
                 var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
                 var subscriptionReaper = new SubscriptionReaper(_log, 60000);
                 
-                var eventSubscription = new EventSubscription(_log, session);
+                var eventSubscription = new EventSubscription(_log, subscriptionReaper, session,  new TimeSpan(0, 60, 0));
                 var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
                 lock (connections)
                 {
@@ -128,8 +136,8 @@ namespace plugin_dotnet
             try
             {
                 var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
-                var eventSubscription = new EventSubscription(_log, session);
                 var subscriptionReaper = new SubscriptionReaper(_log, 60000);
+                var eventSubscription = new EventSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 60, 0));
                 var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
                 lock (connections)
                 {
@@ -170,8 +178,15 @@ namespace plugin_dotnet
                     connect = false;
                     if (!value.Session.Connected || value.Session.KeepAliveStopped)
                     {
-                        value.Close();
-                        connections.Remove(settings.Url);
+                        try
+                        {
+                            value.Close();
+                            connections.Remove(settings.Url);
+                        }
+                        catch (Exception e)
+                        {
+                            _log.LogWarning(e, "Error when closing connection.");
+                        }
                         connect = true;
                     }
                 }

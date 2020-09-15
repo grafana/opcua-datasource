@@ -11,9 +11,16 @@ namespace plugin_dotnet
 {
 
     public class VariableValue
-    { 
+    {
+        public VariableValue(MonitoredItem monitoredItem)
+        {
+            MonitoredItem = monitoredItem;
+        }
+
         public DataValue Value { get; set; }
         public DateTimeOffset LastRead { get; set; }
+
+        public MonitoredItem MonitoredItem { get; }
     }
 
     public class DataValueSubscription : IDataValueSubscription
@@ -75,20 +82,41 @@ namespace plugin_dotnet
 
         private void ReapSubscribedValues()
         {
-            var now = DateTimeOffset.UtcNow;
-            lock (_subscribedValues)
-            {
-                var keys = _subscribedValues.Keys;
-                foreach (var key in keys)
+            var removedMonitoredItems = new List<MonitoredItem>();
+            try 
+            { 
+                var now = DateTimeOffset.UtcNow;
+                lock (_subscribedValues)
                 {
-                    if (_subscribedValues.TryGetValue(key, out VariableValue value))
+                    var keys = _subscribedValues.Keys;
+                    foreach (var key in keys)
                     {
-                        var ts = now.Subtract(value.LastRead);
-                        if (ts.CompareTo(_maxReadInterval) > 0)
+                        if (_subscribedValues.TryGetValue(key, out VariableValue value))
                         {
-                            _subscribedValues.Remove(key);
+                            var ts = now.Subtract(value.LastRead);
+                            if (ts.CompareTo(_maxReadInterval) > 0)
+                            {
+                                _subscribedValues.Remove(key);
+                                removedMonitoredItems.Add(value.MonitoredItem);
+                            }
                         }
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error when detecting if monitored items shall be removed");
+            }
+
+            if (removedMonitoredItems.Count > 0)
+            {
+                try
+                {
+                    _subscription.RemoveItems(removedMonitoredItems);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Error when removing monitored items.");
                 }
             }
         }
@@ -107,7 +135,7 @@ namespace plugin_dotnet
                         monitoredItem.Notification += MonitoredItem_Notification;
                         monItems.Add(monitoredItem);
                         newNodeIds.Add(nodeIds[i]);
-                        _subscribedValues.Add(nodeIds[i], new VariableValue() { LastRead = DateTimeOffset.UtcNow, Value = new DataValue(Variant.Null) });
+                        _subscribedValues.Add(nodeIds[i], new VariableValue(monitoredItem) { LastRead = DateTimeOffset.UtcNow, Value = new DataValue(Variant.Null) });
                     }
                 }
             }

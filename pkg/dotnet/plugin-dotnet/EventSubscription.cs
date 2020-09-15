@@ -49,6 +49,7 @@ namespace plugin_dotnet
                 Query = query;
                 Filter = filter;
                 Values = new Dictionary<SourceAndEventTypeKey, VariantCollection>();
+                LastRead = DateTimeOffset.UtcNow;
             }
 
             internal MonitoredItem MonitoredItem { get; }
@@ -57,6 +58,8 @@ namespace plugin_dotnet
             internal OpcUAQuery Query { get; }
 
             internal Opc.Ua.EventFilter Filter { get; }
+
+            internal DateTimeOffset LastRead { get; set; }
         }
 
 
@@ -64,10 +67,17 @@ namespace plugin_dotnet
         private Session _session;
         private Subscription _subscription;
         private ILogger _log;
-        public EventSubscription(ILogger log, Session session)
+        private ISubscriptionReaper _subscriptionReaper;
+        // Maximum interval between reads before monitored item is removed.
+        private TimeSpan _maxReadInterval;
+        public EventSubscription(ILogger log, ISubscriptionReaper subscriptionReaper, Session session, TimeSpan maxReadInterval)
         {
             _log = log;
             _session = session;
+            _subscriptionReaper = subscriptionReaper;
+            _maxReadInterval = maxReadInterval;
+
+            _subscriptionReaper.OnTimer += _subscriptionReaper_OnTimer;
             // Hard coded for now
             _subscription = new Subscription();
             _subscription.DisplayName = null;
@@ -81,8 +91,59 @@ namespace plugin_dotnet
             _subscription.Create();
         }
 
+        private void _subscriptionReaper_OnTimer(object sender, EventArgs e)
+        {
+            ReapSubscription();
+        }
+
+        private void ReapSubscription()
+        {
+            var removedMonitoredItems = new List<MonitoredItem>();
+            try
+            {
+                var now = DateTimeOffset.UtcNow;
+                lock (_eventData)
+                {
+                    var keys = _eventData.Keys;
+                    foreach (var key in keys)
+                    {
+                        if (_eventData.TryGetValue(key, out List<EventFilterValues> values))
+                        {
+                            for (int i = values.Count; i >= 0; i--)
+                            {
+                                var eventFilterValue = values[i];
+                                var ts = now.Subtract(eventFilterValue.LastRead);
+                                if (ts.CompareTo(_maxReadInterval) > 0)
+                                {
+                                    values.RemoveAt(i);
+                                    removedMonitoredItems.Add(eventFilterValue.MonitoredItem);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _log.LogError(e, "Error when detecting if monitored items shall be removed");
+            }
+
+            if (removedMonitoredItems.Count > 0)
+            {
+                try
+                {
+                    _subscription.RemoveItems(removedMonitoredItems);
+                }
+                catch (Exception e)
+                {
+                    _log.LogError(e, "Error when removing monitored items.");
+                }
+            }
+        }
+
         public void Close()
         {
+            _subscriptionReaper.OnTimer -= _subscriptionReaper_OnTimer;
             _session.RemoveSubscription(_subscription);
             _subscription.Dispose();
         }
@@ -170,9 +231,9 @@ namespace plugin_dotnet
                     }
                 }
             }
-            catch //(Exception exception)
+            catch (Exception exception)
             {
-                // Log.
+                _log.LogError(exception, "Error in monitor notification");
             }
         }
 
@@ -182,7 +243,9 @@ namespace plugin_dotnet
             {
                 if (_eventData.TryGetValue(startNodeId, out List<EventFilterValues> values))
                 {
-                    return values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
+                    var vals = values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
+                    vals.LastRead = DateTimeOffset.UtcNow;
+                    return vals;
                 }
             }
             return null;
