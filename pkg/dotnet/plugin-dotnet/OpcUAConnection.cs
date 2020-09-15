@@ -41,8 +41,10 @@ namespace plugin_dotnet
 
     public class Connection : IConnection
     {
-        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription)
+        private ISubscriptionReaper _subscriptionReaper;
+        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper)
         {
+            _subscriptionReaper = subscriptionReaper;
             Session = session;
             EventSubscription = eventSubscription;
             DataValueSubscription = dataValueSubscription;
@@ -56,6 +58,8 @@ namespace plugin_dotnet
 
         public void Close()
         {
+            _subscriptionReaper.Stop();
+            _subscriptionReaper.Dispose();
             DataValueSubscription.Close();
             EventSubscription.Close();
             Session.Close();
@@ -102,12 +106,15 @@ namespace plugin_dotnet
                 var appConfig = _applicationConfiguration();
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
                 var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
+                var subscriptionReaper = new SubscriptionReaper(_log, 60000);
+                
                 var eventSubscription = new EventSubscription(_log, session);
-                var dataValueSubscription = new DataValueSubscription(_log, session);
+                var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
                 lock (connections)
                 {
-                    var conn = new Connection(session, eventSubscription, dataValueSubscription);
+                    var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper);
                     connections[key: url] = conn;
+                    subscriptionReaper.Start();
                 }
             }
             catch (Exception ex)
@@ -122,11 +129,13 @@ namespace plugin_dotnet
             {
                 var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
                 var eventSubscription = new EventSubscription(_log, session);
-                var dataValueSubscription = new DataValueSubscription(_log, session);
+                var subscriptionReaper = new SubscriptionReaper(_log, 60000);
+                var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
                 lock (connections)
                 {
-                    var conn = new Connection(session, eventSubscription, dataValueSubscription);
+                    var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper);
                     connections[key: url] = conn;
+                    subscriptionReaper.Start();
                 }
             }
             catch (Exception ex)

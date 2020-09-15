@@ -5,6 +5,7 @@ using Prediktor.UA.Client;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace plugin_dotnet
 {
@@ -21,12 +22,18 @@ namespace plugin_dotnet
         private Session _session;
         private Subscription _subscription;
         private Dictionary<NodeId, VariableValue> _subscribedValues = new Dictionary<NodeId, VariableValue>();
+        private TimeSpan _maxReadInterval;
+        private ISubscriptionReaper _subscriptionReaper;
 
 
-        public DataValueSubscription(ILogger logger, Session session)
+        public DataValueSubscription(ILogger logger, ISubscriptionReaper subscriptionReaper, Session session, TimeSpan maxReadInterval)
         {
             _logger = logger;
             _session = session;
+            _subscriptionReaper = subscriptionReaper;
+            _maxReadInterval = maxReadInterval;
+
+            _subscriptionReaper.OnTimer += _subscriptionReaper_OnTimer;
             // Hard coded for now
             _subscription = new Subscription();
             _subscription.DisplayName = null;
@@ -38,7 +45,11 @@ namespace plugin_dotnet
             _subscription.TimestampsToReturn = TimestampsToReturn.Both;
             _session.AddSubscription(_subscription);
             _subscription.Create();
+        }
 
+        private void _subscriptionReaper_OnTimer(object sender, EventArgs e)
+        {
+            ReapSubscribedValues();
         }
 
         private MonitoredItem CreateMonitoredItem(NodeId nodeId)
@@ -60,6 +71,28 @@ namespace plugin_dotnet
             return monitoredItem;
 
         }
+
+
+        private void ReapSubscribedValues()
+        {
+            var now = DateTimeOffset.UtcNow;
+            lock (_subscribedValues)
+            {
+                var keys = _subscribedValues.Keys;
+                foreach (var key in keys)
+                {
+                    if (_subscribedValues.TryGetValue(key, out VariableValue value))
+                    {
+                        var ts = now.Subtract(value.LastRead);
+                        if (ts.CompareTo(_maxReadInterval) > 0)
+                        {
+                            _subscribedValues.Remove(key);
+                        }
+                    }
+                }
+            }
+        }
+
         private void Subscribe(NodeId[] nodeIds)
         {
             var monItems = new List<MonitoredItem>();
@@ -154,6 +187,7 @@ namespace plugin_dotnet
 
         public void Close()
         {
+            _subscriptionReaper.OnTimer -= _subscriptionReaper_OnTimer;
             _logger.LogInformation("Disposing DataValueSubscription");
             _subscription.Dispose();
         }
