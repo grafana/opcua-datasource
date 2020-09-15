@@ -155,7 +155,19 @@ namespace plugin_dotnet
             lock (connections)
             {
 
-                if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Session.Connected)
+                bool connect = true;
+                if (connections.TryGetValue(settings.Url, out IConnection value))
+                {
+                    connect = false;
+                    if (!value.Session.Connected || value.Session.KeepAliveStopped)
+                    {
+                        value.Close();
+                        connections.Remove(settings.Url);
+                        connect = true;
+                    }
+                }
+
+                if (connect)
                 {
                     if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
                     {

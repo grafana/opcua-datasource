@@ -38,6 +38,7 @@ namespace plugin_dotnet
             _subscription.TimestampsToReturn = TimestampsToReturn.Both;
             _session.AddSubscription(_subscription);
             _subscription.Create();
+
         }
 
         private MonitoredItem CreateMonitoredItem(NodeId nodeId)
@@ -53,7 +54,7 @@ namespace plugin_dotnet
             monitoredItem.Encoding = null;
             monitoredItem.MonitoringMode = MonitoringMode.Reporting;
             monitoredItem.SamplingInterval = 0;
-            monitoredItem.QueueSize = UInt32.MaxValue;
+            monitoredItem.QueueSize = uint.MaxValue;
             monitoredItem.DiscardOldest = true;
             //monitoredItem.Handle = 
             return monitoredItem;

@@ -280,7 +280,6 @@ namespace plugin_dotnet
             {
                 _log.LogDebug("got a request: {0}", request);
                 connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
-
                 var queryGroups = request.Queries.Select(q => new OpcUAQuery(q)).ToLookup(o => o.readType);
                 var nsTable = connection.Session.NamespaceUris;
                 foreach (var queryGroup in queryGroups)
