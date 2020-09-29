@@ -1,9 +1,13 @@
-//// @flow
-//import React, { Component } from "react";
-//import values from "lodash/values";
-//import TreeNode from "./TreeNode";
-//import last from "lodash/last";
-//import { convertRemToPixels } from "../../functions/UtilityFunctions/UtilityFunctions";
+
+import React, { Component } from "react";
+import TreeNode from "./TreeNode";
+import { convertRemToPixels } from '../utils/ConvertRemToPixels';
+import { OpcUaBrowseResults, QualifiedName } from '../types';
+import { DataSource } from '../DataSource';
+import { ThemeGetter } from './ThemesGetter';
+import { GrafanaTheme } from '@grafana/data';
+//import { useTheme } from '@grafana/ui';
+//import { GrafanaTheme } from '@grafana/data';
 
 //var NodeClass = {
 //	DataType: 64,
@@ -17,333 +21,256 @@
 //	View: 128,
 //};
 
-//type Props = {
-//	datasource: any,
-//	changed: () => void,
-//	target: Object,
-//};
+type Props = {
+	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
+	rootNodeId: OpcUaBrowseResults,
+	ignoreRootNode: boolean,
+	datasource: DataSource,
+	closeOnSelect: boolean,
+	onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
+	closeBrowser: () => void;
+};
 
-//const data = {};
+type State = {
+	fetchedChildren: boolean,
+	rootNode: OpcUaBrowseResults,
+	children: OpcUaBrowseResults[],
+	theme: GrafanaTheme | null;
+}
 
 
 
-///**
-// * Displays nodes in a tree and allows users to select an entity for display.
-// */
-//export class Browser extends Component<Props, State> {
-//	state = {
-//		nodes: data,
-//	};
+/**
+ * Displays nodes in a tree and allows users to select an entity for display.
+ */
+export class Browser extends Component<Props, State> {
+	/**
+	 *
+	 * @param {*} props sets the data structure
+	 */
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			rootNode: {
+				browseName: { name: "", namespaceUrl: "" }, displayName: "", isForward: false, nodeClass: -1, nodeId: ""
+			},
+			children: [],
+			fetchedChildren: false,
+			theme: null
+		}
+	}
 
-//	rootNode: TreeNode;
+	handleClose = () => {
+		this.props.closeBrowser();
+	}
 
-//	/**
-//	 *
-//	 * @param {*} props sets the data structure
-//	 */
-//	constructor(props) {
-//		super(props);
+	handleHoverClose = () => {
+	}
 
-//		let newRoot = {
-//			children: [],
-//			isRoot: true,
-//			nodeId: "", // first is empty
-//			path: "/Root" + "",
-//			type: "folder",
-//		};
-//		this.state.nodes["/Root"] = newRoot;
-//	}
+	handleUnhoverClose = () => {
+	}
 
-//	/**
-//	 * Renders the component.
-//	 */
-//	render() {
-//		const nodeChain = [];
-//		const rootNodes = this.getRootNodes();
-//		this.renavigateChildNodes();
+	nodeSelect = (node: OpcUaBrowseResults, browsePath: QualifiedName[]) => {
+		this.props.onNodeSelectedChanged(node, browsePath);
+		if (this.props.closeOnSelect)
+			this.props.closeBrowser();
+	}
 
-//		let { target } = this.props;
-//		let targetNodeChain = null;
-//		if (target) {
-//			targetNodeChain = target.nodeChain;
-//		}
 
-//		return (
-//			<div data-id="Treeview-MainDiv">
-//				<span
-//					data-id="Treeview-CloseSpan"
-//					onClick={this.handleClose}
-//					onMouseOver={this.handleHoverClose}
-//					onMouseOut={this.handleUnhoverClose}
-//					ref={(spn) => (this.closeSpan = spn)}
-//					style={{
-//						border: "lightgrey 1px solid",
-//						borderRadius: convertRemToPixels("2rem"),
-//						cursor: "pointer",
-//						padding: convertRemToPixels("0.5rem"),
-//						position: "absolute",
-//						right: convertRemToPixels("2rem"),
-//						top: 0,
-//						zIndex: 1,
-//					}}
-//				>
-//					X
-//				</span>
-//				<div
-//					data-id="Treeview-ScrollDiv"
-//					style={{
-//						height: convertRemToPixels("20rem"),
-//						overflowX: "hidden",
-//						overflowY: "auto",
-//					}}
-//				>
-//					{rootNodes.map((node, i) => (
-//						<TreeNode
-//							key={i}
-//							node={node}
-//							nodeChain={nodeChain}
-//							getChildNodes={this.getChildNodes}
-//							onToggle={this.onToggle}
-//							onNodeSelect={this.onNodeSelect}
-//							targetNodeChain={targetNodeChain}
-//						/>
-//					))}
-//				</div>
-//			</div>
-//		);
-//	}
+	renderNode = (node: OpcUaBrowseResults) => {
+		return <TreeNode
+			node={node}
+			browse={this.props.browse}
+			onNodeSelect={this.nodeSelect}
+			level={0}
+			marginRight={4}
+			parentNode={null}
+		/>;
+	}
 
-//	/**
-//	 * Gets the node(s) at the root of the tree.
-//	 */
-//	getRootNodes = () => {
-//		const { nodes } = this.state;
-//		return values(nodes).filter((node) => node.isRoot === true);
-//	};
 
-//	/**
-//	 * Gets the children for a given node.
-//	 */
-//	getChildNodes = (node) => {
-//		const { nodes } = this.state;
-//		if (!node.children) return [];
-//		return node.children.map((path) => nodes[path]);
-//	};
+	renderNodes = (rootNodeId: OpcUaBrowseResults, ignoreRoot: boolean) => {
 
-//	/**
-//	 * When a node is re-clicked on, the tree should renavigate to the location of the node.
-//	 */
-//	renavigateChildNodes = () => {
-//		const { target } = this.props;
-//		if (!target) {
-//			return;
-//		}
+		if (!ignoreRoot)
+			return this.renderNode(rootNodeId);
+		else {
+			if (!this.state.fetchedChildren) {
+				this.props.browse(rootNodeId.nodeId).then((response) => { this.setState({ children: response, fetchedChildren: true }) });
+				return <></>;
+			}
+			else {
+				return this.state.children.map(a => this.renderNode(a));
+			}
+		}
+	}
 
-//		const { renavigateNodeChain } = target;
-//		if (!renavigateNodeChain || renavigateNodeChain.length <= 0) {
-//			return;
-//		}
+	onTheme = (theme: GrafanaTheme) => {
+		if (this.state.theme == null && theme != null) {
+			this.setState({ theme: theme });
+		}
+	}
 
-//		const { nodes } = this.state;
-//		this.renavigateNextNode(renavigateNodeChain, nodes);
+	/**
+	 * Renders the component.
+	 */
+	render() {
+		const rootNodeId = this.props.rootNodeId;
+		if (this.state.rootNode.nodeId != rootNodeId.nodeId) {
+			this.setState({ children: [], fetchedChildren: false, rootNode: rootNodeId });
+		}
+		let bg: string = "";
+		if (this.state.theme != null)
+		{
+			bg = this.state.theme.colors.bg2;
+		}
+		return (
+			<div style={{
+				background: bg
+			}}>
+				<ThemeGetter onTheme={this.onTheme} />
+				<span
+					data-id="Treeview-CloseSpan"
+					onClick={() => this.handleClose()}
+					onMouseOver={this.handleHoverClose}
+					onMouseOut={this.handleUnhoverClose}
+					//ref={(spn) => (this.closeSpan = spn)}
+					style={{
+						//border: this.props.theme.colors.border1,
+						cursor: "pointer",
+						padding: convertRemToPixels("0.5rem"),
+					}}
+				>
+					Close
+				</span>
+				<div
+					data-id="Treeview-ScrollDiv"
+					style={{
+						height: convertRemToPixels("20rem"),
+						overflowX: "hidden",
+						overflowY: "auto",
+					}}
+				>
+					{this.renderNodes(rootNodeId, this.props.ignoreRootNode)}
+				</div>
+			</div>
+		);
+	}
+}
 
-//		target.renavigateNodeChain = null;
+	///**
+	// * When a node is re-clicked on, the tree should renavigate to the location of the node.
+	// */
+	//renavigateChildNodes = () => {
+	//	const { target } = this.props;
+	//	if (!target) {
+	//		return;
+	//	}
 
-//		const { changed } = this.props;
-//		if (changed) {
-//			changed();
-//		}
-//	};
+	//	const { renavigateNodeChain } = target;
+	//	if (!renavigateNodeChain || renavigateNodeChain.length <= 0) {
+	//		return;
+	//	}
 
-//	/**
-//	 * Saves the renavigated nodes to the state.
-//	 */
-//	saveRenavigatedNodes = (nodes: Array<Object>) => {
-//		this.setState({ nodes });
-//	};
+	//	const { nodes } = this.state;
+	//	this.renavigateNextNode(renavigateNodeChain, nodes);
 
-//	/**
-//	 * Takes a value from the node chain and loads its children.
-//	 */
-//	renavigateNextNode = (renavigateNodeChain, nodes) => {
-//		if (!renavigateNodeChain || renavigateNodeChain.length <= 1) {
-//			return nodes;
-//		}
+	//	target.renavigateNodeChain = null;
 
-//		const node = renavigateNodeChain[0];
+	//	const { changed } = this.props;
+	//	if (changed) {
+	//		changed();
+	//	}
+	//};
 
-//		const that = this;
+	///**
+	// * Saves the renavigated nodes to the state.
+	// */
+	//saveRenavigatedNodes = (nodes: Array<Object>) => {
+	//	this.setState({ nodes });
+	//};
 
-//		const { datasource } = this.props;
-//		datasource
-//			.getChildrenFromServer(node.nodeId)
-//			.then(function (foundDataArray) {
-//				// Empty parent children list
-//				nodes[node.path].children = [];
+	///**
+	// * Takes a value from the node chain and loads its children.
+	// */
+	//renavigateNextNode = (renavigateNodeChain, nodes) => {
+	//	if (!renavigateNodeChain || renavigateNodeChain.length <= 1) {
+	//		return nodes;
+	//	}
 
-//				for (const item of foundDataArray) {
-//					let newPath = node.path + "@#£$" + item.displayName;
-//					let newNode = {
-//						children: [],
-//						isRoot: false,
-//						nodeId: item.nodeId,
-//						path: newPath,
-//						type: checkType(item.nodeClass),
-//					};
-//					nodes[newPath] = newNode;
+	//	const node = renavigateNodeChain[0];
 
-//					const newChildren = nodes[node.path].children.concat(
-//						newPath
-//					);
-//					nodes[node.path].children = newChildren;
-//					nodes[node.path].isOpen = true;
+	//	const that = this;
 
-//					nodes[node.path].isOpen = true;
-//				}
-//			})
-//			.catch((error) => {
-//				console.error(error);
-//			})
-//			.finally(() => {
-//				renavigateNodeChain.splice(0, 1);
+	//	const { datasource } = this.props;
+	//	datasource
+	//		.getChildrenFromServer(node.nodeId)
+	//		.then(function (foundDataArray) {
+	//			// Empty parent children list
+	//			nodes[node.path].children = [];
 
-//				if (renavigateNodeChain.length > 0) {
-//					nodes = that.renavigateNextNode(renavigateNodeChain, nodes);
-//				}
+	//			for (const item of foundDataArray) {
+	//				let newPath = node.path + "@#£$" + item.displayName;
+	//				let newNode = {
+	//					children: [],
+	//					isRoot: false,
+	//					nodeId: item.nodeId,
+	//					path: newPath,
+	//					type: checkType(item.nodeClass),
+	//				};
+	//				nodes[newPath] = newNode;
 
-//				this.saveRenavigatedNodes(nodes);
-//			});
-//	};
+	//				const newChildren = nodes[node.path].children.concat(
+	//					newPath
+	//				);
+	//				nodes[node.path].children = newChildren;
+	//				nodes[node.path].isOpen = true;
 
-//	/**
-//	 * Gets the child nodes for a folder from the server.
-//	 */
-//	retrieveChildNodes = (node) => {
-//		const { nodes } = this.state;
+	//				nodes[node.path].isOpen = true;
+	//			}
+	//		})
+	//		.catch((error) => {
+	//			console.error(error);
+	//		})
+	//		.finally(() => {
+	//			renavigateNodeChain.splice(0, 1);
 
-//		const { datasource } = this.props;
+	//			if (renavigateNodeChain.length > 0) {
+	//				nodes = that.renavigateNextNode(renavigateNodeChain, nodes);
+	//			}
 
-//		datasource
-//			.getChildrenFromServer(node.nodeId)
-//			.then(function (foundDataArray) {
-//				// Empty parent children list
-//				nodes[node.path].children = [];
+	//			this.saveRenavigatedNodes(nodes);
+	//		});
+	//};
 
-//				for (const item of foundDataArray) {
-//					let newPath = node.path + "@#£$" + item.displayName;
-//					let newNode = {
-//						children: [],
-//						isRoot: false,
-//						nodeId: item.nodeId,
-//						path: newPath,
-//						type: checkType(item.nodeClass),
-//					};
-//					nodes[newPath] = newNode;
 
-//					const newChildren = nodes[node.path].children.concat(
-//						newPath
-//					);
-//					nodes[node.path].children = newChildren;
-//				}
-//			})
-//			.catch((error) => {
-//				console.error(error);
-//			})
-//			.finally(() => {
-//				this.setState({ nodes });
-//			});
-//	};
 
-//	/**
-//	 * Toggles a folder open and closed.
-//	 */
-//	onToggle = (node) => {
-//		const { nodes } = this.state;
+	///**
+	// * Called when the user closes the tree.
+	// */
+	//handleClose = () => {
+	//	let { target } = this.props;
 
-//		// Load children if this is the "opening part" (not open at the moment can mean "undefined")
-//		if (!nodes[node.path].isOpen) {
-//			this.retrieveChildNodes(node);
-//			this.setState({ nodes });
-//		}
+	//	target.treeOpened = false;
 
-//		nodes[node.path].isOpen = !node.isOpen;
-//		this.setState({ nodes });
-//	};
+	//	const { changed } = this.props;
+	//	if (changed) {
+	//		changed();
+	//	}
+	//};
 
-//	/**
-//	 * If the user selects a folder, expand the contents. If the user selects a file, open the entity associated with it.
-//	 */
-//	onNodeSelect = (node, nodeChain) => {
-//		if (node.type === "folder") {
-//			this.onToggle(node);
-//		} else if (node.type === "file") {
-//			this.onSelect(node, nodeChain);
-//		}
-//	};
+	///**
+	// * Called when the user hovers over the close button.
+	// */
+	//handleHoverClose = () => {
+	//	this.closeSpan.style.backgroundColor = "lightgrey";
+	//};
 
-//	/**
-//	 * Called when the user closes the tree.
-//	 */
-//	handleClose = () => {
-//		let { target } = this.props;
-
-//		target.treeOpened = false;
-
-//		const { changed } = this.props;
-//		if (changed) {
-//			changed();
-//		}
-//	};
-
-//	/**
-//	 * Called when the user hovers over the close button.
-//	 */
-//	handleHoverClose = () => {
-//		this.closeSpan.style.backgroundColor = "lightgrey";
-//	};
-
-//	/**
-//	 * Called when the user moves away from the close button.
-//	 */
-//	handleUnhoverClose = () => {
-//		this.closeSpan.style.backgroundColor = "transparent";
-//	};
-
-//	/**
-//	 * Called when the user selects an item from the tree.
-//	 */
-//	onSelect = (node, nodeChain) => {
-//		let newTarget = {
-//			text: node.path,
-//			value: node.nodeId,
-//		};
-
-//		let { datasource, target } = this.props;
-//		datasource.addTarget(newTarget);
-
-//		target.target = node.nodeId;
-
-//		const nodesFromPath = node.path.split("@#£$");
-//		if (nodesFromPath.length > 3) {
-//			target.name =
-//				nodesFromPath[nodesFromPath.length - 3] +
-//				"\\" +
-//				last(nodesFromPath);
-//		} else {
-//			target.name = last(nodesFromPath);
-//		}
-
-//		target.browseName = target.name;
-//		target.nodeChain = nodeChain;
-//		target.path = node.path;
-//		target.treeOpened = false;
-
-//		const { changed } = this.props;
-//		if (changed) {
-//			changed();
-//		}
-//	};
-//}
+	///**
+	// * Called when the user moves away from the close button.
+	// */
+	//handleUnhoverClose = () => {
+	//	this.closeSpan.style.backgroundColor = "transparent";
+	//};
 
 ///**
 // *

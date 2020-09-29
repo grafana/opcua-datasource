@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { Input } from '@grafana/ui';
+import { Input, Button } from '@grafana/ui';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
 import { QualifiedName, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from '../types';
 import { QueryEditorProps } from '@grafana/data';
@@ -8,8 +8,9 @@ import { DataSource } from '../DataSource';
 import { SegmentFrame } from './SegmentFrame';
 import { browsePathToString, stringToBrowsePath } from '../utils/QualifiedName';
 import { toCascaderOption } from '../utils/CascaderOption';
-import { BrowsePathEditor } from './BrowsePathEditor';
+//import { BrowsePathEditor } from './BrowsePathEditor';
 import { ButtonCascader } from './ButtonCascader/ButtonCascader';
+import { Browser } from './Browser';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string };
     
@@ -17,7 +18,9 @@ type State = {
     options: CascaderOption[];
     value: string[];
     alias: string;
+    nodeId: string,
     browsepath: QualifiedName[];
+    browserOpened: boolean;
 };
 
 const rootNode = 'i=85';
@@ -35,7 +38,9 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             options: [],
             value: this.props.query.value || ['Select to browse OPC UA Server'],
             browsepath: this.props.query.browsepath,
+            nodeId: this.props.query.nodeId,
             alias: alias,
+            browserOpened: false
         }
 
         props.datasource.getResource('browse', { nodeId: rootNode }).then((results: OpcUaBrowseResults[]) => {
@@ -51,7 +56,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         const { query, onChange, onRunQuery } = this.props;
         const value = selectedItems.map(item => (item.label ? item.label.toString() : ''));
         const nodeId = selected[selected.length - 1];
-        this.setState({ value });
+
+        this.setState({ value: value, nodeId: nodeId });
         onChange({
             ...query,
             value,
@@ -108,12 +114,51 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     };
 
 
+    browse = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
+        return this.props.datasource
+            .getResource('browse', { nodeId: nodeId });
+    };
+
+    toggleBrowsePathBrowser = () => {
+        this.setState({ browserOpened: !this.state.browserOpened });
+    }
+
+    renderBrowsePathBrowser = (rootNodeId: OpcUaBrowseResults) => {
+        
+        if (this.state.browserOpened) {
+            return <div data-id="Treeview-MainDiv" style={{
+                border: "lightgrey 1px solid",
+                borderRadius: "1px",
+                cursor: "pointer",
+                padding: "2px",
+                position: "absolute",
+                left: 30,
+                top: 10,
+                zIndex: 10,
+            }}>
+                <Browser closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
+                    browse={a => this.browse(a)} datasource={this.props.datasource}
+                    ignoreRootNode={true} rootNodeId={rootNodeId}
+                    onNodeSelectedChanged={(node, browsepath) => { this.setState({ browsepath: browsepath }) }}></Browser></div>;
+        }
+        return <></>;
+    }
+
 
     render() {
-        const { options, value, browsepath, alias } = this.state;
+        const { options, value, browsepath, alias, nodeId } = this.state;
+        const rootNodeId: OpcUaBrowseResults = {
+            browseName: {
+                name: "root", namespaceUrl: ""
+            },
+            displayName: "root",
+            isForward: true,
+            nodeClass: 0,
+            nodeId: nodeId
+        };
         return (
-            <>
-                <SegmentFrame label={this.props.nodeNameType}>
+            <div style={{ padding: "4px" }}>
+                <SegmentFrame label={this.props.nodeNameType} >
                     <div onBlur={e => console.log('onBlur', e)}>
                         <ButtonCascader
                             //className="query-part"
@@ -127,14 +172,16 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                     </div>
                     <div>
                         <Input value={browsePathToString(browsepath)} placeholder={'browsepath'} onChange={e => this.onChangeBrowsePath(e)} width={30} />
-                        <BrowsePathEditor browsePath={browsepath}></BrowsePathEditor>
                     </div>
-
+                    <Button onClick={() => this.toggleBrowsePathBrowser()}>Browse</Button>
+                    <div style={{ position: 'relative' }}>
+                        {this.renderBrowsePathBrowser(rootNodeId)}
+                    </div>
                 </SegmentFrame>
                 <SegmentFrame label="Alias">
                     <Input value={alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
                 </SegmentFrame>
-            </>
+            </div>
         );
     }
 }

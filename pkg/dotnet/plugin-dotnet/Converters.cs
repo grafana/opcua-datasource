@@ -25,7 +25,7 @@ namespace plugin_dotnet
             var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
             return new BrowseResultsEntry(
 				referenceDescription.DisplayName.ToString(),
-				referenceDescription.BrowseName.ToString(),
+                GetQualifiedName(referenceDescription.BrowseName, namespaceTable),
                 nid,
 				referenceDescription.TypeId,
 				referenceDescription.IsForward,
@@ -57,6 +57,14 @@ namespace plugin_dotnet
             return new Opc.Ua.QualifiedName(qm.name, (ushort)insIdx);
 
         }
+
+        internal static QualifiedName GetQualifiedName(Opc.Ua.QualifiedName qm, NamespaceTable namespaceTable)
+        {
+            var url = namespaceTable.GetString(qm.NamespaceIndex);
+            return new QualifiedName() { name = qm.Name, namespaceUrl = url };
+
+        }
+
 
         internal static Dictionary<int, Field> AddEventFields(DataFrame dataFrame, OpcUAQuery query)
         {

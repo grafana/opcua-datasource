@@ -43,8 +43,8 @@ export interface OpcUaResponse {
 }
 
 export interface OpcUaBrowseResults {
-  displayName: string;
-  browseName: string;
+    displayName: string;
+    browseName: QualifiedName;
   nodeId: string;
   isForward: boolean;
   nodeClass: number;

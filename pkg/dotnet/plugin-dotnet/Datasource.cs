@@ -162,14 +162,14 @@ namespace plugin_dotnet
     public class BrowseResultsEntry
     {
         public string displayName { get; set; }
-        public string browseName { get; set; }
+        public QualifiedName browseName { get; set; }
         public string nodeId { get; set; }
         public bool isForward { get; set; }
         public uint nodeClass { get; set; }
         public string typeId { get; set; }
         
         public BrowseResultsEntry() { }
-        public BrowseResultsEntry(string displayName, string browseName, string nodeId, ExpandedNodeId typeId, bool isForward, uint nodeClass)
+        public BrowseResultsEntry(string displayName, QualifiedName browseName, string nodeId, ExpandedNodeId typeId, bool isForward, uint nodeClass)
         {
             this.displayName = displayName;
             this.browseName = browseName;

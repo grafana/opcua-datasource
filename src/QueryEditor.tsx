@@ -4,7 +4,7 @@ import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from './DataSource';
 import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults } from './types';
-import { css } from 'emotion';
+import { css  } from 'emotion';
 import { EventQueryEditor } from './components/EventQueryEditor';
 import { NodeQueryEditor } from './components/NodeQueryEditor';
 import { SegmentLabel } from './components/SegmentFrame';
@@ -195,7 +195,6 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     render() {
         const { tabs } = this.state;
-        console.log('QueryEditor::render');
 
         return (
             <>
