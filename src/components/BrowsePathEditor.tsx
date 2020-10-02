@@ -1,50 +1,66 @@
 import React, { PureComponent } from "react";
 import { QualifiedName } from '../types';
-import { QualifiedNameEditor } from './QualifiedNameEditor';
+import { Input } from '@grafana/ui';
+import { browsePathToString, stringToBrowsePath } from '../utils/QualifiedName';
 
 
 export interface Props {
     browsePath: QualifiedName[];
-    //onAddPath();
-    //onDeletePath();
+    onBrowsePathChanged(browsePath: QualifiedName[]): void;
 }
 
 type State = {
+    shortenedPath: string,
+    longPath: string,
+    edit: boolean,
 }
 
 export class BrowsePathEditor extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
-
-    }
-
-    selectBrowseNamespace = () => {
-
-    }
-
-    onChangePath = () => {
-
-    }
-
-    onDelete = (id: number) => {
-
-    }
-
-    eachElement = (item: QualifiedName, id: number) => {
-        const { namespaceUrl, name } = item;
-        return <li><QualifiedNameEditor name={name} namespaceUrl={namespaceUrl} id={id} onchange={this.onChangePath} selectBrowseNamespace={this.selectBrowseNamespace} />
-            <button onClick={e => this.onDelete(id)}>Delete</button>
-        </li>;
+        let browsePath = this.props.browsePath;
+        if (typeof browsePath === 'undefined')
+            browsePath = [];
+        let shortendPath = browsePath.map(p => p.name).join("/");
+        let longPath = browsePathToString(browsePath);
+        this.state =
+        {
+            shortenedPath: shortendPath,
+            longPath: longPath,
+            edit: false,
+        };
     }
 
     
     render() {
-        const { browsePath } = this.props;
+        let browsePath = this.props.browsePath;
+        if (typeof browsePath === 'undefined')
+            browsePath = [];
+        let shortendPath = browsePath.map(p => p.name).join("/");
+        let longPath = browsePathToString(browsePath);
+        this.setState(
+        {
+            shortenedPath: shortendPath,
+            longPath: longPath
+        });
 
-        return ( 
-            <div>
-                {browsePath && browsePath.length > 0 && browsePath.map(this.eachElement)}
-            </div>
-        );
+        return this.state.edit ? 
+            (
+                <div data-tip={this.state.longPath} style={{ width: 60 }}>
+                    <Input value={this.state.longPath} onChange={e => this.onChangeBrowsePath(e)} placeholder={'Path'} onBlur={() => this.setState({ edit: false })}></Input>
+                </div>
+            )
+            :
+            ( 
+                <div data-tip={this.state.longPath}>
+                    <Input value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
+                </div>
+            );
+    }
+
+    onChangeBrowsePath(e: React.FormEvent<HTMLInputElement>): void {
+        let s: string = e.currentTarget.value;
+        let browsePath = stringToBrowsePath(s);
+        this.props.onBrowsePathChanged(browsePath);
     }
 }

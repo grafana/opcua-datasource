@@ -6,11 +6,11 @@ import { QualifiedName, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, 
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../DataSource';
 import { SegmentFrame } from './SegmentFrame';
-import { browsePathToString, stringToBrowsePath } from '../utils/QualifiedName';
 import { toCascaderOption } from '../utils/CascaderOption';
 //import { BrowsePathEditor } from './BrowsePathEditor';
 import { ButtonCascader } from './ButtonCascader/ButtonCascader';
 import { Browser } from './Browser';
+import { BrowsePathEditor } from './BrowsePathEditor';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string };
     
@@ -67,10 +67,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     };
 
 
-    onChangeBrowsePath = (event: React.FormEvent<HTMLInputElement>) => {
+    onChangeBrowsePath = (browsepath: QualifiedName[]) => {
         const { query, onChange, onRunQuery } = this.props;
-        var s = event?.currentTarget.value;
-        let browsepath = stringToBrowsePath(s);
         this.setState({ browsepath: browsepath }, () => {
 
             onChange({
@@ -139,7 +137,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                 <Browser closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
                     browse={a => this.browse(a)} datasource={this.props.datasource}
                     ignoreRootNode={true} rootNodeId={rootNodeId}
-                    onNodeSelectedChanged={(node, browsepath) => { this.setState({ browsepath: browsepath }) }}></Browser></div>;
+                    onNodeSelectedChanged={(node, browsepath) => { this.setState({ browsepath: browsepath }, () => { this.onChangeBrowsePath(this.state.browsepath) }) }}></Browser></div>;
         }
         return <></>;
     }
@@ -171,7 +169,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                         </ButtonCascader>
                     </div>
                     <div>
-                        <Input value={browsePathToString(browsepath)} placeholder={'browsepath'} onChange={e => this.onChangeBrowsePath(e)} width={30} />
+                        <BrowsePathEditor browsePath={browsepath} onBrowsePathChanged={this.onChangeBrowsePath} />
                     </div>
                     <Button onClick={() => this.toggleBrowsePathBrowser()}>Browse</Button>
                     <div style={{ position: 'relative' }}>
