@@ -1,14 +1,14 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
 import { QualifiedName } from '../types';
+import { Button } from '@grafana/ui';
 
 export interface AddEventFieldFormProps {
-    add(browsename: QualifiedName, alias: string): void;
+    add(browsePath: QualifiedName[], alias: string): void;
 }
 
 type State = {
-    browsename: string;
-    namespaceUrl: string;
+    browsePath: QualifiedName[];
     alias: string;
 };
 
@@ -17,36 +17,16 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
     constructor(props: AddEventFieldFormProps) {
         super(props);
         this.state = {
-            browsename: "",
-            namespaceUrl: "",
+            browsePath: [],
             alias: ""
         };
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.changeBrowseName = this.changeBrowseName.bind(this);
         this.changeAlias = this.changeAlias.bind(this);
     }
 
+
     handleSubmit(event: { preventDefault: () => void; }) {
-        this.props.add({ name: this.state.browsename, namespaceUrl: this.state.namespaceUrl }, this.state.alias);
+        this.props.add(this.state.browsePath, this.state.alias);
         event.preventDefault();
-    }
-
-    changeBrowseName(event: { target: any; }) {
-        const target = event.target;
-        const value = target.value;
-       
-        this.setState({
-            browsename: value
-        });
-    }
-
-    changeNamespaceUrl(event: { target: any; }) {
-        const target = event.target;
-        const value = target.value;
-
-        this.setState({
-            namespaceUrl: value
-        });
     }
 
     changeAlias(event: { target: any; }) {
@@ -59,24 +39,13 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
     }
 
     render() {
+        
         return (
             <div>
                 <br/>
                 <form onSubmit={this.handleSubmit}>
-                    <SegmentFrame label="Namespace Url">
-                        <input
-                            name="namespaceUrl"
-                            type="input"
-                            value={this.state.namespaceUrl}
-                            onChange={this.changeNamespaceUrl} />
-                    </SegmentFrame>
-                    <SegmentFrame label="Browse name">
-                        <input
-                        name="browsename"
-                        type="input"
-                        value={this.state.browsename}
-                            onChange={this.changeBrowseName} />
-                    </SegmentFrame>
+
+                    <Button onClick={() => this.toggleBrowsePathBrowser()}>Browse</Button>
                     <SegmentFrame label="Alias" marginLeft >
                       <input
                         name="alias"
@@ -88,5 +57,13 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
                 </form>
             </div>
         );
+    }
+    onChangeBrowsePath(bp: QualifiedName[]): void {
+        throw new Error("Method not implemented.");
+    }
+
+
+    toggleBrowsePathBrowser() {
+        throw new Error("Method not implemented.");
     }
 }

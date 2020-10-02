@@ -31,3 +31,7 @@ export function toQualifiedName(path: string): QualifiedName {
         return { name: ns[1].trim(), namespaceUrl: ns[0].trim() };
     return { name: ns[0].trim(), namespaceUrl: "" };
 }
+
+export function copyQualifiedName(qm: QualifiedName): QualifiedName {
+    return { name: qm.name, namespaceUrl: qm.namespaceUrl };
+}

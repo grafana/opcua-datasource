@@ -1,66 +1,64 @@
 import React, { PureComponent } from "react";
-import { QualifiedName } from '../types';
-import { Input } from '@grafana/ui';
-import { browsePathToString, stringToBrowsePath } from '../utils/QualifiedName';
+import { QualifiedName, OpcUaBrowseResults } from '../types';
+import { Button } from '@grafana/ui';
+import { BrowsePathTextEditor } from './BrowsePathTextEditor';
+import { Browser } from './Browser';
+import { DataSource } from '../DataSource';
 
+type Props = {
+    datasource: DataSource,
+    browsePath: QualifiedName[],
+    rootNodeId: string,
+    browse(nodeId: string): Promise<OpcUaBrowseResults[]>;
+    onChangeBrowsePath(browsePath: QualifiedName[]): void;
+};
 
-export interface Props {
-    browsePath: QualifiedName[];
-    onBrowsePathChanged(browsePath: QualifiedName[]): void;
-}
 
 type State = {
-    shortenedPath: string,
-    longPath: string,
-    edit: boolean,
+    browserOpened: boolean,
 }
 
 export class BrowsePathEditor extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
-        let browsePath = this.props.browsePath;
-        if (typeof browsePath === 'undefined')
-            browsePath = [];
-        let shortendPath = browsePath.map(p => p.name).join("/");
-        let longPath = browsePathToString(browsePath);
-        this.state =
-        {
-            shortenedPath: shortendPath,
-            longPath: longPath,
-            edit: false,
-        };
+        this.state = { browserOpened: false };
+    }
+    toggleBrowsePathBrowser = () => {
+        this.setState({ browserOpened: !this.state.browserOpened });
     }
 
-    
+    renderBrowsePathBrowser = (rootNodeId: OpcUaBrowseResults) => {
+        if (this.state.browserOpened) {
+            return <div data-id="Treeview-MainDiv" style={{
+                border: "lightgrey 1px solid",
+                borderRadius: "1px",
+                cursor: "pointer",
+                padding: "2px",
+                position: "absolute",
+                left: 30,
+                top: 10,
+                zIndex: 10,
+            }}>
+                <Browser closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
+                    browse={a => this.props.browse(a)} datasource={this.props.datasource}
+                    ignoreRootNode={true} rootNodeId={rootNodeId}
+                    onNodeSelectedChanged={(node, browsepath) => { this.props.onChangeBrowsePath(browsepath) }}></Browser></div>;
+        }
+        return <></>;
+    }
+
+
     render() {
-        let browsePath = this.props.browsePath;
-        if (typeof browsePath === 'undefined')
-            browsePath = [];
-        let shortendPath = browsePath.map(p => p.name).join("/");
-        let longPath = browsePathToString(browsePath);
-        this.setState(
-        {
-            shortenedPath: shortendPath,
-            longPath: longPath
-        });
+        let rootNodeId: OpcUaBrowseResults = {
+            browseName: { name: "", namespaceUrl: "" }, displayName: "", isForward: true, nodeClass: 0, nodeId: this.props.rootNodeId
+        };
+        return <div className="gf-form-inline"><BrowsePathTextEditor browsePath={this.props.browsePath} onBrowsePathChanged={this.props.onChangeBrowsePath} />
+            <Button onClick={() => this.toggleBrowsePathBrowser()}>Browse</Button>
+            <div style={{ position: 'relative' }}>
+                {this.renderBrowsePathBrowser(rootNodeId)}
+            </div></div>;
 
-        return this.state.edit ? 
-            (
-                <div data-tip={this.state.longPath} style={{ width: 60 }}>
-                    <Input value={this.state.longPath} onChange={e => this.onChangeBrowsePath(e)} placeholder={'Path'} onBlur={() => this.setState({ edit: false })}></Input>
-                </div>
-            )
-            :
-            ( 
-                <div data-tip={this.state.longPath}>
-                    <Input value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
-                </div>
-            );
-    }
-
-    onChangeBrowsePath(e: React.FormEvent<HTMLInputElement>): void {
-        let s: string = e.currentTarget.value;
-        let browsePath = stringToBrowsePath(s);
-        this.props.onBrowsePathChanged(browsePath);
     }
 }
+
+

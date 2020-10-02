@@ -77,12 +77,12 @@ export class EventQueryEditor extends PureComponent<Props, State> {
     buildEventFields = (storedEventColumns: EventColumn[]): EventColumn[] => {
         if (typeof storedEventColumns === 'undefined') {
             return [
-                { alias: "", browsename: { name: "Time", namespaceUrl: "" } },
-                { alias: "", browsename: { name: "EventId", namespaceUrl: "" } },
-                { alias: "", browsename: { name: "EventType", namespaceUrl: "" } },
-                { alias: "", browsename: { name: "SourceName", namespaceUrl: "" } },
-                { alias: "", browsename: { name: "Message", namespaceUrl: "" } },
-                { alias: "", browsename: { name: "Severity", namespaceUrl: "" } }
+                { alias: "", browsePath: [{ name: "Time", namespaceUrl: "http://opcfoundation.org/UA/" }] },
+                { alias: "", browsePath: [{ name: "EventId", namespaceUrl: "http://opcfoundation.org/UA/" }] },
+                { alias: "", browsePath: [{ name: "EventType", namespaceUrl: "http://opcfoundation.org/UA/" }] },
+                { alias: "", browsePath: [{ name: "SourceName", namespaceUrl: "http://opcfoundation.org/UA/" }] },
+                { alias: "", browsePath: [{ name: "Message", namespaceUrl: "http://opcfoundation.org/UA/" }] },
+                { alias: "", browsePath: [{ name: "Severity", namespaceUrl: "http://opcfoundation.org/UA/" }] }
             ];
         }
         return storedEventColumns.map(a => copyEventColumn(a));
@@ -139,10 +139,16 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         onRunQuery();
     }
 
-    addSelectField = (browsename: QualifiedName, alias: string) => {
+    addSelectField = (browsePath: QualifiedName[], alias: string) => {
         let tempArray = this.state.eventFields.slice();
+        let bpCopy = browsePath.slice();
+        tempArray.push({ browsePath: bpCopy, alias: alias });
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    }
 
-        tempArray.push({ browsename: { name: browsename.name, namespaceUrl: browsename.namespaceUrl }, alias: alias });
+    onChangeBrowsePath(browsePath: QualifiedName[], idx: number) {
+        let tempArray = this.state.eventFields.slice();
+        tempArray[idx] = { alias: tempArray[idx].alias, browsePath: browsePath };
         this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
     }
 
@@ -152,9 +158,30 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
     }
 
+    renderTables() {
+        const { datasource } = this.props;
+        let validEventTypeNodeId: boolean = true;
+        if (typeof this.state.eventTypeNodeId === 'undefined' || this.state.eventTypeNodeId === "") {
+            validEventTypeNodeId = false;
+        }
+        if (validEventTypeNodeId) {
+            return (<>
+                <EventFieldTable datasource={datasource} eventTypeNodeId={this.state.eventTypeNodeId} eventColumns={this.state.eventFields} onChangeBrowsePath={(browsePath, idx) => { this.onChangeBrowsePath(browsePath, idx) }} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
+                <br />
+
+                <AddEventFieldForm add={(browsename: QualifiedName[], alias: string) => this.addSelectField(browsename, alias)} />
+                <br />
+                <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
+                <br />
+                <AddEventFilter add={(eventFilter: EventFilter) => { this.addEventFilter(eventFilter) }} />
+            </>);
+        }
+        return (<></>);
+    }
+
 
     render() {
-        
+
         return (
             <>
                 <SegmentFrame label="Event Type" >
@@ -169,15 +196,11 @@ export class EventQueryEditor extends PureComponent<Props, State> {
                     </ButtonCascader>
                 </SegmentFrame>
                 <br />
-                <EventFieldTable rows={this.state.eventFields} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
-                <br />
-                <AddEventFieldForm add={(browsename: QualifiedName, alias: string) => this.addSelectField(browsename, alias)} />
-                <br />
-                <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
-                <br />
-                <AddEventFilter add={(eventFilter: EventFilter) => { this.addEventFilter(eventFilter) }} />
-
+                {this.renderTables()}
             </>
         );
     }
+
+
+
 }

@@ -24,7 +24,7 @@ export interface QualifiedName {
 }
 
 export interface EventColumn {
-    browsename: QualifiedName;
+    browsePath: QualifiedName[];
     alias: string;
 }
 
