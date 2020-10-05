@@ -1,27 +1,33 @@
 import React, { PureComponent } from "react";
-import { QualifiedName, OpcUaBrowseResults } from '../types';
+import { OpcUaBrowseResults, OpcUaNodeInfo } from '../types';
 import { Button } from '@grafana/ui';
-import { BrowsePathTextEditor } from './BrowsePathTextEditor';
 import { Browser } from './Browser';
+import { NodeTextEditor } from './NodeTextEditor';
 
 type Props = {
-    browsePath: QualifiedName[],
     rootNodeId: string,
     browse(nodeId: string): Promise<OpcUaBrowseResults[]>;
-    onChangeBrowsePath(browsePath: QualifiedName[]): void;
+    onChangeNode(nodeId: OpcUaNodeInfo): void;
 };
 
 
 type State = {
+    node: OpcUaNodeInfo,
     browserOpened: boolean,
 }
 
-export class BrowsePathEditor extends PureComponent<Props, State> {
+export class NodeEditor extends PureComponent<Props, State> {
+
     constructor(props: Props) {
         super(props);
-        this.state = { browserOpened: false };
+        this.state = {
+            browserOpened: false, node: {
+                browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1, nodeId: ""
+            }
+        };
     }
-    toggleBrowsePathBrowser = () => {
+
+    toggleBrowser = () => {
         this.setState({ browserOpened: !this.state.browserOpened });
     }
 
@@ -40,9 +46,14 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
                 <Browser closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
                     browse={a => this.props.browse(a)}
                     ignoreRootNode={true} rootNodeId={rootNodeId}
-                    onNodeSelectedChanged={(node, browsepath) => { this.props.onChangeBrowsePath(browsepath) }}></Browser></div>;
+                    onNodeSelectedChanged={(node, browsepath) => { this.onChangeNode(node) }}></Browser></div>;
         }
         return <></>;
+    }
+
+
+    onChangeNode(node: OpcUaBrowseResults) {
+        this.setState({ node: node }, () => this.props.onChangeNode(node));
     }
 
 
@@ -50,8 +61,8 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
         let rootNodeId: OpcUaBrowseResults = {
             browseName: { name: "", namespaceUrl: "" }, displayName: "", isForward: true, nodeClass: 0, nodeId: this.props.rootNodeId
         };
-        return <div className="gf-form-inline"><BrowsePathTextEditor browsePath={this.props.browsePath} onBrowsePathChanged={this.props.onChangeBrowsePath} />
-            <Button onClick={() => this.toggleBrowsePathBrowser()}>Browse</Button>
+        return <div className="gf-form-inline"><NodeTextEditor node={this.state.node} onNodeChanged={this.onChangeNode} />
+            <Button onClick={() => this.toggleBrowser()}>Browse</Button>
             <div style={{ position: 'relative' }}>
                 {this.renderBrowsePathBrowser(rootNodeId)}
             </div></div>;

@@ -69,12 +69,30 @@ namespace plugin_dotnet
                     //        response.Body = ByteString.CopyFromUtf8(jsonResults);
                     //    }
                     //    break;
+                    //case "browseEventType":
+                    //    {
+                    //        string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                    //        var nId = Converter.GetNodeId(nodeId, nsTable);
+                    //        var browseResult = connection.GetEventProperties();
+                    //        var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+                    //        response.Code = 200;
+                    //        response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                    //        _log.LogDebug("We got a result from browse => {0}", result);
+                    //    }
+                    //    break;
 
                     case "browse":
                         {
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            var mask = queryParams["nodeClassMask"];
+                            var hasMask = !string.IsNullOrWhiteSpace(mask);
+                            uint nodeClassMask = 0;
+                            if (hasMask) {
+                                if (!uint.TryParse(mask, out nodeClassMask))
+                                    hasMask = false;
+                            }
                             var nId = Converter.GetNodeId(nodeId, nsTable);
-                            var browseResult = connection.Browse(nId);
+                            var browseResult = hasMask ? connection.Browse(nId, nodeClassMask) : connection.Browse(nId);
                             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
@@ -82,6 +100,18 @@ namespace plugin_dotnet
                         }
                         break;
                     case "browseTypes":
+                        {
+                            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            var nId = Converter.GetNodeId(nodeId, nsTable);
+                            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
+                            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+                            response.Code = 200;
+                            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                            _log.LogDebug("We got a result from browse => {0}", result);
+                        }
+                        break;
+
+                    case "browseDataTypes":
                         {
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
                             var nId = Converter.GetNodeId(nodeId, nsTable);

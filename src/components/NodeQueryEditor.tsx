@@ -135,7 +135,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                         </ButtonCascader>
                     </div>
                     <div>
-                        <BrowsePathEditor browsePath={browsepath} browse={this.browse} datasource={this.props.datasource} onChangeBrowsePath={this.onChangeBrowsePath} rootNodeId={nodeId} />
+                        <BrowsePathEditor browsePath={browsepath} browse={this.browse} onChangeBrowsePath={this.onChangeBrowsePath} rootNodeId={nodeId} />
                     </div>
                 </SegmentFrame>
                 <SegmentFrame label="Alias">

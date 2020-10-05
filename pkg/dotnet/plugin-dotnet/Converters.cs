@@ -65,6 +65,18 @@ namespace plugin_dotnet
 
         }
 
+        internal static string GetFieldName(QualifiedName[] browsePath)
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i <  browsePath.Length; i++)
+            {
+                if (sb.Length > 0)
+                    sb.Append("/");
+                sb.Append(browsePath[i].name);
+            }
+            return sb.ToString();
+        }
+
 
         internal static Dictionary<int, Field> AddEventFields(DataFrame dataFrame, OpcUAQuery query)
         {
@@ -72,7 +84,8 @@ namespace plugin_dotnet
             for (int i = 0; i < query.eventQuery.eventColumns.Length; i++)
             {
                 var col = query.eventQuery.eventColumns[i];
-                fields.Add(i, dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? col.browsename.name : col.alias));
+
+                fields.Add(i, dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias));
             }
             return fields;
         }
@@ -197,6 +210,18 @@ namespace plugin_dotnet
 
         }
 
+        private static Opc.Ua.QualifiedName[] GetBrowsePath(QualifiedName[] browsePath, NamespaceTable namespaceTable)
+        {
+            var qms = new Opc.Ua.QualifiedName[browsePath.Length];
+            for (int i = 0; i < browsePath.Length; i++)
+            {
+                var bp = browsePath[i];
+                var nsIdx = string.IsNullOrWhiteSpace(bp.namespaceUrl) ? 0 : namespaceTable.GetIndex(bp.namespaceUrl);
+                qms[i] = new Opc.Ua.QualifiedName(bp.name, (ushort)nsIdx); ;
+            }
+            return qms;
+        }
+
         internal static Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query, NamespaceTable namespaceTable)
         {
             var eventFilter = new Opc.Ua.EventFilter();
@@ -204,8 +229,9 @@ namespace plugin_dotnet
             {
                 foreach (var column in query.eventQuery.eventColumns)
                 {
-                    var nsIdx = string.IsNullOrWhiteSpace(column.browsename.namespaceUrl) ? 0 : namespaceTable.GetIndex(column.browsename.namespaceUrl);
-                    eventFilter.AddSelectClause(ObjectTypes.BaseEventType, new Opc.Ua.QualifiedName(column.browsename.name, (ushort)nsIdx));
+                    var bp = GetBrowsePath(column.browsePath, namespaceTable);
+                    var path = SimpleAttributeOperand.Format(bp);
+                    eventFilter.AddSelectClause(ObjectTypes.BaseEventType, path, Attributes.Value);
                 }
             }
 

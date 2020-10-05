@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
 import { EventColumn, EventFilter, QualifiedName, OpcUaBrowseResults, OpcUaQuery, OpcUaDataSourceOptions, separator} from '../types';
-import { AddEventFieldForm } from './AddEventFieldForm';
 import { EventFieldTable } from './EventFieldTable';
 import { EventFilterTable } from './EventFilterTable';
 import { AddEventFilter } from './AddEventFilter';
@@ -139,18 +138,6 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         onRunQuery();
     }
 
-    addSelectField = (browsePath: QualifiedName[], alias: string) => {
-        let tempArray = this.state.eventFields.slice();
-        let bpCopy = browsePath.slice();
-        tempArray.push({ browsePath: bpCopy, alias: alias });
-        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-    }
-
-    onChangeBrowsePath(browsePath: QualifiedName[], idx: number) {
-        let tempArray = this.state.eventFields.slice();
-        tempArray[idx] = { alias: tempArray[idx].alias, browsePath: browsePath };
-        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-    }
 
     addEventFilter = (eventFilter: EventFilter) => {
         let tempArray = this.state.eventFilters.slice();
@@ -166,17 +153,38 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         }
         if (validEventTypeNodeId) {
             return (<>
-                <EventFieldTable datasource={datasource} eventTypeNodeId={this.state.eventTypeNodeId} eventColumns={this.state.eventFields} onChangeBrowsePath={(browsePath, idx) => { this.onChangeBrowsePath(browsePath, idx) }} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
-                <br />
-
-                <AddEventFieldForm add={(browsename: QualifiedName[], alias: string) => this.addSelectField(browsename, alias)} />
+                <EventFieldTable datasource={datasource} eventTypeNodeId={this.state.eventTypeNodeId}
+                    eventColumns={this.state.eventFields}
+                    onChangeAlias={(alias, idx) => { this.onChangeAlias(alias, idx) }}
+                    onChangeBrowsePath={(browsePath, idx) => { this.onChangeBrowsePath(browsePath, idx) }}
+                    ondelete={(idx: number) => this.handleDeleteSelectField(idx)}
+                    onAddColumn={(col: EventColumn) => this.onAddColumn(col)  } />
                 <br />
                 <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
                 <br />
-                <AddEventFilter add={(eventFilter: EventFilter) => { this.addEventFilter(eventFilter) }} />
+                <AddEventFilter add={(eventFilter: EventFilter) => { this.addEventFilter(eventFilter) }} datasource={this.props.datasource} eventTypeNodeId={this.state.eventTypeNodeId} />
             </>);
         }
         return (<></>);
+    }
+
+    onChangeBrowsePath(browsePath: QualifiedName[], idx: number) {
+        let tempArray = this.state.eventFields.slice();
+        tempArray[idx] = { alias: tempArray[idx].alias, browsePath: browsePath };
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    }
+
+    onChangeAlias(alias: string, idx: number) {
+        let tempArray = this.state.eventFields.slice();
+        tempArray[idx] = { alias: alias, browsePath: tempArray[idx].browsePath };
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    }
+
+
+    onAddColumn(col: EventColumn): void {
+        let tempArray = this.state.eventFields.slice();
+        tempArray.push(col);
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
     }
 
 

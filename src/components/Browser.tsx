@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import TreeNode from "./TreeNode";
 import { convertRemToPixels } from '../utils/ConvertRemToPixels';
 import { OpcUaBrowseResults, QualifiedName } from '../types';
-import { DataSource } from '../DataSource';
 import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 //import { useTheme } from '@grafana/ui';
@@ -25,7 +24,6 @@ type Props = {
 	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
 	rootNodeId: OpcUaBrowseResults,
 	ignoreRootNode: boolean,
-	datasource: DataSource,
 	closeOnSelect: boolean,
 	onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
 	closeBrowser: () => void;

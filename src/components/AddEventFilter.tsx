@@ -1,17 +1,24 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
-import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp } from '../types'; 
+import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp, QualifiedName, OpcUaBrowseResults, OpcUaNodeInfo, NodeClass } from '../types'; 
+import { copyQualifiedName } from '../utils/QualifiedName';
+import { BrowsePathEditor } from './BrowsePathEditor';
+import { DataSource } from '../DataSource';
+import { NodeEditor } from './NodeEditor';
+import { Button } from '@grafana/ui';
 
 export interface Props {
-    add(filter: EventFilter): void;
+    datasource: DataSource,
+    eventTypeNodeId: string,
+    add(filter: EventFilter): void,
+
 }
 
 type State = {
-    oper: FilterOperator;
-    fieldName: string;
-    namespaceUrl: string;
-    value: string;
-    typeId: string;
+    oper: FilterOperator,
+    browsePath: QualifiedName[],
+    value: string,
+    typeId: OpcUaNodeInfo,
 };
 
 
@@ -20,23 +27,25 @@ export class AddEventFilter extends PureComponent<Props, State> {
         super(props);
         this.state = {
             oper: FilterOperator.GreaterThan,
-            fieldName: "Severity",
-            namespaceUrl: "",
-            typeId: "i=10",
+            browsePath: [],
+            typeId: {
+                browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1, nodeId: ""
+            },
             value: "500"
         };
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.changeOperator = this.changeOperator.bind(this);
     }
 
-    handleSubmit(event: { preventDefault: () => void; }) {
-        let attr: SimpleAttributeOp = { attributeId: 13, typeId: "", browsePath: [{ name: this.state.fieldName, namespaceUrl: this.state.namespaceUrl }] };
-        let literal: LiteralOp = {
-            typeId: this.state.typeId, value: this.state.value };
-        let operands: FilterOperand[] = [{ type: FilterOperandEnum.SimpleAttribute, value: attr }, { type: FilterOperandEnum.Literal, value: literal } ];
-        var evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
-        this.props.add(evFilter);
-        event.preventDefault();
+    addFilter() {
+        if (this.state.browsePath.length > 0) {
+            let attr: SimpleAttributeOp = { attributeId: 13, typeId: "", browsePath: this.state.browsePath.map(bp => copyQualifiedName(bp)) };
+            let literal: LiteralOp = {
+                typeId: this.state.typeId.nodeId, value: this.state.value
+            };
+            let operands: FilterOperand[] = [{ type: FilterOperandEnum.SimpleAttribute, value: attr }, { type: FilterOperandEnum.Literal, value: literal }];
+            var evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
+            this.props.add(evFilter);
+        }
     }
 
 
@@ -54,25 +63,6 @@ export class AddEventFilter extends PureComponent<Props, State> {
                 }
                 
         }
-    }
-
-    changeNamespaceUrl(event: { target: any; }) {
-        const target = event.target;
-        const value = target.value;
-
-        this.setState({
-            namespaceUrl: value
-        });
-    }
-
-
-    changeFieldName(event: { target: any; }) {
-        const target = event.target;
-        const value = target.value;
-
-        this.setState({
-            fieldName: value
-        });
     }
 
     changeValueType(event: { target: any; }) {
@@ -114,26 +104,14 @@ export class AddEventFilter extends PureComponent<Props, State> {
             case FilterOperator.LessThan:
             case FilterOperator.LessThanOrEqual:
             case FilterOperator.Equals:
-                return (<><SegmentFrame label="Namespace Url">
-                        <input
-                            name="ns"
-                            type="input"
-                            value={this.state.namespaceUrl}
-                        onChange={(ev) => this.changeNamespaceUrl(ev)} />
-                    </SegmentFrame>
-                    <SegmentFrame label="Name">
-                        <input
-                            name="evField"
-                            type="input"
-                            value={this.state.fieldName}
-                            onChange={(ev) => this.changeFieldName(ev)} />
-                    </SegmentFrame>
+                return (<><BrowsePathEditor
+                        browsePath={this.state.browsePath}
+                        rootNodeId={this.props.eventTypeNodeId}
+                    onChangeBrowsePath={(bp) => this.setState({ browsePath: bp })}
+                    browse={(nodeId) => this.browseEventFields(nodeId)}> </BrowsePathEditor>
+
                     <SegmentFrame label="Value Type" marginLeft >
-                        <input
-                            name="type"
-                            type="input"
-                            value={this.state.typeId}
-                            onChange={(ev) => this.changeValueType(ev) } />
+                        <NodeEditor browse={(node) => this.browseDataTypes(node)} onChangeNode={(node) =>  this.onChangeValueTypeNode(node)} rootNodeId="i=24"  />
                     </SegmentFrame>
 
                     <SegmentFrame label="Value" marginLeft >
@@ -147,15 +125,27 @@ export class AddEventFilter extends PureComponent<Props, State> {
         return <></>;
     }
 
+    onChangeValueTypeNode(node: OpcUaNodeInfo): void {
+        this.setState({ typeId: node });
+    }
+
+    browseDataTypes(nodeId: string): Promise<OpcUaBrowseResults[]> {
+        return this.props.datasource
+            .getResource('browse', { nodeId: nodeId, nodeClassMask: NodeClass.DataType });
+    }
+
+    browseEventFields(nodeId: string): Promise<OpcUaBrowseResults[]> {
+        return this.props.datasource
+            .getResource('browse', { nodeId: nodeId  });
+    }
+
     render() {
         return (
             <div>
                 <br/>
-                <form onSubmit={this.handleSubmit}>
-                    {this.renderDropdown()}
-                    {this.renderOperands(this.state.oper)}
-                    <input type="submit" value="Add Filter" />
-                </form>
+                {this.renderDropdown()}
+                {this.renderOperands(this.state.oper)}
+                <Button onClick={() => this.addFilter()}>Add Filter</Button>
             </div>
         );
     }

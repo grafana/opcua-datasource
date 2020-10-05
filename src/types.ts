@@ -1,5 +1,17 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
+export enum NodeClass {
+    Unspecified = 0,
+    Object = 1,
+    Variable = 2,
+    Method = 4,
+    ObjectType = 8,
+    VariableType = 16,
+    ReferenceType = 32,
+    DataType = 64,
+    View = 128
+}
+
 export interface OpcUaQuery extends DataQuery {
     nodeId: string;
     browsepath: QualifiedName[];
@@ -42,12 +54,15 @@ export interface OpcUaResponse {
   data: OpcUaResults;
 }
 
-export interface OpcUaBrowseResults {
+export interface OpcUaNodeInfo {
     displayName: string;
     browseName: QualifiedName;
-  nodeId: string;
-  isForward: boolean;
-  nodeClass: number;
+    nodeId: string;
+    nodeClass: number;
+}
+
+export interface OpcUaBrowseResults extends OpcUaNodeInfo {
+    isForward: boolean;
 }
 
 export interface OpcUaNodeDefinition {

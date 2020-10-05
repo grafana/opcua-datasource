@@ -28,7 +28,7 @@ namespace plugin_dotnet
 
     public class EventColumn
     { 
-        public QualifiedName browsename { get; set; }
+        public QualifiedName[] browsePath{ get; set; }
         public string alias { get; set; }
     }
 
