@@ -114,6 +114,10 @@ export default class TreeNode extends Component<Props, State> {
 			browse(this.props.node.nodeId).then((response) => { this.setState({ children: response, fetchedChildren: true }) });
 		}
 
+		if (!this.state.isOpen && this.state.fetchedChildren) {
+			this.setState({ children: [], fetchedChildren: false });
+		}
+
 		var divStyle = this.getDivStyle() as React.CSSProperties;
 		
 
