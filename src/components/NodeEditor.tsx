@@ -6,8 +6,10 @@ import { NodeTextEditor } from './NodeTextEditor';
 
 type Props = {
     rootNodeId: string,
+    node: OpcUaNodeInfo,
     browse(nodeId: string): Promise<OpcUaBrowseResults[]>;
     onChangeNode(nodeId: OpcUaNodeInfo): void;
+    readNode(nodeId: string): Promise<OpcUaNodeInfo>;
 };
 
 
@@ -31,7 +33,7 @@ export class NodeEditor extends PureComponent<Props, State> {
         this.setState({ browserOpened: !this.state.browserOpened });
     }
 
-    renderBrowsePathBrowser = (rootNodeId: OpcUaBrowseResults) => {
+    renderNodeBrowser = (rootNodeId: OpcUaBrowseResults) => {
         if (this.state.browserOpened) {
             return <div data-id="Treeview-MainDiv" style={{
                 border: "lightgrey 1px solid",
@@ -52,7 +54,7 @@ export class NodeEditor extends PureComponent<Props, State> {
     }
 
 
-    onChangeNode(node: OpcUaBrowseResults) {
+    onChangeNode(node: OpcUaNodeInfo) {
         this.setState({ node: node }, () => this.props.onChangeNode(node));
     }
 
@@ -61,10 +63,10 @@ export class NodeEditor extends PureComponent<Props, State> {
         let rootNodeId: OpcUaBrowseResults = {
             browseName: { name: "", namespaceUrl: "" }, displayName: "", isForward: true, nodeClass: 0, nodeId: this.props.rootNodeId
         };
-        return <div className="gf-form-inline"><NodeTextEditor node={this.state.node} onNodeChanged={this.onChangeNode} />
+        return <div className="gf-form-inline"><NodeTextEditor readNode={(s) => this.props.readNode(s)} node={this.props.node} onNodeChanged={(n: OpcUaNodeInfo) => this.onChangeNode(n)} />
             <Button onClick={() => this.toggleBrowser()}>Browse</Button>
             <div style={{ position: 'relative' }}>
-                {this.renderBrowsePathBrowser(rootNodeId)}
+                {this.renderNodeBrowser(rootNodeId)}
             </div></div>;
 
     }
