@@ -176,6 +176,14 @@ namespace plugin_dotnet
         }
     }
 
+    public class NodeInfo 
+    {
+        public string displayName { get; set; }
+        public QualifiedName browseName { get; set; }
+        public string nodeId { get; set; }
+        public uint nodeClass { get; set; }
+    }
+
     public class BrowseResultsEntry
     {
         public string displayName { get; set; }

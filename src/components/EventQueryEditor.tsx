@@ -153,6 +153,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         }
         if (validEventTypeNodeId) {
             return (<>
+                <h2>Event Columns</h2>
                 <EventFieldTable datasource={datasource} eventTypeNodeId={this.state.eventTypeNodeId}
                     eventColumns={this.state.eventFields}
                     onChangeAlias={(alias, idx) => { this.onChangeAlias(alias, idx) }}
@@ -160,6 +161,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
                     ondelete={(idx: number) => this.handleDeleteSelectField(idx)}
                     onAddColumn={(col: EventColumn) => this.onAddColumn(col)  } />
                 <br />
+                <h2>Event Filters</h2>
                 <EventFilterTable rows={this.state.eventFilters} ondelete={(idx: number) => { this.handleDeleteEventFilter(idx) }} />
                 <br />
                 <AddEventFilter add={(eventFilter: EventFilter) => { this.addEventFilter(eventFilter) }} datasource={this.props.datasource} eventTypeNodeId={this.state.eventTypeNodeId} />

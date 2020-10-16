@@ -83,7 +83,21 @@ namespace plugin_dotnet
                     //        _log.LogDebug("We got a result from browse => {0}", result);
                     //    }
                     //    break;
+                    case "readNode":
+                        {
+                            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            var nId = Converter.GetNodeId(nodeId, nsTable);
+                            var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
+                            var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
+                            var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
+                            var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
+                            var nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), displayName = displayName.Text, nodeClass = (uint)nodeClass, nodeId = nodeId };
 
+                            var result = JsonSerializer.Serialize(nodeInfo);
+                            response.Code = 200;
+                            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                        }
+                        break;
                     case "browse":
                         {
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);

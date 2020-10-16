@@ -18,6 +18,17 @@ namespace plugin_dotnet
 
         private static readonly DateTime _lowLimit = new DateTime(2, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly DateTime _highLimit = new DateTime(9998, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        public static NodeInfo ConvertToNodeInfo(Opc.Ua.Node node, NamespaceTable namespaceTable)
+        {
+            var nsUrl = namespaceTable.GetString(node.NodeId.NamespaceIndex);
+            var nsNodeId = new NSNodeId() { id = node.NodeId.ToString(), namespaceUrl = nsUrl };
+            var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
+            return new NodeInfo() { browseName = GetQualifiedName(node.BrowseName, namespaceTable), 
+                displayName = node.DisplayName?.Text, nodeClass = (uint)node.NodeClass, nodeId = nid };
+        }
+
+
         public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription, NamespaceTable namespaceTable)
 		{
             var nsUrl = namespaceTable.GetString(referenceDescription.NodeId.NamespaceIndex);

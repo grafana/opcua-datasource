@@ -37,7 +37,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
     }
 
     addFilter() {
-        if (this.state.browsePath.length > 0) {
+        if (this.state.browsePath.length > 0 && this.state.typeId.nodeId.trim() !== "") {
             let attr: SimpleAttributeOp = { attributeId: 13, typeId: "", browsePath: this.state.browsePath.map(bp => copyQualifiedName(bp)) };
             let literal: LiteralOp = {
                 typeId: this.state.typeId.nodeId, value: this.state.value
@@ -52,17 +52,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
     changeOperator(event: { target: any; }) {
         const target = event.target;
         const value = target.value as FilterOperator;
-        switch (value) {
-            case FilterOperator.GreaterThan:
-            case FilterOperator.GreaterThanOrEqual:
-            case FilterOperator.LessThan:
-            case FilterOperator.LessThanOrEqual:
-            case FilterOperator.Equals:
-                {
-                    this.setState({ oper: value});
-                }
-                
-        }
+        this.setState({ oper: value });
     }
 
     changeValueType(event: { target: any; }) {
@@ -86,34 +76,56 @@ export class AddEventFilter extends PureComponent<Props, State> {
 
     renderDropdown() {
         return (
-            <select onSelect={this.changeOperator}>
-                {
-                    EventFilterOperatorUtil.operNames.map((n, idx) =>
+            <SegmentFrame label="Operator" marginLeft >
+                <select onSelect={this.changeOperator}>
                     {
-                        return (<option value={idx}>{n}</option>);
-                    })
-                }
-            </select>
+                        EventFilterOperatorUtil.operNames.map((n, idx) =>
+                        {
+                            return (<option value={idx}>{n}</option>);
+                        })
+                    }
+                </select>
+                </SegmentFrame>
             );
     }
 
-    renderOperands(oper: FilterOperator) {
+    renderOperandsBeforeOperator(oper: FilterOperator) {
         switch (oper) {
             case FilterOperator.GreaterThan:
             case FilterOperator.GreaterThanOrEqual:
             case FilterOperator.LessThan:
             case FilterOperator.LessThanOrEqual:
             case FilterOperator.Equals:
-                return (<><BrowsePathEditor
-                        browsePath={this.state.browsePath}
-                        rootNodeId={this.props.eventTypeNodeId}
-                    onChangeBrowsePath={(bp) => this.setState({ browsePath: bp })}
-                    browse={(nodeId) => this.browseEventFields(nodeId)}> </BrowsePathEditor>
-
-                    <SegmentFrame label="Value Type" marginLeft >
-                        <NodeEditor browse={(node) => this.browseDataTypes(node)} onChangeNode={(node) =>  this.onChangeValueTypeNode(node)} rootNodeId="i=24"  />
+                return (
+                    <SegmentFrame label="Event Field" marginLeft >
+                        <BrowsePathEditor
+                            browsePath={this.state.browsePath}
+                            rootNodeId={this.props.eventTypeNodeId}
+                            onChangeBrowsePath={(bp) => this.setState({ browsePath: bp })}
+                            browse={(nodeId) => this.browseEventFields(nodeId)}> </BrowsePathEditor>
                     </SegmentFrame>
+                    );
+        }
+        return <></>;
 
+    }
+
+    renderOperandsAfterOperator(oper: FilterOperator) {
+        switch (oper) {
+            case FilterOperator.GreaterThan:
+            case FilterOperator.GreaterThanOrEqual:
+            case FilterOperator.LessThan:
+            case FilterOperator.LessThanOrEqual:
+            case FilterOperator.Equals:
+                return (<>
+                    <SegmentFrame label="Value Type" marginLeft >
+                        <NodeEditor browse={(node) => this.browseDataTypes(node)}
+                            readNode={(nodeid) => this.readNode(nodeid)}
+                            onChangeNode={(node) => this.onChangeValueTypeNode(node)}
+                            rootNodeId="i=24"
+                            node={this.state.typeId}
+                        />
+                    </SegmentFrame>
                     <SegmentFrame label="Value" marginLeft >
                         <input
                             name="value"
@@ -134,6 +146,12 @@ export class AddEventFilter extends PureComponent<Props, State> {
             .getResource('browse', { nodeId: nodeId, nodeClassMask: NodeClass.DataType });
     }
 
+    readNode(nodeId: string): Promise<OpcUaNodeInfo> {
+        return this.props.datasource
+            .getResource('readNode', { nodeId: nodeId});
+    }
+
+
     browseEventFields(nodeId: string): Promise<OpcUaBrowseResults[]> {
         return this.props.datasource
             .getResource('browse', { nodeId: nodeId  });
@@ -142,9 +160,10 @@ export class AddEventFilter extends PureComponent<Props, State> {
     render() {
         return (
             <div>
-                <br/>
+                <br />
+                {this.renderOperandsBeforeOperator(this.state.oper)}
                 {this.renderDropdown()}
-                {this.renderOperands(this.state.oper)}
+                {this.renderOperandsAfterOperator(this.state.oper)}
                 <Button onClick={() => this.addFilter()}>Add Filter</Button>
             </div>
         );
