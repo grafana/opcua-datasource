@@ -40,6 +40,11 @@ export interface EventColumn {
     alias: string;
 }
 
+export interface DashboardInfo {
+    name: string;
+}
+
+
 export interface OpcUaResultsEntry {
   meta: string;
   series: any;

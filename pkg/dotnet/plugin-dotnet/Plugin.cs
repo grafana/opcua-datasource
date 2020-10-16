@@ -80,7 +80,7 @@ namespace plugin_dotnet
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(configure => configure.AddDebug())
+            services.AddLogging(configure => configure.AddLog4Net())
                 .AddTransient<Plugin>();
             services.Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Trace);
         }
@@ -92,33 +92,46 @@ namespace plugin_dotnet
             ConfigureServices(serviceCollection);
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            ILogger logger = serviceProvider.GetService<ILogger<Plugin>>(); ;
-            var traceLogConverter = new TraceLogConverter(logger);
-            Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
+            ILogger logger = serviceProvider.GetService<ILogger<Plugin>>();
+            logger.LogDebug("Ua plugin starting");
 
-            var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
-            // Build a server to host the plugin over gRPC
-            Server server = new Server
+            try
             {
-                Ports = { { ServiceHost, ServicePort, ServerCredentials.Insecure } },
-                Services = {
+                var traceLogConverter = new TraceLogConverter(logger);
+                Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
+
+                var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
+
+                IDashboardDb dashboardDb = new DashboardDb(logger, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs", "dashboardmapping.db"));
+                IDashboardResolver dashboardResolver = new DashboardResolver(dashboardDb);
+
+                // Build a server to host the plugin over gRPC
+                Server server = new Server
+                {
+                    Ports = { { ServiceHost, ServicePort, ServerCredentials.Insecure } },
+                    Services = {
                     { Diagnostics.BindService(new DiagnosticsService(logger, connections)) },
-                    { Resource.BindService(new ResourceService(logger, connections)) },
+                    { Resource.BindService(new ResourceService(logger, connections, dashboardResolver)) },
                     { Data.BindService(new DataService(logger, connections)) }
                 }
-            };
-            
-            server.Start();
+                };
 
-            // Part of the go-plugin handshake:
-            //  https://github.com/hashicorp/go-plugin/blob/master/docs/guide-plugin-write-non-go.md#4-output-handshake-information
-            await Console.Out.WriteAsync($"1|2|tcp|{ServiceHost}:{ServicePort}|grpc\n");
-            await Console.Out.FlushAsync();
+                server.Start();
 
-            while (Console.Read() == -1)
-                await Task.Delay(1000);
-                
-            await server.ShutdownAsync();
+                // Part of the go-plugin handshake:
+                //  https://github.com/hashicorp/go-plugin/blob/master/docs/guide-plugin-write-non-go.md#4-output-handshake-information
+                await Console.Out.WriteAsync($"1|2|tcp|{ServiceHost}:{ServicePort}|grpc\n");
+                await Console.Out.FlushAsync();
+
+                while (Console.Read() == -1)
+                    await Task.Delay(1000);
+
+                await server.ShutdownAsync();
+            }
+            catch(Exception e)
+			{
+                logger.LogError(e, "Ua Plugin stopped unexpectedly");
+            }
         }
     }
 }

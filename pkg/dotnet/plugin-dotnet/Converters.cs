@@ -43,6 +43,14 @@ namespace plugin_dotnet
 				Convert.ToUInt32(referenceDescription.NodeClass));
 		}
 
+        public static string GetNodeIdAsJson(Opc.Ua.NodeId nodeId, NamespaceTable namespaceTable)
+        {
+            var nsUrl = namespaceTable.GetString(nodeId.NamespaceIndex);
+            var nsNodeId = new NSNodeId() { id = nodeId.ToString(), namespaceUrl = nsUrl };
+            var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
+            return nid;
+        }
+
 
         public static NodeId GetNodeId(string nid, NamespaceTable namespaceTable)
         {

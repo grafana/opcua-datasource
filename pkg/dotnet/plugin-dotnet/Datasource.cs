@@ -13,6 +13,11 @@ using Pluginv2;
 namespace plugin_dotnet
 {
 
+	public class DashboardInfo
+	{
+		public string name { get; set; }
+	}
+
     public class EventQuery
     {
         public string eventTypeNodeId { get; set; }
@@ -90,6 +95,18 @@ namespace plugin_dotnet
         /// The string representation of the node id. The namespace index may not be valid if it is something different from 0.
         /// </summary>
         public string id { get; set; }  
+    }
+
+    public class NSExpandedNodeId
+    {
+        public string namespaceUrl { get; set; }
+        public string id { get; set; }
+    }
+
+    public class NsNodeIdentifier
+    {
+        public string NamespaceUrl { get; set; }
+        public string Identifier { get; set; }
     }
 
     public class OpcUAQuery
