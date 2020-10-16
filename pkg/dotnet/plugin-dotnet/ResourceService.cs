@@ -13,19 +13,22 @@ using Prediktor.UA.Client;
 using Opc.Ua.Client;
 using Pluginv2;
 using Microsoft.Extensions.Logging;
+using Opc.Ua;
 
 namespace plugin_dotnet
 {
     public class ResourceService : Resource.ResourceBase
     {
-        private IConnections _connections;
+        private readonly IConnections _connections;
         private IServerStreamWriter<CallResourceResponse> responseStream = null;
-        private ILogger _log;
+        private readonly ILogger _log;
+        private readonly IDashboardResolver _dashboardResolver;
 
-        public ResourceService(ILogger log, IConnections connections)
+        public ResourceService(ILogger log, IConnections connections, IDashboardResolver dashboardResolver)
         {
             _connections = connections;
             _log = log;
+            _dashboardResolver = dashboardResolver;
         }
 
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
@@ -122,6 +125,40 @@ namespace plugin_dotnet
                             _log.LogDebug("We got a result from browse => {0}", result);
                         }
                         break;
+                    case "gettypedefinition":
+						{
+                            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            var nId = Converter.GetNodeId(nodeId, nsTable);
+                            connection.Browse(null, null, nId, 1, Opc.Ua.BrowseDirection.Forward, "i=40", true, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection references);
+                            var result = JsonSerializer.Serialize( Converter.ConvertToBrowseResult(references[0], nsTable));
+                            response.Code = 200;
+                            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                            _log.LogDebug("We got a result from browse => {0}", result);
+                        }
+                        break;
+                    case "getdashboard":
+                        {
+                            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
+                            //var nId = Converter.GetNodeId(nodeId, nsTable);
+
+                            var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
+                            var uaNodeId = NodeId.Parse(expandedId.id);
+                            //Opc.Ua.ExpandedNodeId c = Converter.GetExpandedNodeId(nodeId);
+
+                            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
+                            var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
+
+                            var dash = _dashboardResolver.ResolveDashboard(connection, nodeId, targetNodeIdJson, perspective, nsTable);
+							var dashboardInfo = new DashboardInfo() { name = dash ?? string.Empty };
+							var result = JsonSerializer.Serialize(dashboardInfo);
+							response.Code = 200;
+                            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                            _log.LogDebug("We got a dash => {0}", dash);
+                        }
+                        break;
+
+
                 }
                 
             }
