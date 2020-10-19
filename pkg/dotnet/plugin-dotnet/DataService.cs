@@ -46,17 +46,17 @@ namespace plugin_dotnet
 
         private BrowsePath ResolveBrowsePath(OpcUAQuery query, NamespaceTable namespaceTable)
         {
-            var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
+            var nodeId = Converter.GetNodeId(query.nodePath.node.nodeId, namespaceTable);
             var path = new BrowsePath();
             path.StartingNode = nodeId;
 
-            if (query.browsepath != null && query.browsepath.Length > 0)
+            if (query.relativePath != null && query.relativePath.Length > 0)
             {
                 var r = new RelativePath();
                 path.RelativePath = r;
-                for (int i = 0; i < query.browsepath.Length; i++)
+                for (int i = 0; i < query.relativePath.Length; i++)
                 {
-                    r.Elements.Add(new RelativePathElement() { TargetName = Converter.GetQualifiedName(query.browsepath[i], namespaceTable), IncludeSubtypes = true, ReferenceTypeId = Opc.Ua.ReferenceTypes.References, IsInverse = false   }) ;
+                    r.Elements.Add(new RelativePathElement() { TargetName = Converter.GetQualifiedName(query.relativePath[i], namespaceTable), IncludeSubtypes = true, ReferenceTypeId = Opc.Ua.ReferenceTypes.References, IsInverse = false   }) ;
                 }
             }
             return path;

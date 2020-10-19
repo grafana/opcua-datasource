@@ -12,6 +12,18 @@ export function browsePathToString(qnames: QualifiedName[]): string {
     return path;
 } 
 
+export function browsePathToShortString(qnames: QualifiedName[]): string {
+    let path: string = "";
+    if (typeof qnames !== 'undefined') {
+        for (let i = 0; i < qnames.length; i++) {
+            path += qnames[i].name;
+            if (i < qnames.length - 1)
+                path += "/";
+        }
+    }
+    return path;
+}
+
 export function qualifiedNameToString(qname: QualifiedName): string {
     return qname.namespaceUrl + "," + qname.name
 }

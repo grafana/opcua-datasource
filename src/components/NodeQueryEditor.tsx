@@ -1,29 +1,26 @@
 import React, { PureComponent } from 'react';
 
-import { Input} from '@grafana/ui';
-import { CascaderOption } from 'rc-cascader/lib/Cascader';
-import { QualifiedName, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from '../types';
+import { Input } from '@grafana/ui';
+import { QualifiedName, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults,  NodeClass, NodePath } from '../types';
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../DataSource';
 import { SegmentFrame } from './SegmentFrame';
-import { toCascaderOption } from '../utils/CascaderOption';
 //import { BrowsePathEditor } from './BrowsePathEditor';
-import { ButtonCascader } from './ButtonCascader/ButtonCascader';
 import { BrowsePathEditor } from './BrowsePathEditor';
+import { Checkbox } from '@grafana/ui';
+import { NodeEditor } from './NodeEditor';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string };
     
 type State = {
-    options: CascaderOption[];
-    value: string[];
+    useTemplate: boolean;
+    templateType: NodePath;
+    node: NodePath,
     alias: string;
-    nodeId: string,
-    browsepath: QualifiedName[];
+    templateVariable: string,
+    relativepath: QualifiedName[];
     browserOpened: boolean;
 };
-
-const rootNode = 'i=85';
-
 
 export class NodeQueryEditor extends PureComponent<Props, State> {
     constructor(props: Props) {
@@ -33,46 +30,43 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         if (typeof alias === 'undefined')
             alias = "";
 
+        let tempVar = this.props?.query?.templateVariable;
+        if (typeof tempVar === 'undefined' || tempVar.length == 0)
+            tempVar = "$ObjectId";
+
+        let tempType = this.props?.query?.templateType;
+        if (typeof tempType === 'undefined')
+            tempType = {
+                browsePath: [], node: {
+                    nodeId: "", browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1
+                }
+            };
+
+        let nodePath = this.props?.query?.nodePath;
+        if (typeof nodePath === 'undefined')
+            nodePath = { browsePath: [], node: { nodeId: "i=85", browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1 } }
+
         this.state = {
-            options: [],
-            value: this.props.query.value || ['Select to browse OPC UA Server'],
-            browsepath: this.props.query.browsepath,
-            nodeId: this.props.query.nodeId,
+            useTemplate: this.props.query.useTemplate,
+            templateType: tempType,
+            templateVariable: tempVar,
+            relativepath: this.props.query.relativePath,
+            node: nodePath,
             alias: alias,
             browserOpened: false
         }
-
-        props.datasource.getResource('browse', { nodeId: rootNode }).then((results: OpcUaBrowseResults[]) => {
-            console.log('Results', results);
-            this.setState({
-                options: results.map((r: OpcUaBrowseResults) => toCascaderOption(r)),
-            });
-        });
-
     }
 
-    onChange = (selected: string[], selectedItems: CascaderOption[]) => {
+
+
+
+    onChangeRelativePath = (relativePath: QualifiedName[]) => {
         const { query, onChange, onRunQuery } = this.props;
-        const value = selectedItems.map(item => (item.label ? item.label.toString() : ''));
-        const nodeId = selected[selected.length - 1];
-
-        this.setState({ value: value, nodeId: nodeId });
-        onChange({
-            ...query,
-            value,
-            nodeId,
-        });
-        onRunQuery();
-    };
-
-
-    onChangeBrowsePath = (browsepath: QualifiedName[]) => {
-        const { query, onChange, onRunQuery } = this.props;
-        this.setState({ browsepath: browsepath }, () => {
+        this.setState({ relativepath: relativePath }, () => {
 
             onChange({
                 ...query,
-                browsepath
+                relativePath
             });
             onRunQuery();
 
@@ -94,21 +88,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         });
     };
 
-    getChildren = (selectedOptions: CascaderOption[]) => {
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-        targetOption.loading = true;
-        if (targetOption.value) {
-            this.props.datasource
-                .getResource('browse', { nodeId: targetOption.value })
-                .then((results: OpcUaBrowseResults[]) => {
-                    targetOption.loading = false;
-                    targetOption.children = results.map(r => toCascaderOption(r));
-                    this.setState({
-                        options: [...this.state.options],
-                    });
-                });
-        }
-    };
+
 
 
     browse = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
@@ -116,33 +96,108 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             .getResource('browse', { nodeId: nodeId });
     };
 
+    browseTypes = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
+        return this.props.datasource
+            .getResource('browse', { nodeId: nodeId, nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType  });
+    };
 
+
+
+    renderTemplateOrNodeBrowser() {
+        const { useTemplate } = this.state;
+        if (!useTemplate) {
+            return <div onBlur={e => console.log('onBlur', e)}>
+                <NodeEditor
+                    rootNodeId="i=85"
+                    placeholder="Type of template"
+                    node={this.state.node}
+                    readNode={(n) => this.readNode(n)}
+                    browse={(b) => this.browse(b)}
+                    onChangeNode={(nodepath) => this.onChangeNode(nodepath)}>
+                </NodeEditor>
+            </div>
+        }
+        else {
+            return <div>
+                <NodeEditor
+                    rootNodeId="i=88"
+                    placeholder="Type of template"
+                    node={this.state.templateType}
+                    readNode={(n) => this.readNode(n)}
+                    browse={(b) => this.browseTypes(b)}
+                    onChangeNode={(nodepath) => this.onChangeTemplateType(nodepath)}>
+                </NodeEditor>
+            </div>;
+        }
+
+    }
+    onChangeNode(nodepath: NodePath): void {
+        const { onChange, query, onRunQuery } = this.props;
+        this.setState({ node: nodepath }, () => { onChange({ ...query, nodePath: nodepath }); onRunQuery(); });
+    }
+
+    onChangeTemplateType(node: NodePath): void {
+        const { onChange, query } = this.props;
+        this.setState({ templateType: node }, () => onChange({ ...query, templateType: node }));
+    }
+
+    readNode(nodeId: string): Promise<import("../types").OpcUaNodeInfo> {
+        return this.props.datasource
+            .getResource('readNode', { nodeId: nodeId });
+    }
+
+
+    renderTemplateVariable() {
+        const { templateVariable } = this.state;
+        if (this.state.useTemplate) {
+            return <SegmentFrame label="Template variable">
+                <Input value={templateVariable} placeholder="Template variable" onChange={e => this.onChangeTemplateVariable(e)} width={30} />
+            </SegmentFrame>
+        }
+        return <></>;
+
+    }
 
     render() {
-        const { options, value, browsepath, alias, nodeId } = this.state;
+        const { relativepath, alias, node } = this.state;
+        let browseNodeId: string = node.node.nodeId;
+        let nodeNameType: string = this.props.nodeNameType;
+        if (this.state.useTemplate) {
+            browseNodeId = this.state.templateType.node.nodeId;
+            nodeNameType = "Template type";
+        }
+        
+
         return (
             <div style={{ padding: "4px" }}>
-                <SegmentFrame label={this.props.nodeNameType} >
-                    <div onBlur={e => console.log('onBlur', e)}>
-                        <ButtonCascader
-                            //className="query-part"
-                            value={value}
-                            loadData={this.getChildren}
-                            options={options}
-                            onChange={this.onChange}
-                        >
-                            {value.join(separator)}
-                        </ButtonCascader>
-                    </div>
+                <Checkbox label="Use template" checked={this.state.useTemplate} onChange={(e) => this.changeUseTemplate(e)} ></Checkbox>
+                <SegmentFrame label={nodeNameType} >
+                    {this.renderTemplateOrNodeBrowser()}
                     <div>
-                        <BrowsePathEditor browsePath={browsepath} browse={this.browse} onChangeBrowsePath={this.onChangeBrowsePath} rootNodeId={nodeId} />
+                        <BrowsePathEditor browsePath={relativepath} browse={this.browse} onChangeBrowsePath={this.onChangeRelativePath} rootNodeId={browseNodeId} />
                     </div>
                 </SegmentFrame>
+                {this.renderTemplateVariable()}
                 <SegmentFrame label="Alias">
                     <Input value={alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
                 </SegmentFrame>
             </div>
         );
+    }
+
+    onChangeTemplateVariable(e: React.FormEvent<HTMLInputElement>): void {
+
+        const { onChange, query } = this.props;
+        let tempVar: string = e.currentTarget.value;
+        this.setState({
+            templateVariable: tempVar
+        }, () => onChange({ ...query, templateVariable: tempVar }));
+    }
+
+    changeUseTemplate(e: React.FormEvent<HTMLInputElement>): void {
+        const { onChange, query } = this.props;
+        var checked = e.currentTarget.checked;
+        this.setState({ useTemplate: checked }, () => onChange({ ...query, useTemplate: checked}));
     }
 }
 

@@ -278,7 +278,7 @@ namespace plugin_dotnet
                 {
                     if (valueField == null && entry.Value != null)
                     {
-                        string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.value) : query.alias;
+                        string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name)) : query.alias;
                         valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
                     }
 
@@ -314,7 +314,7 @@ namespace plugin_dotnet
                 DataFrame dataFrame = new DataFrame(log, query.refId);
 
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.value) : query.alias;
+                string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name)) : query.alias;
                 Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
                 timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
                 valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
