@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { OpcUaBrowseResults, OpcUaNodeInfo, QualifiedName, NodePath } from '../types';
 import { Button } from '@grafana/ui';
-import { Browser } from './Browser';
 import { NodeTextEditor } from './NodeTextEditor';
+import { BrowserDialog } from './BrowserDialog';
 
 type Props = {
     rootNodeId: string,
@@ -46,10 +46,10 @@ export class NodeEditor extends PureComponent<Props, State> {
                 top: 10,
                 zIndex: 10,
             }}>
-                <Browser closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
+                <BrowserDialog closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
                     browse={a => this.props.browse(a)}
                     ignoreRootNode={true} rootNodeId={rootNodeId}
-                    onNodeSelectedChanged={(node, browsepath) => { this.onChangeNode(node, browsepath) }}></Browser></div>;
+                    onNodeSelectedChanged={(node, browsepath) => { this.onChangeNode(node, browsepath) }}></BrowserDialog></div>;
         }
         return <></>;
     }

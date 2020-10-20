@@ -119,8 +119,6 @@ namespace plugin_dotnet
         public TimeRange timeRange { get; set; }
         public NodePath nodePath { get; set; }
         
-        public NodePath templateType { get; set; }
-        
         public string templateVariable { get; set; }
 
         public bool useTemplate { get; set; }
@@ -148,7 +146,6 @@ namespace plugin_dotnet
             OpcUAQuery query = JsonSerializer.Deserialize<OpcUAQuery>(byDecoded);
             datasourceId = query.datasourceId;
             nodePath = query.nodePath;
-            templateType = query.templateType;
             templateVariable = query.templateVariable;
             useTemplate = query.useTemplate;
     

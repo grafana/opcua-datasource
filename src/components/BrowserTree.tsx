@@ -5,20 +5,6 @@ import { convertRemToPixels } from '../utils/ConvertRemToPixels';
 import { OpcUaBrowseResults, QualifiedName } from '../types';
 import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
-//import { useTheme } from '@grafana/ui';
-//import { GrafanaTheme } from '@grafana/data';
-
-//var NodeClass = {
-//	DataType: 64,
-//	Method: 4,
-//	Object: 1,
-//	ObjectType: 8,
-//	ReferenceType: 32,
-//	Unspecified: 0,
-//	Variable: 2,
-//	VariableType: 16,
-//	View: 128,
-//};
 
 type Props = {
 	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
@@ -41,7 +27,7 @@ type State = {
 /**
  * Displays nodes in a tree and allows users to select an entity for display.
  */
-export class Browser extends Component<Props, State> {
+export class BrowserTree extends Component<Props, State> {
 	/**
 	 *
 	 * @param {*} props sets the data structure
@@ -126,20 +112,6 @@ export class Browser extends Component<Props, State> {
 				background: bg
 			}}>
 				<ThemeGetter onTheme={this.onTheme} />
-				<span
-					data-id="Treeview-CloseSpan"
-					onClick={() => this.handleClose()}
-					onMouseOver={this.handleHoverClose}
-					onMouseOut={this.handleUnhoverClose}
-					//ref={(spn) => (this.closeSpan = spn)}
-					style={{
-						//border: this.props.theme.colors.border1,
-						cursor: "pointer",
-						padding: convertRemToPixels("0.5rem"),
-					}}
-				>
-					Close
-				</span>
 				<div
 					data-id="Treeview-ScrollDiv"
 					style={{

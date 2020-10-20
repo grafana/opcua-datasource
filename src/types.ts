@@ -15,7 +15,6 @@ export enum NodeClass {
 export interface OpcUaQuery extends DataQuery {
     useTemplate: boolean;
     templateVariable: string;
-    templateType: NodePath;
     nodePath: NodePath;
     relativePath: QualifiedName[];
     alias: string;

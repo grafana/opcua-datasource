@@ -14,7 +14,7 @@ type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & 
     
 type State = {
     useTemplate: boolean;
-    templateType: NodePath;
+    //templateType: NodePath;
     node: NodePath,
     alias: string;
     templateVariable: string,
@@ -34,13 +34,13 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         if (typeof tempVar === 'undefined' || tempVar.length == 0)
             tempVar = "$ObjectId";
 
-        let tempType = this.props?.query?.templateType;
-        if (typeof tempType === 'undefined')
-            tempType = {
-                browsePath: [], node: {
-                    nodeId: "", browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1
-                }
-            };
+        //let tempType = this.props?.query?.templateType;
+        //if (typeof tempType === 'undefined')
+        //    tempType = {
+        //        browsePath: [], node: {
+        //            nodeId: "", browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1
+        //        }
+        //    };
 
         let nodePath = this.props?.query?.nodePath;
         if (typeof nodePath === 'undefined')
@@ -48,7 +48,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
         this.state = {
             useTemplate: this.props.query.useTemplate,
-            templateType: tempType,
+            //templateType: tempType,
             templateVariable: tempVar,
             relativepath: this.props.query.relativePath,
             node: nodePath,
@@ -122,7 +122,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                 <NodeEditor
                     rootNodeId="i=88"
                     placeholder="Type of template"
-                    node={this.state.templateType}
+                    node={this.state.node}
                     readNode={(n) => this.readNode(n)}
                     browse={(b) => this.browseTypes(b)}
                     onChangeNode={(nodepath) => this.onChangeTemplateType(nodepath)}>
@@ -138,7 +138,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
     onChangeTemplateType(node: NodePath): void {
         const { onChange, query } = this.props;
-        this.setState({ templateType: node }, () => onChange({ ...query, templateType: node }));
+        this.setState({ node: node }, () => onChange({ ...query, nodePath: node }));
     }
 
     readNode(nodeId: string): Promise<import("../types").OpcUaNodeInfo> {
@@ -163,7 +163,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         let browseNodeId: string = node.node.nodeId;
         let nodeNameType: string = this.props.nodeNameType;
         if (this.state.useTemplate) {
-            browseNodeId = this.state.templateType.node.nodeId;
+            browseNodeId = this.state.node.node.nodeId;
             nodeNameType = "Template type";
         }
         
