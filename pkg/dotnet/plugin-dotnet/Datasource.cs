@@ -221,4 +221,19 @@ namespace plugin_dotnet
             return JsonSerializer.Serialize<LogMessage>(this);
         }
     }
+
+    public class UaResult
+    {
+        public UaResult():this(true)
+		{
+		}
+   
+        public UaResult(bool success)
+        {
+            this.success = success;
+        }
+
+        public bool success { get; set; }
+        public string error { get; set; }
+    }
 }

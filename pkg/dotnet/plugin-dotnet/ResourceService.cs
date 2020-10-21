@@ -164,17 +164,37 @@ namespace plugin_dotnet
                             var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
 
                             var dash = _dashboardResolver.ResolveDashboard(connection, nodeId, targetNodeIdJson, perspective, nsTable);
-							var dashboardInfo = new DashboardInfo() { name = dash ?? string.Empty };
-							var result = JsonSerializer.Serialize(dashboardInfo);
-							response.Code = 200;
+                            var dashboardInfo = new DashboardInfo() { name = dash ?? string.Empty };
+                            var result = JsonSerializer.Serialize(dashboardInfo);
+                            response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                             _log.LogDebug("We got a dash => {0}", dash);
+                        }
+                        break;
+                    case "adddashboardmapping":
+                        {
+                            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+                            bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
+                            string dashboard = HttpUtility.UrlDecode(queryParams["dashboard"]);
+                            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
+
+                            var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
+                            var uaNodeId = NodeId.Parse(expandedId.id);
+
+                            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
+                            var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
+
+                            var r = _dashboardResolver.AddDashboardMapping(connection, nodeId, targetNodeIdJson, useType, dashboard, perspective, nsTable);
+                            var result = JsonSerializer.Serialize(r);
+                            response.Code = 200;
+                            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                            _log.LogDebug("Adding dashboard mapping => {0}", r.success);
                         }
                         break;
 
 
                 }
-                
+
             }
             catch(Exception ex)
             {
