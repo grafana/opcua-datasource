@@ -6,7 +6,10 @@ import { GrafanaTheme } from '@grafana/data';
 import { BrowserTree } from './BrowserTree';
 import { BrowserTable } from './BrowserTable';
 import { Checkbox } from '@grafana/ui';
+import {
+	FaWindowClose
 
+} from "react-icons/fa";
 type Props = {
 	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
 	rootNodeId: OpcUaBrowseResults,
@@ -57,9 +60,12 @@ export class BrowserDialog extends Component<Props, State> {
 
 
 		return (
+
+
 			<div style={{
 				background: bg
-			}}>
+			}}
+			>
 				<ThemeGetter onTheme={this.onTheme} />
 				<span
 					data-id="Treeview-CloseSpan"
@@ -71,10 +77,12 @@ export class BrowserDialog extends Component<Props, State> {
 						//border: this.props.theme.colors.border1,
 						cursor: "pointer",
 						padding: convertRemToPixels("0.5rem"),
+						float: "right"
 					}}
 				>
-					X
+					<FaWindowClose />
 				</span>
+				<div style={{ height: "18px" }}>  </div>
 				<div style={{ whiteSpace: 'nowrap' }}>
 					<Checkbox label="Tree" checked={!this.state.table} onChange={(e) => this.changeBrowser(false)}></Checkbox>
 					<Checkbox label="Table" checked={this.state.table} onChange={(e) => this.changeBrowser(true)}></Checkbox>

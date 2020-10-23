@@ -3,9 +3,18 @@ import { OpcUaBrowseResults, QualifiedName, NodeClass } from '../types';
 import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
-import { Button } from '@grafana/ui';
 import { qualifiedNameToString, copyQualifiedName } from '../utils/QualifiedName';
 import { nodeClassToString } from '../utils/Nodeclass';
+import {
+	//FaLevelUpAlt,
+	FaChevronRight,
+	FaChevronUp,
+	//FaChartLine,
+	//FaCubes,
+	//FaMinusCircle,
+} from "react-icons/fa";
+import { BrowsePathTextEditor } from './BrowsePathTextEditor';
+
 
 type Props = {
 	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
@@ -94,40 +103,50 @@ export class BrowserTable extends Component<Props, State> {
 		return (
 			<div className="panel-container">
 				<ThemeGetter onTheme={this.onTheme} />
+				<div onClick={(e) => this.navigateBack()}>
+					<FaChevronUp />
+					<div style={{ display: "inline-block" }} >
+						<BrowsePathTextEditor browsePath={this.state.browsePath.map(a => copyQualifiedName(a.browseName)).slice()} onBrowsePathChanged={() => this.onBrowsePathChange()}></BrowsePathTextEditor>
+					</div>
+				</div>
 				<Paper>
 					<Table>
 						<TableHead style={{ backgroundColor: bg, color: txt, }}>
 							<TableRow style={{ height: 20 }}>
-								<TableCell style={{ color: txt, border: 0, padding: 2, whiteSpace: "nowrap" }}>Browse name</TableCell>
 								<TableCell style={{ color: txt, border: 0, padding: 2, whiteSpace: "nowrap" }}>DisplayName</TableCell>
+								<TableCell style={{ color: txt, border: 0, padding: 2, whiteSpace: "nowrap" }}>Browse name</TableCell>
 								<TableCell style={{ color: txt, border: 0, padding: 2, whiteSpace: "nowrap" }}>Node Class</TableCell>
-								<TableCell style={{ color: txt, border: 0, padding: 2, whiteSpace: "nowrap" }}>Navigate</TableCell>
+								<TableCell style={{ color: txt, border: 0, padding: 2, whiteSpace: "nowrap" }}></TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody style={{ backgroundColor: bg, color: txt, }}>
 							{this.state.children.map((row: OpcUaBrowseResults, index: number) => (
 								<TableRow style={{ height: 14 }} key={index}>
 									<TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={(e) => this.onNodeChanged(index) }>
-										{ qualifiedNameToString(row.browseName)}
-									</TableCell>
-									<TableCell style={{ color: txt, border: 0, padding: 2 }}>
 										{row.displayName}
 									</TableCell>
-									<TableCell style={{ color: txt, border: 0, padding: 2 }}>
+									<TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={(e) => this.onNodeChanged(index)}>
+										{qualifiedNameToString(row.browseName)}
+									</TableCell>
+									<TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={(e) => this.onNodeChanged(index)}>
 										{nodeClassToString(row.nodeClass as NodeClass)}
 									</TableCell>
 									<TableCell style={{ color: txt, border: 0, padding: 2 }}>
-										<Button onClick={(e) => this.navigate(e, index)}>Navigate</Button>
+										<span onClick={(e) => this.navigate(index)} >
+												<FaChevronRight />
+										</span>
 									</TableCell>
 								</TableRow>
 							))}
 						</TableBody>
 					</Table>
 				</Paper>
-				<Button onClick={(e) => this.navigateBack(e)}>Navigate Back</Button>
+				
 			</div>
 		);
 	}
+    onBrowsePathChange(): void {
+    }
 
 	onNodeChanged(index: number): void {
 		if (index < this.state.children.length) {
@@ -153,7 +172,7 @@ export class BrowserTable extends Component<Props, State> {
 		}
     }
 
-    navigate(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, index: number): void {
+    navigate(index: number): void {
 		if (this.state.children.length > index) {
 			let currentNode = this.state.children[index];
 			var bp = this.state.browsePath.slice();
@@ -162,7 +181,7 @@ export class BrowserTable extends Component<Props, State> {
 		}
 	}
 
-	navigateBack(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void {
+	navigateBack(): void {
 		if (this.state.browsePath.length > 1) {
 			var currentNode = this.state.browsePath[this.state.browsePath.length - 2];
 			var bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
