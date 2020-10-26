@@ -32,15 +32,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
         let tempVar = this.props?.query?.templateVariable;
         if (typeof tempVar === 'undefined' || tempVar.length == 0)
-            tempVar = "$ObjectId";
-
-        //let tempType = this.props?.query?.templateType;
-        //if (typeof tempType === 'undefined')
-        //    tempType = {
-        //        browsePath: [], node: {
-        //            nodeId: "", browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1
-        //        }
-        //    };
+            tempVar = "";
 
         let nodePath = this.props?.query?.nodePath;
         if (typeof nodePath === 'undefined')
@@ -48,7 +40,6 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
         this.state = {
             useTemplate: this.props.query.useTemplate,
-            //templateType: tempType,
             templateVariable: tempVar,
             relativepath: this.props.query.relativePath,
             node: nodePath,
