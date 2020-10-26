@@ -1,13 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using Opc.Ua;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace plugin_dotnet
 {
@@ -20,16 +15,7 @@ namespace plugin_dotnet
 		public static SQLiteConnection ConnectDatabase(string connectionStringTemplate, string filename, string requireExisting)
 		{
 			var connectionString = string.Format(connectionStringTemplate, filename) + requireExisting;
-			try
-			{
-				//_log.DebugFormat("ConnectDatabase for {0}", connectionString);
-				return new SQLiteConnection(connectionString, true).OpenAndReturn();
-			}
-			catch (Exception e)
-			{
-				//_log.Error(string.Format("Unable to open database connection for file '{0}'", filename), e);
-				throw;
-			}
+			return new SQLiteConnection(connectionString, true).OpenAndReturn();
 		}
 
 		public static SQLiteConnection ConnectDatabase(string filename)
@@ -56,19 +42,10 @@ namespace plugin_dotnet
 
 				var connection = new SQLiteConnection(connectionString, true);
 
-				try
+				connection.Open();
+				foreach (var create_table_statement in tableCreates)
 				{
-					connection.Open();
-					foreach (var create_table_statement in tableCreates)
-					{
-						ExecuteVoidCommand(connection, create_table_statement);
-					}
-
-				}
-				catch (Exception e)
-				{
-					//_log.Error(string.Format("Unable to create database for file '{0}'", filename), e);
-					throw;
+					ExecuteVoidCommand(connection, create_table_statement);
 				}
 
 				return connection;
@@ -89,270 +66,4 @@ namespace plugin_dotnet
 
 	}
 
-	public interface IDashboardDb
-	{
-		bool QueryDashboard(string[] nodeIds, string perspective, out string dashboard);
-		UaResult AddDashboardMapping(string[] nodeIds, NodeClass[] nodeClasses, string dashboard, string perspective);
-	}
-
-	public class DashboardDb : IDashboardDb
-	{
-		private readonly ILogger _logger;
-		private readonly string _filename;
-		private static readonly string _lastRowIdQuery = "SELECT last_insert_rowid()";
-
-		//TODO: update create statements
-		private static readonly string createPerspectivesDb = @"CREATE TABLE ""Perspectives"" (
-				""Id""	INTEGER,
-				""Name""	TEXT NOT NULL UNIQUE,
-				PRIMARY KEY(""Id"")
-			)";
-
-		private static readonly string createDashboardDb = @"CREATE TABLE ""Dashboards""(
-				""Id""   INTEGER,
-				""Dashboard""    TEXT NOT NULL,
-				""PerspectiveId""  INTEGER,
-				PRIMARY KEY(""Id"" AUTOINCREMENT),
-				FOREIGN KEY(""PerspectiveId"") REFERENCES ""Perspectives""
-			)";
-
-		private static readonly string createRelationsDb = @"CREATE TABLE ""DashboardRelations"" (
-				""NodeId""	TEXT NOT NULL,
-				""NodeType""	INTEGER,
-				""GroupCount""	INTEGER,
-				""DashboardId""	INTEGER,
-				FOREIGN KEY(""DashboardId"") REFERENCES ""Dashboards""
-			)";
-
-		public DashboardDb(ILogger logger, string filename)
-		{
-			_logger = logger;
-			logger.LogDebug("DashboardDb starting");
-
-			_filename = filename;
-
-			CreateIfNotExists(filename);
-		}
-
-		private void CreateIfNotExists(string filename)
-		{
-			if (!File.Exists(filename))
-			{
-				_logger.LogDebug($"Create db starting: {filename}");
-
-				using (var connection = Sqlite.CreateDatabase(filename, new[] { createPerspectivesDb })) { }
-				using (var connection = Sqlite.CreateDatabase(filename, new[] { createDashboardDb })) { }
-				using (var connection = Sqlite.CreateDatabase(filename, new[] { createRelationsDb })) { }
-
-				_logger.LogDebug("Create db success");
-			}
-		}
-
-		public bool QueryDashboard(string[] nodeIds, string perspective, out string dashboard)
-		{
-			if (nodeIds?.Length > 0)
-			{
-				var nodeId = nodeIds[0];
-				_logger.LogDebug($"Query for dashboard for nodeid: '{nodeId}'");
-				using (var connection = Sqlite.ConnectDatabase(_filename))
-				{
-					var sql = "SELECT Dashboards.Dashboard "
-							+ "FROM Dashboards "
-							+ "INNER JOIN DashboardRelations "
-							+ "ON DashboardRelations.NodeId == $nodeId "
-							+ "AND DashboardRelations.DashboardId == Dashboards.Id "
-							+ "INNER JOIN Perspectives "
-							+ "ON Dashboards.PerspectiveId == Perspectives.Id "
-							+ "AND Perspectives.Name == $perspective ";
-
-					try
-					{
-						using (DbCommand cmd = connection.CreateCommand())
-						{
-							DbParameter parNodeId = new SQLiteParameter("$nodeId", nodeId);
-							DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
-							cmd.Parameters.Add(parNodeId);
-							cmd.Parameters.Add(parPerspective);
-							cmd.CommandText = sql;
-							cmd.CommandType = CommandType.Text;
-
-							using (var rdr = cmd.ExecuteReader())
-							{
-								if (rdr.Read())
-								{
-									var r = rdr.GetString(0);
-									if (!string.IsNullOrEmpty(r))
-									{
-										dashboard = r;
-										_logger.LogDebug($"Found dashboard for nodeid '{nodeId}': {dashboard}");
-
-										return true;
-									}
-								}
-							}
-						}
-					}
-					catch (Exception e)
-					{
-						dashboard = string.Empty;
-						_logger.LogError(e, $"Dashboard query failed for nodeid: '{nodeId}'");
-					}
-				}
-			}
-			else
-			{
-				var msg = "Dashboard query failed: at least one NodeId must be supplied";
-				_logger.LogError(msg);
-				throw new ArgumentException(msg);
-			}
-
-			dashboard = string.Empty;
-			return false;
-		}
-
-		public UaResult AddDashboardMapping(string[] nodeIds, NodeClass[] nodeClasses, string dashboard, string perspective)
-		{
-			if (nodeIds?.Length > 0)
-			{
-				if(nodeClasses?.Length == nodeIds.Length)
-				{
-					var addRes = AddDashboard(dashboard, perspective);
-					int dashboardId;
-					if (addRes.Success)
-						dashboardId = addRes.Value;
-					else
-						return new UaResult() { success = false, error = addRes.Error };
-
-					for (int i = 0; i < nodeIds.Length; i++)
-					{
-						_logger.LogDebug($"AddDashboardMapping for nodeid: '{nodeIds[i]}' to dashboard '{dashboard}'");
-
-						using (var connection = Sqlite.ConnectDatabase(_filename))
-						{
-							var sql = "INSERT INTO DashboardRelations (NodeId, DashboardId) "
-								+ "VALUES ($nodeId, " + dashboardId	+ ")";
-
-							_logger.LogDebug("AddDashboardMapping sql: " + sql);
-
-							try
-							{
-								using (DbCommand cmd = connection.CreateCommand())
-								{
-									DbParameter parNodeId = new SQLiteParameter("$nodeId", nodeIds[i]);
-									cmd.Parameters.Add(parNodeId);
-									cmd.CommandText = sql;
-									cmd.CommandType = CommandType.Text;
-									var numRowsAffected = cmd.ExecuteNonQuery();
-
-									if (numRowsAffected > 0)
-									{
-										return new UaResult();
-									}
-									else
-									{
-										var msg = $"AddDashboardMapping failed for nodeid = '{nodeIds[i]}', dashboard = '{dashboard}', perspective = '{perspective}'";
-										_logger.LogError(msg);
-
-										return new UaResult() { success = false, error = msg };
-									}
-								}
-							}
-							catch (Exception e)
-							{
-								var msg = $"AddDashboardMapping failed for nodeid = '{nodeIds[i]}', dashboard = '{dashboard}', perspective = '{perspective}'";
-								_logger.LogError(e, msg);
-							}
-						}
-					}
-
-				}
-				return new UaResult() { success = false, error = "NodeIds must be accompanied with NodeClasses" };
-			}
-			return new UaResult() { success = false, error = "No NodeIds specified" };
-		}
-
-		private UaResult<int> AddDashboard(string dashboard, string perspective)
-		{
-			using (var connection = Sqlite.ConnectDatabase(_filename))
-			{
-				var sql = "INSERT INTO Dashboards (Dashboard, PerspectiveId) VALUES ($dashboard, (SELECT Id FROM Perspectives WHERE Perspectives.Name == $perspective))";
-
-				try
-				{
-					using (DbCommand cmd = connection.CreateCommand())
-					{
-						DbParameter parDashboard = new SQLiteParameter("$dashboard", dashboard);
-						DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
-						cmd.Parameters.Add(parDashboard);
-						cmd.Parameters.Add(parPerspective);
-						cmd.CommandText = sql;
-						cmd.CommandType = CommandType.Text;
-						var numRowsAffected = cmd.ExecuteNonQuery();
-
-						if (numRowsAffected > 0)
-						{
-							cmd.Parameters.Clear();
-							cmd.CommandText = _lastRowIdQuery;
-
-							using (var rdr = cmd.ExecuteReader())
-							{
-								if (rdr.Read())
-								{
-									var pk = rdr.GetInt32(0);
-									return new UaResult<int>() { Value = pk, Success = true, Error = string.Empty };
-								}
-							}
-
-						}
-
-						return new UaResult<int>() { Value = 0, Success = false, Error = "Adding dashboard failed" };
-					}
-				}
-				catch (Exception e)
-				{
-					var msg = $"AddDashboard failed for dashboard = '{dashboard}' and perspective = '{perspective}': '{e.Message}'";
-					_logger.LogError(e, msg);
-					return new UaResult<int>() { Value = 0, Success = false, Error = msg };
-				}
-			}
-		}
-
-		//private bool DoesDashboardExist(string dashboard, string perspective)
-		//{
-		//	using (var connection = Sqlite.ConnectDatabase(_filename))
-		//	{
-		//		var sql = "SELECT Dashboards.Id "
-		//			+ "FROM Dashboards, Perspectives "
-		//			+ "WHERE Dashboards.Dashboard == $dashboard "
-		//			+ "AND Dashboards.PerspectiveId == Perspectives.Id "
-		//			+ "AND Perspectives.Name == $perspective";
-
-		//		try
-		//		{
-		//			using (DbCommand cmd = connection.CreateCommand())
-		//			{
-		//				DbParameter parDashboard = new SQLiteParameter("$dashboard", dashboard);
-		//				DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
-		//				cmd.Parameters.Add(parDashboard);
-		//				cmd.Parameters.Add(parPerspective);
-		//				cmd.CommandText = sql;
-		//				cmd.CommandType = CommandType.Text;
-
-		//				bool exists = false;
-		//				using (var rdr = cmd.ExecuteReader())
-		//				{
-		//					exists = rdr.Read();
-		//				}
-		//				return exists;
-		//			}
-		//		}
-		//		catch (Exception e)
-		//		{
-		//			_logger.LogError(e, $"DoesDashboardExist failed for dashboard: '{dashboard}'");
-		//		}
-		//	}
-
-		//	return false;
-		//}
-	}
 }
