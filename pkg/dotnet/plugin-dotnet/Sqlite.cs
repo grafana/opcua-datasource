@@ -216,12 +216,12 @@ namespace plugin_dotnet
 			{
 				if(nodeClasses?.Length == nodeIds.Length)
 				{
-					if(!DoesDashboardExist(dashboard, perspective))
-					{
-						var addRes = AddDashboard(dashboard, perspective);
-						if (!addRes.success)
-							return addRes;
-					}
+					var addRes = AddDashboard(dashboard, perspective);
+					int dashboardId;
+					if (addRes.Success)
+						dashboardId = addRes.Value;
+					else
+						return new UaResult() { success = false, error = addRes.Error };
 
 					for (int i = 0; i < nodeIds.Length; i++)
 					{
@@ -230,12 +230,7 @@ namespace plugin_dotnet
 						using (var connection = Sqlite.ConnectDatabase(_filename))
 						{
 							var sql = "INSERT INTO DashboardRelations (NodeId, DashboardId) "
-								+ "VALUES ($nodeId, "
-								+ "(SELECT Dashboards.Id FROM Dashboards "
-								+ "INNER JOIN Perspectives "
-								+ "ON Dashboards.Dashboard == $dashboard AND Dashboards.PerspectiveId == Perspectives.Id "
-								+ "AND Perspectives.Name == $perspective)"
-								+ ")";
+								+ "VALUES ($nodeId, " + dashboardId	+ ")";
 
 							_logger.LogDebug("AddDashboardMapping sql: " + sql);
 
@@ -244,11 +239,7 @@ namespace plugin_dotnet
 								using (DbCommand cmd = connection.CreateCommand())
 								{
 									DbParameter parNodeId = new SQLiteParameter("$nodeId", nodeIds[i]);
-									DbParameter parDashboard = new SQLiteParameter("$dashboard", dashboard);
-									DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
 									cmd.Parameters.Add(parNodeId);
-									cmd.Parameters.Add(parDashboard);
-									cmd.Parameters.Add(parPerspective);
 									cmd.CommandText = sql;
 									cmd.CommandType = CommandType.Text;
 									var numRowsAffected = cmd.ExecuteNonQuery();
@@ -280,7 +271,7 @@ namespace plugin_dotnet
 			return new UaResult() { success = false, error = "No NodeIds specified" };
 		}
 
-		private UaResult AddDashboard(string dashboard, string perspective)
+		private UaResult<int> AddDashboard(string dashboard, string perspective)
 		{
 			using (var connection = Sqlite.ConnectDatabase(_filename))
 			{
@@ -307,62 +298,61 @@ namespace plugin_dotnet
 							{
 								if (rdr.Read())
 								{
-									var r = rdr.GetInt32(0);
-									//TODO: Return dashboard id
+									var pk = rdr.GetInt32(0);
+									return new UaResult<int>() { Value = pk, Success = true, Error = string.Empty };
 								}
 							}
 
-							return new UaResult() { success = true, error = string.Empty };
 						}
 
-						return new UaResult() { success = false, error = "Adding dashboard failed" };
+						return new UaResult<int>() { Value = 0, Success = false, Error = "Adding dashboard failed" };
 					}
 				}
 				catch (Exception e)
 				{
-					var msg = $"AddDashboard failed for dashboard = '{dashboard}' and perspective = '{perspective}'";
+					var msg = $"AddDashboard failed for dashboard = '{dashboard}' and perspective = '{perspective}': '{e.Message}'";
 					_logger.LogError(e, msg);
-					return new UaResult() { success = false, error = msg };
+					return new UaResult<int>() { Value = 0, Success = false, Error = msg };
 				}
 			}
 		}
 
-		private bool DoesDashboardExist(string dashboard, string perspective)
-		{
-			using (var connection = Sqlite.ConnectDatabase(_filename))
-			{
-				var sql = "SELECT Dashboards.Id "
-					+ "FROM Dashboards, Perspectives "
-					+ "WHERE Dashboards.Dashboard == $dashboard "
-					+ "AND Dashboards.PerspectiveId == Perspectives.Id "
-					+ "AND Perspectives.Name == $perspective";
+		//private bool DoesDashboardExist(string dashboard, string perspective)
+		//{
+		//	using (var connection = Sqlite.ConnectDatabase(_filename))
+		//	{
+		//		var sql = "SELECT Dashboards.Id "
+		//			+ "FROM Dashboards, Perspectives "
+		//			+ "WHERE Dashboards.Dashboard == $dashboard "
+		//			+ "AND Dashboards.PerspectiveId == Perspectives.Id "
+		//			+ "AND Perspectives.Name == $perspective";
 
-				try
-				{
-					using (DbCommand cmd = connection.CreateCommand())
-					{
-						DbParameter parDashboard = new SQLiteParameter("$dashboard", dashboard);
-						DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
-						cmd.Parameters.Add(parDashboard);
-						cmd.Parameters.Add(parPerspective);
-						cmd.CommandText = sql;
-						cmd.CommandType = CommandType.Text;
+		//		try
+		//		{
+		//			using (DbCommand cmd = connection.CreateCommand())
+		//			{
+		//				DbParameter parDashboard = new SQLiteParameter("$dashboard", dashboard);
+		//				DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
+		//				cmd.Parameters.Add(parDashboard);
+		//				cmd.Parameters.Add(parPerspective);
+		//				cmd.CommandText = sql;
+		//				cmd.CommandType = CommandType.Text;
 
-						bool exists = false;
-						using (var rdr = cmd.ExecuteReader())
-						{
-							exists = rdr.Read();
-						}
-						return exists;
-					}
-				}
-				catch (Exception e)
-				{
-					_logger.LogError(e, $"DoesDashboardExist failed for dashboard: '{dashboard}'");
-				}
-			}
+		//				bool exists = false;
+		//				using (var rdr = cmd.ExecuteReader())
+		//				{
+		//					exists = rdr.Read();
+		//				}
+		//				return exists;
+		//			}
+		//		}
+		//		catch (Exception e)
+		//		{
+		//			_logger.LogError(e, $"DoesDashboardExist failed for dashboard: '{dashboard}'");
+		//		}
+		//	}
 
-			return false;
-		}
+		//	return false;
+		//}
 	}
 }

@@ -82,10 +82,18 @@ namespace plugin_dotnet
                             results[i] = new Result<NodeId>(ExpandedNodeId.ToNodeId(expandedNodeId, namespaceTable));
                         }
                         else
-                            results[i] = new Result<NodeId>(Opc.Ua.StatusCodes.BadBrowseNameInvalid, "Could not find node id for browsepath");
+                        {
+                            var msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'";
+                            _log.LogError(msg);
+                            results[i] = new Result<NodeId>(Opc.Ua.StatusCodes.BadBrowseNameInvalid, msg);
+                        }
                     }
                     else
-                        results[i] = new Result<NodeId>(bpr[j].StatusCode, "Could not find node id for browsepath");
+                    {
+                        var msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'. StatusCode: '{bpr[j].StatusCode}'";
+                        _log.LogError(msg);
+                        results[i] = new Result<NodeId>(bpr[j].StatusCode, msg);
+                    }
                     j++;
                 }
                 else
@@ -96,8 +104,25 @@ namespace plugin_dotnet
             return results;
         }
 
+		private static string PathElementsToString(RelativePathElementCollection elements)
+		{
+			if(elements != null)
+			{
+                StringBuilder sb = new StringBuilder();
 
-        private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
+                foreach(var elem in elements)
+				{
+                    sb.Append(elem.TargetName.ToString());
+                    sb.Append("/");
+                }
+
+                return sb.ToString();
+			}
+
+            return string.Empty;
+		}
+
+		private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var results = new Result<DataResponse>[queries.Length];
             var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
