@@ -13,14 +13,20 @@ export enum NodeClass {
 }
 
 export interface OpcUaQuery extends DataQuery {
-    nodeId: string;
-    browsepath: QualifiedName[];
+    useTemplate: boolean;
+    templateVariable: string;
+    nodePath: NodePath;
+    relativePath: QualifiedName[];
     alias: string;
-    value: string[];
     readType: string;
     aggregate: OpcUaNodeDefinition;
     interval: string;
     eventQuery: EventQuery;
+}
+
+export interface NodePath {
+    node: OpcUaNodeInfo,
+    browsePath: QualifiedName[]
 }
 
 export interface EventQuery {

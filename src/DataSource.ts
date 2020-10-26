@@ -18,9 +18,8 @@ export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourc
 
     applyTemplateVariables(query: OpcUaQuery): OpcUaQuery {
         let tmpltSrv = getTemplateSrv();
-        query.nodeId = tmpltSrv.replace(query.nodeId);
-        for (var i = 0; i < query.value.length; i++) {
-            query.value[i] = tmpltSrv.replace(query.value[i]);
+        if (query.useTemplate) {
+            query.nodePath.node.nodeId = tmpltSrv.replace(query.templateVariable);
         }
         return query;
     }

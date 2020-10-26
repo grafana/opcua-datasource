@@ -1,6 +1,6 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
-import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp, QualifiedName, OpcUaBrowseResults, OpcUaNodeInfo, NodeClass } from '../types'; 
+import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp, QualifiedName, OpcUaBrowseResults, OpcUaNodeInfo, NodeClass, NodePath } from '../types'; 
 import { copyQualifiedName } from '../utils/QualifiedName';
 import { BrowsePathEditor } from './BrowsePathEditor';
 import { DataSource } from '../DataSource';
@@ -18,7 +18,7 @@ type State = {
     oper: FilterOperator,
     browsePath: QualifiedName[],
     value: string,
-    typeId: OpcUaNodeInfo,
+    typeId: NodePath,
 };
 
 
@@ -29,7 +29,10 @@ export class AddEventFilter extends PureComponent<Props, State> {
             oper: FilterOperator.GreaterThan,
             browsePath: [],
             typeId: {
-                browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1, nodeId: ""
+                browsePath: [], node:
+                {
+                    browseName: { name: "", namespaceUrl: "" }, displayName: "", nodeClass: -1, nodeId: ""
+                }
             },
             value: "500"
         };
@@ -37,10 +40,10 @@ export class AddEventFilter extends PureComponent<Props, State> {
     }
 
     addFilter() {
-        if (this.state.browsePath.length > 0 && this.state.typeId.nodeId.trim() !== "") {
+        if (this.state.browsePath.length > 0 && this.state.typeId.node.nodeId.trim() !== "") {
             let attr: SimpleAttributeOp = { attributeId: 13, typeId: "", browsePath: this.state.browsePath.map(bp => copyQualifiedName(bp)) };
             let literal: LiteralOp = {
-                typeId: this.state.typeId.nodeId, value: this.state.value
+                typeId: this.state.typeId.node.nodeId, value: this.state.value
             };
             let operands: FilterOperand[] = [{ type: FilterOperandEnum.SimpleAttribute, value: attr }, { type: FilterOperandEnum.Literal, value: literal }];
             var evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
@@ -123,6 +126,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
                             readNode={(nodeid) => this.readNode(nodeid)}
                             onChangeNode={(node) => this.onChangeValueTypeNode(node)}
                             rootNodeId="i=24"
+                            placeholder="Value type node"
                             node={this.state.typeId}
                         />
                     </SegmentFrame>
@@ -137,7 +141,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
         return <></>;
     }
 
-    onChangeValueTypeNode(node: OpcUaNodeInfo): void {
+    onChangeValueTypeNode(node: NodePath): void {
         this.setState({ typeId: node });
     }
 

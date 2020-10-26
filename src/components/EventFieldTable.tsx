@@ -69,8 +69,8 @@ export class EventFieldTable extends PureComponent < Props, State > {
                         <TableHead style={{ backgroundColor: bg, color: txt, }}>
                             <TableRow style={{ height: 20 }}>
                                 <TableCell style={{ color: txt, border: 0, padding: 0 }}>Browse Path</TableCell>
-                                <TableCell style={{ color: txt, border: 0, padding: 0 }} align="left">Alias</TableCell>
-                                <TableCell style={{ color: txt, border: 0, padding: 0 }} align="right"></TableCell>
+                                <TableCell style={{ color: txt, border: 0, padding: 0 }}>Alias</TableCell>
+                                <TableCell style={{ color: txt, border: 0, padding: 0 }}></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody style={{ backgroundColor: bg, color: txt, }}>
@@ -80,10 +80,10 @@ export class EventFieldTable extends PureComponent < Props, State > {
                                         <BrowsePathEditor browse={this.browse} browsePath={row.browsePath} 
                                             onChangeBrowsePath={(browsePath) => this.props.onChangeBrowsePath(browsePath, index)} rootNodeId={this.props.eventTypeNodeId} ></BrowsePathEditor>
                                     </TableCell>
-                                    <TableCell align="left" style={{ color: txt, border: 0, padding: 0 }}>
+                                    <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                                         <Input value={row.alias} onChange={e => this.props.onChangeAlias(e.currentTarget.value, index)}></Input>
                                     </TableCell>
-                                    <TableCell align="right" style={{ color: txt, border: 0, padding: 0 }}>
+                                    <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                                         <Button style={{ backgroundColor: bgBlue }} onClick={() => this.props.ondelete(index)}>Delete</Button></TableCell>
                                 </TableRow>
                             ))}
@@ -92,10 +92,10 @@ export class EventFieldTable extends PureComponent < Props, State > {
                                     <BrowsePathEditor browse={this.browse} browsePath={this.state.new.browsePath}
                                         onChangeBrowsePath={(browsePath) => this.onChangeNewBrowsePath(browsePath)} rootNodeId={this.props.eventTypeNodeId} ></BrowsePathEditor>
                                 </TableCell>
-                                <TableCell align="left" style={{ color: txt, border: 0, padding: 0 }}>
+                                <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                                     <Input value={this.state.new.alias} onChange={e => this.onChangeNewAlias(e.currentTarget.value)}></Input>
                                 </TableCell>
-                                <TableCell align="right" style={{ color: txt, border: 0, padding: 0 }}>
+                                <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                                     <Button style={{ backgroundColor: bgBlue }} onClick={this.onAddColumn}>Add</Button></TableCell>
                             </TableRow>
                             

@@ -1,19 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Grpc.Core;
-using Grpc.Core.Logging;
-using System.Threading.Tasks;
-using Opc.Ua;
-using System.Text.Json;
-using System.Security.Cryptography.X509Certificates;
 using Google.Protobuf;
+using Opc.Ua;
 using Pluginv2;
+using System;
+using System.Text.Json;
 
 namespace plugin_dotnet
 {
 
-	public class DashboardInfo
+    public class DashboardInfo
 	{
 		public string name { get; set; }
 	}
@@ -41,6 +35,13 @@ namespace plugin_dotnet
     {
         public FilterOperator oper { get; set; }
         public FilterOperand[] operands { get; set; }
+    }
+
+
+    public class NodePath
+    {
+        public NodeInfo node { get; set; }
+        public QualifiedName[] browsePath { get; set; }
     }
 
     public enum FilterOperandEnum
@@ -116,9 +117,13 @@ namespace plugin_dotnet
         public Int64 intervalMs { get; set; }
         public Int64 datasourceId { get; set; }
         public TimeRange timeRange { get; set; }
-        public string nodeId { get; set; }
-        public QualifiedName[] browsepath { get; set; }
-        public string[] value { get; set; }
+        public NodePath nodePath { get; set; }
+        
+        public string templateVariable { get; set; }
+
+        public bool useTemplate { get; set; }
+
+        public QualifiedName[] relativePath { get; set; }
         public string alias { get; set; }
 
         public string readType { get; set; }
@@ -140,14 +145,16 @@ namespace plugin_dotnet
             byte[] byDecoded = Convert.FromBase64String(dataQuery.Json.ToBase64());
             OpcUAQuery query = JsonSerializer.Deserialize<OpcUAQuery>(byDecoded);
             datasourceId = query.datasourceId;
-            nodeId = query.nodeId;
-            value = query.value;
+            nodePath = query.nodePath;
+            templateVariable = query.templateVariable;
+            useTemplate = query.useTemplate;
+    
             alias = query.alias;
             readType = query.readType;
             aggregate = query.aggregate;
             interval = query.interval;
             eventQuery = query.eventQuery;
-            browsepath = query.browsepath;
+            relativePath = query.relativePath;
         }
 
         public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string nodeId)
@@ -156,7 +163,7 @@ namespace plugin_dotnet
             this.maxDataPoints = maxDataPoints;
             this.intervalMs = intervalMs;
             this.datasourceId = datasourceId;
-            this.nodeId = nodeId;
+            this.nodePath = nodePath;
         }
     }
 

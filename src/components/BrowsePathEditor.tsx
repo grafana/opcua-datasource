@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import { QualifiedName, OpcUaBrowseResults } from '../types';
 import { Button } from '@grafana/ui';
 import { BrowsePathTextEditor } from './BrowsePathTextEditor';
-import { Browser } from './Browser';
+import { BrowserDialog } from './BrowserDialog';
 
 type Props = {
     browsePath: QualifiedName[],
@@ -28,8 +28,8 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
     renderBrowsePathBrowser = (rootNodeId: OpcUaBrowseResults) => {
         if (this.state.browserOpened) {
             return <div data-id="Treeview-MainDiv" style={{
-                border: "lightgrey 1px solid",
-                borderRadius: "1px",
+                //border: "lightgrey 1px solid",
+                //borderRadius: "1px",
                 cursor: "pointer",
                 padding: "2px",
                 position: "absolute",
@@ -37,10 +37,10 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
                 top: 10,
                 zIndex: 10,
             }}>
-                <Browser closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
+                <BrowserDialog closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
                     browse={a => this.props.browse(a)}
                     ignoreRootNode={true} rootNodeId={rootNodeId}
-                    onNodeSelectedChanged={(node, browsepath) => { this.props.onChangeBrowsePath(browsepath) }}></Browser></div>;
+                    onNodeSelectedChanged={(node, browsepath) => { this.props.onChangeBrowsePath(browsepath) }}></BrowserDialog></div>;
         }
         return <></>;
     }
