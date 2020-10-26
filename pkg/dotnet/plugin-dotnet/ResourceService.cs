@@ -176,6 +176,7 @@ namespace plugin_dotnet
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
                             bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
                             string dashboard = HttpUtility.UrlDecode(queryParams["dashboard"]);
+                            string existingDashboard = HttpUtility.UrlDecode(queryParams["existingDashboard"]);
                             string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
 
                             var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
@@ -184,7 +185,8 @@ namespace plugin_dotnet
                             var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
                             var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
 
-                            var r = _dashboardResolver.AddDashboardMapping(connection, nodeId, targetNodeIdJson, useType, dashboard, perspective, nsTable);
+                            var dashboardMappingData = new DashboardMappingData(connection, nodeId, targetNodeIdJson, useType, dashboard, existingDashboard, perspective, nsTable);
+                            var r = _dashboardResolver.AddDashboardMapping(dashboardMappingData);
                             var result = JsonSerializer.Serialize(r);
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);

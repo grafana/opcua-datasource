@@ -16,7 +16,6 @@ namespace plugin_dotnet
 
 		public const string _connectionStringTemplate = "Data Source={0}; Version=3; JournalMode = Off; Synchronous=Off; Enlist=N;foreign keys=true;";
 		public const string _requireExisting = " FailIfMissing=True;";
-		
 
 		public static SQLiteConnection ConnectDatabase(string connectionStringTemplate, string filename, string requireExisting)
 		{
@@ -36,18 +35,6 @@ namespace plugin_dotnet
 		public static SQLiteConnection ConnectDatabase(string filename)
 		{
 			return ConnectDatabase(_connectionStringTemplate, filename, _requireExisting);
-		}
-
-		internal static T ExecuteScalar<T>(SQLiteConnection connection, string commandText)
-		{
-			using (DbCommand cmd = connection.CreateCommand())
-			{
-
-				cmd.CommandText = commandText;
-				cmd.CommandType = CommandType.Text;
-				var value = (T)cmd.ExecuteScalar();
-				return value;
-			}
 		}
 
 		internal static int ExecuteVoidCommand(SQLiteConnection connection, string commandText)
@@ -112,7 +99,9 @@ namespace plugin_dotnet
 	{
 		private readonly ILogger _logger;
 		private readonly string _filename;
+		private static readonly string _lastRowIdQuery = "SELECT last_insert_rowid()";
 
+		//TODO: update create statements
 		private static readonly string createPerspectivesDb = @"CREATE TABLE ""Perspectives"" (
 				""Id""	INTEGER,
 				""Name""	TEXT NOT NULL UNIQUE,
@@ -163,8 +152,6 @@ namespace plugin_dotnet
 		{
 			if (nodeIds?.Length > 0)
 			{
-				//TODO: Iterate over nodeIds and find the distinct dashboard that matches for all nodeids for GroupCount (number of nodeids) and Perspective
-
 				var nodeId = nodeIds[0];
 				_logger.LogDebug($"Query for dashboard for nodeid: '{nodeId}'");
 				using (var connection = Sqlite.ConnectDatabase(_filename))
@@ -173,7 +160,6 @@ namespace plugin_dotnet
 							+ "FROM Dashboards "
 							+ "INNER JOIN DashboardRelations "
 							+ "ON DashboardRelations.NodeId == $nodeId "
-							+ "AND DashboardRelations.GroupCount == $groupCount "
 							+ "AND DashboardRelations.DashboardId == Dashboards.Id "
 							+ "INNER JOIN Perspectives "
 							+ "ON Dashboards.PerspectiveId == Perspectives.Id "
@@ -184,24 +170,24 @@ namespace plugin_dotnet
 						using (DbCommand cmd = connection.CreateCommand())
 						{
 							DbParameter parNodeId = new SQLiteParameter("$nodeId", nodeId);
-							DbParameter parGroupCount = new SQLiteParameter("$groupCount", nodeIds.Length);
 							DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
 							cmd.Parameters.Add(parNodeId);
-							cmd.Parameters.Add(parGroupCount);
 							cmd.Parameters.Add(parPerspective);
 							cmd.CommandText = sql;
 							cmd.CommandType = CommandType.Text;
-							var result = cmd.ExecuteReader();
 
-							if (result.Read())
+							using (var rdr = cmd.ExecuteReader())
 							{
-								var r = result.GetString(0);
-								if (!string.IsNullOrEmpty(r))
+								if (rdr.Read())
 								{
-									dashboard = r;
-									_logger.LogDebug($"Found dashboard for nodeid '{nodeId}': {dashboard}");
+									var r = rdr.GetString(0);
+									if (!string.IsNullOrEmpty(r))
+									{
+										dashboard = r;
+										_logger.LogDebug($"Found dashboard for nodeid '{nodeId}': {dashboard}");
 
-									return true;
+										return true;
+									}
 								}
 							}
 						}
@@ -243,8 +229,8 @@ namespace plugin_dotnet
 
 						using (var connection = Sqlite.ConnectDatabase(_filename))
 						{
-							var sql = "INSERT INTO DashboardRelations (NodeId, NodeType, GroupCount, DashboardId) "
-								+ "VALUES ($nodeId, $nodeClass, $groupCount, "
+							var sql = "INSERT INTO DashboardRelations (NodeId, DashboardId) "
+								+ "VALUES ($nodeId, "
 								+ "(SELECT Dashboards.Id FROM Dashboards "
 								+ "INNER JOIN Perspectives "
 								+ "ON Dashboards.Dashboard == $dashboard AND Dashboards.PerspectiveId == Perspectives.Id "
@@ -258,20 +244,16 @@ namespace plugin_dotnet
 								using (DbCommand cmd = connection.CreateCommand())
 								{
 									DbParameter parNodeId = new SQLiteParameter("$nodeId", nodeIds[i]);
-									DbParameter parNodeClass = new SQLiteParameter("$nodeClass", nodeClasses[i]);
-									DbParameter parGroupCount = new SQLiteParameter("$groupCount", nodeIds.Length);
 									DbParameter parDashboard = new SQLiteParameter("$dashboard", dashboard);
 									DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
 									cmd.Parameters.Add(parNodeId);
-									cmd.Parameters.Add(parNodeClass);
-									cmd.Parameters.Add(parGroupCount);
 									cmd.Parameters.Add(parDashboard);
 									cmd.Parameters.Add(parPerspective);
 									cmd.CommandText = sql;
 									cmd.CommandType = CommandType.Text;
-									var result = cmd.ExecuteNonQuery();
+									var numRowsAffected = cmd.ExecuteNonQuery();
 
-									if (result > 0)
+									if (numRowsAffected > 0)
 									{
 										return new UaResult();
 									}
@@ -314,11 +296,26 @@ namespace plugin_dotnet
 						cmd.Parameters.Add(parPerspective);
 						cmd.CommandText = sql;
 						cmd.CommandType = CommandType.Text;
-						var result = cmd.ExecuteNonQuery();
+						var numRowsAffected = cmd.ExecuteNonQuery();
 
-						var success = result > 0;
-						var error = success ? string.Empty : "Adding dashboard failed";
-						return new UaResult() { success = result > 0, error = error };
+						if (numRowsAffected > 0)
+						{
+							cmd.Parameters.Clear();
+							cmd.CommandText = _lastRowIdQuery;
+
+							using (var rdr = cmd.ExecuteReader())
+							{
+								if (rdr.Read())
+								{
+									var r = rdr.GetInt32(0);
+									//TODO: Return dashboard id
+								}
+							}
+
+							return new UaResult() { success = true, error = string.Empty };
+						}
+
+						return new UaResult() { success = false, error = "Adding dashboard failed" };
 					}
 				}
 				catch (Exception e)
@@ -350,9 +347,13 @@ namespace plugin_dotnet
 						cmd.Parameters.Add(parPerspective);
 						cmd.CommandText = sql;
 						cmd.CommandType = CommandType.Text;
-						var result = cmd.ExecuteReader();
 
-						return result.Read();
+						bool exists = false;
+						using (var rdr = cmd.ExecuteReader())
+						{
+							exists = rdr.Read();
+						}
+						return exists;
 					}
 				}
 				catch (Exception e)

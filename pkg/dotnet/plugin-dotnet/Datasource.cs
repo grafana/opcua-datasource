@@ -224,16 +224,31 @@ namespace plugin_dotnet
 
     public class UaResult
     {
-        public UaResult():this(true)
-		{
-		}
-   
+        public UaResult() : this(true)
+        {
+        }
+
         public UaResult(bool success)
         {
             this.success = success;
         }
 
         public bool success { get; set; }
+
         public string error { get; set; }
+    }
+
+    public class UaResult<T>
+    {
+        public UaResult()
+        {
+            Success = true;
+        }
+
+        public bool Success { get; set; }
+
+        public T Value { get; set; }
+
+        public string Error { get; set; }
     }
 }

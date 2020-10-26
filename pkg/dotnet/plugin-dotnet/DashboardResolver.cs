@@ -11,7 +11,7 @@ namespace plugin_dotnet
 	public interface IDashboardResolver
 	{
 		string ResolveDashboard(Session uaConnection, string nodeId, string targetNodeIdJson, string perspective, Opc.Ua.NamespaceTable nsTable);
-		UaResult AddDashboardMapping(Session uaConnection, string nodeId, string targetNodeIdJson, bool useType, string dashboard, string perspective, Opc.Ua.NamespaceTable nsTable);
+		UaResult AddDashboardMapping(DashboardMappingData dashboardMappingData);
 	}
 
 
@@ -91,21 +91,21 @@ namespace plugin_dotnet
 
 		}
 
-		public UaResult AddDashboardMapping(Session uaConnection, string nodeId, string targetNodeIdJson, bool useType, string dashboard, string perspective, NamespaceTable nsTable)
+		public UaResult AddDashboardMapping(DashboardMappingData data)
 		{
 			NodeClass nodeClass = NodeClass.Object;
-			if (useType)
+			if (data.UseType)
 			{
-				var nId = Converter.GetNodeId(nodeId, nsTable);
-				_ = uaConnection.Browse(null, null, nId, 1, Opc.Ua.BrowseDirection.Forward, "i=40", true, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection references);
+				var nId = Converter.GetNodeId(data.NodeId, data.NsTable);
+				_ = data.UaConnection.Browse(null, null, nId, 1, Opc.Ua.BrowseDirection.Forward, "i=40", true, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection references);
 				if (references.Count > 0)
 				{
-					targetNodeIdJson = ConvertNodeIdToJson(references[0].NodeId, nsTable);
+					data.TargetNodeIdJson = ConvertNodeIdToJson(references[0].NodeId, data.NsTable);
 					nodeClass = NodeClass.ObjectType;
 				}
 			}
 
-			return _dashboardDb.AddDashboardMapping(new[] { targetNodeIdJson }, new[] { nodeClass }, dashboard, perspective);
+			return _dashboardDb.AddDashboardMapping(new[] { data.TargetNodeIdJson }, new[] { nodeClass }, data.Dashboard, data.Perspective);
 		}
 	}
 }
