@@ -16,10 +16,17 @@ export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourc
         return super.query(request);
     }
 
+
+    getTemplateVariable(tempVar: string): string {
+        if (typeof tempVar === 'undefined' || tempVar.length == 0)
+            return "$ObjectId";
+        return tempVar;
+    }
+
     applyTemplateVariables(query: OpcUaQuery): OpcUaQuery {
         let tmpltSrv = getTemplateSrv();
         if (query.useTemplate) {
-            query.nodePath.node.nodeId = tmpltSrv.replace(query.templateVariable);
+            query.nodePath.node.nodeId = tmpltSrv.replace(this.getTemplateVariable(query.templateVariable));
         }
         return query;
     }
