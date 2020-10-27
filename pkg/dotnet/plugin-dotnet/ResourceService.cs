@@ -21,7 +21,6 @@ namespace plugin_dotnet
     public class ResourceService : Resource.ResourceBase
     {
         private readonly IConnections _connections;
-        private IServerStreamWriter<CallResourceResponse> responseStream = null;
         private readonly ILogger _log;
         private readonly IDashboardResolver _dashboardResolver;
         private IDictionary<string, Func<CallResourceRequest, Session, NameValueCollection, NamespaceTable, CallResourceResponse>> _resourceHandlers 
@@ -157,7 +156,7 @@ namespace plugin_dotnet
                     hasMask = false;
             }
             var nId = Converter.GetNodeId(nodeId, nsTable);
-            var browseResult = hasMask ? connection.Browse(nId, nodeClassMask) : connection.Browse(nId);
+            var browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue);
             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
