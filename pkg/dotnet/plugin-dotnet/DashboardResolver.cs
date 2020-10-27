@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using Opc.Ua;
+﻿using Opc.Ua;
 using Opc.Ua.Client;
 using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
 using System.Text;
 
 namespace plugin_dotnet
@@ -13,7 +11,6 @@ namespace plugin_dotnet
 		string ResolveDashboard(Session uaConnection, string nodeId, string targetNodeIdJson, string perspective, Opc.Ua.NamespaceTable nsTable);
 		UaResult AddDashboardMapping(DashboardMappingData dashboardMappingData);
 	}
-
 
 	public class DashboardResolver : IDashboardResolver
 	{
@@ -93,7 +90,6 @@ namespace plugin_dotnet
 
 		public UaResult AddDashboardMapping(DashboardMappingData data)
 		{
-			NodeClass nodeClass = NodeClass.Object;
 			if (data.UseType)
 			{
 				var nId = Converter.GetNodeId(data.NodeId, data.NsTable);
@@ -101,11 +97,10 @@ namespace plugin_dotnet
 				if (references.Count > 0)
 				{
 					data.TargetNodeIdJson = ConvertNodeIdToJson(references[0].NodeId, data.NsTable);
-					nodeClass = NodeClass.ObjectType;
 				}
 			}
 
-			return _dashboardDb.AddDashboardMapping(new[] { data.TargetNodeIdJson }, new[] { nodeClass }, data.Dashboard, data.Perspective);
+			return _dashboardDb.AddDashboardMapping(new[] { data.TargetNodeIdJson }, data.Dashboard, data.Perspective);
 		}
 	}
 }
