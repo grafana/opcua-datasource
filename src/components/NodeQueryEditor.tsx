@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Input } from '@grafana/ui';
-import { QualifiedName, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults,  NodeClass, NodePath } from '../types';
+import { QualifiedName, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults,  NodeClass, NodePath, BrowseFilter } from '../types';
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../DataSource';
 import { SegmentFrame } from './SegmentFrame';
@@ -82,14 +82,16 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
 
 
-    browse = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
+    browse = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
+        var filter = JSON.stringify(browseFilter);
         return this.props.datasource
-            .getResource('browse', { nodeId: nodeId });
+            .getResource('browse', { nodeId: nodeId, browseFilter: filter });
     };
 
-    browseTypes = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
+    browseTypes = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
+        var filter = JSON.stringify(browseFilter);
         return this.props.datasource
-            .getResource('browse', { nodeId: nodeId, nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType  });
+            .getResource('browse', { nodeId: nodeId, nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType, browseFilter: filter  });
     };
 
 
@@ -103,7 +105,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                     placeholder="Type of template"
                     node={this.state.node}
                     readNode={(n) => this.readNode(n)}
-                    browse={(b) => this.browse(b)}
+                    browse={(nodeId, filter) => this.browse(nodeId, filter)}
                     onChangeNode={(nodepath) => this.onChangeNode(nodepath)}>
                 </NodeEditor>
             </div>
@@ -115,7 +117,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                     placeholder="Type of template"
                     node={this.state.node}
                     readNode={(n) => this.readNode(n)}
-                    browse={(b) => this.browseTypes(b)}
+                    browse={(nodeId, filter) => this.browseTypes(nodeId, filter)}
                     onChangeNode={(nodepath) => this.onChangeTemplateType(nodepath)}>
                 </NodeEditor>
             </div>;
@@ -165,7 +167,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                 <SegmentFrame label={nodeNameType} >
                     {this.renderTemplateOrNodeBrowser()}
                     <div>
-                        <BrowsePathEditor browsePath={relativepath} browse={this.browse} onChangeBrowsePath={this.onChangeRelativePath} rootNodeId={browseNodeId} />
+                        <BrowsePathEditor browsePath={relativepath} browse={(nodeId, filter) => this.browse(nodeId, filter)} onChangeBrowsePath={(relativePath) => this.onChangeRelativePath(relativePath)} rootNodeId={browseNodeId} />
                     </div>
                 </SegmentFrame>
                 {this.renderTemplateVariable()}

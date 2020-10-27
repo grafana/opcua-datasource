@@ -1,6 +1,6 @@
 import React, { PureComponent} from "react";
 import { SegmentFrame } from './SegmentFrame';
-import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp, QualifiedName, OpcUaBrowseResults, OpcUaNodeInfo, NodeClass, NodePath } from '../types'; 
+import { FilterOperandEnum, FilterOperand, FilterOperator, EventFilter, EventFilterOperatorUtil, LiteralOp, SimpleAttributeOp, QualifiedName, OpcUaBrowseResults, OpcUaNodeInfo, NodeClass, NodePath, BrowseFilter } from '../types'; 
 import { copyQualifiedName } from '../utils/QualifiedName';
 import { BrowsePathEditor } from './BrowsePathEditor';
 import { DataSource } from '../DataSource';
@@ -122,7 +122,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
             case FilterOperator.Equals:
                 return (<>
                     <SegmentFrame label="Value Type" marginLeft >
-                        <NodeEditor browse={(node) => this.browseDataTypes(node)}
+                        <NodeEditor browse={(node, filter) => this.browseDataTypes(node, filter)}
                             readNode={(nodeid) => this.readNode(nodeid)}
                             onChangeNode={(node) => this.onChangeValueTypeNode(node)}
                             rootNodeId="i=24"
@@ -145,7 +145,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
         this.setState({ typeId: node });
     }
 
-    browseDataTypes(nodeId: string): Promise<OpcUaBrowseResults[]> {
+    browseDataTypes(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> {
         return this.props.datasource
             .getResource('browse', { nodeId: nodeId, nodeClassMask: NodeClass.DataType });
     }

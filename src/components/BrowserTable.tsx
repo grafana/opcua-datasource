@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { OpcUaBrowseResults, QualifiedName, NodeClass } from '../types';
+import { OpcUaBrowseResults, QualifiedName, NodeClass, BrowseFilter } from '../types';
 import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
@@ -14,10 +14,11 @@ import {
 	//FaMinusCircle,
 } from "react-icons/fa";
 import { BrowsePathTextEditor } from './BrowsePathTextEditor';
+import { Input } from '@grafana/ui';
 
 
 type Props = {
-	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
+	browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
 	rootNodeId: OpcUaBrowseResults,
 	ignoreRootNode: boolean,
 	closeOnSelect: boolean,
@@ -31,6 +32,8 @@ type State = {
 	children: OpcUaBrowseResults[],
 	theme: GrafanaTheme | null,
 	browsePath: OpcUaBrowseResults[],
+	maxResults: number,
+	browseNameFilter: string,
 }
 
 
@@ -52,7 +55,9 @@ export class BrowserTable extends Component<Props, State> {
 			children: [],
 			fetchedChildren: false,
 			theme: null,
-			browsePath: []
+			browsePath: [],
+			maxResults: 1000,
+			browseNameFilter: "",
 		}
 	}
 
@@ -109,6 +114,9 @@ export class BrowserTable extends Component<Props, State> {
 						<BrowsePathTextEditor browsePath={this.state.browsePath.map(a => copyQualifiedName(a.browseName)).slice()} onBrowsePathChanged={() => this.onBrowsePathChange()}></BrowsePathTextEditor>
 					</div>
 				</div>
+				<div>
+					<Input label={'Maximum Results'} value={this.state.maxResults} placeholder={'Maximum Results'} onChange={(e) => this.setState({ maxResults: parseInt(e.currentTarget.value) })}></Input>
+					<Input label={'Browse Name Filter'} value={this.state.browseNameFilter} placeholder={'Browse Name Filter'} onChange={(e) => this.setState({ browseNameFilter: e.currentTarget.value })}></Input>				</div>
 				<Paper>
 					<Table>
 						<TableHead style={{ backgroundColor: bg, color: txt, }}>
@@ -168,7 +176,8 @@ export class BrowserTable extends Component<Props, State> {
 
 	fetchChildren() {
 		if (!this.state.fetchedChildren && this.state.currentNode.nodeId.length > 0) {
-			this.props.browse(this.state.currentNode.nodeId).then((response) => { this.setState({ children: response, fetchedChildren: true }) });
+			let filter: BrowseFilter = { browseName: this.state.browseNameFilter, maxResults: this.state.maxResults };
+			this.props.browse(this.state.currentNode.nodeId, filter).then((response) => { this.setState({ children: response, fetchedChildren: true }) });
 		}
     }
 
