@@ -156,8 +156,11 @@ namespace plugin_dotnet
                     hasMask = false;
             }
             var nId = Converter.GetNodeId(nodeId, nsTable);
-            var browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue);
-            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+            IEnumerable<ReferenceDescription> browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue);
+            if (!string.IsNullOrEmpty(browseFilter.browseName))
+                browseResult = browseResult.Where(a => a.BrowseName.Name.Contains(browseFilter.browseName));
+
+            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(refdesc => refdesc.displayName).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.LogDebug("We got a result from browse => {0}", result);

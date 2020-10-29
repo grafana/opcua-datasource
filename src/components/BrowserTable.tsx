@@ -115,8 +115,12 @@ export class BrowserTable extends Component<Props, State> {
 					</div>
 				</div>
 				<div>
-					<Input label={'Maximum Results'} value={this.state.maxResults} placeholder={'Maximum Results'} onChange={(e) => this.setState({ maxResults: parseInt(e.currentTarget.value) })}></Input>
-					<Input label={'Browse Name Filter'} value={this.state.browseNameFilter} placeholder={'Browse Name Filter'} onChange={(e) => this.setState({ browseNameFilter: e.currentTarget.value })}></Input>				</div>
+					<Input label={'Maximum Results'} value={this.state.maxResults} placeholder={'Maximum Results'} onChange={(e) => this.onChangeMaximumResults(e)}></Input>
+					<Input label={'Browse Name Filter'} value={this.state.browseNameFilter}
+						placeholder={'Browse Name Filter'}
+						onChange={(e) => this.setState({ browseNameFilter: e.currentTarget.value })}
+						onBlur={() => this.setState({ fetchedChildren: false, children: [] })}></Input>
+				</div>
 				<Paper>
 					<Table>
 						<TableHead style={{ backgroundColor: bg, color: txt, }}>
@@ -153,6 +157,14 @@ export class BrowserTable extends Component<Props, State> {
 			</div>
 		);
 	}
+
+	onChangeMaximumResults(e: React.FormEvent<HTMLInputElement>): void {
+		let max = parseInt(e.currentTarget.value);
+		if (!isNaN(max)) {
+			this.setState({ maxResults: max });
+		}
+	}
+
     onBrowsePathChange(): void {
     }
 
