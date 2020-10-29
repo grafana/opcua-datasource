@@ -14,7 +14,7 @@ import {
 	//FaMinusCircle,
 } from "react-icons/fa";
 import { BrowsePathTextEditor } from './BrowsePathTextEditor';
-import { Input } from '@grafana/ui';
+import { Input, Button } from '@grafana/ui';
 
 
 type Props = {
@@ -115,11 +115,20 @@ export class BrowserTable extends Component<Props, State> {
 					</div>
 				</div>
 				<div>
-					<Input label={'Maximum Results'} value={this.state.maxResults} placeholder={'Maximum Results'} onChange={(e) => this.onChangeMaximumResults(e)}></Input>
-					<Input label={'Browse Name Filter'} value={this.state.browseNameFilter}
-						placeholder={'Browse Name Filter'}
-						onChange={(e) => this.setState({ browseNameFilter: e.currentTarget.value })}
-						onBlur={() => this.setState({ fetchedChildren: false, children: [] })}></Input>
+					<div style={{ display: "inline-block" }} >
+						<Input label={'Maximum Results'} value={this.state.maxResults} placeholder={'Maximum Results'} onChange={(e) => this.onChangeMaximumResults(e)}
+							onBlur={(e) => this.onFilter()} ></Input>
+					</div>
+					<div style={{ display: "inline-block" }} >
+						<Input label={'Browse Name Filter'} value={this.state.browseNameFilter}
+							placeholder={'Browse Name Filter'}
+							onChange={(e) => this.setState({ browseNameFilter: e.currentTarget.value })}
+							onBlur={(e) => this.onFilter()}></Input>
+					</div>
+					<div style={{ display: "inline-block" }} >
+						<Button onClick={(e) => this.onFilter() }>Filter</Button>
+					</div>
+
 				</div>
 				<Paper>
 					<Table>
@@ -157,6 +166,11 @@ export class BrowserTable extends Component<Props, State> {
 			</div>
 		);
 	}
+
+
+    onFilter(): void {
+		this.setState({ fetchedChildren: false, children: [] })
+    }
 
 	onChangeMaximumResults(e: React.FormEvent<HTMLInputElement>): void {
 		let max = parseInt(e.currentTarget.value);
