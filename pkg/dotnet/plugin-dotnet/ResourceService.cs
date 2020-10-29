@@ -157,7 +157,7 @@ namespace plugin_dotnet
             }
             var nId = Converter.GetNodeId(nodeId, nsTable);
             IEnumerable<ReferenceDescription> browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue);
-            if (!string.IsNullOrEmpty(browseFilter.browseName))
+            if (!string.IsNullOrEmpty(browseFilter?.browseName))
                 browseResult = browseResult.Where(a => a.BrowseName.Name.Contains(browseFilter.browseName));
 
             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(refdesc => refdesc.displayName).ToArray());
