@@ -6,8 +6,9 @@ namespace plugin_dotnet
 {
 	public interface IDashboardDb
 	{
-		bool QueryDashboard(string[] nodeIds, string perspective, out string dashboard);
-		UaResult AddDashboardMapping(string[] nodeIds, string dashboard, string perspective);
+		bool QueryDashboard(string[] dashKeys, bool requireAllKeys, string perspective, out DashboardData dashboard);
+		UaResult AddDashboardMapping(string[] dashKeys, string dashboard, string perspective);
+		void RemoveMapping(string dashKey, string perspective);
 	}
 
 }

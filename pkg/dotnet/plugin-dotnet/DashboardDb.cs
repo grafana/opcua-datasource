@@ -5,6 +5,8 @@ using System.IO;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.Data;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace plugin_dotnet
 {
@@ -61,64 +63,14 @@ namespace plugin_dotnet
 			}
 		}
 
-		public bool QueryDashboard(string[] nodeIds, string perspective, out string dashboard)
+		public bool QueryDashboard(string[] dashKeys, bool requireAllKeys, string perspective, out DashboardData dashboard)
 		{
-			if (nodeIds?.Length > 0)
+			if (dashKeys?.Length > 0)
 			{
-				StringBuilder nodeIdsSql = new StringBuilder();
+				var dashboardFound = requireAllKeys ? QueryDashboardAnd(dashKeys, perspective, out dashboard) : QueryDashboardOr(dashKeys, perspective, out dashboard);
+				//var dashboardFound = requireAllKeys ? QueryDashboardOr(dashKeys, perspective, out dashboard) : QueryDashboardOr(dashKeys, perspective, out dashboard);
 
-				for (int i = 0; i < nodeIds.Length; i++)
-				{
-					nodeIdsSql.Append($"NodeId == $nodeId{i} ");
-					if (i < nodeIds.Length - 1)
-						nodeIdsSql.Append(" OR ");
-				}
-
-				_logger.LogDebug($"Query for dashboard for nodeid: '{nodeIdsSql}' and perspective: '{perspective}'");
-				using (var connection = Sqlite.ConnectDatabase(_filename))
-				{
-					var sql = "SELECT DISTINCT Dashboard FROM DashboardRelations "
-							+ "INNER JOIN Dashboards ON Dashboards.Id == DashboardRelations.DashboardId "
-							+ "INNER JOIN Perspectives ON Dashboards.PerspectiveId == Perspectives.Id "
-							+ "AND Perspectives.Name == $perspective WHERE "
-							+ nodeIdsSql;
-
-					try
-					{
-						using (DbCommand cmd = connection.CreateCommand())
-						{
-							for (int i = 0; i < nodeIds.Length; i++)
-							{
-								DbParameter parNodeId = new SQLiteParameter($"$nodeId{i}", nodeIds[i]);
-								cmd.Parameters.Add(parNodeId);
-							}
-							DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
-							cmd.Parameters.Add(parPerspective);
-							cmd.CommandText = sql;
-							cmd.CommandType = CommandType.Text;
-
-							using (var rdr = cmd.ExecuteReader())
-							{
-								if (rdr.Read())
-								{
-									var r = rdr.GetString(0);
-									if (!string.IsNullOrEmpty(r))
-									{
-										dashboard = r;
-										_logger.LogDebug($"Found dashboard '{dashboard}' for nodeid(s) '{nodeIdsSql}': ");
-
-										return true;
-									}
-								}
-							}
-						}
-					}
-					catch (Exception e)
-					{
-						dashboard = string.Empty;
-						_logger.LogError(e, $"Dashboard query failed for nodeid(s): '{nodeIdsSql}' and perspective: '{perspective}'");
-					}
-				}
+				return dashboardFound;
 			}
 			else
 			{
@@ -126,9 +78,221 @@ namespace plugin_dotnet
 				_logger.LogError(msg);
 				throw new ArgumentException(msg);
 			}
+		}
 
-			dashboard = string.Empty;
-			return false;
+		private bool QueryDashboardAnd(string[] dashKeys, string perspective, out DashboardData dashboard)
+		{
+			_logger.LogDebug($"AND Query for dashboard for nodeid: '{ AddUpString(dashKeys) }' and perspective: '{perspective}'");
+
+			var dashboardFound = false;
+			dashboard = null;
+
+			List<DashboardData>[] foundDashboardSet = new List<DashboardData>[dashKeys.Length];
+
+			using (var connection = Sqlite.ConnectDatabase(_filename))
+			{
+
+				for (int i = 0; i < dashKeys.Length; i++)
+				{
+					var sql = "SELECT DISTINCT DashboardId, Dashboard FROM DashboardRelations "
+							//var sql = "SELECT Dashboard FROM DashboardRelations "
+							+ "INNER JOIN Dashboards ON Dashboards.Id == DashboardRelations.DashboardId "
+							+ "INNER JOIN Perspectives ON Dashboards.PerspectiveId == Perspectives.Id "
+							+ "AND Perspectives.Name == $perspective WHERE NodeId == $nodeId";
+
+					try
+					{
+						using (DbCommand cmd = connection.CreateCommand())
+						{
+							DbParameter parNodeId = new SQLiteParameter($"$nodeId", dashKeys[i]);
+							cmd.Parameters.Add(parNodeId);
+							DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
+							cmd.Parameters.Add(parPerspective);
+							cmd.CommandText = sql;
+							cmd.CommandType = CommandType.Text;
+
+							using (var rdr = cmd.ExecuteReader())
+							{
+								foundDashboardSet[i] = new List<DashboardData>();
+								while (rdr.Read())
+								{
+									var id = rdr.GetInt32(0);
+									var name = rdr.GetString(1);
+									if (!string.IsNullOrEmpty(name))
+									{
+										var dashboardData = new DashboardData(id, name);
+										foundDashboardSet[i].Add(dashboardData);
+										dashboardFound = true;
+										_logger.LogDebug($"Found dashboard '{dashboard}' for nodeid(s) '{dashKeys[i]}': ");
+									}
+									else
+									{
+										_logger.LogError($"Database returned unexpected empty result for nodeid(s) '{dashKeys[i]}'");
+										dashboardFound = false;
+										break;
+									}
+								}
+							}
+						}
+					}
+					catch (Exception e)
+					{
+						dashboardFound = false;
+						_logger.LogError(e, $"Dashboard query failed for nodeid(s): '{dashKeys[i]}' and perspective: '{perspective}'");
+					}
+				}
+			}
+
+			if(dashboardFound)
+			{
+				var dashboardData = ReconcileDashboard(foundDashboardSet, dashKeys.Length);
+
+				dashboardFound = dashboardData != null;
+
+				if (dashboardFound)
+					dashboard = dashboardData;
+			}
+
+			return dashboardFound;
+		}
+
+		private int GetDashRelationCount(int id)
+		{
+			using (var connection = Sqlite.ConnectDatabase(_filename))
+			{
+				var sql = $"SELECT COUNT(*) FROM DashboardRelations WHERE DashboardId == '{id}'";
+
+				try
+				{
+					using (DbCommand cmd = connection.CreateCommand())
+					{
+						cmd.CommandText = sql;
+						cmd.CommandType = CommandType.Text;
+
+						using (var rdr = cmd.ExecuteReader())
+						{
+							if(rdr.Read())
+							{
+								var count = rdr.GetInt32(0);
+								return count;
+							}
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					_logger.LogError(e, $"GetDashRelationCount failed for DashboardId: '{id}'");
+				}
+			}
+
+			return -1;
+		}
+
+		private DashboardData ReconcileDashboard(List<DashboardData>[] dashboardSet, int relationCount)
+		{
+			if(dashboardSet.Length == 1 && dashboardSet[0].Count > 0)
+			{
+				for (int i = 0; i < dashboardSet[0].Count; i++)
+				{
+					var dashboardData = dashboardSet[0][i];
+					var rCount = GetDashRelationCount(dashboardData.Id);
+
+					if (rCount == relationCount)
+						return dashboardData;
+				}
+			}
+			else if(dashboardSet.Length > 1)
+			{
+				for(int i = 0; i < dashboardSet[0].Count; i++)
+				{
+					var dashCandidate = dashboardSet[0][i];
+
+					var rCount = GetDashRelationCount(dashCandidate.Id);
+					if (rCount == relationCount)
+					{
+						bool found = LookupDashboard(dashCandidate, dashboardSet);
+
+						if (found)
+							return dashCandidate;
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private bool LookupDashboard(DashboardData dashCandidate, List<DashboardData>[] dashboardSet)
+		{
+			for (int i = 1; i < dashboardSet.Length; i++)
+			{
+				if (!dashboardSet[i].Any(d => d.Id == dashCandidate.Id))
+					return false;
+			}
+
+			return true;
+		}
+
+		private bool QueryDashboardOr(string[] dashKeys, string perspective, out DashboardData dashboard)
+		{
+			var dashboardFound = false;
+			dashboard = null;
+
+			StringBuilder nodeIdsSql = new StringBuilder();
+
+			for (int i = 0; i < dashKeys.Length; i++)
+			{
+				nodeIdsSql.Append($"NodeId == $nodeId{i} ");
+				if (i < dashKeys.Length - 1)
+					nodeIdsSql.Append(" OR ");
+			}
+
+			_logger.LogDebug($"OR Query for dashboard for nodeid: '{nodeIdsSql}' and perspective: '{perspective}'");
+			using (var connection = Sqlite.ConnectDatabase(_filename))
+			{
+				var sql = "SELECT DISTINCT Dashboard FROM DashboardRelations "
+						+ "INNER JOIN Dashboards ON Dashboards.Id == DashboardRelations.DashboardId "
+						+ "INNER JOIN Perspectives ON Dashboards.PerspectiveId == Perspectives.Id "
+						+ "AND Perspectives.Name == $perspective WHERE "
+						+ nodeIdsSql;
+
+				try
+				{
+					using (DbCommand cmd = connection.CreateCommand())
+					{
+						for (int i = 0; i < dashKeys.Length; i++)
+						{
+							DbParameter parNodeId = new SQLiteParameter($"$nodeId{i}", dashKeys[i]);
+							cmd.Parameters.Add(parNodeId);
+						}
+						DbParameter parPerspective = new SQLiteParameter("$perspective", perspective);
+						cmd.Parameters.Add(parPerspective);
+						cmd.CommandText = sql;
+						cmd.CommandType = CommandType.Text;
+
+						using (var rdr = cmd.ExecuteReader())
+						{
+							if (rdr.Read())
+							{
+								var id = rdr.GetInt32(0);
+								var name = rdr.GetString(1);
+								if (!string.IsNullOrEmpty(name))
+								{
+									dashboard = new DashboardData(id, name);
+									_logger.LogDebug($"Found dashboard '{dashboard.Name}' for nodeid(s) '{nodeIdsSql}': ");
+
+									dashboardFound = true;
+								}
+							}
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					_logger.LogError(e, $"Dashboard query failed for nodeid(s): '{nodeIdsSql}' and perspective: '{perspective}'");
+				}
+			}
+
+			return dashboardFound;
 		}
 
 		public UaResult AddDashboardMapping(string[] nodeIds, string dashboard, string perspective)
@@ -165,11 +329,7 @@ namespace plugin_dotnet
 								cmd.CommandType = CommandType.Text;
 								var numRowsAffected = cmd.ExecuteNonQuery();
 
-								if (numRowsAffected > 0)
-								{
-									return new UaResult();
-								}
-								else
+								if (numRowsAffected == 0)
 								{
 									var msg = $"AddDashboardMapping failed for nodeid = '{nodeIds[i]}', dashboard = '{dashboard}', perspective = '{perspective}'";
 									_logger.LogError(msg);
@@ -189,28 +349,59 @@ namespace plugin_dotnet
 			return new UaResult() { success = false, error = "No NodeIds specified" };
 		}
 
-		private void RemoveIfMappingExists(string[] nodeIds, string perspective)
+		public void RemoveMapping(string nodeId, string perspective)
 		{
 			using (var connection = Sqlite.ConnectDatabase(_filename))
 			{
 				try
 				{
-					int dashboardId = GetDashboardId(nodeIds, perspective, connection);
+					int dashboardId = GetDashboardId(new[] { nodeId }, perspective, connection);
 
 					if (dashboardId > 0)
 					{
-						if (!DeleteFromDashboardRelations(dashboardId, connection))
-							_logger.LogError($"Unable to delete row(s) from DashboardRelations where DashboardId = '{dashboardId}'");
-
-						if(!DeleteFromDashboard(dashboardId, connection))
-							_logger.LogError($"Unable to delete row from Dashboards where DashboardId = '{dashboardId}'");
+						RemoveMappingForDashboard(dashboardId, connection);
 					}
 				}
 				catch (Exception e)
 				{
-					_logger.LogError(e, $"RemoveIfExists query failed for nodeid(s): '{ToTabString(nodeIds)}' and perspective: '{perspective}'");
+					_logger.LogError(e, $"RemoveIfExists query failed for nodeid: '{nodeId}' and perspective: '{perspective}'");
 				}
 			}
+		}
+
+		private void RemoveIfMappingExists(string[] nodeIds, string perspective)
+		{
+			if (nodeIds?.Length > 0 && !string.IsNullOrEmpty(perspective))
+			{
+				using (var connection = Sqlite.ConnectDatabase(_filename))
+				{
+					try
+					{
+						int dashboardId = GetDashboardId(nodeIds, perspective, connection);
+
+						if (dashboardId > 0)
+						{
+							var relationsCount = GetDashRelationCount(dashboardId);
+							if (relationsCount == nodeIds.Length)
+								RemoveMappingForDashboard(dashboardId, connection);
+						}
+					}
+					catch (Exception e)
+					{
+						_logger.LogError(e, $"RemoveIfExists query failed for nodeid(s): '{ToTabString(nodeIds)}' and perspective: '{perspective}'");
+					}
+				}
+			}
+
+		}
+
+		private void RemoveMappingForDashboard(int dashboardId, SQLiteConnection connection)
+		{
+			if (!DeleteFromDashboardRelations(dashboardId, connection))
+				_logger.LogError($"Unable to delete row(s) from DashboardRelations where DashboardId = '{dashboardId}'");
+
+			if (!DeleteFromDashboard(dashboardId, connection))
+				_logger.LogError($"Unable to delete row from Dashboards where DashboardId = '{dashboardId}'");
 		}
 
 		private bool DeleteFromDashboardRelations(int dashboardId, SQLiteConnection connection)
@@ -252,7 +443,7 @@ namespace plugin_dotnet
 					nodeIdsSql.Append(" OR ");
 			}
 
-			_logger.LogDebug($"RemoveIfExists for nodeid: '{nodeIdsSql}' and perspective: '{perspective}'");
+			_logger.LogDebug($"GetDashboardId for nodeid: '{nodeIdsSql}' and perspective: '{perspective}'");
 
 			var sql = "SELECT DISTINCT DashboardId FROM DashboardRelations "
 					+ "INNER JOIN Dashboards ON Dashboards.Id == DashboardRelations.DashboardId "
@@ -346,6 +537,21 @@ namespace plugin_dotnet
 
 			return tabSep.ToString();
 		}
+
+		private object AddUpString(string[] sArr)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < sArr.Length; i++)
+			{
+				sb.Append(sArr[i]);
+				if (i < sArr.Length - 1)
+					sb.Append(", ");
+			}
+
+			return sb.ToString();
+		}
+
 
 		//private bool DoesDashboardExist(string dashboard, string perspective)
 		//{

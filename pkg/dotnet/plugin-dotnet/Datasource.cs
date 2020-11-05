@@ -10,7 +10,10 @@ namespace plugin_dotnet
     public class DashboardInfo
 	{
 		public string name { get; set; }
-	}
+
+        public string[] dashKeys { get; set; }
+
+    }
 
     public class EventQuery
     {
