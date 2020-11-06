@@ -43,54 +43,68 @@ namespace plugin_dotnet
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
             _resourceHandlers.Add("getdashboard", GetDashboard);
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
+            _resourceHandlers.Add("browsereferencetargets", BrowseReferenceTargets);
         }
 
-		private CallResourceResponse AddDashboardmapping(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
-		{
+        private CallResourceResponse BrowseReferenceTargets(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-			bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
-			string dashboard = HttpUtility.UrlDecode(queryParams["dashboard"]);
-			string existingDashboard = HttpUtility.UrlDecode(queryParams["existingDashboard"]);
-			string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
-
-			var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
-			var uaNodeId = NodeId.Parse(expandedId.id);
-
-			var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
-			var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
-
-			var dashboardMappingData = new DashboardMappingData(connection, nodeId, targetNodeIdJson, useType, dashboard, existingDashboard, perspective, nsTable);
-			var r = _dashboardResolver.AddDashboardMapping(dashboardMappingData);
-			var result = JsonSerializer.Serialize(r);
-			response.Code = 200;
-			response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-			_log.LogDebug("Adding dashboard mapping => {0}", r.success);
+            string referenceId = HttpUtility.UrlDecode(queryParams["referenceId"]);
+            var nId = Converter.GetNodeId(nodeId, nsTable);
+            var rId = Converter.GetNodeId(referenceId, nsTable);
+            connection.Browse(null, null, nId, int.MaxValue, Opc.Ua.BrowseDirection.Forward, rId, true,
+                (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection targets);
+            var result = JsonSerializer.Serialize(targets.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("We got a result from browse ref targets => {0}", result);
             return response;
-		}
+        }
+
+        private CallResourceResponse AddDashboardmapping(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            string typeNodeId = HttpUtility.UrlDecode(queryParams["typeNodeId"]);
+            bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
+            string[] interfaces = JsonSerializer.Deserialize<string[]>(HttpUtility.UrlDecode(queryParams["interfaces"]));
+            string dashboard = HttpUtility.UrlDecode(queryParams["dashboard"]);
+            string existingDashboard = HttpUtility.UrlDecode(queryParams["existingDashboard"]);
+            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
+
+            var nodeIdJson = ConvertNodeIdToJson(nodeId);
+            var typeNodeIdJson = ConvertNodeIdToJson(typeNodeId);
+
+            var interfacesIds = Array.Empty<string>();
+            if (interfaces != null)
+                interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a)).ToArray();
+
+            var dashboardMappingData = new DashboardMappingData(connection, nodeId, nodeIdJson, typeNodeIdJson, useType, interfacesIds, dashboard, existingDashboard, perspective, nsTable);
+            var r = _dashboardResolver.AddDashboardMapping(dashboardMappingData);
+            var result = JsonSerializer.Serialize(r);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("Adding dashboard mapping => {0}", r.success);
+            return response;
+        }
 
 
 
-		private CallResourceResponse GetDashboard(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        private CallResourceResponse GetDashboard(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
 		{
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-			string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
-			//var nId = Converter.GetNodeId(nodeId, nsTable);
+            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
 
-			var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
-			var uaNodeId = NodeId.Parse(expandedId.id);
-			//Opc.Ua.ExpandedNodeId c = Converter.GetExpandedNodeId(nodeId);
+            var targetNodeIdJson = ConvertNodeIdToJson(nodeId);
 
-			var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
-			var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
-
-			var dash = _dashboardResolver.ResolveDashboard(connection, nodeId, targetNodeIdJson, perspective, nsTable);
-			var dashboardInfo = new DashboardInfo() { name = dash ?? string.Empty };
-			var result = JsonSerializer.Serialize(dashboardInfo);
-			response.Code = 200;
-			response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-			_log.LogDebug("We got a dash => {0}", dash);
+            (string dashboard, string[] dashKeys) = _dashboardResolver.ResolveDashboard(connection, nodeId, targetNodeIdJson, perspective, nsTable);
+            var dashboardInfo = new DashboardInfo() { name = dashboard, dashKeys = dashKeys };
+            var result = JsonSerializer.Serialize(dashboardInfo);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("We got a dash => {0}", dashboard);
             return response;
         }
 
@@ -212,5 +226,15 @@ namespace plugin_dotnet
                 throw ex;
             }
         }
+
+        private static string ConvertNodeIdToJson(string nodeId)
+        {
+            var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
+            var uaNodeId = NodeId.Parse(expandedId.id);
+            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
+            var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
+            return targetNodeIdJson;
+        }
+
     }
 }
