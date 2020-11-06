@@ -113,6 +113,14 @@ namespace plugin_dotnet
         public string Identifier { get; set; }
     }
 
+
+    public class BrowseFilter
+    {
+        public int maxResults { get; set; }
+        public string browseName { get; set; }
+    }
+
+
     public class OpcUAQuery
     {
         public string refId { get; set; }

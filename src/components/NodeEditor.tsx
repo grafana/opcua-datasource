@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { OpcUaBrowseResults, OpcUaNodeInfo, QualifiedName, NodePath } from '../types';
+import { OpcUaBrowseResults, OpcUaNodeInfo, QualifiedName, NodePath, BrowseFilter } from '../types';
 import { Button } from '@grafana/ui';
 import { NodeTextEditor } from './NodeTextEditor';
 import { BrowserDialog } from './BrowserDialog';
@@ -7,7 +7,7 @@ import { BrowserDialog } from './BrowserDialog';
 type Props = {
     rootNodeId: string,
     node: NodePath,
-    browse(nodeId: string): Promise<OpcUaBrowseResults[]>;
+    browse(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]>;
     onChangeNode(node: NodePath): void;
     readNode(nodeId: string): Promise<OpcUaNodeInfo>;
     placeholder: string;
@@ -47,7 +47,7 @@ export class NodeEditor extends PureComponent<Props, State> {
                 zIndex: 10,
             }}>
                 <BrowserDialog closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
-                    browse={a => this.props.browse(a)}
+                    browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
                     ignoreRootNode={true} rootNodeId={rootNodeId}
                     onNodeSelectedChanged={(node, browsepath) => { this.onChangeNode(node, browsepath) }}></BrowserDialog></div>;
         }

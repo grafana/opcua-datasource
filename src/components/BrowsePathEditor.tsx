@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { QualifiedName, OpcUaBrowseResults } from '../types';
+import { QualifiedName, OpcUaBrowseResults, BrowseFilter } from '../types';
 import { Button } from '@grafana/ui';
 import { BrowsePathTextEditor } from './BrowsePathTextEditor';
 import { BrowserDialog } from './BrowserDialog';
@@ -7,7 +7,7 @@ import { BrowserDialog } from './BrowserDialog';
 type Props = {
     browsePath: QualifiedName[],
     rootNodeId: string,
-    browse(nodeId: string): Promise<OpcUaBrowseResults[]>;
+    browse(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]>;
     onChangeBrowsePath(browsePath: QualifiedName[]): void;
 };
 
@@ -38,7 +38,7 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
                 zIndex: 10,
             }}>
                 <BrowserDialog closeBrowser={() => this.setState({ browserOpened: false })} closeOnSelect={true}
-                    browse={a => this.props.browse(a)}
+                    browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
                     ignoreRootNode={true} rootNodeId={rootNodeId}
                     onNodeSelectedChanged={(node, browsepath) => { this.props.onChangeBrowsePath(browsepath) }}></BrowserDialog></div>;
         }

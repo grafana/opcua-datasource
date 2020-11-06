@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { convertRemToPixels } from '../utils/ConvertRemToPixels';
-import { OpcUaBrowseResults, QualifiedName } from '../types';
+import { OpcUaBrowseResults, QualifiedName, BrowseFilter } from '../types';
 import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { BrowserTree } from './BrowserTree';
@@ -11,7 +11,7 @@ import {
 
 } from "react-icons/fa";
 type Props = {
-	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
+	browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
 	rootNodeId: OpcUaBrowseResults,
 	ignoreRootNode: boolean,
 	closeOnSelect: boolean,
@@ -108,14 +108,15 @@ export class BrowserDialog extends Component<Props, State> {
 
 	renderTree() {
 		return <BrowserTree closeBrowser={() => this.props.closeBrowser()} closeOnSelect={this.props.closeOnSelect}
-			browse={a => this.props.browse(a)}
+			browse={(nodeId) => this.props.browse(nodeId, {
+				browseName: "", maxResults: 0})}
 			ignoreRootNode={true} rootNodeId={this.props.rootNodeId}
 			onNodeSelectedChanged={(node, browsepath) => { this.props.onNodeSelectedChanged(node, browsepath) }}></BrowserTree>;
 	}
 
 	renderTable() {
 		return <BrowserTable closeBrowser={() => this.props.closeBrowser()} closeOnSelect={this.props.closeOnSelect}
-			browse={a => this.props.browse(a)}
+			browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
 			ignoreRootNode={true} rootNodeId={this.props.rootNodeId}
 			onNodeSelectedChanged={(node, browsepath) => { this.props.onNodeSelectedChanged(node, browsepath) }}></BrowserTable>;
 	}

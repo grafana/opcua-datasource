@@ -12,6 +12,12 @@ export enum NodeClass {
     View = 128
 }
 
+
+export interface BrowseFilter {
+    maxResults: number,
+    browseName: string
+}
+
 export interface OpcUaQuery extends DataQuery {
     useTemplate: boolean;
     templateVariable: string;
