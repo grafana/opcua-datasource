@@ -3,21 +3,20 @@
  * @param rem The rem value to convert.
  */
 export function convertRemToPixels(rem: string | number) {
-	if (!rem) {
-		rem = "1rem";
-	}
+  if (!rem) {
+    rem = '1rem';
+  }
 
-	if (typeof rem === "string") {
-		if (rem.indexOf("rem") >= 0) {
-			rem = rem.substring(0, rem.length - 3);
-			rem = parseFloat(rem);
-		} else {
-			rem = parseFloat(rem);
-		}
-	}
+  if (typeof rem === 'string') {
+    if (rem.indexOf('rem') >= 0) {
+      rem = rem.substring(0, rem.length - 3);
+      rem = parseFloat(rem);
+    } else {
+      rem = parseFloat(rem);
+    }
+  }
 
-	const pixels =
-		rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+  const pixels = rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 
-	return Math.round(pixels);
+  return Math.round(pixels);
 }

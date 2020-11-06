@@ -12,27 +12,26 @@ export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourc
     this.config = instanceSettings;
   }
 
-    query(request: DataQueryRequest<OpcUaQuery>): Observable<DataQueryResponse> {
-        return super.query(request);
+  query(request: DataQueryRequest<OpcUaQuery>): Observable<DataQueryResponse> {
+    return super.query(request);
+  }
+
+  getTemplateVariable(tempVar: string): string {
+    if (typeof tempVar === 'undefined' || tempVar.length === 0) {
+      return '$ObjectId';
     }
+    return tempVar;
+  }
 
-
-    getTemplateVariable(tempVar: string): string {
-        if (typeof tempVar === 'undefined' || tempVar.length == 0)
-            return "$ObjectId";
-        return tempVar;
+  applyTemplateVariables(query: OpcUaQuery): OpcUaQuery {
+    let tmpltSrv = getTemplateSrv();
+    if (query.useTemplate) {
+      query.nodePath.node.nodeId = tmpltSrv.replace(this.getTemplateVariable(query.templateVariable));
     }
+    return query;
+  }
 
-    applyTemplateVariables(query: OpcUaQuery): OpcUaQuery {
-        let tmpltSrv = getTemplateSrv();
-        if (query.useTemplate) {
-            query.nodePath.node.nodeId = tmpltSrv.replace(this.getTemplateVariable(query.templateVariable));
-        }
-        return query;
-    }
-
-
-    getResource(path: string, params?: any): Promise<any> {
-        return super.getResource(path, params);
-    }
+  getResource(path: string, params?: any): Promise<any> {
+    return super.getResource(path, params);
+  }
 }

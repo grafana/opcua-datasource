@@ -1,246 +1,245 @@
-
-import React, { Component } from "react";
-import TreeNode from "./TreeNode";
+import React, { Component } from 'react';
+import TreeNode from './TreeNode';
 import { convertRemToPixels } from '../utils/ConvertRemToPixels';
 import { OpcUaBrowseResults, QualifiedName } from '../types';
 import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 
 type Props = {
-	browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
-	rootNodeId: OpcUaBrowseResults,
-	ignoreRootNode: boolean,
-	closeOnSelect: boolean,
-	onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
-	closeBrowser: () => void;
+  browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
+  rootNodeId: OpcUaBrowseResults;
+  ignoreRootNode: boolean;
+  closeOnSelect: boolean;
+  onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
+  closeBrowser: () => void;
 };
 
 type State = {
-	fetchedChildren: boolean,
-	rootNode: OpcUaBrowseResults,
-	children: OpcUaBrowseResults[],
-	theme: GrafanaTheme | null;
-}
-
-
+  fetchedChildren: boolean;
+  rootNode: OpcUaBrowseResults;
+  children: OpcUaBrowseResults[];
+  theme: GrafanaTheme | null;
+};
 
 /**
  * Displays nodes in a tree and allows users to select an entity for display.
  */
 export class BrowserTree extends Component<Props, State> {
-	/**
-	 *
-	 * @param {*} props sets the data structure
-	 */
-	constructor(props: Props) {
-		super(props);
-		this.state = {
-			rootNode: {
-				browseName: { name: "", namespaceUrl: "" }, displayName: "", isForward: false, nodeClass: -1, nodeId: ""
-			},
-			children: [],
-			fetchedChildren: false,
-			theme: null
-		}
-	}
+  /**
+   *
+   * @param {*} props sets the data structure
+   */
+  constructor(props: Props) {
+    super(props);
+    this.state = {
+      rootNode: {
+        browseName: { name: '', namespaceUrl: '' },
+        displayName: '',
+        isForward: false,
+        nodeClass: -1,
+        nodeId: '',
+      },
+      children: [],
+      fetchedChildren: false,
+      theme: null,
+    };
+  }
 
-	handleClose = () => {
-		this.props.closeBrowser();
-	}
+  handleClose = () => {
+    this.props.closeBrowser();
+  };
 
-	handleHoverClose = () => {
-	}
+  handleHoverClose = () => {};
 
-	handleUnhoverClose = () => {
-	}
+  handleUnhoverClose = () => {};
 
-	nodeSelect = (node: OpcUaBrowseResults, browsePath: QualifiedName[]) => {
-		this.props.onNodeSelectedChanged(node, browsePath);
-		if (this.props.closeOnSelect)
-			this.props.closeBrowser();
-	}
+  nodeSelect = (node: OpcUaBrowseResults, browsePath: QualifiedName[]) => {
+    this.props.onNodeSelectedChanged(node, browsePath);
+    if (this.props.closeOnSelect) {
+      this.props.closeBrowser();
+    }
+  };
 
+  renderNode = (node: OpcUaBrowseResults) => {
+    return (
+      <TreeNode
+        node={node}
+        browse={this.props.browse}
+        onNodeSelect={this.nodeSelect}
+        level={0}
+        marginRight={4}
+        parentNode={null}
+      />
+    );
+  };
 
-	renderNode = (node: OpcUaBrowseResults) => {
-		return <TreeNode
-			node={node}
-			browse={this.props.browse}
-			onNodeSelect={this.nodeSelect}
-			level={0}
-			marginRight={4}
-			parentNode={null}
-		/>;
-	}
+  renderNodes = (rootNodeId: OpcUaBrowseResults, ignoreRoot: boolean) => {
+    if (!ignoreRoot) {
+      return this.renderNode(rootNodeId);
+    } else {
+      if (!this.state.fetchedChildren) {
+        this.props.browse(rootNodeId.nodeId).then(response => {
+          this.setState({ children: response, fetchedChildren: true });
+        });
+        return <></>;
+      } else {
+        return this.state.children.map(a => this.renderNode(a));
+      }
+    }
+  };
 
+  onTheme = (theme: GrafanaTheme) => {
+    if (this.state.theme == null && theme != null) {
+      this.setState({ theme: theme });
+    }
+  };
 
-	renderNodes = (rootNodeId: OpcUaBrowseResults, ignoreRoot: boolean) => {
-
-		if (!ignoreRoot)
-			return this.renderNode(rootNodeId);
-		else {
-			if (!this.state.fetchedChildren) {
-				this.props.browse(rootNodeId.nodeId).then((response) => { this.setState({ children: response, fetchedChildren: true }) });
-				return <></>;
-			}
-			else {
-				return this.state.children.map(a => this.renderNode(a));
-			}
-		}
-	}
-
-	onTheme = (theme: GrafanaTheme) => {
-		if (this.state.theme == null && theme != null) {
-			this.setState({ theme: theme });
-		}
-	}
-
-	/**
-	 * Renders the component.
-	 */
-	render() {
-		const rootNodeId = this.props.rootNodeId;
-		if (this.state.rootNode.nodeId != rootNodeId.nodeId) {
-			this.setState({ children: [], fetchedChildren: false, rootNode: rootNodeId });
-		}
-		let bg: string = "";
-		if (this.state.theme != null)
-		{
-			bg = this.state.theme.colors.bg2;
-		}
-		return (
-			<div style={{
-				background: bg
-			}}>
-				<ThemeGetter onTheme={this.onTheme} />
-				<div
-					data-id="Treeview-ScrollDiv"
-					style={{
-						height: convertRemToPixels("20rem"),
-						overflowX: "hidden",
-						overflowY: "auto",
-					}}
-				>
-					{this.renderNodes(rootNodeId, this.props.ignoreRootNode)}
-				</div>
-			</div>
-		);
-	}
+  /**
+   * Renders the component.
+   */
+  render() {
+    const rootNodeId = this.props.rootNodeId;
+    if (this.state.rootNode.nodeId !== rootNodeId.nodeId) {
+      this.setState({ children: [], fetchedChildren: false, rootNode: rootNodeId });
+    }
+    let bg = '';
+    if (this.state.theme != null) {
+      bg = this.state.theme.colors.bg2;
+    }
+    return (
+      <div
+        style={{
+          background: bg,
+        }}
+      >
+        <ThemeGetter onTheme={this.onTheme} />
+        <div
+          data-id="Treeview-ScrollDiv"
+          style={{
+            height: convertRemToPixels('20rem'),
+            overflowX: 'hidden',
+            overflowY: 'auto',
+          }}
+        >
+          {this.renderNodes(rootNodeId, this.props.ignoreRootNode)}
+        </div>
+      </div>
+    );
+  }
 }
 
-	///**
-	// * When a node is re-clicked on, the tree should renavigate to the location of the node.
-	// */
-	//renavigateChildNodes = () => {
-	//	const { target } = this.props;
-	//	if (!target) {
-	//		return;
-	//	}
+///**
+// * When a node is re-clicked on, the tree should renavigate to the location of the node.
+// */
+//renavigateChildNodes = () => {
+//	const { target } = this.props;
+//	if (!target) {
+//		return;
+//	}
 
-	//	const { renavigateNodeChain } = target;
-	//	if (!renavigateNodeChain || renavigateNodeChain.length <= 0) {
-	//		return;
-	//	}
+//	const { renavigateNodeChain } = target;
+//	if (!renavigateNodeChain || renavigateNodeChain.length <= 0) {
+//		return;
+//	}
 
-	//	const { nodes } = this.state;
-	//	this.renavigateNextNode(renavigateNodeChain, nodes);
+//	const { nodes } = this.state;
+//	this.renavigateNextNode(renavigateNodeChain, nodes);
 
-	//	target.renavigateNodeChain = null;
+//	target.renavigateNodeChain = null;
 
-	//	const { changed } = this.props;
-	//	if (changed) {
-	//		changed();
-	//	}
-	//};
+//	const { changed } = this.props;
+//	if (changed) {
+//		changed();
+//	}
+//};
 
-	///**
-	// * Saves the renavigated nodes to the state.
-	// */
-	//saveRenavigatedNodes = (nodes: Array<Object>) => {
-	//	this.setState({ nodes });
-	//};
+///**
+// * Saves the renavigated nodes to the state.
+// */
+//saveRenavigatedNodes = (nodes: Array<Object>) => {
+//	this.setState({ nodes });
+//};
 
-	///**
-	// * Takes a value from the node chain and loads its children.
-	// */
-	//renavigateNextNode = (renavigateNodeChain, nodes) => {
-	//	if (!renavigateNodeChain || renavigateNodeChain.length <= 1) {
-	//		return nodes;
-	//	}
+///**
+// * Takes a value from the node chain and loads its children.
+// */
+//renavigateNextNode = (renavigateNodeChain, nodes) => {
+//	if (!renavigateNodeChain || renavigateNodeChain.length <= 1) {
+//		return nodes;
+//	}
 
-	//	const node = renavigateNodeChain[0];
+//	const node = renavigateNodeChain[0];
 
-	//	const that = this;
+//	const that = this;
 
-	//	const { datasource } = this.props;
-	//	datasource
-	//		.getChildrenFromServer(node.nodeId)
-	//		.then(function (foundDataArray) {
-	//			// Empty parent children list
-	//			nodes[node.path].children = [];
+//	const { datasource } = this.props;
+//	datasource
+//		.getChildrenFromServer(node.nodeId)
+//		.then(function (foundDataArray) {
+//			// Empty parent children list
+//			nodes[node.path].children = [];
 
-	//			for (const item of foundDataArray) {
-	//				let newPath = node.path + "@#£$" + item.displayName;
-	//				let newNode = {
-	//					children: [],
-	//					isRoot: false,
-	//					nodeId: item.nodeId,
-	//					path: newPath,
-	//					type: checkType(item.nodeClass),
-	//				};
-	//				nodes[newPath] = newNode;
+//			for (const item of foundDataArray) {
+//				let newPath = node.path + "@#ï¿½$" + item.displayName;
+//				let newNode = {
+//					children: [],
+//					isRoot: false,
+//					nodeId: item.nodeId,
+//					path: newPath,
+//					type: checkType(item.nodeClass),
+//				};
+//				nodes[newPath] = newNode;
 
-	//				const newChildren = nodes[node.path].children.concat(
-	//					newPath
-	//				);
-	//				nodes[node.path].children = newChildren;
-	//				nodes[node.path].isOpen = true;
+//				const newChildren = nodes[node.path].children.concat(
+//					newPath
+//				);
+//				nodes[node.path].children = newChildren;
+//				nodes[node.path].isOpen = true;
 
-	//				nodes[node.path].isOpen = true;
-	//			}
-	//		})
-	//		.catch((error) => {
-	//			console.error(error);
-	//		})
-	//		.finally(() => {
-	//			renavigateNodeChain.splice(0, 1);
+//				nodes[node.path].isOpen = true;
+//			}
+//		})
+//		.catch((error) => {
+//			console.error(error);
+//		})
+//		.finally(() => {
+//			renavigateNodeChain.splice(0, 1);
 
-	//			if (renavigateNodeChain.length > 0) {
-	//				nodes = that.renavigateNextNode(renavigateNodeChain, nodes);
-	//			}
+//			if (renavigateNodeChain.length > 0) {
+//				nodes = that.renavigateNextNode(renavigateNodeChain, nodes);
+//			}
 
-	//			this.saveRenavigatedNodes(nodes);
-	//		});
-	//};
+//			this.saveRenavigatedNodes(nodes);
+//		});
+//};
 
+///**
+// * Called when the user closes the tree.
+// */
+//handleClose = () => {
+//	let { target } = this.props;
 
+//	target.treeOpened = false;
 
-	///**
-	// * Called when the user closes the tree.
-	// */
-	//handleClose = () => {
-	//	let { target } = this.props;
+//	const { changed } = this.props;
+//	if (changed) {
+//		changed();
+//	}
+//};
 
-	//	target.treeOpened = false;
+///**
+// * Called when the user hovers over the close button.
+// */
+//handleHoverClose = () => {
+//	this.closeSpan.style.backgroundColor = "lightgrey";
+//};
 
-	//	const { changed } = this.props;
-	//	if (changed) {
-	//		changed();
-	//	}
-	//};
-
-	///**
-	// * Called when the user hovers over the close button.
-	// */
-	//handleHoverClose = () => {
-	//	this.closeSpan.style.backgroundColor = "lightgrey";
-	//};
-
-	///**
-	// * Called when the user moves away from the close button.
-	// */
-	//handleUnhoverClose = () => {
-	//	this.closeSpan.style.backgroundColor = "transparent";
-	//};
+///**
+// * Called when the user moves away from the close button.
+// */
+//handleUnhoverClose = () => {
+//	this.closeSpan.style.backgroundColor = "transparent";
+//};
 
 ///**
 // *

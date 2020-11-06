@@ -18,8 +18,8 @@ interface CascaderProps {
   /** Sets the width to a multiple of 8px. Should only be used with inline forms. Setting width of the container is preferred in other cases.*/
   width?: number;
   initialValue?: string;
-    allowCustomValue?: boolean;
-    onSelectChange: boolean;
+  allowCustomValue?: boolean;
+  onSelectChange: boolean;
   /** A function for formatting the message for custom value creation. Only applies when allowCustomValue is set to true*/
   formatCreateLabel?: (val: string) => string;
 }
@@ -86,8 +86,8 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
       } else {
         selectOptions = [...selectOptions, ...this.flattenOptions(option.items, cpy)];
       }
-      }
-      return selectOptions;
+    }
+    return selectOptions;
   };
 
   setInitialValue(searchableOptions: Array<SelectableValue<string[]>>, initValue?: string) {
@@ -111,7 +111,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
   }
 
   //For rc-cascader
-    onChange = (value: string[], selectedOptions: CascaderOption[]) => {
+  onChange = (value: string[], selectedOptions: CascaderOption[]) => {
     this.setState({
       //rcValue: value,
       focusCascade: true,
@@ -189,7 +189,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
             allowCustomValue={allowCustomValue}
             placeholder={placeholder}
             autoFocus={!focusCascade}
-                    onChange={this.onSelect}
+            onChange={this.onSelect}
             onBlur={this.onBlur}
             //options={searchableOptions}
             onCreateOption={this.onCreateOption}
@@ -216,7 +216,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
                 placeholder={placeholder}
                 onBlur={this.onBlurCascade}
                 //value={activeLabel}
-                                onKeyDown={this.onInputKeyDown}
+                onKeyDown={this.onInputKeyDown}
                 onChange={this.onSelect}
                 suffix={
                   focusCascade ? (
