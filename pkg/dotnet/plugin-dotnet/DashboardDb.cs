@@ -345,7 +345,10 @@ namespace plugin_dotnet
 						}
 					}
 				}
+
+				return new UaResult() { success = true };
 			}
+
 			return new UaResult() { success = false, error = "No NodeIds specified" };
 		}
 
