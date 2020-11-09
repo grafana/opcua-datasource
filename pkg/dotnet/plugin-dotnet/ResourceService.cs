@@ -203,12 +203,19 @@ namespace plugin_dotnet
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
         {
             _log.LogDebug("Call Resource {0} | {1}", request, context);
-            string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
-            Uri uri = new Uri(fullUrl);
-            NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
-            var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings).Session;
+            
             try
             {
+
+                var resourceUrl = request.Url;
+                if (!string.IsNullOrEmpty(request.Url) && !request.Url.StartsWith("/"))
+                    resourceUrl = string.Concat("/", request.Url);
+
+                string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + resourceUrl);
+                Uri uri = new Uri(fullUrl);
+                NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
+                var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings).Session;
+
                 connection.FetchNamespaceTables();
                 var nsTable = connection.NamespaceUris;
                 Func<CallResourceRequest, Session, NameValueCollection, NamespaceTable, CallResourceResponse> resourceHandler;
@@ -222,7 +229,7 @@ namespace plugin_dotnet
             }
             catch(Exception ex)
             {
-                _log.LogError("Got browse exception {0}", ex);
+                _log.LogError("Got resource exception {0}", ex);
                 throw ex;
             }
         }
