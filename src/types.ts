@@ -1,61 +1,59 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
 export enum NodeClass {
-    Unspecified = 0,
-    Object = 1,
-    Variable = 2,
-    Method = 4,
-    ObjectType = 8,
-    VariableType = 16,
-    ReferenceType = 32,
-    DataType = 64,
-    View = 128
+  Unspecified = 0,
+  Object = 1,
+  Variable = 2,
+  Method = 4,
+  ObjectType = 8,
+  VariableType = 16,
+  ReferenceType = 32,
+  DataType = 64,
+  View = 128,
 }
 
-
 export interface BrowseFilter {
-    maxResults: number,
-    browseName: string
+  maxResults: number;
+  browseName: string;
 }
 
 export interface OpcUaQuery extends DataQuery {
-    useTemplate: boolean;
-    templateVariable: string;
-    nodePath: NodePath;
-    relativePath: QualifiedName[];
-    alias: string;
-    readType: string;
-    aggregate: OpcUaNodeDefinition;
-    interval: string;
-    eventQuery: EventQuery;
+  useTemplate: boolean;
+  templateVariable: string;
+  nodePath: NodePath;
+  relativePath: QualifiedName[];
+  alias: string;
+  readType: string;
+  aggregate: OpcUaNodeDefinition;
+  interval: string;
+  eventQuery: EventQuery;
 }
 
 export interface NodePath {
-    node: OpcUaNodeInfo,
-    browsePath: QualifiedName[]
+  node: OpcUaNodeInfo;
+  browsePath: QualifiedName[];
 }
 
 export interface EventQuery {
-    eventTypeNodeId: string;
-    eventTypes: string[];
-    eventColumns: EventColumn[];
-    eventFilters: EventFilterSer[];
+  eventTypeNodeId: string;
+  eventTypes: string[];
+  eventColumns: EventColumn[];
+  eventFilters: EventFilterSer[];
 }
 
 export interface QualifiedName {
-    namespaceUrl: string;
-    name: string;
+  namespaceUrl: string;
+  name: string;
 }
 
 export interface EventColumn {
-    browsePath: QualifiedName[];
-    alias: string;
+  browsePath: QualifiedName[];
+  alias: string;
 }
 
 export interface DashboardInfo {
-    name: string;
+  name: string;
 }
-
 
 export interface OpcUaResultsEntry {
   meta: string;
@@ -72,14 +70,14 @@ export interface OpcUaResponse {
 }
 
 export interface OpcUaNodeInfo {
-    displayName: string;
-    browseName: QualifiedName;
-    nodeId: string;
-    nodeClass: number;
+  displayName: string;
+  browseName: QualifiedName;
+  nodeId: string;
+  nodeClass: number;
 }
 
 export interface OpcUaBrowseResults extends OpcUaNodeInfo {
-    isForward: boolean;
+  isForward: boolean;
 }
 
 export interface OpcUaNodeDefinition {
@@ -88,114 +86,130 @@ export interface OpcUaNodeDefinition {
 }
 
 export interface EventFilter {
-    oper: FilterOperator;
-    operands: FilterOperand[];
+  oper: FilterOperator;
+  operands: FilterOperand[];
 }
 
 export interface FilterOperand {
-    type: FilterOperandEnum;
-    value: object;
+  type: FilterOperandEnum;
+  value: object;
 }
 
 export interface EventFilterSer {
-    oper: FilterOperator;
-    operands: FilterOperandSer[];
+  oper: FilterOperator;
+  operands: FilterOperandSer[];
 }
 
 export interface FilterOperandSer {
-    type: FilterOperandEnum;
-    value: string;
+  type: FilterOperandEnum;
+  value: string;
 }
 
 export enum FilterOperandEnum {
-    Literal = 1,
-    Element = 2,
-    Attribute = 3,
-    SimpleAttribute = 4
+  Literal = 1,
+  Element = 2,
+  Attribute = 3,
+  SimpleAttribute = 4,
 }
 
 export interface LiteralOp {
-    typeId: string;
-    value: string;
+  typeId: string;
+  value: string;
 }
 
 export interface ElementOp {
-    index: number;
+  index: number;
 }
 
 export interface AttributeOp {
-    //TODO
+  //TODO
 }
-
 
 export interface SimpleAttributeOp {
-    typeId: string;
-    browsePath: QualifiedName[];
-    attributeId: number;
+  typeId: string;
+  browsePath: QualifiedName[];
+  attributeId: number;
 }
 
-
 export enum FilterOperator {
-    Equals = 0,
-    IsNull = 1,
-    GreaterThan = 2,
-    LessThan = 3,
-    GreaterThanOrEqual = 4,
-    LessThanOrEqual = 5,
-    Like = 6,
-    Not = 7,
-    Between = 8,
-    InList = 9,
-    And = 10,
-    Or = 11,
-    Cast = 12,
-    InView = 13,
-    OfType = 14,
-    RelatedTo = 15,
-    BitwiseAnd = 16,
-    BitwiseOr = 17
+  Equals = 0,
+  IsNull = 1,
+  GreaterThan = 2,
+  LessThan = 3,
+  GreaterThanOrEqual = 4,
+  LessThanOrEqual = 5,
+  Like = 6,
+  Not = 7,
+  Between = 8,
+  InList = 9,
+  And = 10,
+  Or = 11,
+  Cast = 12,
+  InView = 13,
+  OfType = 14,
+  RelatedTo = 15,
+  BitwiseAnd = 16,
+  BitwiseOr = 17,
 }
 
 export class EventFilterOperatorUtil {
-    public static operNames: string[] = ["==", "IsNull", ">", "<", ">=", "<=", "Like", "Not", "Between", "InList", "And", "Or", "Cast", "InView", "OfType", "RelatedTo", "BitwiseAnd", "BitwiseOr"];
-    static GetString(oper: FilterOperator): string {
-        return EventFilterOperatorUtil.operNames[oper];
+  static operNames: string[] = [
+    '==',
+    'IsNull',
+    '>',
+    '<',
+    '>=',
+    '<=',
+    'Like',
+    'Not',
+    'Between',
+    'InList',
+    'And',
+    'Or',
+    'Cast',
+    'InView',
+    'OfType',
+    'RelatedTo',
+    'BitwiseAnd',
+    'BitwiseOr',
+  ];
+  static GetString(oper: FilterOperator): string {
+    return EventFilterOperatorUtil.operNames[oper];
+  }
+
+  static GetQualifiedNameString(qm: QualifiedName): string {
+    if (qm.namespaceUrl != null && qm.namespaceUrl.length > 0) {
+      return qm.namespaceUrl + ':' + qm.name;
+    } else {
+      return qm.name;
     }
+  }
 
-    static GetQualifiedNameString(qm: QualifiedName): string {
-        if (qm.namespaceUrl != null && qm.namespaceUrl.length > 0)
-            return qm.namespaceUrl + ":" + qm.name;
-        else
-            return qm.name;
+  static GetLiteralString(op: LiteralOp): string {
+    return 'Data type node: ' + op.typeId + ' Value: ' + op.value;
+  }
+
+  static GetSimpleAttributeString(op: SimpleAttributeOp): string {
+    let s = 'Type definition node: ' + op.typeId + '  BrowsePath: ';
+    for (var i = 0; i < op.browsePath.length; i++) {
+      s += this.GetQualifiedNameString(op.browsePath[i]);
+      if (i < op.browsePath.length - 1) {
+        s += '/';
+      }
     }
+    return s;
+  }
 
-
-
-    static GetLiteralString(op: LiteralOp): string {
-        return "Data type node: " + op.typeId + " Value: " + op.value;
+  static GetOperandString(operand: FilterOperand): string {
+    switch (operand.type) {
+      case FilterOperandEnum.SimpleAttribute:
+        return this.GetSimpleAttributeString(operand.value as SimpleAttributeOp);
+      case FilterOperandEnum.Literal:
+        return this.GetLiteralString(operand.value as LiteralOp);
     }
-
-    static GetSimpleAttributeString(op: SimpleAttributeOp): string {
-        let s = "Type definition node: " + op.typeId + "  BrowsePath: ";
-        for (var i = 0; i < op.browsePath.length; i++) {
-            s += this.GetQualifiedNameString(op.browsePath[i]);
-            if (i < op.browsePath.length - 1)
-                s += "/";
-        }
-        return s;
-    }
-
-    static GetOperandString(operand: FilterOperand): string {
-        switch (operand.type) {
-            case FilterOperandEnum.SimpleAttribute:
-                return this.GetSimpleAttributeString(operand.value as SimpleAttributeOp);
-            case FilterOperandEnum.Literal:
-                return this.GetLiteralString(operand.value as LiteralOp);
-        }
-        return "";
-    }
+    return '';
+  }
 }
-
 
 export const separator = ' / ';
 

@@ -1,35 +1,34 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent } from 'react';
 import { QualifiedName } from '../types';
 import { Input } from '@grafana/ui';
 import { browsePathToString, stringToBrowsePath } from '../utils/QualifiedName';
 
-
 export interface Props {
-    browsePath: QualifiedName[];
-    onBrowsePathChanged(browsePath: QualifiedName[]): void;
+  browsePath: QualifiedName[];
+  onBrowsePathChanged(browsePath: QualifiedName[]): void;
 }
 
 type State = {
-    shortenedPath: string,
-    longPath: string,
-    edit: boolean,
-}
+  shortenedPath: string;
+  longPath: string;
+  edit: boolean;
+};
 
 export class BrowsePathTextEditor extends PureComponent<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        let browsePath = this.props.browsePath;
-        if (typeof browsePath === 'undefined')
-            browsePath = [];
-        let shortendPath = browsePath.map(p => p.name).join("/");
-        let longPath = browsePathToString(browsePath);
-        this.state =
-        {
-            shortenedPath: shortendPath,
-            longPath: longPath,
-            edit: false,
-        };
+  constructor(props: Props) {
+    super(props);
+    let browsePath = this.props.browsePath;
+    if (typeof browsePath === 'undefined') {
+      browsePath = [];
     }
+    let shortendPath = browsePath.map(p => p.name).join('/');
+    let longPath = browsePathToString(browsePath);
+    this.state = {
+      shortenedPath: shortendPath,
+      longPath: longPath,
+      edit: false,
+    };
+  }
 
     
     render() {

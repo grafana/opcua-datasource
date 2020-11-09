@@ -4,15 +4,12 @@ import { useTheme } from '@grafana/ui';
 import { GrafanaTheme } from '@grafana/data';
 
 export interface ThemeGetterProps {
-    onTheme(theme: GrafanaTheme) : void;
+  onTheme(theme: GrafanaTheme): void;
 }
 
-
 export const ThemeGetter: React.FC<ThemeGetterProps> = props => {
-    const { onTheme } = props;
-    const theme = useTheme();
-    onTheme(theme);
-    return (
-        <></>
-  );
+  const { onTheme } = props;
+  const theme = useTheme();
+  onTheme(theme);
+  return <></>;
 };
