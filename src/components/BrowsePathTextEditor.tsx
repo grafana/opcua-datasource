@@ -36,31 +36,41 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
         let browsePath = this.props.browsePath;
         if (typeof browsePath === 'undefined')
             browsePath = [];
-        let shortendPath = browsePath.map(p => p.name).join("/");
-        let longPath = browsePathToString(browsePath);
-        this.setState(
-        {
-            shortenedPath: shortendPath,
-            longPath: longPath
-        });
+
+        if (!this.state.edit) {
+
+            let shortendPath = browsePath.map(p => p.name).join("/");
+            let longPath = browsePathToString(browsePath);
+            this.setState(
+                {
+                    shortenedPath: shortendPath,
+                    longPath: longPath
+                });
+        }
 
         return this.state.edit ? 
             (
-                <div data-tip={this.state.longPath} style={{ width: 500 }}>
-                    <Input value={this.state.longPath} onChange={e => this.onChangeBrowsePath(e)} placeholder={'Path'} onBlur={() => this.setState({ edit: false })}></Input>
+                <div title={this.state.longPath}>
+                    <Input value={this.state.longPath} onChange={e => this.onChangeLongPath(e)} placeholder={'Path'} onBlur={(e) => this.onChangeBrowsePath(e)}></Input>
                 </div>
             )
             :
             ( 
-                <div data-tip={this.state.longPath}>
+                <div title={this.state.longPath}>
                     <Input value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
                 </div>
             );
+    }
+
+    onChangeLongPath(e: React.FormEvent<HTMLInputElement>): void {
+        let s: string = e.currentTarget.value;
+        this.setState({ longPath: s });
     }
 
     onChangeBrowsePath(e: React.FormEvent<HTMLInputElement>): void {
         let s: string = e.currentTarget.value;
         let browsePath = stringToBrowsePath(s);
         this.props.onBrowsePathChanged(browsePath);
+        this.setState({ edit: false })
     }
 }
