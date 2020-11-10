@@ -26,6 +26,7 @@ type Props = {
 };
 
 type State = {
+    fetchingChildren: boolean;
   fetchedChildren: boolean;
   currentNode: OpcUaBrowseResults;
   children: OpcUaBrowseResults[];
@@ -53,7 +54,8 @@ export class BrowserTable extends Component<Props, State> {
         nodeClass: -1,
         nodeId: '',
       },
-      children: [],
+        children: [],
+        fetchingChildren: false,
       fetchedChildren: false,
       theme: null,
       browsePath: [],
@@ -89,7 +91,7 @@ export class BrowserTable extends Component<Props, State> {
   render() {
     const rootNodeId = this.props.rootNodeId;
     if (this.state.currentNode.nodeId === '') {
-      this.setState({ children: [], fetchedChildren: false, currentNode: rootNodeId, browsePath: [] });
+        this.setState({ children: [], fetchingChildren: false, fetchedChildren: false, currentNode: rootNodeId, browsePath: [] });
     }
 
     let bg = '';
@@ -174,8 +176,8 @@ export class BrowserTable extends Component<Props, State> {
     );
   }
 
-  onFilter(): void {
-    this.setState({ fetchedChildren: false, children: [] });
+    onFilter(): void {
+        this.forceFetchChildren();
   }
 
   onChangeMaximumResults(e: React.FormEvent<HTMLInputElement>): void {
@@ -201,14 +203,26 @@ export class BrowserTable extends Component<Props, State> {
     let bp = this.state.browsePath.map(a => copyQualifiedName(a.browseName)).slice();
     bp.push(copyQualifiedName(node.browseName));
     return bp;
+    }
+
+    forceFetchChildren() {
+        if (!this.state.fetchingChildren) {
+            this.setState({
+                fetchingChildren: true
+            }, () => {
+                let filter: BrowseFilter = { browseName: this.state.browseNameFilter, maxResults: this.state.maxResults };
+                    this.props.browse(this.state.currentNode.nodeId, filter).then(response => {
+                        this.setState({ children: response, fetchingChildren: false, fetchedChildren: true });
+                    }).catch(() => this.setState({ children: [], fetchingChildren: false, fetchedChildren: false }));
+            });
+        }
   }
 
+
+
   fetchChildren() {
-    if (!this.state.fetchedChildren && this.state.currentNode.nodeId.length > 0) {
-      let filter: BrowseFilter = { browseName: this.state.browseNameFilter, maxResults: this.state.maxResults };
-      this.props.browse(this.state.currentNode.nodeId, filter).then(response => {
-        this.setState({ children: response, fetchedChildren: true });
-      });
+      if (!this.state.fetchedChildren && this.state.currentNode.nodeId.length > 0) {
+          this.forceFetchChildren();
     }
   }
 
@@ -217,7 +231,7 @@ export class BrowserTable extends Component<Props, State> {
       let currentNode = this.state.children[index];
       var bp = this.state.browsePath.slice();
       bp.push(currentNode);
-      this.setState({ currentNode: currentNode, fetchedChildren: false, children: [], browsePath: bp });
+        this.setState({ currentNode: currentNode, fetchingChildren: false, fetchedChildren: false, children: [], browsePath: bp });
     }
   }
 
@@ -225,11 +239,11 @@ export class BrowserTable extends Component<Props, State> {
     if (this.state.browsePath.length > 1) {
       var currentNode = this.state.browsePath[this.state.browsePath.length - 2];
       var bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
-      this.setState({ currentNode: currentNode, fetchedChildren: false, children: [], browsePath: bp });
+        this.setState({ currentNode: currentNode, fetchingChildren: false, fetchedChildren: false, children: [], browsePath: bp });
     } else if (this.state.browsePath.length === 1) {
       currentNode = this.props.rootNodeId;
       bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
-      this.setState({ currentNode: currentNode, fetchedChildren: false, children: [], browsePath: bp });
+        this.setState({ currentNode: currentNode, fetchingChildren: false, fetchedChildren: false, children: [], browsePath: bp });
     }
   }
 }
