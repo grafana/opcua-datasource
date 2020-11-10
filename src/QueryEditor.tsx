@@ -56,7 +56,8 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
       { label: 'Events', value: 'ReadEvents' },
-      { label: 'Subscribe Events', value: 'SubscribeEvents' },
+        { label: 'Subscribe Events', value: 'SubscribeEvents' },
+        { label: 'Resource', value: 'Resource' },
     ];
   }
 
@@ -179,22 +180,28 @@ export class QueryEditor extends PureComponent<Props, State> {
   renderOriginal = () => {
     const { datasource, onChange, query, onRunQuery } = this.props;
     const readTypeValue = this.readTypeValue(query.readType);
-    if (readTypeValue === 'Events' || readTypeValue === 'Subscribe Events') {
-      return (
-        <>
-          <div>{this.renderReadTypes()}</div>
-          <div>{this.renderNodeQueryEditor('Event Source')}</div>
-          <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} />{' '}
-        </>
-      );
-    } else {
-      return (
-        <>
-          <div>{this.renderReadTypes()}</div>
-          <div>{this.renderNodeQueryEditor('Data Value')}</div>
-        </>
-      );
-    }
+      if (readTypeValue === 'Events' || readTypeValue === 'Subscribe Events') {
+          return (
+              <>
+                  <div>{this.renderReadTypes()}</div>
+                  <div>{this.renderNodeQueryEditor('Event Source')}</div>
+                  <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} />{' '}
+              </>
+          );
+      }
+      else if (readTypeValue === 'Resource')
+      {
+          return <div>{this.renderReadTypes()}</div>;
+      }
+        else
+        {
+          return (
+            <>
+              <div>{this.renderReadTypes()}</div>
+              <div>{this.renderNodeQueryEditor('Data Value')}</div>
+            </>
+          );
+        }
   };
 
   renderTreeEditor = () => {

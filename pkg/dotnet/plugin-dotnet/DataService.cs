@@ -333,6 +333,9 @@ namespace plugin_dotnet
                             case "SubscribeEvents":
                                 responses = SubscribeEvents(connection.Session, connection.EventSubscription, queries, nsTable);
                                 break;
+                            case "Resource":
+                                responses = null;
+                                break;
 
                         }
                         if (responses != null)
