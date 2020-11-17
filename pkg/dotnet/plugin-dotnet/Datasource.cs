@@ -110,6 +110,7 @@ namespace plugin_dotnet
     public class NsNodeIdentifier
     {
         public string NamespaceUrl { get; set; }
+        public IdType IdType { get; set; }
         public string Identifier { get; set; }
     }
 
