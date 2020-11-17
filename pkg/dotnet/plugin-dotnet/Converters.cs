@@ -266,7 +266,7 @@ namespace plugin_dotnet
             return eventFilter;
         }
 
-        internal static Result<DataResponse> CreateHistoryDataResponse(ILogger log, Result<HistoryData> valuesResult, OpcUAQuery query)
+        internal static Result<DataResponse> CreateHistoryDataResponse(ILogger log, Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath)
         {
             if (valuesResult.Success)
             {
@@ -278,7 +278,19 @@ namespace plugin_dotnet
                 {
                     if (valueField == null && entry.Value != null)
                     {
-                        string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name)) : query.alias;
+                        string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray()) : query.alias;
+                        if (relativePath?.RelativePath?.Elements?.Count > 0)
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            sb.Append(fieldName);
+                            var pelemt = relativePath.RelativePath.Elements;
+                            for (int i = 0; i < pelemt.Count; i++)
+                            {
+                                sb.Append(" / ");
+                                sb.Append(pelemt[i].TargetName.Name);
+                            }
+                            fieldName = sb.ToString();
+                        }
                         valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
                     }
 
@@ -306,7 +318,7 @@ namespace plugin_dotnet
             return dt;
         }
 
-        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, DataValue dataValue, NodeId nodeId, OpcUAQuery query)
+        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
         {
             if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
             {
@@ -314,7 +326,19 @@ namespace plugin_dotnet
                 DataFrame dataFrame = new DataFrame(log, query.refId);
 
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name)) : query.alias;
+                string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray()) : query.alias;
+                if (relativePath?.RelativePath?.Elements?.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(fieldName);
+                    var pelemt = relativePath.RelativePath.Elements;
+                    for (int i = 0; i < pelemt.Count; i++)
+                    {
+                        sb.Append(" / ");
+                        sb.Append(pelemt[i].TargetName.Name);
+                    }
+                    fieldName = sb.ToString();
+                }
                 Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
                 timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
                 valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");

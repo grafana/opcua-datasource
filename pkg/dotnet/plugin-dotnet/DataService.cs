@@ -44,7 +44,7 @@ namespace plugin_dotnet
         }
 
 
-        private BrowsePath ResolveBrowsePath(OpcUAQuery query, NamespaceTable namespaceTable)
+        private BrowsePath ResolveRelativePath(OpcUAQuery query, NamespaceTable namespaceTable)
         {
             var nodeId = Converter.GetNodeId(query.nodePath.node.nodeId, namespaceTable);
             var path = new BrowsePath();
@@ -125,7 +125,7 @@ namespace plugin_dotnet
 		private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var results = new Result<DataResponse>[queries.Length];
-            var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            var browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
             var nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
             var dvs = session.ReadNodeValues(nodeIds);
@@ -135,7 +135,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     var dataValue = dvs[j];
-                    results[i] = Converter.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i]);
+                    results[i] = Converter.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i], browsePaths[i]);
                     j++;
                 }
                 else
@@ -167,8 +167,8 @@ namespace plugin_dotnet
             var indexMap = new Dictionary<ReadRawKey, List<int>>();
             var queryMap = new Dictionary<ReadRawKey, List<NodeId>>();
 
-            var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
-            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
+            var relativePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
+            Result<NodeId>[] nodeIdsResult = GetNodeIds(session, relativePaths, namespaceTable);
 
             var result = new Result<DataResponse>[queries.Length];
             for (int i = 0; i < queries.Length; i++)
@@ -191,7 +191,6 @@ namespace plugin_dotnet
                 }
             }
 
-            
             foreach (var querygroup in queryMap)
             {
                 var key = querygroup.Key;
@@ -201,7 +200,7 @@ namespace plugin_dotnet
                 for (int i = 0; i < indices.Count; i++)
                 {
                     var idx = indices[i];
-                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx]);
+                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], relativePaths[idx]);
                 }
             }
             return result;
@@ -214,7 +213,7 @@ namespace plugin_dotnet
             var indexMap = new Dictionary<ReadProcessedKey, List<int>>();
             var queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
 
-            var browsePaths = queries.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            var browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
             var result = new Result<DataResponse>[queries.Length];
 
@@ -256,7 +255,7 @@ namespace plugin_dotnet
                 {
                     var idx = indices[i];
                     var valuesResult = historyValues[i];
-                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx]);
+                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], browsePaths[idx]);
                 }
             }
             return result;
@@ -267,7 +266,7 @@ namespace plugin_dotnet
 
         private Result<DataResponse>[] ReadEvents(Session session, OpcUAQuery[] opcUAQuery, NamespaceTable namespaceTable)
         {
-            var browsePaths = opcUAQuery.Select(a => ResolveBrowsePath(a, namespaceTable)).ToArray();
+            var browsePaths = opcUAQuery.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
 
             var results = new Result<DataResponse>[opcUAQuery.Length];
@@ -379,7 +378,7 @@ namespace plugin_dotnet
         private Result<DataResponse>[] SubscribeDataValues(Session session, IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
             var responses = new Result<DataResponse>[queries.Length];
-            var browsePaths = queries.Select(a => ResolveBrowsePath(a, nsTable)).ToArray();
+            var browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, nsTable);
 
             var nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
@@ -391,7 +390,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     if (dataValues[j].Success)
-                        results[i] = Converter.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i]);
+                        results[i] = Converter.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
                     else
                         results[i] = new Result<DataResponse>(dataValues[j].StatusCode, dataValues[j].Error);
                     j++;
@@ -408,7 +407,7 @@ namespace plugin_dotnet
         private Result<DataResponse>[] SubscribeEvents(Session session, IEventSubscription eventSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
             var responses = new Result<DataResponse>[queries.Length];
-            var browsePaths = queries.Select(a => ResolveBrowsePath(a, nsTable)).ToArray();
+            var browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, nsTable);
 
             for (int i = 0; i < queries.Length; i++)
