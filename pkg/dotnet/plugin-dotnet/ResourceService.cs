@@ -238,7 +238,7 @@ namespace plugin_dotnet
         {
             var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
             var uaNodeId = NodeId.Parse(expandedId.id);
-            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, Identifier = uaNodeId.Identifier.ToString() };
+            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, IdType = uaNodeId.IdType, Identifier = uaNodeId.Identifier.ToString() };
             var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
             return targetNodeIdJson;
         }
