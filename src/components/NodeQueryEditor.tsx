@@ -107,7 +107,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         <div onBlur={e => console.log('onBlur', e)}>
           <NodeEditor
             rootNodeId="i=85"
-            placeholder="Type of template"
+            placeholder="Instance"
             node={this.state.node}
             readNode={n => this.readNode(n)}
             browse={(nodeId, filter) => this.browse(nodeId, filter)}
@@ -120,7 +120,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         <div>
           <NodeEditor
             rootNodeId="i=88"
-            placeholder="Type of template"
+            placeholder="Type"
             node={this.state.node}
             readNode={n => this.readNode(n)}
             browse={(nodeId, filter) => this.browseTypes(nodeId, filter)}
@@ -170,13 +170,18 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     let nodeNameType: string = this.props.nodeNameType;
     if (this.state.useTemplate) {
       browseNodeId = this.state.node.node.nodeId;
-      nodeNameType = 'Template type';
-    }
+      nodeNameType = 'Type';
+      }
 
     return (
-      <div style={{ padding: '4px' }}>
+        <div style={{ padding: '4px' }}>
         <Checkbox
-          label="Use template"
+            label="Instance"
+            checked={!this.state.useTemplate}
+            onChange={e => this.changeNotUseTemplate(e)}
+        ></Checkbox>
+        <Checkbox
+          label="Type"
           checked={this.state.useTemplate}
           onChange={e => this.changeUseTemplate(e)}
         ></Checkbox>
@@ -214,5 +219,12 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     const { onChange, query } = this.props;
     var checked = e.currentTarget.checked;
     this.setState({ useTemplate: checked }, () => onChange({ ...query, useTemplate: checked }));
-  }
+    }
+
+
+    changeNotUseTemplate(e: React.FormEvent<HTMLInputElement>): void {
+        const { onChange, query } = this.props;
+        var checked = e.currentTarget.checked;
+        this.setState({ useTemplate: !checked }, () => onChange({ ...query, useTemplate: !checked }));
+    }
 }

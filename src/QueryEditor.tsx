@@ -1,5 +1,5 @@
 import React, { PureComponent, ChangeEvent } from 'react';
-import { TabsBar, TabContent, Tab, RadioButtonGroup, Input, SegmentAsync } from '@grafana/ui';
+import { TabsBar, TabContent, Tab, RadioButtonGroup, SegmentAsync } from '@grafana/ui';
 import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from './DataSource';
@@ -7,7 +7,7 @@ import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults } from './types'
 import { css } from 'emotion';
 import { EventQueryEditor } from './components/EventQueryEditor';
 import { NodeQueryEditor } from './components/NodeQueryEditor';
-import { SegmentLabel } from './components/SegmentFrame';
+import { SegmentFrame } from './components/SegmentFrame';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
@@ -120,26 +120,19 @@ export class QueryEditor extends PureComponent<Props, State> {
     switch (readTypeValue) {
       case 'Processed': {
         return (
-          <>
-            <SegmentLabel label={'Aggregate'} marginLeft />
-            <SegmentAsync
-              value={query.aggregate?.name ?? selectText('aggregate')}
-              loadOptions={() => this.browseNodeSV('i=11201')}
-              onChange={e => this.onChangeField('aggregate', e)}
-            />
+            <>
+                <SegmentFrame label={'Aggregate'}>
+                    <SegmentAsync
+                      value={query.aggregate?.name ?? selectText('aggregate')}
+                      loadOptions={() => this.browseNodeSV('i=11201')}
+                      onChange={e => this.onChangeField('aggregate', e)} />
+                </SegmentFrame>
           </>
         );
       }
       case 'Raw': {
         return (
-          <>
-            <SegmentLabel label="Max Values" marginLeft />
-            <Input
-              width={10}
-              value={-1}
-              onChange={() => console.log('not implemented yet')}
-              onBlur={() => onRunQuery()}
-            />
+            <>
           </>
         );
       }
@@ -198,7 +191,7 @@ export class QueryEditor extends PureComponent<Props, State> {
           return (
             <>
               <div>{this.renderReadTypes()}</div>
-              <div>{this.renderNodeQueryEditor('Data Value')}</div>
+              <div>{this.renderNodeQueryEditor('Instance')}</div>
             </>
           );
         }
