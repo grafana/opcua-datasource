@@ -23,10 +23,12 @@ type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & 
 type State = {
   useTemplate: boolean;
   //templateType: NodePath;
-  node: NodePath;
+    node: NodePath;
+
   alias: string;
   templateVariable: string;
-  relativepath: QualifiedName[];
+    relativepath: QualifiedName[];
+    advanced: boolean;
   browserOpened: boolean;
 };
 
@@ -58,7 +60,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       relativepath: this.props.query.relativePath,
       node: nodePath,
       alias: alias,
-      browserOpened: false,
+        browserOpened: false,
+        advanced: false,
     };
   }
 
@@ -148,8 +151,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
   }
 
   renderTemplateVariable() {
-    const { templateVariable } = this.state;
-    if (this.state.useTemplate) {
+      const { templateVariable } = this.state;
+      if (this.state.useTemplate && this.state.advanced) {
       return (
         <SegmentFrame label="Template variable">
           <Input
@@ -162,10 +165,21 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       );
     }
     return <></>;
-  }
+    }
+
+
+    renderAlias() {
+        const { advanced } = this.state;
+        if (advanced) {
+            return <SegmentFrame label="Alias">
+                <Input value={this.state.alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
+            </SegmentFrame>;
+        }
+        return <></>;
+    }
 
   render() {
-    const { relativepath, alias, node } = this.state;
+    const { relativepath, node } = this.state;
     let browseNodeId: string = node.node.nodeId;
     let nodeNameType: string = this.props.nodeNameType;
     if (this.state.useTemplate) {
@@ -177,13 +191,13 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         <div style={{ padding: '4px' }}>
         <Checkbox
             label="Instance"
-            checked={!this.state.useTemplate}
-            onChange={e => this.changeNotUseTemplate(e)}
+                checked={!this.state.useTemplate}
+                onChange={e => this.changeUseTemplate(!e.currentTarget.checked)}
         ></Checkbox>
         <Checkbox
           label="Type"
-          checked={this.state.useTemplate}
-          onChange={e => this.changeUseTemplate(e)}
+                checked={this.state.useTemplate}
+                onChange={e => this.changeUseTemplate(e.currentTarget.checked)}
         ></Checkbox>
         <SegmentFrame label={nodeNameType}>
           {this.renderTemplateOrNodeBrowser()}
@@ -195,11 +209,16 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
               rootNodeId={browseNodeId}
             />
           </div>
-        </SegmentFrame>
-        {this.renderTemplateVariable()}
-        <SegmentFrame label="Alias">
-          <Input value={alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
-        </SegmentFrame>
+            </SegmentFrame>
+
+
+            <Checkbox
+                label="Advanced"
+                checked={this.state.advanced}
+                onChange={e => this.setState({ advanced: e.currentTarget.checked })}
+            ></Checkbox>
+            {this.renderTemplateVariable()}
+            {this.renderAlias()}
       </div>
     );
   }
@@ -215,16 +234,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     );
   }
 
-  changeUseTemplate(e: React.FormEvent<HTMLInputElement>): void {
+  changeUseTemplate(checked: boolean): void {
     const { onChange, query } = this.props;
-    var checked = e.currentTarget.checked;
     this.setState({ useTemplate: checked }, () => onChange({ ...query, useTemplate: checked }));
-    }
-
-
-    changeNotUseTemplate(e: React.FormEvent<HTMLInputElement>): void {
-        const { onChange, query } = this.props;
-        var checked = e.currentTarget.checked;
-        this.setState({ useTemplate: !checked }, () => onChange({ ...query, useTemplate: !checked }));
-    }
+   }
 }

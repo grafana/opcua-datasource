@@ -1112,7 +1112,7 @@
     lodash "4.17.15"
     md5-file "^4.0.0"
     mini-css-extract-plugin "^0.7.0"
-    node-sass "^4.13.1"
+    node-sass "^4.15.1"
     optimize-css-assets-webpack-plugin "^5.0.3"
     ora "^4.0.3"
     pixelmatch "^5.1.0"
