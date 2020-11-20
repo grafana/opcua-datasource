@@ -266,6 +266,29 @@ namespace plugin_dotnet
             return eventFilter;
         }
 
+
+        internal static string GetFieldName(OpcUAQuery query, BrowsePath relativePath)
+        {
+            string fieldName = query.alias;
+            if (string.IsNullOrEmpty(fieldName))
+            {
+                fieldName = String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray());
+                if (relativePath?.RelativePath?.Elements?.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(fieldName);
+                    var pelemt = relativePath.RelativePath.Elements;
+                    for (int i = 0; i < pelemt.Count; i++)
+                    {
+                        sb.Append(" / ");
+                        sb.Append(pelemt[i].TargetName.Name);
+                    }
+                    fieldName = sb.ToString();
+                }
+            }
+            return fieldName;
+        }
+
         internal static Result<DataResponse> CreateHistoryDataResponse(ILogger log, Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath)
         {
             if (valuesResult.Success)
@@ -278,19 +301,7 @@ namespace plugin_dotnet
                 {
                     if (valueField == null && entry.Value != null)
                     {
-                        string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray()) : query.alias;
-                        if (relativePath?.RelativePath?.Elements?.Count > 0)
-                        {
-                            StringBuilder sb = new StringBuilder();
-                            sb.Append(fieldName);
-                            var pelemt = relativePath.RelativePath.Elements;
-                            for (int i = 0; i < pelemt.Count; i++)
-                            {
-                                sb.Append(" / ");
-                                sb.Append(pelemt[i].TargetName.Name);
-                            }
-                            fieldName = sb.ToString();
-                        }
+                        var fieldName = GetFieldName(query, relativePath);
                         valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
                         valueField.Config = new FieldConfig();
                         valueField.Config.Unit = "Litre/hour";
@@ -328,19 +339,7 @@ namespace plugin_dotnet
                 DataFrame dataFrame = new DataFrame(log, query.refId);
 
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                string fieldName = string.IsNullOrEmpty(query.alias) ? String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray()) : query.alias;
-                if (relativePath?.RelativePath?.Elements?.Count > 0)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append(fieldName);
-                    var pelemt = relativePath.RelativePath.Elements;
-                    for (int i = 0; i < pelemt.Count; i++)
-                    {
-                        sb.Append(" / ");
-                        sb.Append(pelemt[i].TargetName.Name);
-                    }
-                    fieldName = sb.ToString();
-                }
+                var fieldName = GetFieldName(query, relativePath);
                 Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
                 timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
                 valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
