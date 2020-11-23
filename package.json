@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Reads data from OPC UA Servers",
   "scripts": {
-    "build": "grafana-toolkit plugin:build",
+    "build": "grafana-toolkit plugin:build && make",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev && make",
     "watch": "$SHELL -c \"make watch &; grafana-toolkit plugin:dev --watch\""

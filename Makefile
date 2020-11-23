@@ -17,10 +17,12 @@ endif
 ifeq (${BUILD_OS},darwin)
 	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
 	dotnet publish ./backend/.osx.build.csproj -o ./dist --self-contained true
+	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
 endif
 ifeq (${BUILD_OS},linux)
 	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
 	dotnet publish ./backend/.linux.build.csproj -o ./dist --self-contained true
+	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
 endif
 
 watch:

@@ -67,6 +67,7 @@ namespace plugin_dotnet
                     results[i] = new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}", nodeIds[i].ToString()));
                 }
             }
+            log.Debug(String.Format("Got a response {0}", results));
             return results;
         }
 
@@ -360,9 +361,9 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-               // Close out the client connection.
-               log.Debug("Error: {0}", ex);
-               connection.Close();
+                // Close out the client connection.
+                log.Debug("Error: {0}", ex);
+                connection.Close();
             }
 
             return await Task.FromResult(response);

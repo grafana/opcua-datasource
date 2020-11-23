@@ -1,12 +1,11 @@
 import React, { PureComponent, ChangeEvent } from 'react';
-import { SegmentAsync, RadioButtonGroup, Input, TabsBar, TabContent, Tab } from '@grafana/ui';
+import { SegmentAsync, RadioButtonGroup, Input } from '@grafana/ui';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
 import { DataSource } from './DataSource';
 import { EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
-import { SegmentFrame, SegmentLabel, SegmentRow } from './components/SegmentFrame';
-import { css } from 'emotion';
+import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
 import { EventField, EventFieldTable } from './components/EventFieldTable';
 import { AddEventFieldForm } from './components/AddEventFieldForm';
 import { EventFilterTable } from './components/EventFilterTable';
@@ -30,19 +29,6 @@ type State = {
 
   tabs: Array<{ label: string; active: boolean }>;
 };
-
-const tabMarginBox = css(`
-{
-  border-left: 1px solid #202226;
-  border-right: 1px solid #202226;
-  border-bottom: 1px solid #202226;
-  background: #141414;
-}
-`);
-
-const tabMarginHeader = css(`
-  background: #141414;
-`);
 
 export class QueryEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
@@ -284,7 +270,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { query } = this.props;
     return (
       <>
-        <SegmentFrame label={'Aggregate'}>
+        <SegmentFrame width={7} label={'Aggregate'}>
           <SegmentAsync
             value={query.aggregate?.name ?? selectText('aggregate')}
             loadOptions={() => this.browseNodeSV('i=11201')}
@@ -299,7 +285,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { onRunQuery } = this.props;
     return (
       <>
-        <SegmentFrame label="Max Values">
+        <SegmentFrame width={7} label="Max Values">
           <Input
             width={10}
             value={-1}
@@ -315,7 +301,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { query } = this.props;
     return (
       <>
-        <SegmentFrame label="Event Type">
+        <SegmentFrame width={7} label="Event Type">
           <ButtonCascader
             value={this.state.eventTypes}
             loadData={this.getEventTypes}
@@ -424,42 +410,33 @@ export class QueryEditor extends PureComponent<Props, State> {
     );
   };
 
-  renderTabs = () => {
+  renderQueryOptions = () => {
     const { query } = this.props;
     return (
       <>
-        <SegmentRow label="Query Options">
-          <TabsBar className={tabMarginHeader}>
-            {this.readTypeOptions.map((tab, index) => {
-              return (
-                <Tab
-                  key={index}
-                  label={tab.label || ''}
-                  active={tab.label === query.readType}
-                  onChangeTab={() => {
-                    this.onChangeField('readType', tab.label || '');
-                  }}
-                />
-              );
-            })}
-          </TabsBar>
-          <TabContent className={tabMarginBox}>
-            {(() => {
-              switch (query.readType) {
-                case 'Raw':
-                  return this.renderRawQueryOptions();
-                case 'Processed':
-                  return this.renderProcessedQueryOptions();
-                case 'Events':
-                  return this.renderEvents();
-                case 'Events2':
-                  return this.renderEventQueryOptions();
-                default:
-                  return <></>;
-              }
-            })()}
-          </TabContent>
-        </SegmentRow>
+        <SegmentFrame width={7} label="Query Options">
+          <RadioButtonGroup
+            options={this.readTypeOptions}
+            value={query.readType}
+            onChange={readType => {
+              this.onChangeField('readType', readType!);
+            }}
+          />
+        </SegmentFrame>
+        {(() => {
+          switch (query.readType) {
+            case 'ReadDataRaw':
+              return this.renderRawQueryOptions();
+            case 'ReadDataProcessed':
+              return this.renderProcessedQueryOptions();
+            case 'ReadEvents':
+              return this.renderEvents();
+            case 'ReadEvents2':
+              return this.renderEventQueryOptions();
+            default:
+              return <></>;
+          }
+        })()}
       </>
     );
   };
@@ -469,7 +446,7 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     return (
       <>
-        <SegmentFrame label="Tag">
+        <SegmentFrame width={7} label="Tag">
           <div onBlur={e => console.log('onBlur', e)}>
             <ButtonCascader
               //className="query-part"
@@ -481,10 +458,11 @@ export class QueryEditor extends PureComponent<Props, State> {
               {value.join(separator)}
             </ButtonCascader>
           </div>
-          <SegmentLabel label="Alias" />
+        </SegmentFrame>
+        {value[0] === defaultTag ? <></> : this.renderQueryOptions()}
+        <SegmentFrame width={7} label="Alias">
           <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
         </SegmentFrame>
-        {value[0] === defaultTag ? <></> : this.renderTabs()}
       </>
     );
   }
