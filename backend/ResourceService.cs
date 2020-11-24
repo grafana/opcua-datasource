@@ -100,7 +100,7 @@ namespace plugin_dotnet
                 log.Debug("Got browse exception {0}", ex);
                 throw ex;
             }
-             
+
             responseStream.WriteAsync(response);
             return Task.CompletedTask;
         }

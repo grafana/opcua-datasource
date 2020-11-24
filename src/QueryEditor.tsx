@@ -461,7 +461,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         </SegmentFrame>
         {value[0] === defaultTag ? <></> : this.renderQueryOptions()}
         <SegmentFrame width={7} label="Alias">
-          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
+          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={60} />
         </SegmentFrame>
       </>
     );

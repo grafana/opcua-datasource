@@ -351,6 +351,7 @@ namespace plugin_dotnet
                     }
                     catch (Exception e)
                     {
+                        log.Debug("Responses is {0}", response);
                         foreach (var q in queries)
                         {
                             response.Responses[q.refId].Error = e.ToString();

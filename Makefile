@@ -12,30 +12,24 @@ restore:
 
 build:
 ifeq (${BUILD_OS},windows)
-	dotnet publish ./backend/.windows.build.csproj -o ./dist --self-contained true
+	dotnet publish ./backend/.windows.build.csproj --self-contained true
 endif
 ifeq (${BUILD_OS},darwin)
-	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
-	dotnet publish ./backend/.osx.build.csproj -o ./dist --self-contained true
-	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
+	dotnet publish ./backend/.osx.build.csproj --self-contained true
 endif
 ifeq (${BUILD_OS},linux)
-	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
-	dotnet publish ./backend/.linux.build.csproj -o ./dist --self-contained true
-	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
+	dotnet publish ./backend/.linux.build.csproj --self-contained true
 endif
 
 watch:
 ifeq (${BUILD_OS},windows)
-	dotnet watch -p ./backend/.windows.build.csproj publish .windows.build.csproj -o ./dist --self-contained true
+	dotnet watch -p ./backend/.windows.build.csproj publish .windows.build.csproj --self-contained true
 endif
 ifeq (${BUILD_OS},darwin)
-	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
-	dotnet watch -p ./backend/.osx.build.csproj publish .osx.build.csproj -o ./dist --self-contained true
+	dotnet watch -p ./backend/.osx.build.csproj publish .osx.build.csproj --self-contained true
 endif
 ifeq (${BUILD_OS},linux)
-	pidof gpx_opcua && kill $$(pidof gpx_opcua | tr -d '\n') || true
-	dotnet watch -p ./backend/.linux.build.csproj publish .linux.build.csproj -o ./dist --self-contained true
+	dotnet watch -p ./backend/.linux.build.csproj publish .linux.build.csproj --self-contained true
 endif
  
 .PHONY: vendor
