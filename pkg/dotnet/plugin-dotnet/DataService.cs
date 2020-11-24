@@ -352,7 +352,8 @@ namespace plugin_dotnet
                                 else
                                 {
                                     var dr = new DataResponse();
-                                    dr.Error = dataResponse.Error;
+                                    dr.Error = string.Format("{0} {1}", dataResponse.StatusCode.ToString(),  dataResponse.Error);
+                                    _log.LogError(dr.Error);
                                     response.Responses[queries[i++].refId] = dr;
                                 }
                             }

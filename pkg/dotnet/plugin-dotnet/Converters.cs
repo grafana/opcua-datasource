@@ -303,8 +303,6 @@ namespace plugin_dotnet
                     {
                         var fieldName = GetFieldName(query, relativePath);
                         valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
-                        valueField.Config = new FieldConfig();
-                        valueField.Config.Unit = "Litre/hour";
                     }
 
                     if (valueField != null)
@@ -362,7 +360,7 @@ namespace plugin_dotnet
             if (f.Config != null)
             {
                 var meta = new Dictionary<string, string>();
-                meta.Add("\"config\"", System.Text.Json.JsonSerializer.Serialize(f.Config));
+                meta.Add("config", System.Text.Json.JsonSerializer.Serialize(f.Config));
                 return meta;
             }
             return null;
