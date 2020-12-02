@@ -405,7 +405,7 @@ namespace plugin_dotnet
                 case "Decimal":
                     return new OpcUaDataFrameColumn<decimal>(field.Name, field.DataAs<decimal>(), CreateMetaData(field));
                 case "bool":
-                case "Bool":
+                case "Boolean":
                     return new OpcUaDataFrameColumn<bool>(field.Name, field.DataAs<bool>(), CreateMetaData(field));
                 case "DateTime":
                     return new OpcUaDataFrameColumn<DateTime>(field.Name, field.DataAs<DateTime>(), CreateMetaData(field));
