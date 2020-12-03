@@ -140,33 +140,30 @@ namespace plugin_dotnet
 			return string.Empty;
 		}
 
-		private int GetDashRelationCount(int id)
+		private int GetDashboardIdCount(int id, SQLiteConnection connection)
 		{
-			using (var connection = Sqlite.ConnectDatabase(_filename))
+			var sql = $"SELECT COUNT(*) FROM DashboardRelations WHERE DashboardId == '{id}'";
+
+			try
 			{
-				var sql = $"SELECT COUNT(*) FROM DashboardRelations WHERE DashboardId == '{id}'";
-
-				try
+				using (DbCommand cmd = connection.CreateCommand())
 				{
-					using (DbCommand cmd = connection.CreateCommand())
-					{
-						cmd.CommandText = sql;
-						cmd.CommandType = CommandType.Text;
+					cmd.CommandText = sql;
+					cmd.CommandType = CommandType.Text;
 
-						using (var rdr = cmd.ExecuteReader())
+					using (var rdr = cmd.ExecuteReader())
+					{
+						if(rdr.Read())
 						{
-							if(rdr.Read())
-							{
-								var count = rdr.GetInt32(0);
-								return count;
-							}
+							var count = rdr.GetInt32(0);
+							return count;
 						}
 					}
 				}
-				catch (Exception e)
-				{
-					_logger.LogError(e, $"GetDashRelationCount failed for DashboardId: '{id}'");
-				}
+			}
+			catch (Exception e)
+			{
+				_logger.LogError(e, $"GetDashRelationCount failed for DashboardId: '{id}'");
 			}
 
 			return -1;
@@ -261,7 +258,7 @@ namespace plugin_dotnet
 
 						if (dashboardId > 0)
 						{
-							var relationsCount = GetDashRelationCount(dashboardId);
+							var relationsCount = GetDashboardIdCount(dashboardId, connection);
 							if (relationsCount == nodeIds.Length)
 								RemoveMappingForDashboard(dashboardId, connection);
 						}
@@ -344,7 +341,9 @@ namespace plugin_dotnet
 						while (rdr.Read())
 						{
 							int dashboardId = rdr.GetInt32(0);
-							dashIds[i].Add(dashboardId);
+							int relationsCount = GetDashboardIdCount(dashboardId, connection);
+							if(relationsCount == nodeIds.Length)
+								dashIds[i].Add(dashboardId);
 						}
 					}
 				}
