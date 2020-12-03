@@ -169,6 +169,8 @@ namespace plugin_dotnet
 
             var relativePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, relativePaths, namespaceTable);
+            //Result<UaMetaData>[] metaData = GetMetaData(session, nodeIdsResult, namespaceTable);
+
 
             var result = new Result<DataResponse>[queries.Length];
             for (int i = 0; i < queries.Length; i++)
@@ -206,9 +208,12 @@ namespace plugin_dotnet
             return result;
         }
 
+		//private Result<UaMetaData>[] GetMetaData(Session session, Result<NodeId>[] nodeIdsResult, NamespaceTable namespaceTable)
+		//{
+			
+		//}
 
-
-        private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
+		private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var indexMap = new Dictionary<ReadProcessedKey, List<int>>();
             var queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
@@ -347,7 +352,8 @@ namespace plugin_dotnet
                                 else
                                 {
                                     var dr = new DataResponse();
-                                    dr.Error = dataResponse.Error;
+                                    dr.Error = string.Format("{0} {1}", dataResponse.StatusCode.ToString(),  dataResponse.Error);
+                                    _log.LogError(dr.Error);
                                     response.Responses[queries[i++].refId] = dr;
                                 }
                             }

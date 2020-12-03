@@ -250,9 +250,11 @@ namespace plugin_dotnet
     public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T : unmanaged
     {
         List<T> _values;
-        public OpcUaDataFrameColumn(string name, List<T> values) : base(name, values)
+        IDictionary<string, string> _metadata = null;
+        public OpcUaDataFrameColumn(string name, List<T> values, IDictionary<string, string> metadata = null) : base(name, values)
         {
             _values = values;
+            _metadata = metadata;
         }
 
         private IArrowType GetArrowType()
@@ -287,7 +289,7 @@ namespace plugin_dotnet
                 throw new NotImplementedException(nameof(T));
         }
 
-        protected override Apache.Arrow.Field GetArrowField() => new Apache.Arrow.Field(Name, GetArrowType(), NullCount != 0);
+        protected override Apache.Arrow.Field GetArrowField() => new Apache.Arrow.Field(Name, GetArrowType(), NullCount != 0, _metadata);
 
         protected override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
         {
