@@ -331,23 +331,32 @@ namespace plugin_dotnet
 
         internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
         {
-            if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
-            {
-                DataResponse dataResponse = new DataResponse();
-                DataFrame dataFrame = new DataFrame(log, query.refId);
+			try
+			{
+                if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
+                {
+                    DataResponse dataResponse = new DataResponse();
+                    DataFrame dataFrame = new DataFrame(log, query.refId);
 
-                var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                var fieldName = GetFieldName(query, relativePath);
-                Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
-                timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
-                valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
-                dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
-                return new Result<DataResponse>(dataResponse);
+                    var timeField = dataFrame.AddField("Time", typeof(DateTime));
+                    var fieldName = GetFieldName(query, relativePath);
+                    Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
+                    timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
+                    valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
+                    dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
+                    return new Result<DataResponse>(dataResponse);
+                }
+                else
+                {
+                    return new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}", nodeId.ToString()));
+                }
             }
-            else
-            {
-                return new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}", nodeId.ToString()));
+            catch(Exception e)
+			{
+                log.LogError(e.Message);
+                return new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}: {1}", nodeId.ToString(), e.Message));
             }
+
         }
     }
 
