@@ -73,12 +73,12 @@ namespace plugin_dotnet
             string existingDashboard = HttpUtility.UrlDecode(queryParams["existingDashboard"]);
             string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
 
-            var nodeIdJson = ConvertNodeIdToJson(nodeId);
-            var typeNodeIdJson = ConvertNodeIdToJson(typeNodeId);
+            var nodeIdJson = ConvertNodeIdToJson(nodeId, nsTable);
+            var typeNodeIdJson = ConvertNodeIdToJson(typeNodeId, nsTable);
 
             var interfacesIds = Array.Empty<string>();
             if (interfaces != null)
-                interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a)).ToArray();
+                interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
 
             var dashboardMappingData = new DashboardMappingData(connection, nodeId, nodeIdJson, typeNodeIdJson, useType, interfacesIds, dashboard, existingDashboard, perspective, nsTable);
             var r = _dashboardResolver.AddDashboardMapping(dashboardMappingData);
@@ -97,7 +97,7 @@ namespace plugin_dotnet
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
             string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
 
-            var targetNodeIdJson = ConvertNodeIdToJson(nodeId);
+            var targetNodeIdJson = ConvertNodeIdToJson(nodeId, nsTable);
 
             (string dashboard, string[] dashKeys) = _dashboardResolver.ResolveDashboard(connection, nodeId, targetNodeIdJson, perspective, nsTable);
             var dashboardInfo = new DashboardInfo() { name = dashboard, dashKeys = dashKeys };
@@ -234,11 +234,13 @@ namespace plugin_dotnet
             }
         }
 
-        private static string ConvertNodeIdToJson(string nodeId)
+        private static string ConvertNodeIdToJson(string nodeId, NamespaceTable nsTable)
         {
-            var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
-            var uaNodeId = NodeId.Parse(expandedId.id);
-            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = expandedId.namespaceUrl, IdType = uaNodeId.IdType, Identifier = uaNodeId.Identifier.ToString() };
+            var uaNodeId = Converter.GetNodeId(nodeId, nsTable);
+            var url = nsTable.GetString(uaNodeId.NamespaceIndex);
+            //var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
+            //var uaNodeId = NodeId.Parse(expandedId.id);
+            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = url, IdType = uaNodeId.IdType, Identifier = uaNodeId.Identifier.ToString() };
             var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
             return targetNodeIdJson;
         }
