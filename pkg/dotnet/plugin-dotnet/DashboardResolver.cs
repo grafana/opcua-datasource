@@ -12,6 +12,7 @@ namespace plugin_dotnet
 	{
 		(string dashboard, string[] dashKeys) ResolveDashboard(Session uaConnection, string nodeId, string targetNodeIdJson, string perspective, NamespaceTable nsTable);
 		UaResult AddDashboardMapping(DashboardMappingData dashboardMappingData);
+		UaResult RemoveDashboardMapping(DashboardMappingData dashboardMappingData);
 	}
 
 	public class DashboardResolver : IDashboardResolver
@@ -176,6 +177,18 @@ namespace plugin_dotnet
 
 				return _dashboardDb.AddDashboardMapping(new[] { nIdJson }, data.Dashboard, data.Perspective);
 			}
+		}
+
+		public UaResult RemoveDashboardMapping(DashboardMappingData data)
+		{
+			var nIdJsons = new List<string>();
+
+			if (data.InterfacesIds?.Length > 0)
+				nIdJsons.AddRange(data.InterfacesIds);
+
+			nIdJsons.Add(data.TypeNodeIdJson);
+
+			return _dashboardDb.RemoveDashboardMapping(nIdJsons.ToArray(), data.Perspective);
 		}
 	}
 }

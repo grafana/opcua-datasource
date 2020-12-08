@@ -173,7 +173,7 @@ namespace plugin_dotnet
 		{
 			if (nodeIds?.Length > 0)
 			{
-				RemoveIfMappingExists(nodeIds, perspective);
+				RemoveDashboardMapping(nodeIds, perspective);
 
 				var addRes = AddDashboard(dashboard, perspective);
 				int dashboardId;
@@ -246,7 +246,7 @@ namespace plugin_dotnet
 			}
 		}
 
-		private void RemoveIfMappingExists(string[] nodeIds, string perspective)
+		public UaResult RemoveDashboardMapping(string[] nodeIds, string perspective)
 		{
 			if (nodeIds?.Length > 0 && !string.IsNullOrEmpty(perspective))
 			{
@@ -265,11 +265,14 @@ namespace plugin_dotnet
 					}
 					catch (Exception e)
 					{
-						_logger.LogError(e, $"RemoveIfExists query failed for nodeid(s): '{ToTabString(nodeIds)}' and perspective: '{perspective}'");
+						var msg = $"RemoveMapping query failed for nodeid(s): '{ToTabString(nodeIds)}' and perspective: '{perspective}'";
+						_logger.LogError(e, msg);
+						return new UaResult() { success = false, error = msg };
 					}
 				}
 			}
 
+			return new UaResult();
 		}
 
 		private void RemoveMappingForDashboard(int dashboardId, SQLiteConnection connection)

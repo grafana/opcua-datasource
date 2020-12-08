@@ -43,6 +43,7 @@ namespace plugin_dotnet
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
             _resourceHandlers.Add("getdashboard", GetDashboard);
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
+            _resourceHandlers.Add("removedashboardmapping", RemoveDashboardmapping);
             _resourceHandlers.Add("browsereferencetargets", BrowseReferenceTargets);
         }
 
@@ -86,6 +87,31 @@ namespace plugin_dotnet
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.LogDebug("Adding dashboard mapping => {0}", r.success);
+            return response;
+        }
+
+        private CallResourceResponse RemoveDashboardmapping(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            string typeNodeId = HttpUtility.UrlDecode(queryParams["typeNodeId"]);
+            bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
+            string[] interfaces = JsonSerializer.Deserialize<string[]>(HttpUtility.UrlDecode(queryParams["interfaces"]));
+            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
+
+            var nodeIdJson = ConvertNodeIdToJson(nodeId, nsTable);
+            var typeNodeIdJson = ConvertNodeIdToJson(typeNodeId, nsTable);
+
+            var interfacesIds = Array.Empty<string>();
+            if (interfaces != null)
+                interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
+
+            var dashboardMappingData = new DashboardMappingData(connection, nodeId, nodeIdJson, typeNodeIdJson, useType, interfacesIds, null, null, perspective, nsTable);
+            var r = _dashboardResolver.RemoveDashboardMapping(dashboardMappingData);
+            var result = JsonSerializer.Serialize(r);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("Remove dashboard mapping => {0}", r.success);
             return response;
         }
 

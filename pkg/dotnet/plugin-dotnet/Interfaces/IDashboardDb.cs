@@ -8,6 +8,7 @@ namespace plugin_dotnet
 	{
 		bool QueryDashboard(string[] dashKeys, string perspective, out DashboardData dashboard);
 		UaResult AddDashboardMapping(string[] dashKeys, string dashboard, string perspective);
+		UaResult RemoveDashboardMapping(string[] dashKeys, string perspective);
 		void RemoveMapping(string dashKey, string perspective);
 	}
 
