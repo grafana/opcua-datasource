@@ -45,6 +45,57 @@ namespace plugin_dotnet
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
             _resourceHandlers.Add("removedashboardmapping", RemoveDashboardmapping);
             _resourceHandlers.Add("browsereferencetargets", BrowseReferenceTargets);
+            _resourceHandlers.Add("getnamespaces", GetNamespaces);
+            _resourceHandlers.Add("isnodepresent", IsNodePresent);
+        }
+
+        private CallResourceResponse IsNodePresent(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+
+            try
+            {
+                var nId = Converter.GetNodeId(nodeId, nsTable);
+
+                var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName});
+
+                bool present = readRes.Length > 0;
+
+                var result = JsonSerializer.Serialize(present);
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                _log.LogDebug($"We got a result for '{nodeId}' from IsNodePresent => {0}", result);
+
+                return response;
+            }
+            catch(Exception e)
+			{
+                _log.LogDebug($"IsNodePresent for '{nodeId}' is false: ", e.Message);
+                var result = JsonSerializer.Serialize(false);
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                return response;
+            }
+        }
+
+        private CallResourceResponse GetNamespaces(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+
+            string[] namespaces = new string[nsTable.Count];
+            for (uint i = 0; i < nsTable.Count; i++)
+            {
+                namespaces[i] = nsTable.GetString(i);
+            }
+
+            var result = JsonSerializer.Serialize(namespaces);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("We got a result from GetNamespaces => {0}", result);
+
+            return response;
         }
 
         private CallResourceResponse BrowseReferenceTargets(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
@@ -52,6 +103,7 @@ namespace plugin_dotnet
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
             string referenceId = HttpUtility.UrlDecode(queryParams["referenceId"]);
+
             var nId = Converter.GetNodeId(nodeId, nsTable);
             var rId = Converter.GetNodeId(referenceId, nsTable);
             connection.Browse(null, null, nId, int.MaxValue, Opc.Ua.BrowseDirection.Forward, rId, true,
@@ -60,6 +112,7 @@ namespace plugin_dotnet
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.LogDebug("We got a result from browse ref targets => {0}", result);
+
             return response;
         }
 
@@ -131,11 +184,12 @@ namespace plugin_dotnet
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.LogDebug("We got a dash => {0}", dashboard);
+
             return response;
         }
 
 
-		private CallResourceResponse GetTypeDefinition(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        private CallResourceResponse GetTypeDefinition(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
@@ -264,9 +318,18 @@ namespace plugin_dotnet
         {
             var uaNodeId = Converter.GetNodeId(nodeId, nsTable);
             var url = nsTable.GetString(uaNodeId.NamespaceIndex);
-            //var expandedId = JsonSerializer.Deserialize<NSExpandedNodeId>(nodeId);
-            //var uaNodeId = NodeId.Parse(expandedId.id);
-            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = url, IdType = uaNodeId.IdType, Identifier = uaNodeId.Identifier.ToString() };
+
+            string identifier;
+            if (uaNodeId.IdType == IdType.Opaque)
+            {
+                var opaque = (byte[])uaNodeId.Identifier;
+                identifier = Encoding.UTF8.GetString(opaque, 0, opaque.Length);
+            }
+            else {
+                identifier = uaNodeId.Identifier.ToString();
+            }
+
+            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = url, IdType = uaNodeId.IdType, Identifier = identifier };
             var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
             return targetNodeIdJson;
         }

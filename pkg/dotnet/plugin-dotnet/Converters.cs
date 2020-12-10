@@ -54,17 +54,23 @@ namespace plugin_dotnet
 
         public static NodeId GetNodeId(string nid, NamespaceTable namespaceTable)
         {
+            NSNodeId nsNodeId;
+            NodeId nId;
             try
             {
-                var nsNodeId = System.Text.Json.JsonSerializer.Deserialize<NSNodeId>(nid);
-                NodeId nId = NodeId.Parse(nsNodeId.id);
-                var idx = (ushort)namespaceTable.GetIndex(nsNodeId.namespaceUrl);
-                return new NodeId(nId.Identifier, idx);
+                nsNodeId = System.Text.Json.JsonSerializer.Deserialize<NSNodeId>(nid);
+                nId = NodeId.Parse(nsNodeId.id);
             }
             catch
             {
                 return NodeId.Parse(nid);
             }
+
+            var idx = (ushort)namespaceTable.GetIndex(nsNodeId.namespaceUrl);
+            if(idx < ushort.MaxValue)
+                return new NodeId(nId.Identifier, idx);
+
+            throw new ArgumentException($"Namespace '{nsNodeId.namespaceUrl}' not found");
         }
 
         internal static Opc.Ua.QualifiedName GetQualifiedName(QualifiedName qm, NamespaceTable namespaceTable)
