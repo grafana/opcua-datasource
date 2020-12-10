@@ -1,5 +1,6 @@
 ﻿using Opc.Ua;
 using Opc.Ua.Client;
+using Prediktor.UA.Client;
 using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
@@ -84,24 +85,28 @@ namespace plugin_dotnet
 
 			//Get interface(s)
 			List<ExpandedNodeId> interfaces = new List<ExpandedNodeId>();
-			var hasInterface = "i=17603";
-			uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, hasInterface, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection intReferences);
-			if (intReferences.Count > 0)
+			if (IsNodePresent(uaConnection, UaConstants.HasInterface, nsTable))
 			{
-
-				for (int i = 0; i < intReferences.Count; i++)
-					interfaces.Add(intReferences[i].NodeId);
+				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, UaConstants.HasInterface, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection intReferences);
+				if (intReferences.Count > 0)
+				{
+					for (int i = 0; i < intReferences.Count; i++)
+						interfaces.Add(intReferences[i].NodeId);
+				}
 			}
 
 			//Get ClassType(s)
 			List<ExpandedNodeId> classTypes = new List<ExpandedNodeId>();
-			var definedByEquipmentClass = Converter.GetNodeId("{\"namespaceUrl\":\"http://www.OPCFoundation.org/UA/2013/01/ISA95\",\"id\":\"i=4919\"}", nsTable);
-			uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, definedByEquipmentClass, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection classReferences);
-			if (classReferences.Count > 0)
+			if (IsNodePresent(uaConnection, UaConstants.DefinedByEquipmentClass, nsTable))
 			{
+				var definedByEquipmentClass = Converter.GetNodeId(UaConstants.DefinedByEquipmentClass, nsTable);
+				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, definedByEquipmentClass, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection classReferences);
+				if (classReferences.Count > 0)
+				{
 
-				for (int i = 0; i < classReferences.Count; i++)
-					classTypes.Add(classReferences[i].NodeId);
+					for (int i = 0; i < classReferences.Count; i++)
+						classTypes.Add(classReferences[i].NodeId);
+				}
 			}
 
 			// Get type
@@ -159,6 +164,21 @@ namespace plugin_dotnet
 			}
 
 			return (string.Empty, Array.Empty<string>());
+		}
+
+		private bool IsNodePresent(Session uaConnection, string nodeId, NamespaceTable nsTable)
+		{
+			try
+			{
+				var nId = Converter.GetNodeId(nodeId, nsTable);
+				var readRes = uaConnection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName });
+
+				return readRes.Length > 0;
+			}
+			catch
+			{
+				return false;
+			}
 		}
 
 		public UaResult AddDashboardMapping(DashboardMappingData data)
