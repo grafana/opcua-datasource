@@ -12,8 +12,38 @@ namespace Pluginv2 {
   {
     static readonly string __ServiceName = "pluginv2.Resource";
 
-    static readonly grpc::Marshaller<global::Pluginv2.CallResourceRequest> __Marshaller_pluginv2_CallResourceRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResourceRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CallResourceResponse> __Marshaller_pluginv2_CallResourceResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CallResourceResponse.Parser.ParseFrom);
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    static readonly grpc::Marshaller<global::Pluginv2.CallResourceRequest> __Marshaller_pluginv2_CallResourceRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.CallResourceRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.CallResourceResponse> __Marshaller_pluginv2_CallResourceResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.CallResourceResponse.Parser));
 
     static readonly grpc::Method<global::Pluginv2.CallResourceRequest, global::Pluginv2.CallResourceResponse> __Method_CallResource = new grpc::Method<global::Pluginv2.CallResourceRequest, global::Pluginv2.CallResourceResponse>(
         grpc::MethodType.ServerStreaming,
@@ -99,8 +129,38 @@ namespace Pluginv2 {
   {
     static readonly string __ServiceName = "pluginv2.Data";
 
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataResponse.Parser.ParseFrom);
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataResponse.Parser));
 
     static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_QueryData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
         grpc::MethodType.Unary,
@@ -194,10 +254,40 @@ namespace Pluginv2 {
   {
     static readonly string __ServiceName = "pluginv2.Diagnostics";
 
-    static readonly grpc::Marshaller<global::Pluginv2.CheckHealthRequest> __Marshaller_pluginv2_CheckHealthRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CheckHealthRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CheckHealthResponse> __Marshaller_pluginv2_CheckHealthResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CheckHealthResponse.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CollectMetricsRequest> __Marshaller_pluginv2_CollectMetricsRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CollectMetricsRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.CollectMetricsResponse> __Marshaller_pluginv2_CollectMetricsResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.CollectMetricsResponse.Parser.ParseFrom);
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    static readonly grpc::Marshaller<global::Pluginv2.CheckHealthRequest> __Marshaller_pluginv2_CheckHealthRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.CheckHealthRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.CheckHealthResponse> __Marshaller_pluginv2_CheckHealthResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.CheckHealthResponse.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.CollectMetricsRequest> __Marshaller_pluginv2_CollectMetricsRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.CollectMetricsRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.CollectMetricsResponse> __Marshaller_pluginv2_CollectMetricsResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.CollectMetricsResponse.Parser));
 
     static readonly grpc::Method<global::Pluginv2.CheckHealthRequest, global::Pluginv2.CheckHealthResponse> __Method_CheckHealth = new grpc::Method<global::Pluginv2.CheckHealthRequest, global::Pluginv2.CheckHealthResponse>(
         grpc::MethodType.Unary,
@@ -321,8 +411,38 @@ namespace Pluginv2 {
   {
     static readonly string __ServiceName = "pluginv2.Transform";
 
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataResponse.Parser.ParseFrom);
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataResponse.Parser));
 
     static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_TransformData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
         grpc::MethodType.Unary,
@@ -416,8 +536,38 @@ namespace Pluginv2 {
   {
     static readonly string __ServiceName = "pluginv2.TransformDataCallBack";
 
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Pluginv2.QueryDataResponse.Parser.ParseFrom);
+    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (message is global::Google.Protobuf.IBufferMessage)
+      {
+        context.SetPayloadLength(message.CalculateSize());
+        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
+        context.Complete();
+        return;
+      }
+      #endif
+      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
+    }
+
+    static class __Helper_MessageCache<T>
+    {
+      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
+    }
+
+    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
+    {
+      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
+      if (__Helper_MessageCache<T>.IsBufferMessage)
+      {
+        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
+      }
+      #endif
+      return parser.ParseFrom(context.PayloadAsNewBuffer());
+    }
+
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataResponse.Parser));
 
     static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_QueryData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
         grpc::MethodType.Unary,
