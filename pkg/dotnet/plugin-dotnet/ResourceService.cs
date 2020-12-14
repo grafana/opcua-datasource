@@ -44,6 +44,7 @@ namespace plugin_dotnet
             _resourceHandlers.Add("getdashboard", GetDashboard);
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
             _resourceHandlers.Add("removedashboardmapping", RemoveDashboardmapping);
+            _resourceHandlers.Add("removedashboardmappingbykeys", RemoveDashboardmappingByKeys);            
             _resourceHandlers.Add("browsereferencetargets", BrowseReferenceTargets);
             _resourceHandlers.Add("getnamespaces", GetNamespaces);
             _resourceHandlers.Add("isnodepresent", IsNodePresent);
@@ -160,6 +161,25 @@ namespace plugin_dotnet
                 interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
 
             var dashboardMappingData = new DashboardMappingData(connection, nodeId, nodeIdJson, typeNodeIdJson, useType, interfacesIds, null, null, perspective, nsTable);
+            var r = _dashboardResolver.RemoveDashboardMapping(dashboardMappingData);
+            var result = JsonSerializer.Serialize(r);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("Remove dashboard mapping => {0}", r.success);
+            return response;
+        }
+
+        private CallResourceResponse RemoveDashboardmappingByKeys(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string[] dashKeys = JsonSerializer.Deserialize<string[]>(HttpUtility.UrlDecode(queryParams["dashKeys"]));
+            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
+
+            var dashKeysIds = Array.Empty<string>();
+            if (dashKeys != null)
+                dashKeysIds = dashKeys.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
+
+            var dashboardMappingData = new DashboardMappingData(connection, null, null, null, false, dashKeysIds, null, null, perspective, nsTable);
             var r = _dashboardResolver.RemoveDashboardMapping(dashboardMappingData);
             var result = JsonSerializer.Serialize(r);
             response.Code = 200;

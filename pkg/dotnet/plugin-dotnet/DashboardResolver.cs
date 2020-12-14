@@ -206,7 +206,8 @@ namespace plugin_dotnet
 			if (data.InterfacesIds?.Length > 0)
 				nIdJsons.AddRange(data.InterfacesIds);
 
-			nIdJsons.Add(data.TypeNodeIdJson);
+			if(data.TypeNodeIdJson != null)
+				nIdJsons.Add(data.TypeNodeIdJson);
 
 			return _dashboardDb.RemoveDashboardMapping(nIdJsons.ToArray(), data.Perspective);
 		}
