@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <Target Name="Pre Build Event" BeforeTargets="BeforeBuild">
-    <Exec Command="(kill -2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
+    <Exec Command="(kill -s 2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
   </Target>
   
   <ItemGroup>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <Target Name="Post Build Event" AfterTargets="Build">
-    <Exec Command="pidof gpx_opcua || true"/>
+    <Exec Command="(kill -s 2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
   </Target>
 
   <ItemGroup>
