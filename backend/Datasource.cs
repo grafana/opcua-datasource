@@ -74,6 +74,10 @@ namespace plugin_dotnet
             this.datasourceId = datasourceId;
             this.nodeId = nodeId;
         }
+
+        public string RefID {
+            get { return this.refId; }
+        }
     }
 
     class OpcUaJsonData

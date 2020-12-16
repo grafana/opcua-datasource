@@ -168,12 +168,15 @@ namespace plugin_dotnet
         {
             try
             {
-                Data.Add(Convert.ChangeType(value, Type));
+                if (value == null) {
+                    Data.Add(null);
+                } else {
+                    Data.Add(Convert.ChangeType(value, Type));
+                } 
             }
             catch (Exception e)
             {
                 log.Error(e.ToString());
-                //Data.
             }
         }
     }
@@ -226,6 +229,7 @@ namespace plugin_dotnet
         {
             var columns = fields.Select(field => DataFrameColumnFactory.Create(field));
 
+            //log.Debug(string.Format("We have columns [{0}]", columns.ToArray().ToString()));
             Microsoft.Data.Analysis.DataFrame dataFrame = new Microsoft.Data.Analysis.DataFrame(columns.ToArray());
 
             MemoryStream stream = new MemoryStream();

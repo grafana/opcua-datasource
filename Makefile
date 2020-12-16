@@ -12,24 +12,24 @@ restore:
 
 build:
 ifeq (${BUILD_OS},windows)
-	dotnet publish ./backend/.windows.build.csproj --self-contained true
+	dotnet publish ./backend/.windows.build.csproj -r win-x64 --self-contained true
 endif
 ifeq (${BUILD_OS},darwin)
-	dotnet publish ./backend/.osx.build.csproj --self-contained true
+	dotnet publish ./backend/.osx.build.csproj -r osx-x64 --self-contained true
 endif
 ifeq (${BUILD_OS},linux)
-	dotnet publish ./backend/.linux.build.csproj --self-contained true
+	dotnet publish ./backend/.linux.build.csproj -r linux-x64 --self-contained true
 endif
 
 watch:
 ifeq (${BUILD_OS},windows)
-	dotnet watch -p ./backend/.windows.build.csproj publish .windows.build.csproj --self-contained true
+	dotnet watch -p ./backend/.windows.build.csproj publish .windows.build.csproj -r win-x64 --self-contained true
 endif
 ifeq (${BUILD_OS},darwin)
-	dotnet watch -p ./backend/.osx.build.csproj publish .osx.build.csproj --self-contained true
+	dotnet watch -p ./backend/.osx.build.csproj publish .osx.build.csproj -r osx-x64 --self-contained true
 endif
 ifeq (${BUILD_OS},linux)
-	dotnet watch -p ./backend/.linux.build.csproj publish .linux.build.csproj --self-contained true
+	dotnet watch -p ./backend/.linux.build.csproj publish .linux.build.csproj -r linux-x64 --self-contained true
 endif
  
 .PHONY: vendor
