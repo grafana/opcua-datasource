@@ -1,2 +1,0 @@
-Protos/Backend.cs \
-Protos/BackendGrpc.cs: Protos/backend.proto
