@@ -143,7 +143,7 @@ namespace plugin_dotnet
         public Dictionary<string, string> Labels { get; set; }
 
         public FieldConfig Config { get; set; }
-        public Type Type { get; set; }
+        public Type Type { get;  }
         public List<object> Data { get; set; }
 
         public Field(string name, Type type)
@@ -156,17 +156,28 @@ namespace plugin_dotnet
 
         public List<T> DataAs<T>()
         {
-            return Data.Cast<T>().ToList<T>();
+            return Data.Cast<T>().ToList();
         }
 
-        public void Append<T>(T value)
-        { 
-            Data.Add(value);
-        }
+        //public void Append<T>(T value)
+        //{ 
+        //    Data.Add(value);
+        //}
 
         public void Append(object value)
         {
-            Data.Add(Convert.ChangeType(value, Type));
+            try
+            {
+                if (value == null) {
+                    Data.Add(null);
+                } else {
+                    Data.Add(Convert.ChangeType(value, Type));
+                } 
+            }
+            catch (Exception e)
+            {
+                log.Error(e.ToString());
+            }
         }
     }
 
@@ -193,9 +204,7 @@ namespace plugin_dotnet
 
         public Field AddField<T>(string name)
         {
-            Field field = new Field(name, typeof(T));
-            fields.Add(field);
-            return field;
+            return AddField(name, typeof(T));
         }
 
         public Field AddField(string name, Type type)
@@ -218,66 +227,9 @@ namespace plugin_dotnet
 
         public ByteString ToGprcArrowFrame()
         {
-            List<DataFrameColumn> columns = new List<DataFrameColumn>();
-            foreach (Field field in fields)
-            {
-                switch (field.Type.Name)
-                {
-                    case "double":
-                    case "Double":
-                        columns.Add(new OpcUaDataFrameColumn<double>(field.Name, field.DataAs<double>()));
-                        break;
-                    case "float":
-                    case "Single":
-                        columns.Add(new OpcUaDataFrameColumn<float>(field.Name, field.DataAs<float>()));
-                        break;
-                    case "ulong":
-                    case "UInt64":
-                        columns.Add(new OpcUaDataFrameColumn<ulong>(field.Name, field.DataAs<ulong>()));
-                        break;
-                    case "long":
-                    case "Int64":
-                        columns.Add(new OpcUaDataFrameColumn<long>(field.Name, field.DataAs<long>()));
-                        break;
-                    case "uint":
-                    case "UInt32":
-                        columns.Add(new OpcUaDataFrameColumn<uint>(field.Name, field.DataAs<uint>()));
-                        break;
-                    case "int":
-                    case "Int32":
-                        columns.Add(new OpcUaDataFrameColumn<int>(field.Name, field.DataAs<int>()));
-                        break;
-                    case "ushort":
-                    case "UInt16":
-                        columns.Add(new OpcUaDataFrameColumn<ushort>(field.Name, field.DataAs<ushort>()));
-                        break;
-                    case "short":
-                    case "Int16":
-                        columns.Add(new OpcUaDataFrameColumn<short>(field.Name, field.DataAs<short>()));
-                        break;
-                    case "byte":
-                    case "Byte":
-                        columns.Add(new OpcUaDataFrameColumn<byte>(field.Name, field.DataAs<byte>()));
-                        break;
-                    case "sbyte":
-                    case "SByte":
-                        columns.Add(new OpcUaDataFrameColumn<sbyte>(field.Name, field.DataAs<sbyte>()));
-                        break;
-                    case "decimal":
-                    case "Decimal":
-                        columns.Add(new OpcUaDataFrameColumn<decimal>(field.Name, field.DataAs<decimal>()));
-                        break;
-                    case "bool":
-                    case "Bool":
-                        columns.Add(new OpcUaDataFrameColumn<bool>(field.Name, field.DataAs<bool>()));
-                        break;
-                    case "DateTime":
-                        columns.Add(new OpcUaDataFrameColumn<DateTime>(field.Name, field.DataAs<DateTime>()));
-                        break;
-                    default:
-                        throw new Exception(String.Format("Could not match type [{0}]", field.Type.Name));
-                }
-            }
+            var columns = fields.Select(field => DataFrameColumnFactory.Create(field));
+
+            log.Debug(string.Format("We have columns [{0}]", columns.ToArray().ToString()));
             Microsoft.Data.Analysis.DataFrame dataFrame = new Microsoft.Data.Analysis.DataFrame(columns.ToArray());
 
             MemoryStream stream = new MemoryStream();
@@ -334,6 +286,8 @@ namespace plugin_dotnet
                 return UInt16Type.Default;
             else if (typeof(T) == typeof(DateTime))
                 return TimestampType.Default;
+            else if (typeof(T) == typeof(string))
+                return StringType.Default;
             else
                 throw new NotImplementedException(nameof(T));
         }
@@ -355,11 +309,8 @@ namespace plugin_dotnet
                     {
                         
                         DateTime dateTime = Convert.ToDateTime(_values[i]);
-                        ulong epoch = Convert.ToUInt64(dateTime.ToUniversalTime().Subtract(
-                            new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
-                        ).TotalMilliseconds);
-
-                        raw.AddRange(BitConverter.GetBytes(epoch));
+                        long unixTime = ((DateTimeOffset)dateTime).ToUnixTimeMilliseconds();
+                        raw.AddRange(BitConverter.GetBytes(unixTime));
                     }
 
                     //log.Debug("Start {0}, numRows {1}", startIndex, numberOfRows);

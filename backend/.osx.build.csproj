@@ -5,7 +5,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <OutDir>../dist</OutDir>
   </PropertyGroup>
+
+  <Target Name="Pre Build Event" BeforeTargets="BeforeBuild">
+    <Exec Command="pidof -k gpx_opcua || true"/>
+  </Target>
 
   <ItemGroup>
     <!-- https://github.com/grpc/grpc/blob/master/src/csharp/BUILD-INTEGRATION.md#i-just-want-to-generate-proto-and-grpc-c-sources-from-my-proto-files-no-c-compile -->
@@ -17,7 +23,12 @@
     <AssemblyName>gpx_opcua_darwin_amd64</AssemblyName>
   </PropertyGroup>
 
+  <Target Name="Post Build Event" AfterTargets="Build">
+    <Exec Command="pidof -k gpx_opcua || true"/>
+  </Target>
+
   <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.12.2" />
     <PackageReference Include="Grpc" Version="2.29.0" />
     <PackageReference Include="Grpc.Tools" Version="2.29.0" PrivateAssets="All" />
