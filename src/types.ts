@@ -6,6 +6,19 @@ export interface OpcUaQuery extends DataQuery {
   readType: string;
   aggregate: OpcUaNodeDefinition;
   interval: string;
+  eventQuery: EventQuery;
+}
+
+export interface EventQuery {
+  eventTypeNodeId: string;
+  eventTypes: string[];
+  eventColumns: EventColumn[];
+  eventFilters: EventFilter[];
+}
+
+export interface EventColumn {
+  browseName: string;
+  alias: string;
 }
 
 export interface OpcUaResultsEntry {
@@ -33,6 +46,58 @@ export interface OpcUaBrowseResults {
 export interface OpcUaNodeDefinition {
   name: string;
   nodeId: string;
+}
+
+export interface EventFilter {
+  oper: FilterOperator;
+  operands: string[];
+}
+
+export enum FilterOperator {
+  Equals = 0,
+  IsNull = 1,
+  GreaterThan = 2,
+  LessThan = 3,
+  GreaterThanOrEqual = 4,
+  LessThanOrEqual = 5,
+  Like = 6,
+  Not = 7,
+  Between = 8,
+  InList = 9,
+  And = 10,
+  Or = 11,
+  Cast = 12,
+  InView = 13,
+  OfType = 14,
+  RelatedTo = 15,
+  BitwiseAnd = 16,
+  BitwiseOr = 17,
+}
+
+export class EventFilterOperatorUtil {
+  static operNames: string[] = [
+    '==',
+    'IsNull',
+    '>',
+    '<',
+    '>=',
+    '<=',
+    'Like',
+    'Not',
+    'Between',
+    'InList',
+    'And',
+    'Or',
+    'Cast',
+    'InView',
+    'OfType',
+    'RelatedTo',
+    'BitwiseAnd',
+    'BitwiseOr',
+  ];
+  static GetString(oper: FilterOperator): string {
+    return EventFilterOperatorUtil.operNames[oper];
+  }
 }
 
 export const separator = ' / ';

@@ -29,7 +29,10 @@ e2e-results/
 yarn.lock
 
 .vs/
+.vscode/
 pkg/cgoopc/out/build/*
 pkg/dotnet/.vs
 pkg/dotnet/.vs/Greeter
 pkg/dotnet/plugin-dotnet/.vs
+/pkg/dotnet/plugin-dotnet/Properties/PublishProfiles/FolderProfile.pubxml.user
+/pkg/dotnet/plugin-dotnet/Properties/PublishProfiles/FolderProfile.pubxml
