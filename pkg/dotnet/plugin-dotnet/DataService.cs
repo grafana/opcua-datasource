@@ -226,10 +226,20 @@ namespace plugin_dotnet
             for (int i = 0; i < queries.Length; i++)
             {
                 var query = queries[i];
+                OpcUaNodeDefinition aggregate = null;
                 var nodeIdResult = nodeIdsResult[i];
-                OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
+                try
+                {
+                    aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
+                }
+                catch (Exception e)
+                {
+                    _log.LogError(e, "Error getting aggregate. ");
+                }
+
                 if (aggregate?.nodeId == null)
                 {
+                    _log.LogError("Aggregate is not set");
                     result[i] = new Result<DataResponse>(StatusCodes.BadNodeIdInvalid, "Aggregate is not set");
                 }
                 else if (nodeIdResult.Success)
