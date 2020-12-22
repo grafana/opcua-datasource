@@ -164,16 +164,33 @@ namespace plugin_dotnet
         //    Data.Add(value);
         //}
 
+
+        private static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
+
         public void Append(object value)
         {
             try
             {
-                Data.Add(Convert.ChangeType(value, Type));
+                if (value != null)
+                {
+                    Data.Add(Convert.ChangeType(value, Type));
+                }
+                else 
+                {
+                    Data.Add(GetDefault(Type));
+                }
             }
             catch (Exception e)
             {
-                _log.LogError(e.ToString());
-                //Data.
+                _log.LogError(e.ToString() + " type: " + Type.FullName);
+                Data.Add(GetDefault(Type));
             }
         }
     }
