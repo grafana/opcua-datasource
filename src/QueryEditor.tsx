@@ -1,38 +1,35 @@
 import React, { PureComponent, ChangeEvent } from 'react';
-import { SegmentAsync, RadioButtonGroup, Input, TabsBar, TabContent, Tab } from '@grafana/ui';
+import { SegmentAsync, RadioButtonGroup, Input } from '@grafana/ui';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
-import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-//import { Cascader } from './components/Cascader/Cascader';
 import { ButtonCascader } from './components/ButtonCascader/ButtonCascader';
-//import { Cascader, CascaderOption } from './components/Cascader/Cascader';
 import { DataSource } from './DataSource';
-import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
+import { EventColumn, EventFilter, OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from './types';
 import { SegmentFrame, SegmentLabel } from './components/SegmentFrame';
-import { css } from 'emotion';
+import { EventField, EventFieldTable } from './components/EventFieldTable';
+import { AddEventFieldForm } from './components/AddEventFieldForm';
+import { EventFilterTable } from './components/EventFilterTable';
+import { AddEventFilter } from './components/AddEventFilter';
+import { MultiSelect } from '@grafana/ui';
+import {} from '@emotion/core';
 
 const rootNode = 'i=85';
+const eventTypesNode = 'i=3048';
 const selectText = (t: string): string => `Select <${t}>`;
+const defaultTag = 'Select to browse OPC UA Server';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
   options: CascaderOption[];
   value: string[];
+  eventTypeNodeId: string;
+  eventOptions: CascaderOption[];
+  eventTypes: string[];
+  eventFields: EventField[];
+  eventFilters: EventFilter[];
+
   tabs: Array<{ label: string; active: boolean }>;
 };
-
-const tabMarginBox = css(`
-{
-  border-left: 1px solid #202226;
-  border-right: 1px solid #202226;
-  border-bottom: 1px solid #202226;
-  background: #141414;
-}
-`);
-
-const tabMarginHeader = css(`
-  background: #141414;
-`);
 
 export class QueryEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
@@ -40,11 +37,16 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     this.state = {
       options: [],
-      value: this.props.query.value || ['Select to browse OPC UA Server'],
-      tabs: [
-        { label: 'Traditional', active: true },
-        { label: 'Tree view', active: false },
-      ],
+      value: this.props.query.value || [defaultTag],
+      eventTypes: [],
+      eventOptions: [],
+      eventFields: this.eventFields,
+      eventTypeNodeId: '',
+      eventFilters: [],
+      tabs: this.readTypeOptions.map(o => ({
+        label: o.label || '',
+        active: o.active,
+      })),
     };
 
     props.datasource.getResource('browse', { nodeId: rootNode }).then((results: OpcUaBrowseResults[]) => {
@@ -53,6 +55,24 @@ export class QueryEditor extends PureComponent<Props, State> {
         options: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
       });
     });
+
+    props.datasource.getResource('browseTypes', { nodeId: eventTypesNode }).then((results: OpcUaBrowseResults[]) => {
+      console.log('Results', results);
+      this.setState({
+        eventOptions: results.map((r: OpcUaBrowseResults) => this.toCascaderOption(r)),
+      });
+    });
+  }
+
+  get eventFields(): EventField[] {
+    return [
+      { alias: '', browsename: 'Time' },
+      { alias: '', browsename: 'EventId' },
+      { alias: '', browsename: 'EventType' },
+      { alias: '', browsename: 'SourceName' },
+      { alias: '', browsename: 'Message' },
+      { alias: '', browsename: 'Severity' },
+    ];
   }
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
@@ -84,6 +104,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { query, onChange, onRunQuery } = this.props;
     const value = selectedItems.map(item => (item.label ? item.label.toString() : ''));
     const nodeId = selected[selected.length - 1];
+    console.log('value', value, 'nodeId', nodeId);
     this.setState({ value });
     onChange({
       ...query,
@@ -91,6 +112,27 @@ export class QueryEditor extends PureComponent<Props, State> {
       nodeId,
     });
     onRunQuery();
+  };
+
+  toEventColumns = (r: EventField): EventColumn => {
+    return {
+      browseName: r.browsename,
+      alias: r.alias,
+    };
+  };
+
+  //deep copy
+  toEventFilter = (r: EventFilter): EventFilter => {
+    return {
+      oper: r.oper,
+      operands: r.operands.slice(),
+    };
+  };
+
+  onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
+    const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
+    const nid = selected[selected.length - 1];
+    this.setState({ eventTypeNodeId: nid, eventTypes: evtTypes }, () => this.updateEventQuery());
   };
 
   onSelect = (val: string) => {
@@ -127,6 +169,22 @@ export class QueryEditor extends PureComponent<Props, State> {
     }
   };
 
+  getEventTypes = (selectedOptions: CascaderOption[]) => {
+    const targetOption = selectedOptions[selectedOptions.length - 1];
+    targetOption.loading = true;
+    if (targetOption.value) {
+      this.props.datasource
+        .getResource('browseTypes', { nodeId: targetOption.value })
+        .then((results: OpcUaBrowseResults[]) => {
+          targetOption.loading = false;
+          targetOption.children = results.map(r => this.toCascaderOption(r));
+          this.setState({
+            eventOptions: [...this.state.eventOptions],
+          });
+        });
+    }
+  };
+
   browseNodeSV = (nodeId: string): Promise<Array<SelectableValue<any>>> => {
     return this.props.datasource.getResource('browse', { nodeId }).then((results: OpcUaBrowseResults[]) => {
       return results.map((item: OpcUaBrowseResults) => {
@@ -149,6 +207,8 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Processed', value: 'ReadDataProcessed' },
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
+      { label: 'Events', value: 'ReadEvents' },
+      { label: 'Events2', value: 'ReadEvents2' },
     ];
   }
 
@@ -163,47 +223,151 @@ export class QueryEditor extends PureComponent<Props, State> {
     }
   };
 
-  optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
-    const readTypeValue = this.readTypeValue(query.readType);
-    switch (readTypeValue) {
-      case 'Processed': {
-        return (
-          <>
-            <SegmentLabel label={'Aggregate'} marginLeft />
-            <SegmentAsync
-              value={query.aggregate?.name ?? selectText('aggregate')}
-              loadOptions={() => this.browseNodeSV('i=2997')}
-              onChange={e => this.onChangeField('aggregate', e)}
-            />
-          </>
-        );
-      }
-      case 'Raw': {
-        return (
-          <>
-            <SegmentLabel label="Max Values" marginLeft />
-            <Input
-              width={10}
-              value={-1}
-              onChange={() => console.log('not implemented yet')}
-              onBlur={() => onRunQuery()}
-            />
-          </>
-        );
-      }
-      default: {
-        return <></>;
-      }
-    }
+  handleDeleteSelectField = (idx: number) => {
+    let tempArray = this.state.eventFields.slice();
+    tempArray.splice(idx, 1);
+    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
   };
 
-  renderOriginal = () => {
-    const { query, onRunQuery } = this.props;
-    const { options, value } = this.state;
+  handleDeleteEventFilter = (idx: number) => {
+    let tempArray = this.state.eventFilters.slice();
+    tempArray.splice(idx, 1);
+    this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+  };
 
+  updateEventQuery = () => {
+    const { query, onChange, onRunQuery } = this.props;
+
+    let eventColumns = this.state.eventFields.map(c => this.toEventColumns(c));
+    let evtTypes = this.state.eventTypes;
+    let nid = this.state.eventTypeNodeId;
+    let eventFilters = this.state.eventFilters.map(c => this.toEventFilter(c));
+    let eventQuery = {
+      eventTypeNodeId: nid,
+      eventTypes: evtTypes,
+      eventColumns: eventColumns,
+      eventFilters: eventFilters,
+    };
+    onChange({
+      ...query,
+      eventQuery: eventQuery,
+    });
+    onRunQuery();
+  };
+
+  addSelectField = (browsename: string, alias: string) => {
+    let tempArray = this.state.eventFields.slice();
+
+    tempArray.push({ browsename: browsename, alias: alias });
+    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+  };
+
+  addEventFilter = (eventFilter: EventFilter) => {
+    let tempArray = this.state.eventFilters.slice();
+    tempArray.push(eventFilter);
+    this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+  };
+
+  renderProcessedQueryOptions = () => {
+    const { query } = this.props;
     return (
       <>
-        <SegmentFrame label="Tag">
+        <SegmentFrame width={7} label={'Aggregate'}>
+          <SegmentAsync
+            value={query.aggregate?.name ?? selectText('aggregate')}
+            loadOptions={() => this.browseNodeSV('i=11201')}
+            onChange={e => this.onChangeField('aggregate', e)}
+          />
+        </SegmentFrame>
+      </>
+    );
+  };
+
+  renderRawQueryOptions = () => {
+    const { onRunQuery } = this.props;
+    return (
+      <>
+        <SegmentFrame width={7} label="Max Values">
+          <Input
+            width={10}
+            value={-1}
+            onChange={() => console.log('not implemented yet')}
+            onBlur={() => onRunQuery()}
+          />
+        </SegmentFrame>
+      </>
+    );
+  };
+
+  renderEventQueryOptions = () => {
+    const { query } = this.props;
+    return (
+      <>
+        <SegmentFrame width={7} label="Event Type">
+          <ButtonCascader
+            value={this.state.eventTypes}
+            loadData={this.getEventTypes}
+            options={this.state.eventOptions}
+            onChange={this.onChangeEventType}
+          >
+            {this.state.eventTypes.join(separator)}
+          </ButtonCascader>
+          <SegmentLabel label="Columns" />
+          <div className={'gf-form gf-form--grow'}>
+            <MultiSelect
+              value={this.getEventOptions(query.eventQuery?.eventColumns)}
+              options={this.getEventOptions()}
+              onChange={this.onChangeColumns}
+            />
+          </div>
+        </SegmentFrame>
+      </>
+    );
+  };
+
+  getEventOptions = (eventColumnsOrFields?: EventField[] | EventColumn[]): Array<SelectableValue<EventField>> => {
+    console.log('fields', eventColumnsOrFields);
+    let fields: EventField[] = this.state.eventFields;
+    if (eventColumnsOrFields && eventColumnsOrFields.length && eventColumnsOrFields[0].hasOwnProperty('displayname')) {
+      fields = eventColumnsOrFields as EventField[];
+    }
+    if (eventColumnsOrFields && eventColumnsOrFields.length && eventColumnsOrFields[0].hasOwnProperty('displayName')) {
+      fields = (eventColumnsOrFields as EventColumn[]).map((c: EventColumn) => ({
+        alias: c.alias,
+        browsename: c.browseName,
+      }));
+    }
+    return fields.map(item => ({
+      label: item.browsename,
+      value: item,
+    }));
+  };
+
+  onChangeColumns = (items: Array<SelectableValue<EventField>>) => {
+    console.log('onChangeColumns', items);
+    const { eventFields } = this.state;
+    items.forEach(item => {
+      if (
+        item.value &&
+        !eventFields.find(ef => ef.alias === item.value?.alias && ef.browsename === item.value?.browsename)
+      ) {
+        this.addSelectField(item.value.alias, item.value.browsename);
+      }
+    });
+  };
+
+  renderEvents = (): JSX.Element => {
+    const { query } = this.props;
+    const { options, value } = this.state;
+    return (
+      <>
+        <RadioButtonGroup
+          options={this.readTypeOptions}
+          value={query.readType}
+          onChange={e => e && this.onChangeField('readType', e)}
+        />
+        <br />
+        <SegmentFrame label="Event Source">
           <div onBlur={e => console.log('onBlur', e)}>
             <ButtonCascader
               //className="query-part"
@@ -215,52 +379,92 @@ export class QueryEditor extends PureComponent<Props, State> {
               {value.join(separator)}
             </ButtonCascader>
           </div>
-
-          <RadioButtonGroup
-            options={this.readTypeOptions}
-            value={query.readType}
-            onChange={e => e && this.onChangeField('readType', e)}
-          />
-          {this.optionalParams(query, onRunQuery)}
         </SegmentFrame>
-        <SegmentFrame label="Alias">
-          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={30} />
+        <SegmentFrame label="Event Type">
+          <ButtonCascader
+            //className="query-part"
+            value={this.state.eventTypes}
+            loadData={this.getEventTypes}
+            options={this.state.eventOptions}
+            onChange={this.onChangeEventType}
+          >
+            {this.state.eventTypes.join(separator)}
+          </ButtonCascader>
         </SegmentFrame>
+        <br />
+        <EventFieldTable rows={this.state.eventFields} ondelete={(idx: number) => this.handleDeleteSelectField(idx)} />
+        <br />
+        <AddEventFieldForm add={(browsename: string, alias: string) => this.addSelectField(browsename, alias)} />
+        <br />
+        <EventFilterTable
+          rows={this.state.eventFilters}
+          ondelete={(idx: number) => {
+            this.handleDeleteEventFilter(idx);
+          }}
+        />
+        <br />
+        <AddEventFilter
+          add={(eventFilter: EventFilter) => {
+            this.addEventFilter(eventFilter);
+          }}
+        />
       </>
     );
   };
 
-  renderTreeEditor = () => {
-    return <TreeEditor {...this.props} />;
+  renderQueryOptions = () => {
+    const { query } = this.props;
+    return (
+      <>
+        <SegmentFrame width={7} label="Query Options">
+          <RadioButtonGroup
+            options={this.readTypeOptions}
+            value={query.readType}
+            onChange={readType => {
+              this.onChangeField('readType', readType!);
+            }}
+          />
+        </SegmentFrame>
+        {(() => {
+          switch (query.readType) {
+            case 'ReadDataRaw':
+              return this.renderRawQueryOptions();
+            case 'ReadDataProcessed':
+              return this.renderProcessedQueryOptions();
+            case 'ReadEvents':
+              return this.renderEvents();
+            case 'ReadEvents2':
+              return this.renderEventQueryOptions();
+            default:
+              return <></>;
+          }
+        })()}
+      </>
+    );
   };
 
   render() {
-    const { tabs } = this.state;
-    console.log('QueryEditor::render');
+    const { options, value } = this.state;
 
     return (
       <>
-        <TabsBar className={tabMarginHeader}>
-          {tabs.map((tab, index) => {
-            return (
-              <Tab
-                key={index}
-                label={tab.label}
-                active={tab.active}
-                onChangeTab={() => {
-                  this.setState({
-                    ...this.state,
-                    tabs: tabs.map((tab, idx) => ({ ...tab, active: idx === index })),
-                  });
-                }}
-              />
-            );
-          })}
-        </TabsBar>
-        <TabContent className={tabMarginBox}>
-          {tabs[0].active && this.renderOriginal()}
-          {tabs[1].active && this.renderTreeEditor()}
-        </TabContent>
+        <SegmentFrame width={7} label="Tag">
+          <div onBlur={e => console.log('onBlur', e)}>
+            <ButtonCascader
+              //className="query-part"
+              value={value}
+              loadData={this.getChildren}
+              options={options}
+              onChange={this.onChange}
+            >
+              {value.join(separator)}
+            </ButtonCascader>
+          </div>
+        </SegmentFrame>
+        {value[0] === defaultTag ? <></> : this.renderQueryOptions()}
+        <SegmentFrame width={7} label="Alias">
+          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={60} />
+        </SegmentFrame>
       </>
     );
   }
