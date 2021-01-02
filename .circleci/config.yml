@@ -151,6 +151,7 @@ jobs:
           root: .
           paths:
             - ci/packages
+            - ci/dist
 
   report:
     executor: default_exec
