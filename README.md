@@ -1,8 +1,12 @@
 # grafana-opcua-datasource
 An OPC UA datasource for reading from OPC UA servers (DA/HDA/AE) into Grafana directly
 
-## Update 15-Jun-2020
-A major overhaul is complete. It's almost all in the backend where the GRPC protobuf was update to the latest version from Grafana. This has simplified the frontend and queries significantly. Controls and UI elements are updated to Grafana 7.x.x, as such, v1.0.0 and all versions going forward will be for Grafana 7.x.x+ only. 
+## Update 01-Jan-2021
+Happy new year! Good riddance to 2020 in so many ways!
+
+The focus recently was to simply migrate the layout of the project. Make is more sensible and intuitive, and provide a better build system that makes more sense.
+To build on any platform:
+* `yarn build`
 
 ![full dashboard](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/dashboard2.png)
 
