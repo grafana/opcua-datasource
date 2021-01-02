@@ -162,6 +162,10 @@ jobs:
           name: Toolkit report
           command: |
             ./node_modules/.bin/grafana-toolkit plugin:ci-report
+      - persist_to_workspace:
+          root: .
+          paths:
+          - ci
       - store_artifacts:
           path: ci
 
