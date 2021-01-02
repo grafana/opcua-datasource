@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { GroupProps } from 'react-select';
 
-interface ExtendedGroupProps extends GroupProps<any> {
+interface ExtendedGroupProps extends GroupProps<any, false> {
   data: {
     label: string;
     expanded: boolean;

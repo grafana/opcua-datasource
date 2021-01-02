@@ -11,6 +11,7 @@ import { AddEventFieldForm } from './components/AddEventFieldForm';
 import { EventFilterTable } from './components/EventFilterTable';
 import { AddEventFilter } from './components/AddEventFilter';
 import { MultiSelect } from '@grafana/ui';
+import {} from '@emotion/core';
 
 const rootNode = 'i=85';
 const eventTypesNode = 'i=3048';
