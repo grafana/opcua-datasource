@@ -79,6 +79,10 @@ jobs:
       - run:
           name: Build and test frontend
           command: ./node_modules/.bin/grafana-toolkit plugin:ci-build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ci
 
   build_backend_linux:
     executor: dotnet_exec
@@ -132,6 +136,8 @@ jobs:
     executor: default_exec
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - restore_cache:
           name: restore node_modules
           keys:
