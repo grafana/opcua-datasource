@@ -27,14 +27,14 @@ namespace plugin_dotnet
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
         {
             log.Debug("Call Resource {0} | {1}", request, context);
-            CallResourceResponse response = new CallResourceResponse();
-            string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
-            Uri uri = new Uri(fullUrl);
-            NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
-            OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
             
             try
             {
+                CallResourceResponse response = new CallResourceResponse();
+                string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
+                Uri uri = new Uri(fullUrl);
+                NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
+                OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
                 switch (request.Path)
                 {
                     case "subscribe":
@@ -48,7 +48,7 @@ namespace plugin_dotnet
                         }
                         break;
 
-                    case "types":
+                    case "browseTypes":
                         {
                             string results = connection.BrowseTypes();
                             response.Code = 200;
@@ -75,16 +75,14 @@ namespace plugin_dotnet
                         }
                         break;
                 }
-                
+
+                return responseStream.WriteAsync(response);
             }
             catch(Exception ex)
             {
                 log.Debug("Got browse exception {0}", ex);
                 throw ex;
             }
-             
-            responseStream.WriteAsync(response);
-            return Task.CompletedTask;
         }
 
         private void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs) {

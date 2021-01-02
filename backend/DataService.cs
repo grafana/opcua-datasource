@@ -116,6 +116,7 @@ namespace plugin_dotnet
                                     log.Debug("Parsed Time: {0} {1}, Aggregate {2}", fromTime, toTime, query.aggregate);
                                     OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
 
+                                    log.Debug("Reading NodeID [{0}]", query.nodeId);
                                     IEnumerable<DataValue> readResults = connection.ReadHistoryProcessed(
                                         query.nodeId,
                                         fromTime,
@@ -153,6 +154,7 @@ namespace plugin_dotnet
                     }
                     catch (Exception ex)
                     {
+                        log.Error(ex.ToString());
                         response.Responses[currRequest.RefId].Error = ex.Message;
                     }
                 }

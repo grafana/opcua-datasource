@@ -14,6 +14,7 @@ namespace MicrosoftOpcUa.Client.Utility
     {
         #region Constructors
 
+        ILogger log = new ConsoleLogger();
         /// <summary>
         /// 默认的构造函数，实例化一个新的OPC UA类
         /// </summary>
@@ -1156,6 +1157,7 @@ namespace MicrosoftOpcUa.Client.Utility
             nodesToBrowse.Add(nodeToBrowse1);
             nodesToBrowse.Add(nodeToBrowse2);
 
+            log.Debug("here");
             // fetch references from the server.
             ReferenceDescriptionCollection references = FormUtils.Browse(m_session, nodesToBrowse, false);
 

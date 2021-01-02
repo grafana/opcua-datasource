@@ -1,4 +1,5 @@
-﻿using Opc.Ua;
+﻿using Grpc.Core.Logging;
+using Opc.Ua;
 using Opc.Ua.Client;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace MicrosoftOpcUa.Client.Utility
 {
     public class FormUtils
     {
+        private static ILogger log = new ConsoleLogger();
         /// <summary>
         /// Gets the display text for the access level attribute.
         /// </summary>
@@ -395,6 +397,7 @@ namespace MicrosoftOpcUa.Client.Utility
                     BrowseResultCollection results = null;
                     DiagnosticInfoCollection diagnosticInfos = null;
 
+                    log.Debug("about to browse");
                     session.Browse(
                         null,
                         null,
@@ -403,6 +406,7 @@ namespace MicrosoftOpcUa.Client.Utility
                         out results,
                         out diagnosticInfos);
 
+                    log.Debug("after browse");
                     ClientBase.ValidateResponse(results, nodesToBrowse);
                     ClientBase.ValidateDiagnosticInfos(diagnosticInfos, nodesToBrowse);
 

@@ -21,7 +21,11 @@ namespace plugin_dotnet
         {
             try
             {
-                connections[key: url] = new OpcUAConnection(url);
+                lock(connections)
+                {
+                    connections[key: url] = new OpcUAConnection(url);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -33,7 +37,10 @@ namespace plugin_dotnet
         {
             try
             {
-                connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
+                lock(connections)
+                {
+                    connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
+                }
             }
             catch (Exception ex)
             {
@@ -43,34 +50,44 @@ namespace plugin_dotnet
 
         public static OpcUAConnection Get(string url)
         {
-            if (!connections.ContainsKey(url) || !connections[url].Connected)
+            lock(connections) 
             {
-                Add(url);
-            }
+                if (!connections.ContainsKey(url) || !connections[url].Connected)
+                {
+                    Add(url);
+                }
             
-            return connections[url];
+                return connections[url];
+            }
         }
 
         public static OpcUAConnection Get(DataSourceInstanceSettings settings)
         {
-            if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Connected)
+            lock(connections)
             {
-                if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
+                if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Connected)
                 {
-                    Add(settings.Url, settings.DecryptedSecureJsonData["tlsClientCert"], settings.DecryptedSecureJsonData["tlsClientKey"]);
+                    if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
+                    {
+                        Add(settings.Url, settings.DecryptedSecureJsonData["tlsClientCert"], settings.DecryptedSecureJsonData["tlsClientKey"]);
+                    }
+                    else
+                    {
+                        Add(settings.Url);
+                    }
                 }
-                else
-                {
-                    Add(settings.Url);
-                }
-            }
 
-            return connections[settings.Url];
+                return connections[settings.Url];
+            }
+            
         }
 
         public static void Remove(string url)
         {
-            connections.Remove(url);
+            lock(connections)
+            {
+                connections.Remove(url);
+            }
         }
     }
 
@@ -162,6 +179,7 @@ namespace plugin_dotnet
         {
             log.Debug("Browsing node {0}", nodeId);
             var results = this.BrowseNodeReference(nodeId);
+            log.Debug("After Browse {0}", nodeId);
             BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
             for (int i = 0; i < results.Length; i++)
             {
