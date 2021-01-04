@@ -26,6 +26,7 @@ export interface OpcUaQuery extends DataQuery {
   readType: string;
   aggregate: OpcUaNodeDefinition;
   interval: string;
+  maxValuesPerNode: number;
   eventQuery: EventQuery;
 }
 

@@ -179,7 +179,7 @@ namespace plugin_dotnet
                 if (nodeIdResult.Success)
                 {
                     var query = queries[i];
-                    var maxValues = query.maxDataPoints;
+                    var maxValues = query.maxValuesPerNode > 0 ? query.maxValuesPerNode : 0;
                     var tr = query.timeRange;
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;

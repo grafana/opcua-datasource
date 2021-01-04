@@ -1,5 +1,5 @@
 import React, { PureComponent, ChangeEvent } from 'react';
-import { TabsBar, TabContent, Tab, RadioButtonGroup, SegmentAsync } from '@grafana/ui';
+import { TabsBar, TabContent, Tab, RadioButtonGroup, SegmentAsync, Input } from '@grafana/ui';
 import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from './DataSource';
@@ -70,7 +70,16 @@ export class QueryEditor extends PureComponent<Props, State> {
     } else {
       return 'Processed';
     }
-  };
+    };
+
+    onChangeMaxValuesPerNode(e: React.FormEvent<HTMLInputElement>): void {
+        const { onChange, query } = this.props;
+        let max = parseInt(e.currentTarget.value);
+        if (!isNaN(max)) {
+            onChange({ ...query, maxValuesPerNode: max });
+        }
+    }
+
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
     const { /*datasource,*/ query, onChange, onRunQuery } = this.props;
@@ -113,7 +122,8 @@ export class QueryEditor extends PureComponent<Props, State> {
         };
       });
     });
-  };
+    };
+
 
   optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {
     const readTypeValue = this.readTypeValue(query.readType);
@@ -133,6 +143,11 @@ export class QueryEditor extends PureComponent<Props, State> {
       case 'Raw': {
         return (
             <>
+                <SegmentFrame label={'MaxValesPerNode'}>
+                    <Input width={20}
+                        value={query.maxValuesPerNode}
+                        onChange={(e) => this.onChangeMaxValuesPerNode(e)} />
+                </SegmentFrame>
           </>
         );
       }

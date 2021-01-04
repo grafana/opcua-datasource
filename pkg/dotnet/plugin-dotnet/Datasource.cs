@@ -141,6 +141,8 @@ namespace plugin_dotnet
         public string readType { get; set; }
         public object aggregate { get; set; }
         public string interval { get; set; }
+        public int maxValuesPerNode { get; set; }
+
         public EventQuery eventQuery { get; set; }
         //public string eventTypeNodeId { get; set; }
         //public string[] eventTypes { get; set; }
@@ -165,6 +167,7 @@ namespace plugin_dotnet
             readType = query.readType;
             aggregate = query.aggregate;
             interval = query.interval;
+            maxValuesPerNode = query.maxValuesPerNode;
             eventQuery = query.eventQuery;
             relativePath = query.relativePath;
         }
