@@ -1,4 +1,4 @@
-import React, { PureComponent, ChangeEvent } from 'react';
+import React, { PureComponent } from 'react';
 import { TabsBar, TabContent, Tab, RadioButtonGroup, SegmentAsync, Input } from '@grafana/ui';
 import { TreeEditor } from './components/TreeEditor';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
@@ -11,7 +11,9 @@ import { SegmentFrame } from './components/SegmentFrame';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
-  tabs: Array<{ label: string; active: boolean }>;
+    tabs: Array<{ label: string; active: boolean }>;
+    maxValuesPerNode: string;
+    resampleInterval: string;
 };
 
 const selectText = (t: string): string => `Select <${t}>`;
@@ -36,7 +38,9 @@ export class QueryEditor extends PureComponent<Props, State> {
       tabs: [
         { label: 'Traditional', active: true },
         { label: 'Tree view', active: false },
-      ],
+        ],
+        maxValuesPerNode: props.query?.maxValuesPerNode?.toString(),
+        resampleInterval: props.query?.resampleInterval?.toString(),
     };
   }
 
@@ -44,10 +48,6 @@ export class QueryEditor extends PureComponent<Props, State> {
     console.log('onSelect', val);
   };
 
-  onChangeInterval = (event: ChangeEvent<HTMLInputElement>) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, interval: event.target.value });
-  };
 
   get readTypeOptions(): Array<SelectableValue<string>> {
     return [
@@ -74,11 +74,28 @@ export class QueryEditor extends PureComponent<Props, State> {
 
     onChangeMaxValuesPerNode(e: React.FormEvent<HTMLInputElement>): void {
         const { onChange, query } = this.props;
-        let max = parseInt(e.currentTarget.value);
-        if (!isNaN(max)) {
-            onChange({ ...query, maxValuesPerNode: max });
-        }
+        let max = e.currentTarget.value;
+        this.setState({ maxValuesPerNode: max }, () => {
+            let maxNumber = parseInt(this.state.maxValuesPerNode);
+            if (isNaN(maxNumber)) {
+                maxNumber = 0; // Default handling. 
+            }
+            onChange({ ...query, maxValuesPerNode: maxNumber });
+        });
     }
+
+    onChangeResampleInterval(e: React.FormEvent<HTMLInputElement>): void {
+        const { onChange, query } = this.props;
+        let resampleInt = e.currentTarget.value;
+        this.setState({ resampleInterval: resampleInt }, () => {
+            let resampleInterval = parseInt(this.state.resampleInterval);
+            if (isNaN(resampleInterval)) {
+                resampleInterval = 0; // Default handling. 
+            }
+            onChange({ ...query, resampleInterval: resampleInterval });
+        });
+    }
+
 
 
   onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
@@ -137,15 +154,20 @@ export class QueryEditor extends PureComponent<Props, State> {
                       loadOptions={() => this.browseNodeSV('i=11201')}
                       onChange={e => this.onChangeField('aggregate', e)} />
                 </SegmentFrame>
+                <SegmentFrame label={'Resample Interval [s]'}>
+                    <Input width={20}
+                        value={this.state.resampleInterval}
+                        onChange={(e) => this.onChangeResampleInterval(e)} />
+                </SegmentFrame>
           </>
         );
       }
       case 'Raw': {
         return (
             <>
-                <SegmentFrame label={'MaxValesPerNode'}>
+                <SegmentFrame label={'Max Values Per Node'}>
                     <Input width={20}
-                        value={query.maxValuesPerNode}
+                        value={this.state.maxValuesPerNode}
                         onChange={(e) => this.onChangeMaxValuesPerNode(e)} />
                 </SegmentFrame>
           </>

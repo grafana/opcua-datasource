@@ -244,9 +244,8 @@ namespace plugin_dotnet
                 }
                 else if (nodeIdResult.Success)
                 {
-                    var resampleInterval = query.intervalMs;
+                    var resampleInterval = query.resampleInterval > 0 ? (double)(query.resampleInterval * 1000.0) : (double)query.intervalMs;
                     var tr = query.timeRange;
-                    
                     var aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;

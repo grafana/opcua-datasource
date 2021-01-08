@@ -25,8 +25,8 @@ export interface OpcUaQuery extends DataQuery {
   alias: string;
   readType: string;
   aggregate: OpcUaNodeDefinition;
-  interval: string;
   maxValuesPerNode: number;
+  resampleInterval: number;
   eventQuery: EventQuery;
 }
 
