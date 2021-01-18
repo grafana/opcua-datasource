@@ -110,7 +110,9 @@ namespace plugin_dotnet
             {
                 var col = query.eventQuery.eventColumns[i];
 
-                fields.Add(i, dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias));
+                var field = dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias);
+                field.Config.Filterable = true;
+                fields.Add(i, field); 
             }
             return fields;
         }

@@ -152,6 +152,7 @@ namespace plugin_dotnet
             Name = name;
             Type = type;
             Data = new List<object>();
+            Config = new FieldConfig();
         }
 
         public List<T> DataAs<T>()
