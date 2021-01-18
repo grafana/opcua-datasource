@@ -32,6 +32,7 @@ type State = {
   browsePath: QualifiedName[];
   value: string;
   typeId: NodePath;
+  browserOpened: string | null;
 };
 
 export class AddEventFilter extends PureComponent<Props, State> {
@@ -49,7 +50,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
           nodeId: '',
         },
       },
-      value: '500',
+        value: '500',
+        browserOpened: null,
     };
     this.changeOperator = this.changeOperator.bind(this);
   }
@@ -119,12 +121,16 @@ export class AddEventFilter extends PureComponent<Props, State> {
       case FilterOperator.Equals:
         return (
           <SegmentFrame label="Event Field" marginLeft>
-            <BrowsePathEditor
-              browsePath={this.state.browsePath}
-              rootNodeId={this.props.eventTypeNodeId}
-              onChangeBrowsePath={bp => this.setState({ browsePath: bp })}
-              browse={nodeId => this.browseEventFields(nodeId)}
-            >
+           <BrowsePathEditor
+            id={ "browser"}
+            closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+            isBrowserOpen={(id: string) => this.state.browserOpened === id}
+            openBrowser={(id: string) => this.setState({ browserOpened: id })}
+            browsePath={this.state.browsePath}
+            rootNodeId={this.props.eventTypeNodeId}
+            onChangeBrowsePath={bp => this.setState({ browsePath: bp })}
+            browse={nodeId => this.browseEventFields(nodeId)}
+        >
               {' '}
             </BrowsePathEditor>
           </SegmentFrame>
@@ -175,11 +181,27 @@ export class AddEventFilter extends PureComponent<Props, State> {
 
   browseEventFields(nodeId: string): Promise<OpcUaBrowseResults[]> {
     return this.props.datasource.getResource('browse', { nodeId: nodeId });
-  }
+    }
+
+    renderOverlay(bg: string) {
+        if (this.state.browserOpened !== null)
+            return <div style={{
+                backgroundColor: bg,
+                height: '100%',
+                left: 0,
+                opacity: 0.7,
+                position: 'fixed',
+                top: 0,
+                width: '100%',
+                zIndex: 5,
+            }} onClick={(e) => this.setState({ browserOpened: null })} />
+        return <></>;
+    }
 
   render() {
     return (
-      <div>
+        <div>
+            {this.renderOverlay("black")}
         <br />
         {this.renderOperandsBeforeOperator(this.state.oper)}
         {this.renderDropdown()}

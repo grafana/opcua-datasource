@@ -8,30 +8,38 @@ type Props = {
   browsePath: QualifiedName[];
   rootNodeId: string;
   browse(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]>;
+  openBrowser(id: string): void;
+  closeBrowser(id: string): void;
+  isBrowserOpen(id: string): boolean;
   onChangeBrowsePath(browsePath: QualifiedName[]): void;
+  id: string;
 };
 
 type State = {
-  browserOpened: boolean;
+ 
 };
 
 export class BrowsePathEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { browserOpened: false };
-  }
+    this.state = { };
+ }
+
   toggleBrowsePathBrowser = () => {
-    this.setState({ browserOpened: !this.state.browserOpened });
+    if (!this.props.isBrowserOpen(this.props.id))
+        this.props.openBrowser(this.props.id);
+    else
+        this.props.closeBrowser(this.props.id);
   };
 
   renderBrowsePathBrowser = (rootNodeId: OpcUaBrowseResults) => {
-    if (this.state.browserOpened) {
+    if (this.props.isBrowserOpen(this.props.id)) {
       return (
         <div
           data-id="Treeview-MainDiv"
           style={{
-            //border: "lightgrey 1px solid",
-            //borderRadius: "1px",
+            border: "lightgrey 1px solid",
+            borderRadius: "1px",
             cursor: 'pointer',
             padding: '2px',
             position: 'absolute',
@@ -41,7 +49,7 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
           }}
         >
           <BrowserDialog
-            closeBrowser={() => this.setState({ browserOpened: false })}
+              closeBrowser={() => this.props.closeBrowser(this.props.id)}
             closeOnSelect={true}
             browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
             ignoreRootNode={true}

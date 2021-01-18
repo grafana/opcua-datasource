@@ -52,7 +52,7 @@ export class BrowserDialog extends Component<Props, State> {
     return (
       <div
         style={{
-          background: bg,
+            background: bg,
         }}
       >
         <ThemeGetter onTheme={this.onTheme} />

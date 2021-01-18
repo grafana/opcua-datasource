@@ -26,6 +26,7 @@ type Props = {
 type State = {
   theme: GrafanaTheme | null;
   new: EventColumn;
+  browserOpened: string | null;
 };
 
 export class EventFieldTable extends PureComponent<Props, State> {
@@ -36,7 +37,8 @@ export class EventFieldTable extends PureComponent<Props, State> {
       new: {
         alias: '',
         browsePath: [],
-      },
+        },
+       browserOpened: null,
     };
   }
 
@@ -44,7 +46,22 @@ export class EventFieldTable extends PureComponent<Props, State> {
     if (this.state.theme == null && theme != null) {
       this.setState({ theme: theme });
     }
-  };
+    };
+
+  renderOverlay(bg: string) {
+      if (this.state.browserOpened !== null)
+        return <div style={{
+          backgroundColor: bg,
+          height: '100%',
+          left: 0,
+          opacity: 0.7,
+          position: 'fixed',
+          top: 0,
+          width: '100%',
+          zIndex: 5,
+      }} onClick={(e) => this.closeBrowser()} />
+    return <></>;
+  }
 
   render() {
     let bg = '';
@@ -60,8 +77,9 @@ export class EventFieldTable extends PureComponent<Props, State> {
       return <></>;
     }
 
-    return (
-      <div className="panel-container" style={{ width: '100' }}>
+      return (
+       <div className="panel-container" style={{ width: '100' }}>
+           {this.renderOverlay(bg)}
         <ThemeGetter onTheme={this.onTheme} />
         <Paper>
           <Table>
@@ -77,6 +95,10 @@ export class EventFieldTable extends PureComponent<Props, State> {
                 <TableRow style={{ height: 14 }} key={index}>
                   <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                     <BrowsePathEditor
+                      id={index.toString()}
+                      closeBrowser={(id: string) => this.closeBrowser()}
+                      isBrowserOpen={(id: string) => this.state.browserOpened === id}
+                      openBrowser={(id: string) => this.openBrowser(id)}
                       browse={this.browse}
                       browsePath={row.browsePath}
                       onChangeBrowsePath={browsePath => this.props.onChangeBrowsePath(browsePath, index)}
@@ -99,6 +121,10 @@ export class EventFieldTable extends PureComponent<Props, State> {
               <TableRow style={{ height: 14 }}>
                 <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                   <BrowsePathEditor
+                    id={"new"}
+                    closeBrowser={(id: string) => this.closeBrowser()}
+                    isBrowserOpen={(id: string) => this.state.browserOpened === id}
+                    openBrowser={(id: string) => this.openBrowser(id)}
                     browse={this.browse}
                     browsePath={this.state.new.browsePath}
                     onChangeBrowsePath={browsePath => this.onChangeNewBrowsePath(browsePath)}
@@ -122,6 +148,14 @@ export class EventFieldTable extends PureComponent<Props, State> {
         </Paper>
       </div>
     );
+  }
+
+  openBrowser(id: string): void {
+    this.setState({ browserOpened: id });
+  }
+
+  closeBrowser(): void {
+    this.setState({ browserOpened: null });
   }
 
   onChangeNewAlias(alias: string): void {

@@ -27,9 +27,9 @@ type State = {
 
   alias: string;
   templateVariable: string;
-    relativepath: QualifiedName[];
-    advanced: boolean;
-  browserOpened: boolean;
+  relativepath: QualifiedName[];
+  advanced: boolean;
+  browserOpened: string | null;
 };
 
 export class NodeQueryEditor extends PureComponent<Props, State> {
@@ -60,7 +60,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       relativepath: this.props.query.relativePath,
       node: nodePath,
       alias: alias,
-        browserOpened: false,
+        browserOpened: null,
         advanced: false,
     };
   }
@@ -185,7 +185,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     if (this.state.useTemplate) {
       browseNodeId = this.state.node.node.nodeId;
       nodeNameType = 'Type';
-      }
+    }
 
     return (
         <div style={{ padding: '4px' }}>
@@ -202,7 +202,12 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         <SegmentFrame label={nodeNameType}>
           {this.renderTemplateOrNodeBrowser()}
           <div>
-            <BrowsePathEditor
+             <BrowsePathEditor
+
+             id={"browsePath"}
+             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+             isBrowserOpen={(id: string) => this.state.browserOpened === id}
+             openBrowser={(id: string) => this.setState({ browserOpened: id })}
               browsePath={relativepath}
               browse={(nodeId, filter) => this.browse(nodeId, filter)}
               onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}
