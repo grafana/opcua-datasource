@@ -79,7 +79,9 @@ export class EventQueryEditor extends PureComponent<Props, State> {
 
   buildEventFields = (storedEventColumns: EventColumn[]): EventColumn[] => {
     if (typeof storedEventColumns === 'undefined') {
-      return [
+        return [
+        { alias: 'Active', browsePath: [{ name: 'ActiveState', namespaceUrl: 'http://opcfoundation.org/UA/' }, { name: 'Id', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+        { alias: 'Acked', browsePath: [{ name: 'AckedState', namespaceUrl: 'http://opcfoundation.org/UA/' }, { name: 'Id', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
         { alias: '', browsePath: [{ name: 'Time', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
         { alias: '', browsePath: [{ name: 'EventId', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
         { alias: '', browsePath: [{ name: 'EventType', namespaceUrl: 'http://opcfoundation.org/UA/' }] },

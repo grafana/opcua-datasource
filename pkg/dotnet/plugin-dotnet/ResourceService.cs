@@ -40,6 +40,8 @@ namespace plugin_dotnet
             _resourceHandlers.Add("browse", Browse);
             _resourceHandlers.Add("browseTypes", BrowseTypes);
             _resourceHandlers.Add("browseDataTypes", BrowseDataTypes);
+            _resourceHandlers.Add("browseEventFields", BrowseEventFields);
+            
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
             _resourceHandlers.Add("getdashboard", GetDashboard);
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
@@ -216,6 +218,39 @@ namespace plugin_dotnet
             var nId = Converter.GetNodeId(nodeId, nsTable);
             connection.Browse(null, null, nId, 1, Opc.Ua.BrowseDirection.Forward, "i=40", true, (uint) (Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection references);
             var result = JsonSerializer.Serialize(Converter.ConvertToBrowseResult(references[0], nsTable));
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("We got a result from browse => {0}", result);
+            return response;
+        }
+
+
+        // Move to Opc.Ua.Client
+        private static Opc.Ua.NodeId GetSuperType(Session connection, NodeId id, NamespaceTable nsTable)
+        {
+            connection.Browse(null, null, id, 1, BrowseDirection.Inverse, ReferenceTypeIds.HasSubtype, false, (uint)NodeClass.ObjectType, out byte[] contPoint, out ReferenceDescriptionCollection references);
+            if (references.Count > 0)
+            {
+                return ExpandedNodeId.ToNodeId(references[0].NodeId, nsTable);
+            }
+            return null;
+        }
+
+        private CallResourceResponse BrowseEventFields(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            var nId = Converter.GetNodeId(nodeId, nsTable);
+            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.Variable));
+            NodeId superType = null;
+            while ((superType = GetSuperType(connection, nId, nsTable)) != null)
+            {
+                var superBrowseResult = connection.Browse(superType, (uint)(Opc.Ua.NodeClass.Variable));
+                browseResult.AddRange(superBrowseResult);
+                nId = superType;
+            }
+            var ordered = browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(a => a.browseName.name).ToArray();
+            var result = JsonSerializer.Serialize(ordered);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.LogDebug("We got a result from browse => {0}", result);

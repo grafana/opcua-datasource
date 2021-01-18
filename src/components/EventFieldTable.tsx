@@ -140,6 +140,6 @@ export class EventFieldTable extends PureComponent<Props, State> {
   };
 
   browse = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
-    return this.props.datasource.getResource('browse', { nodeId: nodeId });
+    return this.props.datasource.getResource('browseEventFields', { nodeId: nodeId });
   };
 }

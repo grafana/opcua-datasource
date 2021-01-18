@@ -79,8 +79,8 @@ export class BrowserTree extends Component<Props, State> {
     } else {
       if (!this.state.fetchedChildren) {
         this.props.browse(rootNodeId.nodeId).then(response => {
-          this.setState({ children: response, fetchedChildren: true });
-        });
+            this.setState({ children: response, fetchedChildren: true });
+        }).catch(c => console.log(c));
         return <></>;
       } else {
         return this.state.children.map(a => this.renderNode(a));
