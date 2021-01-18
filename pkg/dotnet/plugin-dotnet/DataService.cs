@@ -179,7 +179,7 @@ namespace plugin_dotnet
                 if (nodeIdResult.Success)
                 {
                     var query = queries[i];
-                    var maxValues = query.maxDataPoints;
+                    var maxValues = query.maxValuesPerNode > 0 ? query.maxValuesPerNode : 0;
                     var tr = query.timeRange;
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
@@ -226,17 +226,26 @@ namespace plugin_dotnet
             for (int i = 0; i < queries.Length; i++)
             {
                 var query = queries[i];
+                OpcUaNodeDefinition aggregate = null;
                 var nodeIdResult = nodeIdsResult[i];
-                OpcUaNodeDefinition aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
+                try
+                {
+                    aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
+                }
+                catch (Exception e)
+                {
+                    _log.LogError(e, "Error getting aggregate. ");
+                }
+
                 if (aggregate?.nodeId == null)
                 {
+                    _log.LogError("Aggregate is not set");
                     result[i] = new Result<DataResponse>(StatusCodes.BadNodeIdInvalid, "Aggregate is not set");
                 }
                 else if (nodeIdResult.Success)
                 {
-                    var resampleInterval = query.intervalMs;
+                    var resampleInterval = query.resampleInterval > 0 ? (double)(query.resampleInterval * 1000.0) : (double)query.intervalMs;
                     var tr = query.timeRange;
-                    
                     var aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;

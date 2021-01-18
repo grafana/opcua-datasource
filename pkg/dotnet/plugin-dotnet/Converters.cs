@@ -109,38 +109,58 @@ namespace plugin_dotnet
             for (int i = 0; i < query.eventQuery.eventColumns.Length; i++)
             {
                 var col = query.eventQuery.eventColumns[i];
-
-                var field = dataFrame.AddField<string>(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias);
+                var type = UaEvents.GetTypeForField(col.browsePath);
+                var field = dataFrame.AddField(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias, type);
                 field.Config.Filterable = true;
                 fields.Add(i, field); 
+
             }
             return fields;
         }
 
-        internal static void FillEventDataFrame(Dictionary<int, Field> fields, VariantCollection eventFields)
+        internal static object GetDataFieldValue(Field dataField, object val)
+        {
+            if (val != null)
+            {
+                if (dataField.Type.Equals(val.GetType()))
+                    return val;
+                else
+                {
+                    try
+                    {
+                        return Convert.ChangeType(val, dataField.Type);
+                    }
+                    catch
+                    {
+                        if (dataField.Type.IsValueType)
+                            return Activator.CreateInstance(dataField.Type);
+                        else if (dataField.Type.Equals(typeof(string)))
+                            return val.ToString();
+                        else
+                            return null;
+                    }
+                }
+            }
+            else
+            {
+                if (dataField.Type.IsValueType)
+                    return Activator.CreateInstance(dataField.Type);
+                else if (dataField.Type.Equals(typeof(string)))
+                    return string.Empty;
+                else
+                    return null;
+            }
+        }
+
+        internal static void FillEventDataFrame(Dictionary<int, Field> fields, VariantCollection eventFields, OpcUAQuery query)
         {
             for (int k = 0; k < eventFields.Count; k++)
             {
                 var field = eventFields[k];
+                var path = query.eventQuery.eventColumns[k].browsePath;
                 if (fields.TryGetValue(k, out Field dataField))
                 {
-
-                    if (field.Value != null)
-                    {
-                        if (dataField.Type.Equals(field.Value.GetType()))
-                            dataField.Append(field.Value);
-                        else
-                            dataField.Append(field.Value.ToString());
-                    }
-                    else
-                    {
-                        if (dataField.Type.IsValueType)
-                            dataField.Append(Activator.CreateInstance(dataField.Type));
-                        else if (dataField.Type.Equals(typeof(string)))
-                            dataField.Append(string.Empty);
-                        else
-                            dataField.Append(null);
-                    }
+                    dataField.Append(GetDataFieldValue(dataField, UaEvents.GetValueForField(path, field.Value)));
                 }
             }
         }
@@ -153,7 +173,7 @@ namespace plugin_dotnet
             var fields = AddEventFields(dataFrame, query);
             foreach (var ev in events)
             {
-                FillEventDataFrame(fields, ev);
+                FillEventDataFrame(fields, ev, query);
             }
             dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
             return new Result<DataResponse>(dataResponse);
@@ -173,7 +193,7 @@ namespace plugin_dotnet
                     var fields = AddEventFields(dataFrame, query);
                     foreach (var e in historyEvent.Events)
                     {
-                        FillEventDataFrame(fields, e.EventFields);
+                        FillEventDataFrame(fields, e.EventFields, query);
                     }
                 }
                 dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
