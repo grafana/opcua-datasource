@@ -11,6 +11,8 @@ import { BrowsePathEditor } from './BrowsePathEditor';
 import { DataSource } from '../DataSource';
 import { Button, Input } from '@grafana/ui';
 import { copyEventColumn } from '../utils/EventColumn';
+import { renderOverlay } from '../utils/Overlay';
+
 
 type Props = {
   datasource: DataSource;
@@ -40,27 +42,6 @@ export class EventFieldTable extends PureComponent<Props, State> {
     };
   }
 
-  //onTheme = (theme: GrafanaTheme) => {
-  //  if (this.state.theme == null && theme != null) {
-  //    this.setState({ theme: theme });
-  //  }
-  //  };
-
-  renderOverlay(bg: string) {
-      if (this.state.browserOpened !== null)
-        return <div style={{
-          backgroundColor: bg,
-          height: '100%',
-          left: 0,
-          opacity: 0.7,
-          position: 'fixed',
-          top: 0,
-          width: '100%',
-          zIndex: 5,
-      }} onClick={(e) => this.closeBrowser()} />
-    return <></>;
-  }
-
   render() {
     let bg = '';
     let txt = '';
@@ -77,7 +58,7 @@ export class EventFieldTable extends PureComponent<Props, State> {
 
       return (
        <div className="panel-container" style={{ width: '100' }}>
-           {this.renderOverlay(bg)}
+        {renderOverlay(bg, () => this.state.browserOpened !== null, () => this.closeBrowser())}
         <Paper>
           <Table>
             <TableHead style={{ backgroundColor: bg, color: txt }}>

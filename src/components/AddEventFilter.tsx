@@ -21,6 +21,7 @@ import { DataSource } from '../DataSource';
 import { NodeEditor } from './NodeEditor';
 import { Button } from '@grafana/ui';
 import { GrafanaTheme } from '@grafana/data';
+import { renderOverlay } from '../utils/Overlay';
 
 export interface Props {
   datasource: DataSource;
@@ -185,27 +186,17 @@ export class AddEventFilter extends PureComponent<Props, State> {
 
   browseEventFields(nodeId: string): Promise<OpcUaBrowseResults[]> {
     return this.props.datasource.getResource('browse', { nodeId: nodeId });
-    }
-
-    renderOverlay(bg: string) {
-        if (this.state.browserOpened !== null)
-            return <div style={{
-                backgroundColor: bg,
-                height: '100%',
-                left: 0,
-                opacity: 0.7,
-                position: 'fixed',
-                top: 0,
-                width: '100%',
-                zIndex: 5,
-            }} onClick={(e) => this.setState({ browserOpened: null })} />
-        return <></>;
-    }
+  }
 
   render() {
-    return (
+        let bg: string = '';
+        if (this.props.theme !== null) 
+        {
+           bg = this.props.theme.colors.bg2;
+        }
+        return (
         <div>
-            {this.renderOverlay("black")}
+            {renderOverlay(bg , () => this.state.browserOpened !== null, () => this.setState({ browserOpened: null }))}
         <br />
         {this.renderOperandsBeforeOperator(this.state.oper)}
         {this.renderDropdown()}
