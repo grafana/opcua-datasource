@@ -1,19 +1,21 @@
 import React, { PureComponent } from 'react';
 import { TabsBar, TabContent, Tab, RadioButtonGroup, SegmentAsync, Input } from '@grafana/ui';
 import { TreeEditor } from './components/TreeEditor';
-import { QueryEditorProps, SelectableValue } from '@grafana/data';
+import { GrafanaTheme, QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from './DataSource';
 import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults } from './types';
 import { css } from 'emotion';
 import { EventQueryEditor } from './components/EventQueryEditor';
 import { NodeQueryEditor } from './components/NodeQueryEditor';
 import { SegmentFrame } from './components/SegmentFrame';
+import { ThemeGetter } from './components/ThemesGetter';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
 type State = {
     tabs: Array<{ label: string; active: boolean }>;
     maxValuesPerNode: string;
     resampleInterval: string;
+    theme: GrafanaTheme | null;
 };
 
 const selectText = (t: string): string => `Select <${t}>`;
@@ -41,6 +43,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         ],
         maxValuesPerNode: props.query?.maxValuesPerNode?.toString(),
         resampleInterval: props.query?.resampleInterval?.toString(),
+        theme: null,
     };
   }
 
@@ -197,7 +200,8 @@ export class QueryEditor extends PureComponent<Props, State> {
   renderNodeQueryEditor = (nodeNameType: string) => {
     const { datasource, onChange, query, onRunQuery } = this.props;
     return (
-      <NodeQueryEditor
+        <NodeQueryEditor
+            theme={this.state.theme}
         nodeNameType={nodeNameType}
         datasource={datasource}
         onChange={onChange}
@@ -215,7 +219,7 @@ export class QueryEditor extends PureComponent<Props, State> {
               <>
                   <div>{this.renderReadTypes()}</div>
                   <div>{this.renderNodeQueryEditor('Event Source')}</div>
-                  <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} />{' '}
+                  <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} theme={this.state.theme} /> { ' '}
               </>
           );
       }
@@ -236,13 +240,20 @@ export class QueryEditor extends PureComponent<Props, State> {
 
   renderTreeEditor = () => {
     return <TreeEditor {...this.props} />;
-  };
+    };
+
+    onTheme = (theme: GrafanaTheme) => {
+        if (this.state.theme == null && theme != null) {
+            this.setState({ theme: theme });
+        }
+    };
 
   render() {
     const { tabs } = this.state;
 
     return (
-      <>
+        <>
+        <ThemeGetter onTheme={this.onTheme} />
         <TabsBar className={tabMarginHeader}>
           {tabs.map((tab, index) => {
             return (

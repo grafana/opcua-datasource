@@ -6,7 +6,6 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { Paper } from '@material-ui/core';
 import { EventColumn, QualifiedName, OpcUaBrowseResults } from './../types';
-import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { BrowsePathEditor } from './BrowsePathEditor';
 import { DataSource } from '../DataSource';
@@ -21,10 +20,10 @@ type Props = {
   onChangeBrowsePath(browsePath: QualifiedName[], idx: number): void;
   ondelete(idx: number): void;
   onAddColumn(newCol: EventColumn): void;
+  theme: GrafanaTheme | null;
 };
 
 type State = {
-  theme: GrafanaTheme | null;
   new: EventColumn;
   browserOpened: string | null;
 };
@@ -33,7 +32,6 @@ export class EventFieldTable extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      theme: null,
       new: {
         alias: '',
         browsePath: [],
@@ -42,11 +40,11 @@ export class EventFieldTable extends PureComponent<Props, State> {
     };
   }
 
-  onTheme = (theme: GrafanaTheme) => {
-    if (this.state.theme == null && theme != null) {
-      this.setState({ theme: theme });
-    }
-    };
+  //onTheme = (theme: GrafanaTheme) => {
+  //  if (this.state.theme == null && theme != null) {
+  //    this.setState({ theme: theme });
+  //  }
+  //  };
 
   renderOverlay(bg: string) {
       if (this.state.browserOpened !== null)
@@ -67,10 +65,10 @@ export class EventFieldTable extends PureComponent<Props, State> {
     let bg = '';
     let txt = '';
     let bgBlue = '';
-    if (this.state.theme != null) {
-      bg = this.state.theme.colors.bg2;
-      txt = this.state.theme.colors.text;
-      bgBlue = this.state.theme.colors.bgBlue1;
+    if (this.props.theme != null) {
+        bg = this.props.theme.colors.bg2;
+        txt = this.props.theme.colors.text;
+        bgBlue = this.props.theme.colors.bgBlue1;
     }
 
     if (typeof this.props.eventTypeNodeId === 'undefined' || this.props.eventTypeNodeId === '') {
@@ -80,7 +78,6 @@ export class EventFieldTable extends PureComponent<Props, State> {
       return (
        <div className="panel-container" style={{ width: '100' }}>
            {this.renderOverlay(bg)}
-        <ThemeGetter onTheme={this.onTheme} />
         <Paper>
           <Table>
             <TableHead style={{ backgroundColor: bg, color: txt }}>
@@ -95,6 +92,7 @@ export class EventFieldTable extends PureComponent<Props, State> {
                 <TableRow style={{ height: 14 }} key={index}>
                   <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                     <BrowsePathEditor
+                        theme={this.props.theme}
                       id={index.toString()}
                       closeBrowser={(id: string) => this.closeBrowser()}
                       isBrowserOpen={(id: string) => this.state.browserOpened === id}
@@ -120,7 +118,8 @@ export class EventFieldTable extends PureComponent<Props, State> {
               ))}
               <TableRow style={{ height: 14 }}>
                 <TableCell style={{ color: txt, border: 0, padding: 0 }}>
-                  <BrowsePathEditor
+                <BrowsePathEditor
+                    theme={this.props.theme}
                     id={"new"}
                     closeBrowser={(id: string) => this.closeBrowser()}
                     isBrowserOpen={(id: string) => this.state.browserOpened === id}

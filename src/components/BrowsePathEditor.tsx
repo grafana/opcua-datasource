@@ -3,14 +3,16 @@ import { QualifiedName, OpcUaBrowseResults, BrowseFilter } from '../types';
 import { Button } from '@grafana/ui';
 import { BrowsePathTextEditor } from './BrowsePathTextEditor';
 import { BrowserDialog } from './BrowserDialog';
+import { GrafanaTheme } from '@grafana/data';
 
 type Props = {
   browsePath: QualifiedName[];
-  rootNodeId: string;
-  browse(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]>;
+    rootNodeId: string;
+    theme: GrafanaTheme | null;
+    browse(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]>;
   openBrowser(id: string): void;
   closeBrowser(id: string): void;
-  isBrowserOpen(id: string): boolean;
+    isBrowserOpen(id: string): boolean;
   onChangeBrowsePath(browsePath: QualifiedName[]): void;
   id: string;
 };
@@ -48,7 +50,8 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
             zIndex: 10,
           }}
         >
-          <BrowserDialog
+           <BrowserDialog
+               theme={this.props.theme}
               closeBrowser={() => this.props.closeBrowser(this.props.id)}
             closeOnSelect={true}
             browse={(nodeId, filter) => this.props.browse(nodeId, filter)}

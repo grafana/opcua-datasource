@@ -10,7 +10,7 @@ import {
   NodePath,
   BrowseFilter,
 } from '../types';
-import { QueryEditorProps } from '@grafana/data';
+import { GrafanaTheme, QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../DataSource';
 import { SegmentFrame } from './SegmentFrame';
 //import { BrowsePathEditor } from './BrowsePathEditor';
@@ -18,7 +18,7 @@ import { BrowsePathEditor } from './BrowsePathEditor';
 import { Checkbox } from '@grafana/ui';
 import { NodeEditor } from './NodeEditor';
 
-type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string };
+type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string, theme: GrafanaTheme | null };
 
 type State = {
   useTemplate: boolean;
@@ -108,7 +108,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     if (!useTemplate) {
       return (
         <div onBlur={e => console.log('onBlur', e)}>
-          <NodeEditor
+              <NodeEditor
+                  theme={this.props.theme}
             rootNodeId="i=85"
             placeholder="Instance"
             node={this.state.node}
@@ -121,7 +122,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     } else {
       return (
         <div>
-          <NodeEditor
+              <NodeEditor
+                  theme={this.props.theme}
             rootNodeId="i=88"
             placeholder="Type"
             node={this.state.node}
@@ -202,8 +204,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         <SegmentFrame label={nodeNameType}>
           {this.renderTemplateOrNodeBrowser()}
           <div>
-             <BrowsePathEditor
-
+                    <BrowsePathEditor
+                        theme={this.props.theme}
              id={"browsePath"}
              closeBrowser={(id: string) => this.setState({ browserOpened: null })}
              isBrowserOpen={(id: string) => this.state.browserOpened === id}

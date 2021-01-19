@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import TreeNode from './TreeNode';
 import { convertRemToPixels } from '../utils/ConvertRemToPixels';
 import { OpcUaBrowseResults, QualifiedName } from '../types';
-import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 
 type Props = {
   browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
-  closeOnSelect: boolean;
+    closeOnSelect: boolean;
+    theme: GrafanaTheme | null;
   onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
   closeBrowser: () => void;
 };
@@ -18,7 +18,6 @@ type State = {
   fetchedChildren: boolean;
   rootNode: OpcUaBrowseResults;
   children: OpcUaBrowseResults[];
-  theme: GrafanaTheme | null;
 };
 
 /**
@@ -41,7 +40,6 @@ export class BrowserTree extends Component<Props, State> {
       },
       children: [],
       fetchedChildren: false,
-      theme: null,
     };
   }
 
@@ -88,11 +86,6 @@ export class BrowserTree extends Component<Props, State> {
     }
   };
 
-  onTheme = (theme: GrafanaTheme) => {
-    if (this.state.theme == null && theme != null) {
-      this.setState({ theme: theme });
-    }
-  };
 
   /**
    * Renders the component.
@@ -103,8 +96,8 @@ export class BrowserTree extends Component<Props, State> {
       this.setState({ children: [], fetchedChildren: false, rootNode: rootNodeId });
     }
     let bg = '';
-    if (this.state.theme != null) {
-      bg = this.state.theme.colors.bg2;
+    if (this.props.theme != null) {
+        bg = this.props.theme.colors.bg2;
     }
     return (
       <div
@@ -112,7 +105,6 @@ export class BrowserTree extends Component<Props, State> {
           background: bg,
         }}
       >
-        <ThemeGetter onTheme={this.onTheme} />
         <div
           data-id="Treeview-ScrollDiv"
           style={{

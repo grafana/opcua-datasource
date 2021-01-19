@@ -20,10 +20,12 @@ import { BrowsePathEditor } from './BrowsePathEditor';
 import { DataSource } from '../DataSource';
 import { NodeEditor } from './NodeEditor';
 import { Button } from '@grafana/ui';
+import { GrafanaTheme } from '@grafana/data';
 
 export interface Props {
   datasource: DataSource;
-  eventTypeNodeId: string;
+    eventTypeNodeId: string;
+    theme: GrafanaTheme | null;
   add(filter: EventFilter): void;
 }
 
@@ -121,7 +123,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
       case FilterOperator.Equals:
         return (
           <SegmentFrame label="Event Field" marginLeft>
-           <BrowsePathEditor
+            <BrowsePathEditor
+             theme={this.props.theme}
             id={ "browser"}
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
@@ -149,7 +152,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
         return (
           <>
             <SegmentFrame label="Value Type" marginLeft>
-              <NodeEditor
+             <NodeEditor
+                theme={this.props.theme}
                 browse={(node, filter) => this.browseDataTypes(node, filter)}
                 readNode={nodeid => this.readNode(nodeid)}
                 onChangeNode={node => this.onChangeValueTypeNode(node)}

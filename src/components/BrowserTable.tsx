@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { OpcUaBrowseResults, QualifiedName, NodeClass, BrowseFilter } from '../types';
-import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { Paper, Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/core';
 import { qualifiedNameToString, copyQualifiedName } from '../utils/QualifiedName';
@@ -20,7 +19,9 @@ type Props = {
   browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
-  closeOnSelect: boolean;
+    closeOnSelect: boolean;
+    theme: GrafanaTheme | null;
+
   onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
   closeBrowser: () => void;
 };
@@ -30,7 +31,6 @@ type State = {
   fetchedChildren: boolean;
   currentNode: OpcUaBrowseResults;
   children: OpcUaBrowseResults[];
-  theme: GrafanaTheme | null;
   browsePath: OpcUaBrowseResults[];
   maxResults: number;
   browseNameFilter: string;
@@ -57,7 +57,6 @@ export class BrowserTable extends Component<Props, State> {
         children: [],
         fetchingChildren: false,
       fetchedChildren: false,
-      theme: null,
       browsePath: [],
       maxResults: 1000,
       browseNameFilter: '',
@@ -79,11 +78,6 @@ export class BrowserTable extends Component<Props, State> {
     }
   };
 
-  onTheme = (theme: GrafanaTheme) => {
-    if (this.state.theme == null && theme != null) {
-      this.setState({ theme: theme });
-    }
-  };
 
   /**
    * Renders the component.
@@ -97,9 +91,9 @@ export class BrowserTable extends Component<Props, State> {
     let bg = '';
     let txt = '';
     //let bgBlue: string = "";
-    if (this.state.theme != null) {
-      bg = this.state.theme.colors.bg2;
-      txt = this.state.theme.colors.text;
+    if (this.props.theme != null) {
+      bg = this.props.theme.colors.bg2;
+      txt = this.props.theme.colors.text;
       //bgBlue = this.state.theme.colors.bgBlue1;
     }
 
@@ -107,7 +101,6 @@ export class BrowserTable extends Component<Props, State> {
 
     return (
       <div className="panel-container">
-        <ThemeGetter onTheme={this.onTheme} />
         <div onClick={e => this.navigateBack()}>
           <FaChevronUp />
           <div style={{ display: 'inline-block' }}>

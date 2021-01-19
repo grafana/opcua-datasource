@@ -18,9 +18,9 @@ import { copyEventFilter, createFilterTree, serializeEventFilter, deserializeEve
 import { copyEventColumn } from '../utils/EventColumn';
 import { toCascaderOption } from '../utils/CascaderOption';
 import { DataSource } from '../DataSource';
-import { QueryEditorProps } from '@grafana/data';
+import { GrafanaTheme, QueryEditorProps } from '@grafana/data';
 
-type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>;
+type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { theme: GrafanaTheme | null };
 
 type State = {
   eventTypeNodeId: string;
@@ -160,7 +160,8 @@ export class EventQueryEditor extends PureComponent<Props, State> {
       return (
         <>
           <h2>Event Columns</h2>
-          <EventFieldTable
+              <EventFieldTable
+               theme={this.props.theme}
             datasource={datasource}
             eventTypeNodeId={this.state.eventTypeNodeId}
             eventColumns={this.state.eventFields}
@@ -175,14 +176,16 @@ export class EventQueryEditor extends PureComponent<Props, State> {
           />
           <br />
           <h2>Event Filters</h2>
-          <EventFilterTable
-            rows={this.state.eventFilters}
+              <EventFilterTable
+                theme={this.props.theme}
+               rows={this.state.eventFilters}
             ondelete={(idx: number) => {
               this.handleDeleteEventFilter(idx);
             }}
           />
           <br />
-          <AddEventFilter
+              <AddEventFilter
+                  theme={this.props.theme}
             add={(eventFilter: EventFilter) => {
               this.addEventFilter(eventFilter);
             }}
