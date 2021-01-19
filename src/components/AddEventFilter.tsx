@@ -25,8 +25,8 @@ import { renderOverlay } from '../utils/Overlay';
 
 export interface Props {
   datasource: DataSource;
-    eventTypeNodeId: string;
-    theme: GrafanaTheme | null;
+  eventTypeNodeId: string;
+  theme: GrafanaTheme | null;
   add(filter: EventFilter): void;
 }
 
@@ -153,7 +153,11 @@ export class AddEventFilter extends PureComponent<Props, State> {
         return (
           <>
             <SegmentFrame label="Value Type" marginLeft>
-             <NodeEditor
+            <NodeEditor
+                id={"nodeeditor"}
+                closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+                isBrowserOpen={(id: string) => this.state.browserOpened === id}
+                openBrowser={(id: string) => this.setState({ browserOpened: id })}
                 theme={this.props.theme}
                 browse={(node, filter) => this.browseDataTypes(node, filter)}
                 readNode={nodeid => this.readNode(nodeid)}

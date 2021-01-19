@@ -17,13 +17,14 @@ import { SegmentFrame } from './SegmentFrame';
 import { BrowsePathEditor } from './BrowsePathEditor';
 import { Checkbox } from '@grafana/ui';
 import { NodeEditor } from './NodeEditor';
+import { renderOverlay } from '../utils/Overlay';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string, theme: GrafanaTheme | null };
 
 type State = {
   useTemplate: boolean;
   //templateType: NodePath;
-    node: NodePath;
+  node: NodePath;
 
   alias: string;
   templateVariable: string;
@@ -108,8 +109,13 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     if (!useTemplate) {
       return (
         <div onBlur={e => console.log('onBlur', e)}>
-              <NodeEditor
-                  theme={this.props.theme}
+        <NodeEditor
+            id={"instanceeditor"}
+            closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+            isBrowserOpen={(id: string) => this.state.browserOpened === id}
+            openBrowser={(id: string) => this.setState({ browserOpened: id })}
+
+            theme={this.props.theme}
             rootNodeId="i=85"
             placeholder="Instance"
             node={this.state.node}
@@ -122,8 +128,13 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     } else {
       return (
         <div>
-              <NodeEditor
-                  theme={this.props.theme}
+        <NodeEditor
+            id={"typeeditor"}
+            closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+            isBrowserOpen={(id: string) => this.state.browserOpened === id}
+            openBrowser={(id: string) => this.setState({ browserOpened: id })}
+
+            theme={this.props.theme}
             rootNodeId="i=88"
             placeholder="Type"
             node={this.state.node}
@@ -167,18 +178,18 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       );
     }
     return <></>;
-    }
+  }
 
 
-    renderAlias() {
-        const { advanced } = this.state;
-        if (advanced) {
-            return <SegmentFrame label="Alias">
-                <Input value={this.state.alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
-            </SegmentFrame>;
-        }
-        return <></>;
+  renderAlias() {
+    const { advanced } = this.state;
+    if (advanced) {
+       return <SegmentFrame label="Alias">
+         <Input value={this.state.alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
+         </SegmentFrame>;
     }
+    return <></>;
+  }
 
   render() {
     const { relativepath, node } = this.state;
@@ -188,9 +199,13 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       browseNodeId = this.state.node.node.nodeId;
       nodeNameType = 'Type';
     }
-
+    let bg: string = '';
+    if (this.props.theme !== null) {
+        bg = this.props.theme.colors.bg2;
+    }
     return (
         <div style={{ padding: '4px' }}>
+        {renderOverlay(bg, () => this.state.browserOpened !== null, () => this.setState({ browserOpened: null }))}
         <Checkbox
             label="Instance"
                 checked={!this.state.useTemplate}
@@ -204,17 +219,16 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         <SegmentFrame label={nodeNameType}>
           {this.renderTemplateOrNodeBrowser()}
           <div>
-                    <BrowsePathEditor
-                        theme={this.props.theme}
+           <BrowsePathEditor
+             theme={this.props.theme}
              id={"browsePath"}
              closeBrowser={(id: string) => this.setState({ browserOpened: null })}
              isBrowserOpen={(id: string) => this.state.browserOpened === id}
              openBrowser={(id: string) => this.setState({ browserOpened: id })}
-              browsePath={relativepath}
-              browse={(nodeId, filter) => this.browse(nodeId, filter)}
-              onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}
-              rootNodeId={browseNodeId}
-            />
+             browsePath={relativepath}
+             browse={(nodeId, filter) => this.browse(nodeId, filter)}
+             onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}
+             rootNodeId={browseNodeId} />
           </div>
             </SegmentFrame>
 

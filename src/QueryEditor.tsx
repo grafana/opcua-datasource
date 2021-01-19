@@ -59,8 +59,8 @@ export class QueryEditor extends PureComponent<Props, State> {
       { label: 'Realtime', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
       { label: 'Events', value: 'ReadEvents' },
-        { label: 'Subscribe Events', value: 'SubscribeEvents' },
-        { label: 'Resource', value: 'Resource' },
+      { label: 'Subscribe Events', value: 'SubscribeEvents' },
+      { label: 'Resource', value: 'Resource' },
     ];
   }
 
@@ -201,7 +201,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { datasource, onChange, query, onRunQuery } = this.props;
     return (
         <NodeQueryEditor
-            theme={this.state.theme}
+        theme={this.state.theme}
         nodeNameType={nodeNameType}
         datasource={datasource}
         onChange={onChange}
@@ -214,28 +214,28 @@ export class QueryEditor extends PureComponent<Props, State> {
   renderOriginal = () => {
     const { datasource, onChange, query, onRunQuery } = this.props;
     const readTypeValue = this.readTypeValue(query.readType);
-      if (readTypeValue === 'Events' || readTypeValue === 'Subscribe Events') {
-          return (
-              <>
-                  <div>{this.renderReadTypes()}</div>
-                  <div>{this.renderNodeQueryEditor('Event Source')}</div>
-                  <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} theme={this.state.theme} /> { ' '}
-              </>
-          );
-      }
-      else if (readTypeValue === 'Resource')
-      {
-          return <div>{this.renderReadTypes()}</div>;
-      }
-        else
-        {
-          return (
+    if (readTypeValue === 'Events' || readTypeValue === 'Subscribe Events') {
+        return (
             <>
-              <div>{this.renderReadTypes()}</div>
-              <div>{this.renderNodeQueryEditor('Instance')}</div>
+                <div>{this.renderReadTypes()}</div>
+                <div>{this.renderNodeQueryEditor('Event Source')}</div>
+                <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} theme={this.state.theme} /> { ' '}
             </>
-          );
-        }
+        );
+    }
+    else if (readTypeValue === 'Resource')
+    {
+        return <div>{this.renderReadTypes()}</div>;
+    }
+    else
+    {
+        return (
+        <>
+            <div>{this.renderReadTypes()}</div>
+            <div>{this.renderNodeQueryEditor('Instance')}</div>
+        </>
+        );
+    }
   };
 
   renderTreeEditor = () => {

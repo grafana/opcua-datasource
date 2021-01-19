@@ -13,18 +13,20 @@ type Props = {
   onChangeNode(node: NodePath): void;
   readNode(nodeId: string): Promise<OpcUaNodeInfo>;
   placeholder: string;
+  openBrowser(id: string): void;
+  closeBrowser(id: string): void;
+  isBrowserOpen(id: string): boolean;
+  id: string;
 };
 
 type State = {
   node: OpcUaNodeInfo;
-  browserOpened: boolean;
 };
 
 export class NodeEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      browserOpened: false,
       node: {
         browseName: { name: '', namespaceUrl: '' },
         displayName: '',
@@ -34,12 +36,15 @@ export class NodeEditor extends PureComponent<Props, State> {
     };
   }
 
-  toggleBrowser = () => {
-    this.setState({ browserOpened: !this.state.browserOpened });
+    toggleBrowser = () => {
+        if (this.props.isBrowserOpen(this.props.id))
+            this.props.closeBrowser(this.props.id);
+        else
+            this.props.openBrowser(this.props.id);
   };
 
-  renderNodeBrowser = (rootNodeId: OpcUaBrowseResults) => {
-    if (this.state.browserOpened) {
+    renderNodeBrowser = (rootNodeId: OpcUaBrowseResults) => {
+      if (this.props.isBrowserOpen(this.props.id)) {
       return (
         <div
           data-id="Treeview-MainDiv"
@@ -54,9 +59,9 @@ export class NodeEditor extends PureComponent<Props, State> {
             zIndex: 10,
           }}
         >
-              <BrowserDialog
-                  theme={this.props.theme}
-            closeBrowser={() => this.setState({ browserOpened: false })}
+        <BrowserDialog
+            theme={this.props.theme}
+            closeBrowser={() => this.props.closeBrowser(this.props.id)}
             closeOnSelect={true}
             browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
             ignoreRootNode={true}
