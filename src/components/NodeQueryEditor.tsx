@@ -19,7 +19,8 @@ import { Checkbox } from '@grafana/ui';
 import { NodeEditor } from './NodeEditor';
 import { renderOverlay } from '../utils/Overlay';
 
-type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { nodeNameType: string, theme: GrafanaTheme | null };
+type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions>
+    & { nodeNameType: string, theme: GrafanaTheme | null };
 
 type State = {
   useTemplate: boolean;
@@ -114,7 +115,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
             openBrowser={(id: string) => this.setState({ browserOpened: id })}
-
+            getNamespaceIndices={() => this.getNamespaceIndices()}
             theme={this.props.theme}
             rootNodeId="i=85"
             placeholder="Instance"
@@ -133,7 +134,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
             openBrowser={(id: string) => this.setState({ browserOpened: id })}
-
+            getNamespaceIndices={() => this.getNamespaceIndices()}
             theme={this.props.theme}
             rootNodeId="i=88"
             placeholder="Type"
@@ -162,6 +163,10 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
   readNode(nodeId: string): Promise<import('../types').OpcUaNodeInfo> {
     return this.props.datasource.getResource('readNode', { nodeId: nodeId });
   }
+
+  getNamespaceIndices = (): Promise<string[]> => {
+    return this.props.datasource.getResource('getNamespaceIndices');
+  };
 
   renderTemplateVariable() {
       const { templateVariable } = this.state;
@@ -225,6 +230,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
              closeBrowser={(id: string) => this.setState({ browserOpened: null })}
              isBrowserOpen={(id: string) => this.state.browserOpened === id}
              openBrowser={(id: string) => this.setState({ browserOpened: id })}
+             getNamespaceIndices={() => this.getNamespaceIndices()}
              browsePath={relativepath}
              browse={(nodeId, filter) => this.browse(nodeId, filter)}
              onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}

@@ -41,7 +41,7 @@ namespace plugin_dotnet
             _resourceHandlers.Add("browseTypes", BrowseTypes);
             _resourceHandlers.Add("browseDataTypes", BrowseDataTypes);
             _resourceHandlers.Add("browseEventFields", BrowseEventFields);
-            
+            _resourceHandlers.Add("getNamespaceIndices", GetNamespaceIndices);
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
             _resourceHandlers.Add("getdashboard", GetDashboard);
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
@@ -255,6 +255,25 @@ namespace plugin_dotnet
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.LogDebug("We got a result from browse => {0}", result);
             return response;
+        }
+
+
+        //getNamespaceIndices
+        private CallResourceResponse GetNamespaceIndices(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            var nodeId = Variables.Server_NamespaceArray;
+            var dv = connection.ReadValue(nodeId);
+
+            if (Opc.Ua.StatusCode.IsGood(dv.StatusCode))
+            {
+                var ns = dv.Value as string[];
+                var result = JsonSerializer.Serialize(ns);
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                return response;
+            }
+            throw new Exception("Could not read namespace array");
         }
 
 

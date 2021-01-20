@@ -10,6 +10,7 @@ type Props = {
   node: NodePath;
   theme: GrafanaTheme | null;
   browse(nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]>;
+  getNamespaceIndices(): Promise<string[]>;
   onChangeNode(node: NodePath): void;
   readNode(nodeId: string): Promise<OpcUaNodeInfo>;
   placeholder: string;
@@ -61,6 +62,7 @@ export class NodeEditor extends PureComponent<Props, State> {
         >
         <BrowserDialog
             theme={this.props.theme}
+            getNamespaceIndices={() => this.props.getNamespaceIndices()}
             closeBrowser={() => this.props.closeBrowser(this.props.id)}
             closeOnSelect={true}
             browse={(nodeId, filter) => this.props.browse(nodeId, filter)}

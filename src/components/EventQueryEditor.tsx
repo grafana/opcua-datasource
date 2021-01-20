@@ -150,6 +150,10 @@ export class EventQueryEditor extends PureComponent<Props, State> {
     this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
   };
 
+  getNamespaceIndices = (): Promise<string[]> => {
+      return this.props.datasource.getResource('getNamespaceIndices');
+  };
+
   renderTables() {
     const { datasource } = this.props;
     let validEventTypeNodeId = true;
@@ -161,7 +165,8 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         <>
           <h2>Event Columns</h2>
               <EventFieldTable
-               theme={this.props.theme}
+                  theme={this.props.theme}
+              getNamespaceIndices={() => this.getNamespaceIndices()}
             datasource={datasource}
             eventTypeNodeId={this.state.eventTypeNodeId}
             eventColumns={this.state.eventFields}
@@ -186,6 +191,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
           <br />
               <AddEventFilter
                   theme={this.props.theme}
+                  getNamespaceIndices={() => this.getNamespaceIndices()}
             add={(eventFilter: EventFilter) => {
               this.addEventFilter(eventFilter);
             }}

@@ -16,7 +16,8 @@ import { BrowsePathTextEditor } from './BrowsePathTextEditor';
 import { Input, Button } from '@grafana/ui';
 
 type Props = {
-  browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
+    browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
+    getNamespaceIndices(): Promise<string[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
     closeOnSelect: boolean;
@@ -103,8 +104,8 @@ export class BrowserTable extends Component<Props, State> {
       <div className="panel-container">
         <div onClick={e => this.navigateBack()}>
           <FaChevronUp />
-          <div style={{ display: 'inline-block' }}>
-            <BrowsePathTextEditor
+                <div style={{ display: 'inline-block' }}>
+                    <BrowsePathTextEditor getNamespaceIndices={() => this.props.getNamespaceIndices()}
               browsePath={this.state.browsePath.map(a => copyQualifiedName(a.browseName)).slice()}
               onBrowsePathChanged={() => this.onBrowsePathChange()}
             ></BrowsePathTextEditor>

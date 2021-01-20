@@ -28,6 +28,7 @@ export interface Props {
   eventTypeNodeId: string;
   theme: GrafanaTheme | null;
   add(filter: EventFilter): void;
+  getNamespaceIndices(): Promise<string[]>;
 }
 
 type State = {
@@ -124,7 +125,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
       case FilterOperator.Equals:
         return (
           <SegmentFrame label="Event Field" marginLeft>
-            <BrowsePathEditor
+                <BrowsePathEditor
+               getNamespaceIndices={() => this.props.getNamespaceIndices()}
              theme={this.props.theme}
             id={ "browser"}
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
@@ -158,6 +160,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
                 closeBrowser={(id: string) => this.setState({ browserOpened: null })}
                 isBrowserOpen={(id: string) => this.state.browserOpened === id}
                 openBrowser={(id: string) => this.setState({ browserOpened: id })}
+                getNamespaceIndices={() => this.props.getNamespaceIndices()}
                 theme={this.props.theme}
                 browse={(node, filter) => this.browseDataTypes(node, filter)}
                 readNode={nodeid => this.readNode(nodeid)}

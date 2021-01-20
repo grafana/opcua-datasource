@@ -20,6 +20,7 @@ type Props = {
   eventColumns: EventColumn[];
   onChangeAlias(alias: string, idx: number): void;
   onChangeBrowsePath(browsePath: QualifiedName[], idx: number): void;
+  getNamespaceIndices(): Promise<string[]>;
   ondelete(idx: number): void;
   onAddColumn(newCol: EventColumn): void;
   theme: GrafanaTheme | null;
@@ -72,13 +73,15 @@ export class EventFieldTable extends PureComponent<Props, State> {
               {this.props.eventColumns.map((row: EventColumn, index: number) => (
                 <TableRow style={{ height: 14 }} key={index}>
                   <TableCell style={{ color: txt, border: 0, padding: 0 }}>
-                    <BrowsePathEditor
-                        theme={this.props.theme}
+                <BrowsePathEditor
+                    getNamespaceIndices={() => this.props.getNamespaceIndices()}
+                      theme={this.props.theme}
                       id={index.toString()}
                       closeBrowser={(id: string) => this.closeBrowser()}
                       isBrowserOpen={(id: string) => this.state.browserOpened === id}
                       openBrowser={(id: string) => this.openBrowser(id)}
                       browse={this.browse}
+
                       browsePath={row.browsePath}
                       onChangeBrowsePath={browsePath => this.props.onChangeBrowsePath(browsePath, index)}
                       rootNodeId={this.props.eventTypeNodeId}
@@ -102,6 +105,7 @@ export class EventFieldTable extends PureComponent<Props, State> {
                 <BrowsePathEditor
                     theme={this.props.theme}
                     id={"new"}
+                    getNamespaceIndices={() => this.props.getNamespaceIndices()}
                     closeBrowser={(id: string) => this.closeBrowser()}
                     isBrowserOpen={(id: string) => this.state.browserOpened === id}
                     openBrowser={(id: string) => this.openBrowser(id)}
@@ -155,5 +159,7 @@ export class EventFieldTable extends PureComponent<Props, State> {
 
   browse = (nodeId: string): Promise<OpcUaBrowseResults[]> => {
     return this.props.datasource.getResource('browseEventFields', { nodeId: nodeId });
-  };
+    };
+
+
 }

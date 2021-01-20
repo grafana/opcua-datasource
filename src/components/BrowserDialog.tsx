@@ -8,6 +8,7 @@ import { Checkbox } from '@grafana/ui';
 import { FaWindowClose } from 'react-icons/fa';
 type Props = {
   browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
+  getNamespaceIndices(): Promise<string[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
     closeOnSelect: boolean;
@@ -112,6 +113,7 @@ export class BrowserDialog extends Component<Props, State> {
   renderTable() {
     return (
         <BrowserTable
+            getNamespaceIndices={() => this.props.getNamespaceIndices()}
             theme={this.props.theme}
         closeBrowser={() => this.props.closeBrowser()}
         closeOnSelect={this.props.closeOnSelect}
