@@ -54,23 +54,19 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
             let shortendPath = browsePath.map(p => p.name).join("/");
             let indexedPath = browsePathToString(browsePath, this.state.nsTable);
             this.setState(
-            {
-                shortenedPath: shortendPath,
-                indexedPath: indexedPath
-            });
+                {
+                    shortenedPath: shortendPath,
+                    indexedPath: indexedPath
+                });
         }
 
-        return this.state.edit ? 
+        return this.state.edit ?
             (
-               <div title={this.state.indexedPath}>
-                    <Input value={this.state.indexedPath} onChange={e => this.onChangeIndexedPath(e)} placeholder={'Path'} onBlur={(e) => this.onChangeBrowsePath(e)}></Input>
-                </div>
+                <Input title={this.state.indexedPath} value={this.state.indexedPath} onChange={e => this.onChangeIndexedPath(e)} placeholder={'Path'} onBlur={(e) => this.onChangeBrowsePath(e)}></Input>
             )
             :
             ( 
-                <div title={this.state.indexedPath}>
-                    <Input value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
-                </div>
+              <Input title={this.state.indexedPath} value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
             );
     }
 

@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { QualifiedName, OpcUaBrowseResults, BrowseFilter } from '../types';
-import { Button } from '@grafana/ui';
 import { BrowsePathTextEditor } from './BrowsePathTextEditor';
 import { BrowserDialog } from './BrowserDialog';
 import { GrafanaTheme } from '@grafana/data';
+import { FaSearch } from 'react-icons/fa';
 
 type Props = {
   browsePath: QualifiedName[];
@@ -77,10 +77,12 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
       nodeClass: 0,
       nodeId: this.props.rootNodeId,
     };
-    return (
-        <div className="gf-form-inline">
+      return (
+      <div className="gf-form-inline" style={{ flexWrap: 'nowrap', margin:2 }} >
         <BrowsePathTextEditor getNamespaceIndices={() => this.props.getNamespaceIndices()} browsePath={this.props.browsePath} onBrowsePathChanged={(bp) => this.props.onChangeBrowsePath(bp)} />
-        <Button onClick={() => this.toggleBrowsePathBrowser()}>Browse</Button>
+        <div style={{ display: 'inline-block', marginLeft: 5, marginTop:5 }} onClick={e => this.toggleBrowsePathBrowser()}>
+         <FaSearch fill="currentColor" size={20}></FaSearch>
+        </div>
         <div style={{ position: 'relative' }}>{this.renderBrowsePathBrowser(rootNodeId)}</div>
       </div>
     );

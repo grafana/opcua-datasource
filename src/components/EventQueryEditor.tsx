@@ -166,18 +166,22 @@ export class EventQueryEditor extends PureComponent<Props, State> {
           <h2>Event Columns</h2>
               <EventFieldTable
                   theme={this.props.theme}
-              getNamespaceIndices={() => this.getNamespaceIndices()}
+                 getNamespaceIndices={() => this.getNamespaceIndices()}
             datasource={datasource}
             eventTypeNodeId={this.state.eventTypeNodeId}
-            eventColumns={this.state.eventFields}
+            eventFields={this.state.eventFields}
             onChangeAlias={(alias, idx) => {
               this.onChangeAlias(alias, idx);
-            }}
+                  }}
+
             onChangeBrowsePath={(browsePath, idx) => {
               this.onChangeBrowsePath(browsePath, idx);
             }}
-            ondelete={(idx: number) => this.handleDeleteSelectField(idx)}
-            onAddColumn={(col: EventColumn) => this.onAddColumn(col)}
+            deleteField={(idx: number) => this.handleDeleteSelectField(idx)}
+            addField={(col: EventColumn) => this.onAddColumn(col)}
+            moveFieldUp={(idx: number) => this.moveFieldUp(idx)}
+            moveFieldDown={(idx: number) => this.moveFieldDown(idx)}
+
           />
           <br />
           <h2>Event Filters</h2>
@@ -202,7 +206,27 @@ export class EventQueryEditor extends PureComponent<Props, State> {
       );
     }
     return <></>;
-  }
+    }
+
+    moveFieldDown(idx: number): void {
+        if (idx < (this.state.eventFields.length - 1)) {
+            let tempArray = this.state.eventFields.slice();
+            const tmp = tempArray[idx];
+            tempArray[idx] = tempArray[idx + 1];
+            tempArray[idx + 1] = tmp
+            this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+        }
+    }
+
+    moveFieldUp(idx: number): void {
+        if (idx > 0) {
+            let tempArray = this.state.eventFields.slice();
+            const tmp = tempArray[idx];
+            tempArray[idx] = tempArray[idx - 1];
+            tempArray[idx - 1] = tmp
+            this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+        }
+    }
 
   onChangeBrowsePath(browsePath: QualifiedName[], idx: number) {
     let tempArray = this.state.eventFields.slice();
