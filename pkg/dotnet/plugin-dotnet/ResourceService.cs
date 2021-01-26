@@ -405,6 +405,13 @@ namespace plugin_dotnet
 		{
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            if (string.IsNullOrEmpty(nodeId))
+            {
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom("", Encoding.ASCII);
+                return response;
+            }
+
             string rootId = HttpUtility.UrlDecode(queryParams["rootId"]);
             var nId = Converter.GetNodeId(nodeId, nsTable);
             var rId = ObjectIds.RootFolder;
@@ -418,17 +425,20 @@ namespace plugin_dotnet
             var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
             var nodePath = FindBrowsePath(connection, nId, rId, browseName, nsTable);
 
-            var nodeInfo = new NodeInfo() { 
-                browseName = Converter.GetQualifiedName(browseName, nsTable), 
-                displayName = displayName.Text, 
-                nodeClass = (uint)nodeClass, 
-                nodeId = Converter.GetNodeIdAsJson(nId, nsTable) };
+            var nodeInfo = new NodeInfo()
+            {
+                browseName = Converter.GetQualifiedName(browseName, nsTable),
+                displayName = displayName.Text,
+                nodeClass = (uint)nodeClass,
+                nodeId = Converter.GetNodeIdAsJson(nId, nsTable)
+            };
 
             var np = new NodePath() { node = nodeInfo, browsePath = nodePath };
             var result = JsonSerializer.Serialize(np);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             return response;
+            
         }
 
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)

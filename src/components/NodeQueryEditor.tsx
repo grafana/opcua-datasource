@@ -52,7 +52,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         if (typeof nodePath === 'undefined') {
             nodePath = {
                 browsePath: [],
-                node: { nodeId: 'i=85', browseName: { name: '', namespaceUrl: '' }, displayName: '', nodeClass: -1 },
+                node: { nodeId: '', browseName: { name: '', namespaceUrl: '' }, displayName: '', nodeClass: -1 },
             };
         }
 

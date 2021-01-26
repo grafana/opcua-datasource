@@ -14,7 +14,9 @@ export function browsePathToString(qnames: QualifiedName[], nsTable: string[]): 
   return path;
 }
 
-export function browsePathToShortString(qnames: QualifiedName[]): string {
+export function browsePathToShortString(qnames: QualifiedName[] | null): string {
+    if (qnames === null)
+        return '';
   let path = '';
   if (typeof qnames !== 'undefined') {
     for (let i = 0; i < qnames.length; i++) {

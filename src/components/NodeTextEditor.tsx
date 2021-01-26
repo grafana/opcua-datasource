@@ -14,62 +14,61 @@ export interface Props {
 }
 
 type State = {
-    node: NodePath;
+    node: NodePath | null;
     edit: boolean;
     nsTable: string[];
     nsTableFetched: boolean,
-    nsNodeId: NSNodeId | null,
     editnode: string;
     preEditNode: string;
-    propsNode: string;
 };
 
 export class NodeTextEditor extends PureComponent<Props, State> {
     constructor(props: Props) {
         super(props);
+        this.state = {
+            edit: false,
+            node: null,
+            nsTable: [],
+            nsTableFetched: false,
+            editnode: '',
+            preEditNode: '',
+        };
+    }
 
-        console.log("nodeid to parse: " + this.props.node.node.nodeId);
+    getNodeId(nId: string | null): NSNodeId | null {
+        if (nId === null)
+            return null;
         let nsNodeId: NSNodeId | null = null;
-        if (this.props.node.node.nodeId !== null && this.props.node.node.nodeId.length > 0) {
+        if (nId !== null && nId.length > 0) {
             try {
-                nsNodeId = JSON.parse(this.props.node.node.nodeId);
+                nsNodeId = JSON.parse(nId);
             } catch (e) {
                 console.log(e);
             }
         }
-
-        this.state = {
-            edit: false,
-            node: this.props.node,
-            nsTable: [],
-            nsTableFetched: false,
-            nsNodeId: nsNodeId,
-            editnode: '',
-            preEditNode: '',
-            propsNode: '',
-        };
+        return nsNodeId;
     }
 
     onUpdateNode(nodePath: NodePath): void {
-        let nsNodeId: NSNodeId | null = null;
-        if (nodePath.node.nodeId !== null && nodePath.node.nodeId.length > 0) {
-            try {
-                nsNodeId = JSON.parse(nodePath.node.nodeId);
-            }
-            catch (e) {
-                console.log(e);
-            }
+        let nsNodeId = this.getNodeId(nodePath.node.nodeId);
+        if (nsNodeId != null) {
+            this.setState({ edit: false }, () => this.props.onNodeChanged(nodePath.node, nodePath.browsePath));
         }
-        let nodeId = nodeIdToShortString(nsNodeId, this.state.nsTable);
-        this.setState({ node: nodePath, editnode: nodeId, preEditNode: nodeId, nsNodeId: nsNodeId },
-            () => this.props.onNodeChanged(this.state.node.node, this.state.node.browsePath));
+        else {
+            this.setState({ edit: false, editnode: this.state.preEditNode });
+        }
     }
 
     onSubmit = () => {
-        this.props.getNodePath(this.state.editnode)
-            .then((result) => this.onUpdateNode(result))
-            .catch(r => this.setState({ editnode: this.state.preEditNode }))
-            .finally(() => this.setState({ edit: false }));
+        let currentNodeId = this.getNodeId(this.state.node != null ? this.state.node.node.nodeId : null);
+        var s = nodeIdToShortString(currentNodeId, this.state.nsTable);
+        if (s !== this.state.editnode) {
+            this.props.getNodePath(this.state.editnode)
+                .then((result) => this.onUpdateNode(result))
+                .catch(r => this.setState({ editnode: this.state.preEditNode, edit: false }));
+        }
+        else
+            this.setState({ edit: false });
     }
 
     onChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -77,24 +76,19 @@ export class NodeTextEditor extends PureComponent<Props, State> {
     }
 
 
-    updateNodeState() {
-        if (this.state.propsNode !== this.props.node.node.nodeId) {
-            this.props.getNodePath(this.props.node.node.nodeId)
-                .then((result) => this.onUpdateNode(result))
-                .catch(r => this.setState({ editnode: this.state.preEditNode }))
-                .finally(() => this.setState({ edit: false, propsNode: this.props.node.node.nodeId}));
-        }
-    }
-
     render() {
         if (!this.state.nsTableFetched) {
             this.props.getNamespaceIndices().then(ind => {
-                let nodeId = nodeIdToShortString(this.state.nsNodeId, ind);
-                this.setState({ nsTable: ind, nsTableFetched: true, editnode: nodeId, preEditNode: nodeId})
+                this.setState({ nsTable: ind, nsTableFetched: true})
             });
+            return <></>;
         }
 
-        this.updateNodeState();
+        if (this.state.node === null || this.props.node.node.nodeId !== this.state.node.node.nodeId) {
+            let nodeId = this.getNodeId(this.props.node.node.nodeId);
+            let editnode = nodeIdToShortString(nodeId, this.state.nsTable);
+            this.setState({ node: this.props.node, editnode: editnode, preEditNode: editnode });
+        }
 
         return this.state.edit ? (
             <div>
@@ -111,10 +105,10 @@ export class NodeTextEditor extends PureComponent<Props, State> {
                     }}
                 ></Input>
             </div>
-        ) : (
+            ) : (
                 <div onClick={() => this.setState({ edit: true })} style={{ cursor: 'pointer', display: 'flex', alignItems:'center' }}>
                     <span placeholder={this.props.placeholder} style={{ minWidth: 200, display: 'inline-block' }}>
-                        {browsePathToShortString(this.state.node.browsePath)}
+                        {browsePathToShortString(this.state.node != null ? this.state.node.browsePath : null)}
                     </span>
                     <FaEdit style={{ marginLeft: 10, marginRight: 10, flexWrap:'nowrap' }} size={20}></FaEdit>
                 </div>
