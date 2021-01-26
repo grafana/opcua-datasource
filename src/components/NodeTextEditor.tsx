@@ -3,6 +3,7 @@ import { Input } from '@grafana/ui';
 import { NodePath, NSNodeId, OpcUaNodeInfo, QualifiedName } from '../types';
 import { browsePathToShortString } from '../utils/QualifiedName';
 import { nodeIdToShortString } from '../utils/NodeId';
+import { FaEdit } from 'react-icons/fa';
 
 export interface Props {
     node: NodePath;
@@ -98,16 +99,24 @@ export class NodeTextEditor extends PureComponent<Props, State> {
         return this.state.edit ? (
             <div>
                 <Input
+                    autoFocus={true}
                     placeholder={this.props.placeholder}
-                    value={this.state.editnode} onBlur={() => this.onSubmit()} onChange={(e) => this.onChange(e)} 
+                    value={this.state.editnode}
+                    onBlur={() => this.onSubmit()}
+                    onChange={(e) => this.onChange(e)}
+                    onKeyPress={(k) => {
+                        if (k.key === 'Enter') {
+                            this.onSubmit();
+                        }
+                    }}
                 ></Input>
             </div>
         ) : (
-                <div>
-                    <Input
-                        placeholder={this.props.placeholder}
-                        value={browsePathToShortString(this.state.node.browsePath)} onClick={() => this.setState({ edit: true })}
-                    ></Input>
+                <div onClick={() => this.setState({ edit: true })} style={{ cursor: 'pointer', display: 'flex', alignItems:'center' }}>
+                    <span placeholder={this.props.placeholder} style={{ minWidth: 200, display: 'inline-block' }}>
+                        {browsePathToShortString(this.state.node.browsePath)}
+                    </span>
+                    <FaEdit style={{ marginLeft: 10, marginRight: 10, flexWrap:'nowrap' }} size={20}></FaEdit>
                 </div>
             );
     }

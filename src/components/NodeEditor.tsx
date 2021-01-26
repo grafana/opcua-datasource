@@ -102,7 +102,7 @@ export class NodeEditor extends PureComponent<Props, State> {
                     onNodeChanged={(n: OpcUaNodeInfo, path: QualifiedName[]) => this.onChangeNode(n, path)}
                 />
 
-                <div style={{ display: 'inline-block', marginLeft: 5, marginTop: 5 }} onClick={e => this.toggleBrowser()}>
+                <div style={{ display: 'inline-block', marginLeft: 0, marginTop: 5, marginRight:10, cursor: 'pointer' }} onClick={e => this.toggleBrowser()}>
                     <FaSearch fill="currentColor" size={20}></FaSearch>
                 </div>
                 <div style={{ position: 'relative' }}>{this.renderNodeBrowser(rootNodeId)}</div>

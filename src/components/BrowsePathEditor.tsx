@@ -80,7 +80,7 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
       return (
       <div className="gf-form-inline" style={{ flexWrap: 'nowrap', margin:2 }} >
         <BrowsePathTextEditor getNamespaceIndices={() => this.props.getNamespaceIndices()} browsePath={this.props.browsePath} onBrowsePathChanged={(bp) => this.props.onChangeBrowsePath(bp)} />
-        <div style={{ display: 'inline-block', marginLeft: 5, marginTop:5 }} onClick={e => this.toggleBrowsePathBrowser()}>
+        <div style={{ display: 'inline-block', marginLeft: 5, marginTop:5, marginRight:10, cursor: 'pointer' }} onClick={e => this.toggleBrowsePathBrowser()}>
          <FaSearch fill="currentColor" size={20}></FaSearch>
         </div>
         <div style={{ position: 'relative' }}>{this.renderBrowsePathBrowser(rootNodeId)}</div>

@@ -62,7 +62,19 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
 
         return this.state.edit ?
             (
-                <Input title={this.state.indexedPath} value={this.state.indexedPath} onChange={e => this.onChangeIndexedPath(e)} placeholder={'Path'} onBlur={(e) => this.onChangeBrowsePath(e)}></Input>
+                <Input
+                    title={this.state.indexedPath}
+                    value={this.state.indexedPath}
+                    onChange={e => this.onChangeIndexedPath(e)}
+                    placeholder={'Path'}
+                    onBlur={(e) => this.onChangeBrowsePath()}
+                    onKeyPress={(k) => {
+                        if (k.key === 'Enter') {
+                            this.onChangeBrowsePath();
+                        }
+                    }}
+                >
+                </Input>
             )
             :
             ( 
@@ -75,9 +87,9 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
         this.setState({ indexedPath: s });
     }
 
-    onChangeBrowsePath(e: React.FormEvent<HTMLInputElement>): void {
-        let s: string = e.currentTarget.value;
-        let browsePath = stringToBrowsePath(s, this.state.nsTable);
+    onChangeBrowsePath(): void {
+        //let s: string = e.currentTarget.value;
+        let browsePath = stringToBrowsePath(this.state.indexedPath, this.state.nsTable);
         this.props.onBrowsePathChanged(browsePath);
         this.setState({ edit: false })
     }
