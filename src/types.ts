@@ -12,6 +12,11 @@ export enum NodeClass {
   View = 128,
 }
 
+export interface NSNodeId {
+    namespaceUrl: string;
+    id: string;
+}
+
 export interface BrowseFilter {
   maxResults: number;
   browseName: string;
