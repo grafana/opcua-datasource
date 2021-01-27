@@ -157,9 +157,9 @@ namespace plugin_dotnet
             for (int k = 0; k < eventFields.Count; k++)
             {
                 var field = eventFields[k];
-                var path = query.eventQuery.eventColumns[k].browsePath;
                 if (fields.TryGetValue(k, out Field dataField))
                 {
+                    var path = query.eventQuery.eventColumns[k].browsePath;
                     dataField.Append(GetDataFieldValue(dataField, UaEvents.GetValueForField(path, field.Value)));
                 }
             }
