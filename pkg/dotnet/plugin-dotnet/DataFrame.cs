@@ -155,6 +155,7 @@ namespace plugin_dotnet
             Type = type;
             _allowNull = allowNull;
             Data = new List<object>();
+            Config = new FieldConfig();
         }
 
         public List<T> DataAs<T>()
