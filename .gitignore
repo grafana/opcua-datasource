@@ -37,3 +37,4 @@ pkg/dotnet/plugin-dotnet/.vs
 /pkg/dotnet/plugin-dotnet/Properties/PublishProfiles/FolderProfile.pubxml
 /pkg/go/cgoopc/out/build/x64-Debug (default)
 /pkg/dotnet/plugin-dotnet/published
+/pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj.user
