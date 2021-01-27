@@ -103,6 +103,7 @@ namespace plugin_dotnet
         {
             try
             {
+                _log.LogInformation("Creating session: {0}", url);
                 //connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
                 X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(clientCert));
                 X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(clientKey));
@@ -135,6 +136,7 @@ namespace plugin_dotnet
         {
             try
             {
+                _log.LogInformation("Creating anonymous session: {0}", url);
                 var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
                 var subscriptionReaper = new SubscriptionReaper(_log, 60000);
                 var eventSubscription = new EventSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 60, 0));
@@ -180,8 +182,11 @@ namespace plugin_dotnet
                     {
                         try
                         {
+                            _log.LogInformation("Closing old session due to stale connection. Was connected {0}. KeepAliveStopped {1}", 
+                                value.Session.Connected, value.Session.KeepAliveStopped);
                             value.Close();
                             connections.Remove(settings.Url);
+                            _log.LogInformation("Old session closed successfully");
                         }
                         catch (Exception e)
                         {

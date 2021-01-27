@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { convertRemToPixels } from '../utils/ConvertRemToPixels';
 import { OpcUaBrowseResults, QualifiedName, BrowseFilter } from '../types';
-import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { BrowserTree } from './BrowserTree';
 import { BrowserTable } from './BrowserTable';
@@ -9,16 +8,18 @@ import { Checkbox } from '@grafana/ui';
 import { FaWindowClose } from 'react-icons/fa';
 type Props = {
   browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
+  getNamespaceIndices(): Promise<string[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
-  closeOnSelect: boolean;
+    closeOnSelect: boolean;
+    theme: GrafanaTheme | null;
   onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
   closeBrowser: () => void;
 };
 
 type State = {
   table: boolean;
-  theme: GrafanaTheme | null;
+  
 };
 
 /**
@@ -31,31 +32,25 @@ export class BrowserDialog extends Component<Props, State> {
    */
   constructor(props: Props) {
     super(props);
-    this.state = { table: false, theme: null };
+    this.state = { table: false };
   }
 
-  onTheme = (theme: GrafanaTheme) => {
-    if (this.state.theme == null && theme != null) {
-      this.setState({ theme: theme });
-    }
-  };
 
   /**
    * Renders the component.
    */
   render() {
     let bg = '';
-    if (this.state.theme != null) {
-      bg = this.state.theme.colors.bg2;
+    if (this.props.theme != null) {
+        bg = this.props.theme.colors.bg2;
     }
 
     return (
       <div
         style={{
-          background: bg,
+            background: bg,
         }}
       >
-        <ThemeGetter onTheme={this.onTheme} />
         <span
           data-id="Treeview-CloseSpan"
           onClick={() => this.handleClose()}
@@ -96,7 +91,8 @@ export class BrowserDialog extends Component<Props, State> {
 
   renderTree() {
     return (
-      <BrowserTree
+        <BrowserTree
+        theme={this.props.theme}
         closeBrowser={() => this.props.closeBrowser()}
         closeOnSelect={this.props.closeOnSelect}
         browse={nodeId =>
@@ -116,7 +112,9 @@ export class BrowserDialog extends Component<Props, State> {
 
   renderTable() {
     return (
-      <BrowserTable
+        <BrowserTable
+            getNamespaceIndices={() => this.props.getNamespaceIndices()}
+            theme={this.props.theme}
         closeBrowser={() => this.props.closeBrowser()}
         closeOnSelect={this.props.closeOnSelect}
         browse={(nodeId, filter) => this.props.browse(nodeId, filter)}

@@ -40,6 +40,9 @@ namespace plugin_dotnet
             _resourceHandlers.Add("browse", Browse);
             _resourceHandlers.Add("browseTypes", BrowseTypes);
             _resourceHandlers.Add("browseDataTypes", BrowseDataTypes);
+            _resourceHandlers.Add("browseEventFields", BrowseEventFields);
+            _resourceHandlers.Add("getNodePath", GetNodePath);
+            _resourceHandlers.Add("getNamespaceIndices", GetNamespaceIndices);
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
             _resourceHandlers.Add("getdashboard", GetDashboard);
             _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
@@ -223,6 +226,58 @@ namespace plugin_dotnet
         }
 
 
+        // Move to Opc.Ua.Client
+        private static Opc.Ua.NodeId GetSuperType(Session connection, NodeId id, NamespaceTable nsTable)
+        {
+            connection.Browse(null, null, id, 1, BrowseDirection.Inverse, ReferenceTypeIds.HasSubtype, false, (uint)NodeClass.ObjectType, out byte[] contPoint, out ReferenceDescriptionCollection references);
+            if (references.Count > 0)
+            {
+                return ExpandedNodeId.ToNodeId(references[0].NodeId, nsTable);
+            }
+            return null;
+        }
+
+        private CallResourceResponse BrowseEventFields(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            var nId = Converter.GetNodeId(nodeId, nsTable);
+            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.Variable));
+            NodeId superType = null;
+            while ((superType = GetSuperType(connection, nId, nsTable)) != null)
+            {
+                var superBrowseResult = connection.Browse(superType, (uint)(Opc.Ua.NodeClass.Variable));
+                browseResult.AddRange(superBrowseResult);
+                nId = superType;
+            }
+            var ordered = browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(a => a.browseName.name).ToArray();
+            var result = JsonSerializer.Serialize(ordered);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            _log.LogDebug("We got a result from browse => {0}", result);
+            return response;
+        }
+
+
+        //getNamespaceIndices
+        private CallResourceResponse GetNamespaceIndices(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            var nodeId = Variables.Server_NamespaceArray;
+            var dv = connection.ReadValue(nodeId);
+
+            if (Opc.Ua.StatusCode.IsGood(dv.StatusCode))
+            {
+                var ns = dv.Value as string[];
+                var result = JsonSerializer.Serialize(ns);
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+                return response;
+            }
+            throw new Exception("Could not read namespace array");
+        }
+
+
         private CallResourceResponse BrowseDataTypes(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
         {
             CallResourceResponse response = new CallResourceResponse();
@@ -300,13 +355,97 @@ namespace plugin_dotnet
 
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="id"></param>
+        /// <param name="nsTable"></param>
+        /// <returns></returns>
+        private QualifiedName[] FindBrowsePath(Session connection, NodeId id, NodeId rootId, Opc.Ua.QualifiedName browseName, NamespaceTable nsTable)
+		{
+            HashSet<NodeId> set = new HashSet<NodeId>();
+            var browsePath = new List<QualifiedName>();
+            set.Add(id);
+            browsePath.Add(Converter.GetQualifiedName(browseName, nsTable));
+            bool moreParents = true;
+            while (moreParents) {
+                connection.Browse(null, null, id, 1,
+                    BrowseDirection.Inverse,
+                    ReferenceTypeIds.HierarchicalReferences,
+                    true,
+                    0xFF,
+                    out byte[] contpoint,
+                    out ReferenceDescriptionCollection referenceDescriptions);
+
+                moreParents = referenceDescriptions.Count > 0;
+                if (moreParents)
+                {
+                    var refDesc = referenceDescriptions[0];
+                    var nodeId = ExpandedNodeId.ToNodeId(refDesc.NodeId, nsTable);
+                    if (!rootId.Equals(nodeId))
+                    {
+                        id = nodeId;
+                        if (set.Contains(nodeId))
+                        {
+                            _log.LogError("Loop detected");
+                            throw new ArgumentException("Loop detected!");
+                        }
+                        set.Add(id);
+                        browsePath.Add(Converter.GetQualifiedName(refDesc.BrowseName, nsTable));
+                    }
+                    else
+                        moreParents = false;
+                }
+            }
+            return browsePath.Reverse<QualifiedName>().ToArray();
+		}
+
+        private CallResourceResponse GetNodePath(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+		{
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            if (string.IsNullOrEmpty(nodeId))
+            {
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom("", Encoding.ASCII);
+                return response;
+            }
+
+            string rootId = HttpUtility.UrlDecode(queryParams["rootId"]);
+            var nId = Converter.GetNodeId(nodeId, nsTable);
+            var rId = ObjectIds.RootFolder;
+            if (!string.IsNullOrEmpty(rootId))
+                rId = Converter.GetNodeId(rootId, nsTable);
+            var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
+            if (!readRes[0].Success)
+                throw new ArgumentException(readRes[0].Error + " StatusCode: " + readRes[0].StatusCode.ToString());
+            var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
+            var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
+            var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
+            var nodePath = FindBrowsePath(connection, nId, rId, browseName, nsTable);
+
+            var nodeInfo = new NodeInfo()
+            {
+                browseName = Converter.GetQualifiedName(browseName, nsTable),
+                displayName = displayName.Text,
+                nodeClass = (uint)nodeClass,
+                nodeId = Converter.GetNodeIdAsJson(nId, nsTable)
+            };
+
+            var np = new NodePath() { node = nodeInfo, browsePath = nodePath };
+            var result = JsonSerializer.Serialize(np);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            return response;
+            
+        }
+
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
         {
             _log.LogDebug("Call Resource {0} | {1}", request, context);
-            
             try
             {
-
                 var resourceUrl = request.Url;
                 if (!string.IsNullOrEmpty(request.Url) && !request.Url.StartsWith("/"))
                     resourceUrl = string.Concat("/", request.Url);

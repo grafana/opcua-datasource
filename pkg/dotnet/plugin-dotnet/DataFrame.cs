@@ -146,11 +146,14 @@ namespace plugin_dotnet
         public Type Type { get;  }
         public List<object> Data { get; set; }
 
-        public Field(ILogger log, string name, Type type)
+        private bool _allowNull;
+
+        public Field(ILogger log, string name, Type type, bool allowNull = true)
         {
             _log = log;
             Name = name;
             Type = type;
+            _allowNull = allowNull;
             Data = new List<object>();
             Config = new FieldConfig();
         }
@@ -159,11 +162,6 @@ namespace plugin_dotnet
         {
             return Data.Cast<T>().ToList();
         }
-
-        //public void Append<T>(T value)
-        //{ 
-        //    Data.Add(value);
-        //}
 
 
         private static object GetDefault(Type type)
@@ -185,7 +183,10 @@ namespace plugin_dotnet
                 }
                 else 
                 {
-                    Data.Add(GetDefault(Type));
+                    if (_allowNull)
+                        Data.Add(null);
+                    else
+                        Data.Add(GetDefault(Type));
                 }
             }
             catch (Exception e)
@@ -267,9 +268,9 @@ namespace plugin_dotnet
 
     public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T : unmanaged
     {
-        List<T> _values;
+        List<T?> _values;
         IDictionary<string, string> _metadata = null;
-        public OpcUaDataFrameColumn(string name, List<T> values, IDictionary<string, string> metadata = null) : base(name, values)
+        public OpcUaDataFrameColumn(string name, List<T?> values, IDictionary<string, string> metadata = null) : base(name, values)
         {
             _values = values;
             _metadata = metadata;

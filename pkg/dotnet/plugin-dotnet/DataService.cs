@@ -308,6 +308,26 @@ namespace plugin_dotnet
         }
 
 
+        private static IDictionary<string, string> GetInvalidQueries(IEnumerable<OpcUAQuery> queries)
+		{
+            var error = new Dictionary<string, string>();
+            foreach (var q in queries)
+			{
+                var errors = new StringBuilder();
+                if (q.nodePath == null)
+                {
+                    var instanceOrType = q.useTemplate ? "Type" : "Instance";
+                    errors.Append(instanceOrType + " is not specified for query: " + q.refId);
+                }
+                // TODO: Add more error checks.
+                if (errors.Length > 0)
+                {
+                    error.Add(q.refId, errors.ToString());
+                }
+			}
+            return error;
+		}
+
 
         public override async Task<QueryDataResponse> QueryData(QueryDataRequest request, ServerCallContext context)
         {
@@ -318,7 +338,11 @@ namespace plugin_dotnet
             {
                 _log.LogDebug("got a request: {0}", request);
                 connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
-                var queryGroups = request.Queries.Select(q => new OpcUAQuery(q)).ToLookup(o => o.readType);
+
+                var uaQueries = request.Queries.Select(q => new OpcUAQuery(q));
+                var invalidQueries = GetInvalidQueries(uaQueries);//uaQueries.Where(a => a.nodePath != null).ToLookup(a => a.refId);
+
+                var queryGroups = uaQueries.Where(a => !invalidQueries.ContainsKey(a.refId)).ToLookup(o => o.readType);
                 var nsTable = connection.Session.NamespaceUris;
                 foreach (var queryGroup in queryGroups)
                 {
@@ -378,6 +402,15 @@ namespace plugin_dotnet
                         }
                         _log.LogError(e.ToString());
                     }
+                }
+                foreach (var invalidQuery in invalidQueries)
+                {
+                    var refId = invalidQuery.Key;
+                    var message = invalidQuery.Value;
+                    var dr = new DataResponse();
+                    dr.Error = message;
+                    response.Responses[refId] = dr;
+                    _log.LogError(message);
                 }
             }
             catch (Exception ex)

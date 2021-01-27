@@ -6,69 +6,90 @@ import { browsePathToString, stringToBrowsePath } from '../utils/QualifiedName';
 export interface Props {
   browsePath: QualifiedName[];
   onBrowsePathChanged(browsePath: QualifiedName[]): void;
+  getNamespaceIndices(): Promise<string[]>;
 }
 
 type State = {
   shortenedPath: string;
-  longPath: string;
+  indexedPath: string;
+  nsTable: string[];
+  nsTableFetched: boolean,
   edit: boolean;
 };
 
 export class BrowsePathTextEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
-    super(props);
-    let browsePath = this.props.browsePath;
-    if (typeof browsePath === 'undefined') {
-      browsePath = [];
-    }
-    let shortendPath = browsePath.map(p => p.name).join('/');
-    let longPath = browsePathToString(browsePath);
-    this.state = {
-      shortenedPath: shortendPath,
-      longPath: longPath,
-      edit: false,
-    };
+      super(props);
+      let browsePath = this.props.browsePath;
+      if (typeof browsePath === 'undefined') {
+          browsePath = [];
+      }
+      let shortendPath = browsePath.map(p => p.name).join('/');
+
+      this.state = {
+          shortenedPath: shortendPath,
+          indexedPath: '',
+          nsTable: [],
+          nsTableFetched: false,
+          edit: false,
+      };
+
   }
 
     
     render() {
+        if (!this.state.nsTableFetched) {
+            this.props.getNamespaceIndices().then(nsTable => {
+                let indexedPath = browsePathToString(browsePath, this.state.nsTable);
+                this.setState({ nsTable: nsTable, nsTableFetched: true, indexedPath: indexedPath });
+            });
+        }
+
         let browsePath = this.props.browsePath;
-        if (typeof browsePath === 'undefined')
+        if (typeof browsePath === 'undefined') {
             browsePath = [];
+        }
 
         if (!this.state.edit) {
-
             let shortendPath = browsePath.map(p => p.name).join("/");
-            let longPath = browsePathToString(browsePath);
+            let indexedPath = browsePathToString(browsePath, this.state.nsTable);
             this.setState(
                 {
                     shortenedPath: shortendPath,
-                    longPath: longPath
+                    indexedPath: indexedPath
                 });
         }
 
-        return this.state.edit ? 
+        return this.state.edit ?
             (
-                <div title={this.state.longPath}>
-                    <Input value={this.state.longPath} onChange={e => this.onChangeLongPath(e)} placeholder={'Path'} onBlur={(e) => this.onChangeBrowsePath(e)}></Input>
-                </div>
+                <Input
+                    title={this.state.indexedPath}
+                    value={this.state.indexedPath}
+                    onChange={e => this.onChangeIndexedPath(e)}
+                    placeholder={'Path'}
+                    onBlur={(e) => this.onChangeBrowsePath()}
+                    onKeyPress={(k) => {
+                        if (k.key === 'Enter') {
+                            this.onChangeBrowsePath();
+                        }
+                    }}
+                >
+                </Input>
             )
             :
             ( 
-                <div title={this.state.longPath}>
-                    <Input value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
-                </div>
+              <Input title={this.state.indexedPath} value={this.state.shortenedPath} placeholder={'Path'} onClick={() => this.setState({ edit: true })}></Input>
             );
     }
 
-    onChangeLongPath(e: React.FormEvent<HTMLInputElement>): void {
+    onChangeIndexedPath(e: React.FormEvent<HTMLInputElement>): void {
         let s: string = e.currentTarget.value;
-        this.setState({ longPath: s });
+        this.setState({ indexedPath: s });
     }
 
-    onChangeBrowsePath(e: React.FormEvent<HTMLInputElement>): void {
-        let s: string = e.currentTarget.value;
-        let browsePath = stringToBrowsePath(s);
+    onChangeBrowsePath(): void {
+        //let s: string = e.currentTarget.value;
+        let browsePath = stringToBrowsePath(this.state.indexedPath, this.state.nsTable);
         this.props.onBrowsePathChanged(browsePath);
         this.setState({ edit: false })
     }

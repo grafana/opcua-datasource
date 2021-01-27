@@ -7,30 +7,24 @@ import TableRow from '@material-ui/core/TableRow';
 //import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
 import { FilterOperator, EventFilter, EventFilterOperatorUtil } from '../types';
-import { ThemeGetter } from './ThemesGetter';
 import { GrafanaTheme } from '@grafana/data';
 import { Button } from '@grafana/ui';
 
 export interface Props {
-  rows: EventFilter[];
-  ondelete(idx: number): void;
+    rows: EventFilter[];
+    theme: GrafanaTheme | null;
+    ondelete(idx: number): void;
 }
 
 type State = {
-  theme: GrafanaTheme | null;
+
 };
 
 export class EventFilterTable extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { theme: null };
   }
 
-  onTheme = (theme: GrafanaTheme) => {
-    if (this.state.theme == null && theme != null) {
-      this.setState({ theme: theme });
-    }
-  };
 
   renderCompareOperatorRow(row: EventFilter, index: number, bg: string, txt: string) {
     return (
@@ -83,14 +77,13 @@ export class EventFilterTable extends PureComponent<Props, State> {
     let bg = '';
     let txt = '';
     let bgBlue = '';
-    if (this.state.theme != null) {
-      bg = this.state.theme.colors.bg2;
-      txt = this.state.theme.colors.text;
-      bgBlue = this.state.theme.colors.bgBlue1;
+    if (this.props.theme != null) {
+        bg = this.props.theme.colors.bg2;
+        txt = this.props.theme.colors.text;
+        bgBlue = this.props.theme.colors.bgBlue1;
     }
     return (
       <div className="panel-container" style={{ width: '100' }}>
-        <ThemeGetter onTheme={this.onTheme} />
         <Paper>
           <Table>
             <TableBody style={{ backgroundColor: bg, color: txt }}>

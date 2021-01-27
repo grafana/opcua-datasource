@@ -410,42 +410,42 @@ namespace plugin_dotnet
             {
                 case "double":
                 case "Double":
-                    return new OpcUaDataFrameColumn<double>(field.Name, field.DataAs<double>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<double>(field.Name, field.DataAs<double?>(), CreateMetaData(field));
                 case "float":
                 case "Single":
-                    return new OpcUaDataFrameColumn<float>(field.Name, field.DataAs<float>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<float>(field.Name, field.DataAs<float?>(), CreateMetaData(field));
                 case "ulong":
                 case "UInt64":
-                    return new OpcUaDataFrameColumn<ulong>(field.Name, field.DataAs<ulong>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<ulong>(field.Name, field.DataAs<ulong?>(), CreateMetaData(field));
                 case "long":
                 case "Int64":
-                    return new OpcUaDataFrameColumn<long>(field.Name, field.DataAs<long>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<long>(field.Name, field.DataAs<long?>(), CreateMetaData(field));
                 case "uint":
                 case "UInt32":
-                    return new OpcUaDataFrameColumn<uint>(field.Name, field.DataAs<uint>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<uint>(field.Name, field.DataAs<uint?>(), CreateMetaData(field));
                 case "int":
                 case "Int32":
-                    return new OpcUaDataFrameColumn<int>(field.Name, field.DataAs<int>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<int>(field.Name, field.DataAs<int?>(), CreateMetaData(field));
                 case "ushort":
                 case "UInt16":
-                    return new OpcUaDataFrameColumn<ushort>(field.Name, field.DataAs<ushort>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<ushort>(field.Name, field.DataAs<ushort?>(), CreateMetaData(field));
                 case "short":
                 case "Int16":
-                    return new OpcUaDataFrameColumn<short>(field.Name, field.DataAs<short>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<short>(field.Name, field.DataAs<short?>(), CreateMetaData(field));
                 case "byte":
                 case "Byte":
-                    return new OpcUaDataFrameColumn<byte>(field.Name, field.DataAs<byte>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<byte>(field.Name, field.DataAs<byte?>(), CreateMetaData(field));
                 case "sbyte":
                 case "SByte":
-                    return new OpcUaDataFrameColumn<sbyte>(field.Name, field.DataAs<sbyte>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<sbyte>(field.Name, field.DataAs<sbyte?>(), CreateMetaData(field));
                 case "decimal":
                 case "Decimal":
-                    return new OpcUaDataFrameColumn<decimal>(field.Name, field.DataAs<decimal>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<decimal>(field.Name, field.DataAs<decimal?>(), CreateMetaData(field));
                 case "bool":
                 case "Boolean":
-                    return new OpcUaDataFrameColumn<bool>(field.Name, field.DataAs<bool>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<bool>(field.Name, field.DataAs<bool?>(), CreateMetaData(field));
                 case "DateTime":
-                    return new OpcUaDataFrameColumn<DateTime>(field.Name, field.DataAs<DateTime>(), CreateMetaData(field));
+                    return new OpcUaDataFrameColumn<DateTime>(field.Name, field.DataAs<DateTime?>(), CreateMetaData(field));
                 case "string":
                 case "String":
                     var stringArray = CreateStringArray(field.DataAs<string>());
