@@ -314,7 +314,7 @@ namespace plugin_dotnet
             foreach (var q in queries)
 			{
                 var errors = new StringBuilder();
-                if (q.nodePath == null)
+                if (q.nodePath == null && (q.readType != "Resource" || string.IsNullOrEmpty(q.readType)))
                 {
                     var instanceOrType = q.useTemplate ? "Type" : "Instance";
                     errors.Append(instanceOrType + " is not specified for query: " + q.refId);

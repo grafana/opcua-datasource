@@ -56,7 +56,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     return [
       { label: 'Raw', value: 'ReadDataRaw' },
       { label: 'Processed', value: 'ReadDataProcessed' },
-      { label: 'Realtime', value: 'ReadNode' },
+      { label: 'Polling', value: 'ReadNode' },
       { label: 'Subscription', value: 'Subscribe' },
       { label: 'Events', value: 'ReadEvents' },
       { label: 'Subscribe Events', value: 'SubscribeEvents' },
