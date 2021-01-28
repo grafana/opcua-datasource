@@ -46,11 +46,11 @@ namespace plugin_dotnet
 
         private BrowsePath ResolveRelativePath(OpcUAQuery query, NamespaceTable namespaceTable)
         {
-            var nodeId = Converter.GetNodeId(query.nodePath.node.nodeId, namespaceTable);
             var path = new BrowsePath();
-            path.StartingNode = nodeId;
 
-            if (query.relativePath != null && query.relativePath.Length > 0)
+            var nodeId = Converter.GetNodeId(query.nodePath.node.nodeId, namespaceTable);
+            path.StartingNode = nodeId;
+            if (query.useTemplate && query.relativePath != null && query.relativePath.Length > 0)
             {
                 var r = new RelativePath();
                 path.RelativePath = r;

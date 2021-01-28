@@ -163,8 +163,11 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     }
 
     onChangeTemplateType(node: NodePath): void {
-        const { onChange, query } = this.props;
-        this.setState({ node: node }, () => onChange({ ...query, nodePath: node }));
+        const { onChange, query, onRunQuery  } = this.props;
+        this.setState({ node: node }, () => {
+            onChange({ ...query, nodePath: node });
+            onRunQuery();
+        });
     }
 
     readNode(nodeId: string): Promise<import('../types').OpcUaNodeInfo> {
@@ -203,12 +206,31 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         return <></>;
     }
 
-    render() {
+    renderBrowsePathEditor() {
         const { relativepath, node } = this.state;
         let browseNodeId: string = node.node.nodeId;
+
+        if (this.state.useTemplate) {
+            return (<div>
+                <BrowsePathEditor
+                    theme={this.props.theme}
+                    id={"browsePath"}
+                    closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+                    isBrowserOpen={(id: string) => this.state.browserOpened === id}
+                    openBrowser={(id: string) => this.setState({ browserOpened: id })}
+                    getNamespaceIndices={() => this.getNamespaceIndices()}
+                    browsePath={relativepath}
+                    browse={(nodeId, filter) => this.browse(nodeId, filter)}
+                    onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}
+                    rootNodeId={browseNodeId} />
+            </div>);
+        }
+        return <></>;
+    }
+
+    render() {
         let nodeNameType: string = this.props.nodeNameType;
         if (this.state.useTemplate) {
-            browseNodeId = this.state.node.node.nodeId;
             nodeNameType = 'Type';
         }
         let bg: string = '';
@@ -230,22 +252,8 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                 ></Checkbox>
                 <SegmentFrame label={nodeNameType}>
                     {this.renderTemplateOrNodeBrowser()}
-                    <div>
-                        <BrowsePathEditor
-                            theme={this.props.theme}
-                            id={"browsePath"}
-                            closeBrowser={(id: string) => this.setState({ browserOpened: null })}
-                            isBrowserOpen={(id: string) => this.state.browserOpened === id}
-                            openBrowser={(id: string) => this.setState({ browserOpened: id })}
-                            getNamespaceIndices={() => this.getNamespaceIndices()}
-                            browsePath={relativepath}
-                            browse={(nodeId, filter) => this.browse(nodeId, filter)}
-                            onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}
-                            rootNodeId={browseNodeId} />
-                    </div>
+                    {this.renderBrowsePathEditor()}
                 </SegmentFrame>
-
-
                 <Checkbox
                     label="Advanced"
                     checked={this.state.advanced}
@@ -258,18 +266,24 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     }
 
     onChangeTemplateVariable(e: React.FormEvent<HTMLInputElement>): void {
-        const { onChange, query } = this.props;
+        const { onChange, query, onRunQuery } = this.props;
         let tempVar: string = e.currentTarget.value;
         this.setState(
             {
                 templateVariable: tempVar,
             },
-            () => onChange({ ...query, templateVariable: tempVar })
+            () => {
+                onChange({ ...query, templateVariable: tempVar });
+                onRunQuery();
+            }
         );
     }
 
     changeUseTemplate(checked: boolean): void {
-        const { onChange, query } = this.props;
-        this.setState({ useTemplate: checked }, () => onChange({ ...query, useTemplate: checked }));
+        const { onChange, query, onRunQuery } = this.props;
+        this.setState({ useTemplate: checked }, () => {
+            onChange({ ...query, useTemplate: checked });
+            onRunQuery();
+        });
     }
 }
