@@ -76,7 +76,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     };
 
     onChangeMaxValuesPerNode(e: React.FormEvent<HTMLInputElement>): void {
-        const { onChange, query } = this.props;
+        const { onChange, query, onRunQuery } = this.props;
         let max = e.currentTarget.value;
         this.setState({ maxValuesPerNode: max }, () => {
             let maxNumber = parseInt(this.state.maxValuesPerNode);
@@ -84,11 +84,12 @@ export class QueryEditor extends PureComponent<Props, State> {
                 maxNumber = 0; // Default handling. 
             }
             onChange({ ...query, maxValuesPerNode: maxNumber });
+            onRunQuery();
         });
     }
 
     onChangeResampleInterval(e: React.FormEvent<HTMLInputElement>): void {
-        const { onChange, query } = this.props;
+        const { onChange, query, onRunQuery } = this.props;
         let resampleInt = e.currentTarget.value;
         this.setState({ resampleInterval: resampleInt }, () => {
             let resampleInterval = parseInt(this.state.resampleInterval);
@@ -96,6 +97,7 @@ export class QueryEditor extends PureComponent<Props, State> {
                 resampleInterval = 0; // Default handling. 
             }
             onChange({ ...query, resampleInterval: resampleInterval });
+            onRunQuery();
         });
     }
 
@@ -186,28 +188,33 @@ export class QueryEditor extends PureComponent<Props, State> {
   renderReadTypes = () => {
     const { query, onRunQuery } = this.props;
     return (
-      <>
-        <RadioButtonGroup
-          options={this.readTypeOptions}
-          value={query.readType}
-          onChange={e => e && this.onChangeField('readType', e)}
-        />
-        {this.optionalParams(query, onRunQuery)}
+        <>
+            <h2>Data Retrieval Method</h2>
+            <div style={{ marginBottom: 10, marginLeft: 6 }}>
+            <RadioButtonGroup
+                options={this.readTypeOptions}
+                value={query.readType}
+                onChange={e => e && this.onChangeField('readType', e)}
+                />
+            </div>
+            {this.optionalParams(query, onRunQuery)}
       </>
     );
   };
 
   renderNodeQueryEditor = (nodeNameType: string) => {
     const { datasource, onChange, query, onRunQuery } = this.props;
-    return (
-        <NodeQueryEditor
-        theme={this.state.theme}
-        nodeNameType={nodeNameType}
-        datasource={datasource}
-        onChange={onChange}
-        onRunQuery={onRunQuery}
-        query={query}
-      ></NodeQueryEditor>
+      return (
+          <>
+              <h2>UA Node Selection</h2>
+              <NodeQueryEditor
+                  theme={this.state.theme}
+                  nodeNameType={nodeNameType}
+                  datasource={datasource}
+                  onChange={onChange}
+                  onRunQuery={onRunQuery}
+                  query={query}></NodeQueryEditor>
+          </>
     );
   };
 
@@ -217,8 +224,8 @@ export class QueryEditor extends PureComponent<Props, State> {
     if (readTypeValue === 'Events' || readTypeValue === 'Subscribe Events') {
         return (
             <>
-                <div>{this.renderReadTypes()}</div>
                 <div>{this.renderNodeQueryEditor('Event Source')}</div>
+                <div>{this.renderReadTypes()}</div>
                 <EventQueryEditor datasource={datasource} onChange={onChange} onRunQuery={onRunQuery} query={query} theme={this.state.theme} /> { ' '}
             </>
         );
@@ -230,9 +237,10 @@ export class QueryEditor extends PureComponent<Props, State> {
     else
     {
         return (
-        <>
-            <div>{this.renderReadTypes()}</div>
-            <div>{this.renderNodeQueryEditor('Instance')}</div>
+            <>
+                <div>{this.renderNodeQueryEditor('Instance')}</div>
+                <div>{this.renderReadTypes()}</div>
+            
         </>
         );
     }
