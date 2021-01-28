@@ -30,7 +30,6 @@ type State = {
     alias: string;
     templateVariable: string;
     relativepath: QualifiedName[];
-    advanced: boolean;
     browserOpened: string | null;
 };
 
@@ -63,7 +62,6 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             node: nodePath,
             alias: alias,
             browserOpened: null,
-            advanced: false,
         };
     }
 
@@ -180,7 +178,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
     renderTemplateVariable() {
         const { templateVariable } = this.state;
-        if (this.state.useTemplate && this.state.advanced) {
+        if (this.state.useTemplate) {
             return (
                 <SegmentFrame label="Template variable">
                     <Input
@@ -197,13 +195,9 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
 
     renderAlias() {
-        const { advanced } = this.state;
-        if (advanced) {
-            return <SegmentFrame label="Alias">
-                <Input value={this.state.alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
-            </SegmentFrame>;
-        }
-        return <></>;
+        return <SegmentFrame label="Alias">
+            <Input value={this.state.alias} placeholder={'alias'} onChange={e => this.onChangeAlias(e)} width={30} />
+        </SegmentFrame>;
     }
 
     renderBrowsePathEditor() {
@@ -211,7 +205,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         let browseNodeId: string = node.node.nodeId;
 
         if (this.state.useTemplate) {
-            return (<div>
+            return (<SegmentFrame label={"Relative Path"}>
                 <BrowsePathEditor
                     theme={this.props.theme}
                     id={"browsePath"}
@@ -223,7 +217,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
                     browse={(nodeId, filter) => this.browse(nodeId, filter)}
                     onChangeBrowsePath={relativePath => this.onChangeRelativePath(relativePath)}
                     rootNodeId={browseNodeId} />
-            </div>);
+            </SegmentFrame>);
         }
         return <></>;
     }
@@ -238,29 +232,28 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             bg = this.props.theme.colors.bg2;
         }
         return (
-            <div style={{ padding: '4px' }}>
+            <div style={{ margin: '4px' }}>
                 {renderOverlay(bg, () => this.state.browserOpened !== null, () => this.setState({ browserOpened: null }))}
-                <Checkbox
-                    label="Instance"
-                    checked={!this.state.useTemplate}
-                    onChange={e => this.changeUseTemplate(!e.currentTarget.checked)}
-                ></Checkbox>
-                <Checkbox
-                    label="Type"
-                    checked={this.state.useTemplate}
-                    onChange={e => this.changeUseTemplate(e.currentTarget.checked)}
-                ></Checkbox>
+                <span style={{ marginRight: 10}}>
+                    <Checkbox
+                        label="Instance"
+                        checked={!this.state.useTemplate}
+                        onChange={e => this.changeUseTemplate(!e.currentTarget.checked)}
+                    ></Checkbox>
+                </span>
+                <span style={{ marginRight: 10 }}>
+                    <Checkbox
+                        label="Type"
+                        checked={this.state.useTemplate}
+                        onChange={e => this.changeUseTemplate(e.currentTarget.checked)}
+                        ></Checkbox>
+                </span>
                 <SegmentFrame label={nodeNameType}>
                     {this.renderTemplateOrNodeBrowser()}
-                    {this.renderBrowsePathEditor()}
                 </SegmentFrame>
-                <Checkbox
-                    label="Advanced"
-                    checked={this.state.advanced}
-                    onChange={e => this.setState({ advanced: e.currentTarget.checked })}
-                ></Checkbox>
-                {this.renderTemplateVariable()}
+                {this.renderBrowsePathEditor()}
                 {this.renderAlias()}
+                {this.renderTemplateVariable()}
             </div>
         );
     }
