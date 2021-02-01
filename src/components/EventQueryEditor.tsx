@@ -19,6 +19,7 @@ import { copyEventColumn } from '../utils/EventColumn';
 import { DataSource } from '../DataSource';
 import { GrafanaTheme, QueryEditorProps } from '@grafana/data';
 import { NodeEditor } from './NodeEditor';
+import { renderOverlay } from '../utils/Overlay';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { theme: GrafanaTheme | null };
 
@@ -240,8 +241,13 @@ export class EventQueryEditor extends PureComponent<Props, State> {
     }
 
     render() {
+        let bg: string = '';
+        if (this.props.theme !== null) {
+            bg = this.props.theme.colors.bg2;
+        }
         return (
             <>
+                {renderOverlay(bg, () => this.state.browserOpened !== null, () => this.setState({ browserOpened: null }))}
                 <SegmentFrame label="Event Type">
                     <NodeEditor
                         id={"eventtypeeditor"}
