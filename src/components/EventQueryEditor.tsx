@@ -1,211 +1,195 @@
 import React, { PureComponent } from 'react';
-import { CascaderOption } from 'rc-cascader/lib/Cascader';
 import {
-  EventColumn,
-  EventFilter,
-  QualifiedName,
-  OpcUaBrowseResults,
-  OpcUaQuery,
-  OpcUaDataSourceOptions,
-  separator,
+    EventColumn,
+    EventFilter,
+    QualifiedName,
+    OpcUaBrowseResults,
+    OpcUaQuery,
+    OpcUaDataSourceOptions,
+    NodePath,
+    BrowseFilter,
+    NodeClass,
 } from '../types';
 import { EventFieldTable } from './EventFieldTable';
 import { EventFilterTable } from './EventFilterTable';
 import { AddEventFilter } from './AddEventFilter';
 import { SegmentFrame } from './SegmentFrame';
-import { ButtonCascader } from './ButtonCascader/ButtonCascader';
 import { copyEventFilter, createFilterTree, serializeEventFilter, deserializeEventFilters } from '../utils/EventFilter';
 import { copyEventColumn } from '../utils/EventColumn';
-import { toCascaderOption } from '../utils/CascaderOption';
 import { DataSource } from '../DataSource';
 import { GrafanaTheme, QueryEditorProps } from '@grafana/data';
+import { NodeEditor } from './NodeEditor';
 
 type Props = QueryEditorProps<DataSource, OpcUaQuery, OpcUaDataSourceOptions> & { theme: GrafanaTheme | null };
 
 type State = {
-  eventTypeNodeId: string;
-  eventOptions: CascaderOption[];
-  eventTypes: string[];
-  eventFields: EventColumn[];
-  eventFilters: EventFilter[];
+    eventFields: EventColumn[];
+    eventFilters: EventFilter[];
+    browserOpened: string | null;
+    node: NodePath;
 };
 
 const eventTypesNode = 'i=3048';
 
 export class EventQueryEditor extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    // Better way of doing initialization from props??
-    let evtype = this.props?.query?.eventQuery?.eventTypes;
-    if (typeof evtype === 'undefined') {
-      evtype = [];
+    constructor(props: Props) {
+        super(props);
+        // Better way of doing initialization from props??
+
+        let eventTypeNodeId = this.props.query?.eventQuery?.eventTypeNodeId;
+        let removeFirstEventFilter = true; // First event filter from props is event type node.
+        if (typeof eventTypeNodeId === 'undefined') {
+            eventTypeNodeId = '';
+            removeFirstEventFilter = false;
+        }
+        let evFilters = this.props.query?.eventQuery?.eventFilters;
+        if (typeof evFilters === 'undefined') {
+            evFilters = [];
+        }
+        if (evFilters.length > 0 && removeFirstEventFilter) {
+            evFilters = evFilters.slice(1, evFilters.length);
+        }
+        let nodepath: NodePath = {
+            browsePath: [], node: { browseName: { name: '', namespaceUrl: '' }, displayName: '', nodeClass: -1, nodeId: eventTypeNodeId }
+        };
+        this.state = {
+            eventFields: this.buildEventFields(this.props.query?.eventQuery?.eventColumns),
+            eventFilters: deserializeEventFilters(evFilters),
+            browserOpened: null,
+            node: nodepath,
+        };
+
+
+        if (eventTypeNodeId !== '') {
+            this.getNodePath(eventTypeNodeId, eventTypesNode).then(r => this.setState({ node: r }));
+        }
+
     }
 
-    let eventTypeNodeId = this.props.query?.eventQuery?.eventTypeNodeId;
-    let removeFirstEventFilter = true; // First event filter from props is event type node.
-    if (typeof eventTypeNodeId === 'undefined') {
-      eventTypeNodeId = '';
-      removeFirstEventFilter = false;
-    }
-    let evFilters = this.props.query?.eventQuery?.eventFilters;
-    if (typeof evFilters === 'undefined') {
-      evFilters = [];
-    }
-    if (evFilters.length > 0 && removeFirstEventFilter) {
-      evFilters = evFilters.slice(1, evFilters.length);
-    }
 
-    this.state = {
-      eventTypes: evtype,
-      eventOptions: [],
-      eventFields: this.buildEventFields(this.props.query?.eventQuery?.eventColumns),
-      eventTypeNodeId: eventTypeNodeId,
-      eventFilters: deserializeEventFilters(evFilters),
-    };
-
-    props.datasource.getResource('browseTypes', { nodeId: eventTypesNode }).then((results: OpcUaBrowseResults[]) => {
-      console.log('Results', results);
-      this.setState({
-        eventOptions: results.map((r: OpcUaBrowseResults) => toCascaderOption(r)),
-      });
-    });
-  }
-
-  onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
-    const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
-    const nid = selected[selected.length - 1];
-    this.setState({ eventTypeNodeId: nid, eventTypes: evtTypes }, () => this.updateEventQuery());
-  };
-
-  buildEventFields = (storedEventColumns: EventColumn[]): EventColumn[] => {
-    if (typeof storedEventColumns === 'undefined') {
-        return [
-        { alias: 'Active', browsePath: [{ name: 'ActiveState', namespaceUrl: 'http://opcfoundation.org/UA/' }, { name: 'Id', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: 'Acked', browsePath: [{ name: 'AckedState', namespaceUrl: 'http://opcfoundation.org/UA/' }, { name: 'Id', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: '', browsePath: [{ name: 'Time', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: '', browsePath: [{ name: 'EventId', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: '', browsePath: [{ name: 'EventType', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: '', browsePath: [{ name: 'SourceName', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: '', browsePath: [{ name: 'Message', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-        { alias: '', browsePath: [{ name: 'Severity', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
-      ];
-    }
-    return storedEventColumns.map(a => copyEventColumn(a));
-  };
-
-  getEventTypes = (selectedOptions: CascaderOption[]) => {
-    const targetOption = selectedOptions[selectedOptions.length - 1];
-    targetOption.loading = true;
-    if (targetOption.value) {
-      this.props.datasource
-        .getResource('browseTypes', { nodeId: targetOption.value })
-        .then((results: OpcUaBrowseResults[]) => {
-          targetOption.loading = false;
-          targetOption.children = results.map(r => toCascaderOption(r));
-          this.setState({
-            eventOptions: [...this.state.eventOptions],
-          });
+    browseTypes = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
+        var filter = JSON.stringify(browseFilter);
+        return this.props.datasource.getResource('browse', {
+            nodeId: nodeId,
+            nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType,
+            browseFilter: filter,
         });
-    }
-  };
+    };    
 
-  handleDeleteSelectField = (idx: number) => {
-    let tempArray = this.state.eventFields.map(a => copyEventColumn(a));
-    tempArray.splice(idx, 1);
-    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-  };
 
-  handleDeleteEventFilter = (idx: number) => {
-    let tempArray = this.state.eventFilters.map(a => copyEventFilter(a));
-    tempArray.splice(idx, 1);
-    this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
-  };
-
-  updateEventQuery = () => {
-    const { query, onChange, onRunQuery } = this.props;
-
-    let eventColumns = this.state.eventFields.map(c => copyEventColumn(c));
-    let evtTypes = this.state.eventTypes;
-    let nid = this.state.eventTypeNodeId;
-    let eventFilters = createFilterTree(this.state.eventTypeNodeId, this.state.eventFilters).map(x =>
-      serializeEventFilter(x)
-    );
-
-    let eventQuery = {
-      eventTypeNodeId: nid,
-      eventTypes: evtTypes,
-      eventColumns: eventColumns,
-      eventFilters: eventFilters,
+    buildEventFields = (storedEventColumns: EventColumn[]): EventColumn[] => {
+        if (typeof storedEventColumns === 'undefined') {
+            return [
+                { alias: 'Active', browsePath: [{ name: 'ActiveState', namespaceUrl: 'http://opcfoundation.org/UA/' }, { name: 'Id', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: 'Acked', browsePath: [{ name: 'AckedState', namespaceUrl: 'http://opcfoundation.org/UA/' }, { name: 'Id', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: '', browsePath: [{ name: 'Time', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: '', browsePath: [{ name: 'EventId', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: '', browsePath: [{ name: 'EventType', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: '', browsePath: [{ name: 'SourceName', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: '', browsePath: [{ name: 'Message', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+                { alias: '', browsePath: [{ name: 'Severity', namespaceUrl: 'http://opcfoundation.org/UA/' }] },
+            ];
+        }
+        return storedEventColumns.map(a => copyEventColumn(a));
     };
-    onChange({
-      ...query,
-      eventQuery: eventQuery,
-    });
-    onRunQuery();
-  };
 
-  addEventFilter = (eventFilter: EventFilter) => {
-    let tempArray = this.state.eventFilters.slice();
-    tempArray.push(eventFilter);
-    this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
-  };
 
-  getNamespaceIndices = (): Promise<string[]> => {
-      return this.props.datasource.getResource('getNamespaceIndices');
-  };
 
-  renderTables() {
-    const { datasource } = this.props;
-    let validEventTypeNodeId = true;
-    if (typeof this.state.eventTypeNodeId === 'undefined' || this.state.eventTypeNodeId === '') {
-      validEventTypeNodeId = false;
-    }
-    if (validEventTypeNodeId) {
-      return (
-        <>
-          <h2>Event Columns</h2>
-              <EventFieldTable
-                  theme={this.props.theme}
-                 getNamespaceIndices={() => this.getNamespaceIndices()}
-            datasource={datasource}
-            eventTypeNodeId={this.state.eventTypeNodeId}
-            eventFields={this.state.eventFields}
-            onChangeAlias={(alias, idx) => {
-              this.onChangeAlias(alias, idx);
-                  }}
+    handleDeleteSelectField = (idx: number) => {
+        let tempArray = this.state.eventFields.map(a => copyEventColumn(a));
+        tempArray.splice(idx, 1);
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    };
 
-            onChangeBrowsePath={(browsePath, idx) => {
-              this.onChangeBrowsePath(browsePath, idx);
-            }}
-            deleteField={(idx: number) => this.handleDeleteSelectField(idx)}
-            addField={(col: EventColumn) => this.onAddColumn(col)}
-            moveFieldUp={(idx: number) => this.moveFieldUp(idx)}
-            moveFieldDown={(idx: number) => this.moveFieldDown(idx)}
+    handleDeleteEventFilter = (idx: number) => {
+        let tempArray = this.state.eventFilters.map(a => copyEventFilter(a));
+        tempArray.splice(idx, 1);
+        this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+    };
 
-          />
-          <br />
-          <h2>Event Filters</h2>
-              <EventFilterTable
-                theme={this.props.theme}
-               rows={this.state.eventFilters}
-            ondelete={(idx: number) => {
-              this.handleDeleteEventFilter(idx);
-            }}
-          />
-          <br />
-              <AddEventFilter
-                  theme={this.props.theme}
-                  getNamespaceIndices={() => this.getNamespaceIndices()}
-            add={(eventFilter: EventFilter) => {
-              this.addEventFilter(eventFilter);
-            }}
-            datasource={this.props.datasource}
-            eventTypeNodeId={this.state.eventTypeNodeId}
-          />
-        </>
-      );
-    }
-    return <></>;
+    updateEventQuery = () => {
+        const { query, onChange, onRunQuery } = this.props;
+
+        let eventColumns = this.state.eventFields.map(c => copyEventColumn(c));
+        let nid = this.state.node?.node.nodeId;
+        let eventFilters = createFilterTree(nid, this.state.eventFilters).map(x =>
+            serializeEventFilter(x)
+        );
+
+        let eventQuery = {
+            eventTypeNodeId: nid,
+            eventColumns: eventColumns,
+            eventFilters: eventFilters,
+        };
+        onChange({
+            ...query,
+            eventQuery: eventQuery,
+        });
+        onRunQuery();
+    };
+
+    addEventFilter = (eventFilter: EventFilter) => {
+        let tempArray = this.state.eventFilters.slice();
+        tempArray.push(eventFilter);
+        this.setState({ eventFilters: tempArray }, () => this.updateEventQuery());
+    };
+
+    getNamespaceIndices = (): Promise<string[]> => {
+        return this.props.datasource.getResource('getNamespaceIndices');
+    };
+
+    renderTables() {
+        const { datasource } = this.props;
+        let validEventTypeNodeId = true;
+        if (this.state.node.node.nodeId === '') {
+            validEventTypeNodeId = false;
+        }
+        if (validEventTypeNodeId) {
+            return (
+                <>
+                    <h2>Event Columns</h2>
+                    <EventFieldTable
+                        theme={this.props.theme}
+                        getNamespaceIndices={() => this.getNamespaceIndices()}
+                        datasource={datasource}
+                        eventTypeNodeId={this.state.node.node.nodeId}
+                        eventFields={this.state.eventFields}
+                        onChangeAlias={(alias, idx) => {
+                            this.onChangeAlias(alias, idx);
+                        }}
+
+                        onChangeBrowsePath={(browsePath, idx) => {
+                            this.onChangeBrowsePath(browsePath, idx);
+                        }}
+                        deleteField={(idx: number) => this.handleDeleteSelectField(idx)}
+                        addField={(col: EventColumn) => this.onAddColumn(col)}
+                        moveFieldUp={(idx: number) => this.moveFieldUp(idx)}
+                        moveFieldDown={(idx: number) => this.moveFieldDown(idx)}
+
+                    />
+                    <br />
+                    <h2>Event Filters</h2>
+                    <EventFilterTable
+                        theme={this.props.theme}
+                        rows={this.state.eventFilters}
+                        ondelete={(idx: number) => {
+                            this.handleDeleteEventFilter(idx);
+                        }}
+                    />
+                    <br />
+                    <AddEventFilter
+                        theme={this.props.theme}
+                        getNamespaceIndices={() => this.getNamespaceIndices()}
+                        add={(eventFilter: EventFilter) => {
+                            this.addEventFilter(eventFilter);
+                        }}
+                        datasource={this.props.datasource}
+                        eventTypeNodeId={this.state.node.node.nodeId}
+                    />
+                </>
+            );
+        }
+        return <></>;
     }
 
     moveFieldDown(idx: number): void {
@@ -228,41 +212,56 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         }
     }
 
-  onChangeBrowsePath(browsePath: QualifiedName[], idx: number) {
-    let tempArray = this.state.eventFields.slice();
-    tempArray[idx] = { alias: tempArray[idx].alias, browsePath: browsePath };
-    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-  }
+    onChangeBrowsePath(browsePath: QualifiedName[], idx: number) {
+        let tempArray = this.state.eventFields.slice();
+        tempArray[idx] = { alias: tempArray[idx].alias, browsePath: browsePath };
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    }
 
-  onChangeAlias(alias: string, idx: number) {
-    let tempArray = this.state.eventFields.slice();
-    tempArray[idx] = { alias: alias, browsePath: tempArray[idx].browsePath };
-    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-  }
+    onChangeAlias(alias: string, idx: number) {
+        let tempArray = this.state.eventFields.slice();
+        tempArray[idx] = { alias: alias, browsePath: tempArray[idx].browsePath };
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    }
 
-  onAddColumn(col: EventColumn): void {
-    let tempArray = this.state.eventFields.slice();
-    tempArray.push(col);
-    this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
-  }
+    onAddColumn(col: EventColumn): void {
+        let tempArray = this.state.eventFields.slice();
+        tempArray.push(col);
+        this.setState({ eventFields: tempArray }, () => this.updateEventQuery());
+    }
 
-  render() {
-    return (
-      <>
-        <SegmentFrame label="Event Type">
-          <ButtonCascader
-            //className="query-part"
-            value={this.state.eventTypes}
-            loadData={this.getEventTypes}
-            options={this.state.eventOptions}
-            onChange={this.onChangeEventType}
-          >
-            {this.state.eventTypes.join(separator)}
-          </ButtonCascader>
-        </SegmentFrame>
-        <br />
-        {this.renderTables()}
-      </>
-    );
-  }
+    getNodePath(nodeId: string, rootId: string): Promise<NodePath> {
+        return this.props.datasource.getResource('getNodePath', { nodeId: nodeId, rootId: rootId });
+    }
+
+
+    readNode(nodeId: string): Promise<import('../types').OpcUaNodeInfo> {
+        return this.props.datasource.getResource('readNode', { nodeId: nodeId });
+    }
+
+    render() {
+        return (
+            <>
+                <SegmentFrame label="Event Type">
+                    <NodeEditor
+                        id={"eventtypeeditor"}
+                        closeBrowser={(id: string) => this.setState({ browserOpened: null })}
+                        isBrowserOpen={(id: string) => this.state.browserOpened === id}
+                        openBrowser={(id: string) => this.setState({ browserOpened: id })}
+                        getNamespaceIndices={() => this.getNamespaceIndices()}
+                        theme={this.props.theme}
+                        rootNodeId={eventTypesNode}
+                        placeholder="Event Type"
+                        node={this.state.node}
+                        getNodePath={(nodeId, rootId) => this.getNodePath(nodeId, rootId)}
+                        readNode={n => this.readNode(n)}
+                        browse={(nodeId, filter) => this.browseTypes(nodeId, filter)}
+                        onChangeNode={nodepath => this.setState({ node: nodepath }, () => this.updateEventQuery())}
+                    ></NodeEditor>
+                </SegmentFrame>
+                <br />
+                {this.renderTables()}
+            </>
+        );
+    }
 }

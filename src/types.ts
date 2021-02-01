@@ -42,7 +42,6 @@ export interface NodePath {
 
 export interface EventQuery {
   eventTypeNodeId: string;
-  eventTypes: string[];
   eventColumns: EventColumn[];
   eventFilters: EventFilterSer[];
 }
