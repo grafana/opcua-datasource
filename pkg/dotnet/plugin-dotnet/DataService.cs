@@ -135,7 +135,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     var dataValue = dvs[j];
-                    results[i] = Converter.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i], browsePaths[i]);
+                    results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i], browsePaths[i]);
                     j++;
                 }
                 else
@@ -202,7 +202,7 @@ namespace plugin_dotnet
                 for (int i = 0; i < indices.Count; i++)
                 {
                     var idx = indices[i];
-                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], relativePaths[idx]);
+                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], relativePaths[idx]);
                 }
             }
             return result;
@@ -269,7 +269,7 @@ namespace plugin_dotnet
                 {
                     var idx = indices[i];
                     var valuesResult = historyValues[i];
-                    result[idx] = Converter.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], browsePaths[idx]);
+                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], browsePaths[idx]);
                 }
             }
             return result;
@@ -297,7 +297,7 @@ namespace plugin_dotnet
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
                     var eventFilter = Converter.GetEventFilter(query, namespaceTable);
                     var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeIdResult.Value });
-                    results[i] = Converter.CreateEventDataResponse(_log, response[0], query);
+                    results[i] = EventDataResponse.CreateEventDataResponse(_log, response[0], query);
                 }
                 else 
                 {
@@ -438,7 +438,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     if (dataValues[j].Success)
-                        results[i] = Converter.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
+                        results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
                     else
                         results[i] = new Result<DataResponse>(dataValues[j].StatusCode, dataValues[j].Error);
                     j++;

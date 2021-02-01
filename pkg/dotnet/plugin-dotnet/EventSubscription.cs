@@ -276,7 +276,7 @@ namespace plugin_dotnet
                 }
                 if (eventFilterValues != null)
                 {
-                    return Converter.CreateEventSubscriptionDataResponse(_log, eventFilterValues.Values.Values, query);
+                    return EventDataResponse.CreateEventSubscriptionDataResponse(_log, eventFilterValues.Values.Values, query);
                 }
             }
             return new Result<DataResponse>(StatusCodes.BadUnexpectedError, "");

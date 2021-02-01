@@ -38,6 +38,12 @@ namespace plugin_dotnet
     }
 
 
+    public interface INodeCache
+    {
+
+    }
+
+
 
     public class Connection : IConnection
     {
@@ -56,6 +62,8 @@ namespace plugin_dotnet
         public IEventSubscription EventSubscription { get; }
 
         public IDataValueSubscription DataValueSubscription { get; }
+
+        public INodeCache NodeCache { get; }
 
         public void Close()
         {
