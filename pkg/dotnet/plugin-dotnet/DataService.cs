@@ -30,13 +30,15 @@ namespace plugin_dotnet
 
     class DataService : Data.DataBase
     {
+        private INodeCacheFactory _nodeCacheFactory;
         private IConnections _connections;
         private readonly ILogger _log;
         private Alias alias;
 
 
-        public DataService(ILogger log, IConnections connections)
+        public DataService(ILogger log, IConnections connections, INodeCacheFactory nodeCacheFactory)
         {
+            _nodeCacheFactory = nodeCacheFactory;
             _connections = connections;
             _log = log;
             _log.LogInformation("Data Service created");
@@ -278,8 +280,9 @@ namespace plugin_dotnet
 
 
 
-        private Result<DataResponse>[] ReadEvents(Session session, OpcUAQuery[] opcUAQuery, NamespaceTable namespaceTable)
+        private Result<DataResponse>[] ReadEvents(Session session, IEventDataResponse eventDataResponse, OpcUAQuery[] opcUAQuery, NamespaceTable namespaceTable)
         {
+            var nodeCache = _nodeCacheFactory.Create(session);
             var browsePaths = opcUAQuery.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
 
@@ -297,7 +300,7 @@ namespace plugin_dotnet
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
                     var eventFilter = Converter.GetEventFilter(query, namespaceTable);
                     var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeIdResult.Value });
-                    results[i] = EventDataResponse.CreateEventDataResponse(_log, response[0], query);
+                    results[i] = eventDataResponse.CreateEventDataResponse(response[0], query, nodeCache);
                 }
                 else 
                 {
@@ -365,7 +368,7 @@ namespace plugin_dotnet
                                 responses = ReadHistoryProcessed(connection.Session, queries, nsTable);
                                 break;
                             case "ReadEvents":
-                                responses = ReadEvents(connection.Session, queries, nsTable);
+                                responses = ReadEvents(connection.Session, connection.EventDataResponse, queries, nsTable);
                                 break;
                             case "SubscribeEvents":
                                 responses = SubscribeEvents(connection.Session, connection.EventSubscription, queries, nsTable);

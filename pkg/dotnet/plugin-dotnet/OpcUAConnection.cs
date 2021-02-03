@@ -13,20 +13,22 @@ using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
+    // TODO: move things into separate files...
+
     public interface IConnection
     {
         Session Session { get; }
 
         IEventSubscription EventSubscription { get; }
         IDataValueSubscription DataValueSubscription { get; }
-
+        IEventDataResponse EventDataResponse { get; }
         void Close();
     }
 
     public interface IEventSubscription
     {
         void Close();
-        Result<DataResponse> GetEventData(OpcUAQuery query, NodeId nodeId, Opc.Ua.EventFilter eventFilter);
+        Result<DataResponse> GetEventData( OpcUAQuery query, NodeId nodeId, Opc.Ua.EventFilter eventFilter);
     }
 
 
@@ -38,23 +40,111 @@ namespace plugin_dotnet
     }
 
 
-    public interface INodeCache
+    public interface INodeCacheFactory
     {
-
+        INodeCache Create(Session session);
     }
 
+    public interface INodeCache
+    {
+        Opc.Ua.QualifiedName GetBrowseName(NodeId nodeId);
+    }
+
+    public class NodeCacheFactory : INodeCacheFactory
+    {
+        private ILogger _logger;
+        public NodeCacheFactory(ILogger logger)
+        {
+            _logger = logger;
+        }
+        public INodeCache Create(Session session)
+        {
+            return new NodeCache(_logger, session);
+        }
+    }
+
+
+    public class NodeCache : INodeCache
+    {
+        private ILogger _logger;
+        private Session _session;
+        private Dictionary<NodeId, Dictionary<uint, object>> _nodeAttributes = new Dictionary<NodeId, Dictionary<uint, object>>();
+        public NodeCache(ILogger logger, Session session)
+        {
+            _logger = logger;
+            _session = session;
+        }
+
+        private T GetAttributeValue<T>(NodeId nodeId, uint attributeId, T defaultValue) where T : class
+        {
+            
+            lock (_nodeAttributes)
+            {
+                Dictionary<uint, object> node = null;
+                if (!_nodeAttributes.TryGetValue(nodeId, out node))
+                {
+                    node = new Dictionary<uint, object>();
+                    _nodeAttributes.Add(nodeId, node);
+                }
+                if (node.TryGetValue(attributeId, out object value))
+                {
+                    if (value is T)
+                        return (T)value;
+                    else
+                        node.Remove(attributeId);
+                }
+            }
+
+            try
+            {
+                var readRes = _session.ReadAttributes(nodeId, new[] { attributeId });
+                if (readRes[0].Success)
+                {
+                    var value = readRes[0].Value;
+                    if (value != null && value is T)
+                    {
+                        lock (_nodeAttributes)
+                        {
+                            Dictionary<uint, object> node = null;
+                            if (!_nodeAttributes.TryGetValue(nodeId, out node))
+                            {
+                                node = new Dictionary<uint, object>();
+                                _nodeAttributes.Add(nodeId, node);
+                            }
+
+                            if (!node.ContainsKey(attributeId))
+                                node.Add(attributeId, value);
+                        }
+                        return (T)value;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error reading node: " + nodeId);
+            }
+            return defaultValue;
+        }
+
+
+        public Opc.Ua.QualifiedName GetBrowseName(NodeId nodeId)
+        {
+            return GetAttributeValue<Opc.Ua.QualifiedName>(nodeId, Attributes.BrowseName, null);
+        }
+    }
 
 
     public class Connection : IConnection
     {
         private bool _closed = false;
         private ISubscriptionReaper _subscriptionReaper;
-        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper)
+        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper, IEventDataResponse eventDataResponse)
         {
             _subscriptionReaper = subscriptionReaper;
             Session = session;
             EventSubscription = eventSubscription;
             DataValueSubscription = dataValueSubscription;
+            EventDataResponse = eventDataResponse;
         }
 
         public Session Session { get; }
@@ -62,6 +152,8 @@ namespace plugin_dotnet
         public IEventSubscription EventSubscription { get; }
 
         public IDataValueSubscription DataValueSubscription { get; }
+
+        public IEventDataResponse EventDataResponse { get; }
 
         public INodeCache NodeCache { get; }
 
@@ -98,13 +190,32 @@ namespace plugin_dotnet
     {
         private ILogger _log;
         private ISessionFactory _sessionFactory;
+        private INodeCacheFactory _nodeCacheFactory;
         private Func<ApplicationConfiguration> _applicationConfiguration;
         private Dictionary<string, IConnection> connections = new Dictionary<string, IConnection>();
-        public Connections(ILogger log, ISessionFactory sessionFactory, Func<ApplicationConfiguration> applicationConfiguration)
+        public Connections(ILogger log, ISessionFactory sessionFactory, INodeCacheFactory nodeCacheFactory, Func<ApplicationConfiguration> applicationConfiguration)
         {
             _log = log;
             _sessionFactory = sessionFactory;
+            _nodeCacheFactory = nodeCacheFactory;
             _applicationConfiguration = applicationConfiguration;
+        }
+
+
+        private void CreateConnection(string url, Session session)
+        {
+            var subscriptionReaper = new SubscriptionReaper(_log, 60000);
+
+            var eventDataResponse = new EventDataResponse(_log);
+            var eventSubscription = new EventSubscription(_log, subscriptionReaper, eventDataResponse, _nodeCacheFactory, session, new TimeSpan(0, 60, 0));
+            var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
+
+            lock (connections)
+            {
+                var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
+                connections[key: url] = conn;
+                subscriptionReaper.Start();
+            }
         }
 
         public void Add(string url, string clientCert, string clientKey)
@@ -123,16 +234,7 @@ namespace plugin_dotnet
                 var appConfig = _applicationConfiguration();
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
                 var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
-                var subscriptionReaper = new SubscriptionReaper(_log, 60000);
-                
-                var eventSubscription = new EventSubscription(_log, subscriptionReaper, session,  new TimeSpan(0, 60, 0));
-                var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
-                lock (connections)
-                {
-                    var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper);
-                    connections[key: url] = conn;
-                    subscriptionReaper.Start();
-                }
+                CreateConnection(url, session);
             }
             catch (Exception ex)
             {
@@ -146,15 +248,7 @@ namespace plugin_dotnet
             {
                 _log.LogInformation("Creating anonymous session: {0}", url);
                 var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
-                var subscriptionReaper = new SubscriptionReaper(_log, 60000);
-                var eventSubscription = new EventSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 60, 0));
-                var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
-                lock (connections)
-                {
-                    var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper);
-                    connections[key: url] = conn;
-                    subscriptionReaper.Start();
-                }
+                CreateConnection(url, session);
             }
             catch (Exception ex)
             {

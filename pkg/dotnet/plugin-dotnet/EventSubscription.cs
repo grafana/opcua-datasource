@@ -68,14 +68,18 @@ namespace plugin_dotnet
         private Subscription _subscription;
         private ILogger _log;
         private ISubscriptionReaper _subscriptionReaper;
+        private IEventDataResponse _eventDataResponse;
+        private INodeCacheFactory _nodeCacheFactory;
         // Maximum interval between reads before monitored item is removed.
         private TimeSpan _maxReadInterval;
-        public EventSubscription(ILogger log, ISubscriptionReaper subscriptionReaper, Session session, TimeSpan maxReadInterval)
+        public EventSubscription(ILogger log, ISubscriptionReaper subscriptionReaper, IEventDataResponse eventDataResponse, INodeCacheFactory nodeCacheFactory, Session session, TimeSpan maxReadInterval)
         {
             _log = log;
             _session = session;
             _subscriptionReaper = subscriptionReaper;
             _maxReadInterval = maxReadInterval;
+            _eventDataResponse = eventDataResponse;
+            _nodeCacheFactory = nodeCacheFactory;
 
             _subscriptionReaper.OnTimer += _subscriptionReaper_OnTimer;
             // Hard coded for now
@@ -253,6 +257,7 @@ namespace plugin_dotnet
 
         public Result<DataResponse> GetEventData(OpcUAQuery query, NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
         {
+            var nodeCache = _nodeCacheFactory.Create(_session);
             eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "SourceNode");
             eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "EventType");
 
@@ -276,7 +281,7 @@ namespace plugin_dotnet
                 }
                 if (eventFilterValues != null)
                 {
-                    return EventDataResponse.CreateEventSubscriptionDataResponse(_log, eventFilterValues.Values.Values, query);
+                    return _eventDataResponse.CreateEventSubscriptionDataResponse(eventFilterValues.Values.Values, query, nodeCache);
                 }
             }
             return new Result<DataResponse>(StatusCodes.BadUnexpectedError, "");

@@ -99,9 +99,9 @@ namespace plugin_dotnet
             {
                 var traceLogConverter = new TraceLogConverter(logger);
                 Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
-
-                var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), CreateApplicationConfiguration);
-
+                var nodeCacheFactory = new NodeCacheFactory(logger);
+                var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), nodeCacheFactory, CreateApplicationConfiguration);
+                
                 IDashboardDb dashboardDb = new DashboardDb(logger, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs", "dashboardmapping.db"));
                 IDashboardResolver dashboardResolver = new DashboardResolver(dashboardDb);
 
@@ -112,7 +112,7 @@ namespace plugin_dotnet
                     Services = {
                     { Diagnostics.BindService(new DiagnosticsService(logger, connections)) },
                     { Resource.BindService(new ResourceService(logger, connections, dashboardResolver)) },
-                    { Data.BindService(new DataService(logger, connections)) }
+                    { Data.BindService(new DataService(logger, connections, nodeCacheFactory)) }
                 }
                 };
 
