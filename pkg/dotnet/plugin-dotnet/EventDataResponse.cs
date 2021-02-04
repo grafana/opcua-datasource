@@ -29,6 +29,12 @@ namespace plugin_dotnet
             _typeForFieldName.Add("SourceNode", typeof(string));
             _typeForFieldName.Add("Message", typeof(string));
             _typeForFieldName.Add("Severity", typeof(ushort));
+            _typeForFieldName.Add("EnabledState/Id", typeof(bool));
+            _typeForFieldName.Add("AckedState/Id", typeof(bool));
+            _typeForFieldName.Add("ConfirmedState/Id", typeof(bool));
+            _typeForFieldName.Add("ActiveState/Id", typeof(bool));
+            _typeForFieldName.Add("SilenceState/Id", typeof(bool));
+            _typeForFieldName.Add("SuppressedState/Id", typeof(bool));
 
             _converter = new Dictionary<string, Func<INodeCache, object, object>>();
             _converter.Add("EventId", (nodeCache, o) => ByteArrayToHexViaLookup32((byte[])o));
@@ -87,12 +93,21 @@ namespace plugin_dotnet
         {
             if (browsePath == null || browsePath.Length == 0)
                 throw new ArgumentException(nameof(browsePath));
-
-            if (browsePath.Length == 1 && (string.Compare(browsePath[0].namespaceUrl, "http://opcfoundation.org/UA/") == 0))
+            StringBuilder path = new StringBuilder();
+            for (int i = 0; i < browsePath.Length; i++)
             {
-                if (_typeForFieldName.TryGetValue(browsePath[0].name, out Type type))
-                    return type;
+                if (string.Compare(browsePath[i].namespaceUrl, "http://opcfoundation.org/UA/") == 0)
+                {
+                    if (path.Length > 0)
+                        path.Append("/");
+                    path.Append(browsePath[i].name);
+                }
+                else
+                    return typeof(string);
             }
+            var simplifiedBrowsePath = path.ToString();
+            if (_typeForFieldName.TryGetValue(simplifiedBrowsePath, out Type type))
+                return type;
             return typeof(string);
         }
 
