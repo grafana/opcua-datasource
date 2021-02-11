@@ -47,15 +47,21 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         if (typeof evFilters === 'undefined') {
             evFilters = [];
         }
-        if (evFilters.length > 0 && removeFirstEventFilter) {
-            evFilters = evFilters.slice(1, evFilters.length);
+
+        // Remove event type filter.
+        let deserializedEventFilters = deserializeEventFilters(evFilters);
+        if (deserializedEventFilters.length > 0 && removeFirstEventFilter) {
+            if (deserializedEventFilters.length > 2) {
+                deserializedEventFilters.splice(2, 1);
+            }
+            deserializedEventFilters.splice(0, 1);
         }
         let nodepath: NodePath = {
             browsePath: [], node: { browseName: { name: '', namespaceUrl: '' }, displayName: '', nodeClass: -1, nodeId: eventTypeNodeId }
         };
         this.state = {
             eventFields: this.buildEventFields(this.props.query?.eventQuery?.eventColumns),
-            eventFilters: deserializeEventFilters(evFilters),
+            eventFilters: deserializedEventFilters,
             browserOpened: null,
             node: nodepath,
         };
