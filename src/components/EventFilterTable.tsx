@@ -65,13 +65,6 @@ export class EventFilterTable extends PureComponent<Props, State> {
     );
   }
 
-  //<TableHead style={{ backgroundColor: 'black', color: 'white', }}>
-  //    <TableRow style={{ height: 20}}>
-  //        <TableCell style={{ color: 'white', border: 0, padding: 0}}>Browse Name</TableCell>
-  //        <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right">Alias</TableCell>
-  //        <TableCell style={{ color: 'white', border: 0, padding: 0 }} align="right"></TableCell>
-  //    </TableRow>
-  //</TableHead>
 
   render() {
     let bg = '';

@@ -57,7 +57,6 @@ export class AddEventFilter extends PureComponent<Props, State> {
             value: '500',
             browserOpened: null,
         };
-        this.changeOperator = this.changeOperator.bind(this);
     }
 
     addFilter() {
@@ -82,7 +81,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
 
     changeOperator(event: { target: any }) {
         const target = event.target;
-        const value = target.value as FilterOperator;
+        const value = parseInt(target.value) as FilterOperator;
         this.setState({ oper: value });
     }
 
@@ -107,7 +106,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
     renderDropdown() {
         return (
             <SegmentFrame label="Operator" marginLeft>
-                <select onSelect={this.changeOperator}>
+                <select onChange={e => this.changeOperator(e)} defaultValue={this.state.oper} >
                     {EventFilterOperatorUtil.operNames.map((n, idx) => {
                         return <option value={idx}>{n}</option>;
                     })}
