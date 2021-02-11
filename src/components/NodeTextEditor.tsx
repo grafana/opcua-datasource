@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Input } from '@grafana/ui';
 import { NodePath, NSNodeId, OpcUaNodeInfo, QualifiedName } from '../types';
 import { browsePathToShortString } from '../utils/QualifiedName';
-import { nodeIdToShortString } from '../utils/NodeId';
+import { areNodesEqual, nodeIdToShortString } from '../utils/NodeId';
 import { FaEdit } from 'react-icons/fa';
 
 export interface Props {
@@ -76,6 +76,7 @@ export class NodeTextEditor extends PureComponent<Props, State> {
     }
 
 
+
     render() {
         if (!this.state.nsTableFetched) {
             this.props.getNamespaceIndices().then(ind => {
@@ -84,7 +85,7 @@ export class NodeTextEditor extends PureComponent<Props, State> {
             return <></>;
         }
 
-        if (this.state.node === null || this.props.node.node.nodeId !== this.state.node.node.nodeId) {
+        if (this.state.node === null || !areNodesEqual(this.props.node.node, this.state.node.node)) {
             let nodeId = this.getNodeId(this.props.node.node.nodeId);
             let editnode = nodeIdToShortString(nodeId, this.state.nsTable);
             this.setState({ node: this.props.node, editnode: editnode, preEditNode: editnode });

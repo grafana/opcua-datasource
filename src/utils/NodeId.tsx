@@ -1,4 +1,4 @@
-import { NSNodeId } from '../types';
+import { NSNodeId, OpcUaNodeInfo } from '../types';
 
 export function nodeIdToShortString(nodeId: NSNodeId | null, nsTable: string[]): string {
     if (nodeId === null)
@@ -14,4 +14,12 @@ export function nodeIdToShortString(nodeId: NSNodeId | null, nsTable: string[]):
         }
     }
     return nodeId.id;
+}
+
+export function areNodesEqual(leftNode: OpcUaNodeInfo, rightNode: OpcUaNodeInfo): boolean {
+    return (leftNode.nodeId === rightNode.nodeId
+        && leftNode.nodeClass === rightNode.nodeClass
+        && leftNode.displayName === rightNode.displayName
+        && leftNode.browseName.name === rightNode.browseName.name
+        && leftNode.browseName.namespaceUrl === rightNode.browseName.namespaceUrl);
 }
