@@ -6,9 +6,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 //import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
-import { FilterOperator, EventFilter, EventFilterOperatorUtil } from '../types';
+import { FilterOperator, EventFilter } from '../types';
 import { GrafanaTheme } from '@grafana/data';
 import { Button } from '@grafana/ui';
+import { EventFilterOperatorUtil } from '../utils/Operands';
 
 export interface Props {
     rows: EventFilter[];

@@ -5,7 +5,6 @@ import {
     FilterOperand,
     FilterOperator,
     EventFilter,
-    EventFilterOperatorUtil,
     LiteralOp,
     SimpleAttributeOp,
     QualifiedName,
@@ -22,6 +21,7 @@ import { NodeEditor } from './NodeEditor';
 import { Button } from '@grafana/ui';
 import { GrafanaTheme } from '@grafana/data';
 import { renderOverlay } from '../utils/Overlay';
+import { EventFilterOperatorUtil } from '../utils/Operands';
 
 export interface Props {
     datasource: DataSource;

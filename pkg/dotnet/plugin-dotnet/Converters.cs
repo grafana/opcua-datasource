@@ -15,6 +15,27 @@ namespace plugin_dotnet
 
 	public static class Converter
 	{
+        private static IDictionary<NodeId, Func<string, NamespaceTable, object>> _dataTypeConverter = new Dictionary<NodeId, Func<string, NamespaceTable, object>>();
+        static Converter()
+        {
+            _dataTypeConverter.Add(DataTypeIds.NodeId, (val, nsTable) => GetNodeId(val, nsTable));
+            _dataTypeConverter.Add(DataTypeIds.Byte, (val, nsTable) => byte.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.UInt16, (val, nsTable) => ushort.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.UInt32, (val, nsTable) => uint.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.UInt64, (val, nsTable) => ulong.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.SByte, (val, nsTable) => sbyte.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Int16, (val, nsTable) => short.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Int32, (val, nsTable) => int.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Int64, (val, nsTable) => long.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Integer, (val, nsTable) => long.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Float, (val, nsTable) => float.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Double, (val, nsTable) => double.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Duration, (val, nsTable) => double.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Decimal, (val, nsTable) => decimal.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.DateTime, (val, nsTable) => DateTime.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Boolean, (val, nsTable) => bool.Parse(val));
+            _dataTypeConverter.Add(DataTypeIds.Guid, (val, nsTable) => Guid.Parse(val));
+        }
 
 
         public static NodeInfo ConvertToNodeInfo(Opc.Ua.Node node, NamespaceTable namespaceTable)
@@ -104,14 +125,10 @@ namespace plugin_dotnet
         private static LiteralOperand GetLiteralOperand(LiteralOp literop, NamespaceTable namespaceTable)
         {
             var nodeId = Converter.GetNodeId(literop.typeId, namespaceTable);
-            if (nodeId.NamespaceIndex == 0 && nodeId.IdType == IdType.Numeric)
+            if (_dataTypeConverter.TryGetValue(nodeId, out Func<string, NamespaceTable, object> converter))
             {
-                var id = Convert.ToInt32(nodeId.Identifier);
-                if (id == 17)  // NodeId: TODO use constant.
-                {
-                    var nodeIdVal = Converter.GetNodeId(literop.value, namespaceTable);
-                    return new LiteralOperand(nodeIdVal);
-                }
+                var val = converter(literop.value, namespaceTable);
+                return new LiteralOperand(val);
             }
             return new LiteralOperand(literop.value);
         }

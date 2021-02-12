@@ -157,64 +157,7 @@ export enum FilterOperator {
   BitwiseOr = 17,
 }
 
-export class EventFilterOperatorUtil {
-  static operNames: string[] = [
-    '==',
-    'IsNull',
-    '>',
-    '<',
-    '>=',
-    '<=',
-    'Like',
-    'Not',
-    'Between',
-    'InList',
-    'And',
-    'Or',
-    'Cast',
-    'InView',
-    'OfType',
-    'RelatedTo',
-    'BitwiseAnd',
-    'BitwiseOr',
-  ];
-  static GetString(oper: FilterOperator): string {
-    return EventFilterOperatorUtil.operNames[oper];
-  }
 
-  static GetQualifiedNameString(qm: QualifiedName): string {
-    if (qm.namespaceUrl != null && qm.namespaceUrl.length > 0) {
-      return qm.namespaceUrl + ':' + qm.name;
-    } else {
-      return qm.name;
-    }
-  }
-
-  static GetLiteralString(op: LiteralOp): string {
-    return 'Data type node: ' + op.typeId + ' Value: ' + op.value;
-  }
-
-  static GetSimpleAttributeString(op: SimpleAttributeOp): string {
-    let s = 'Type definition node: ' + op.typeId + '  BrowsePath: ';
-    for (var i = 0; i < op.browsePath.length; i++) {
-      s += this.GetQualifiedNameString(op.browsePath[i]);
-      if (i < op.browsePath.length - 1) {
-        s += '/';
-      }
-    }
-    return s;
-  }
-
-  static GetOperandString(operand: FilterOperand): string {
-    switch (operand.type) {
-      case FilterOperandEnum.SimpleAttribute:
-        return this.GetSimpleAttributeString(operand.value as SimpleAttributeOp);
-      case FilterOperandEnum.Literal:
-        return this.GetLiteralString(operand.value as LiteralOp);
-    }
-    return '';
-  }
-}
 
 export const separator = ' / ';
 
