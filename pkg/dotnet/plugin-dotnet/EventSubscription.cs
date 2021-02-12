@@ -248,8 +248,11 @@ namespace plugin_dotnet
                 if (_eventData.TryGetValue(startNodeId, out List<EventFilterValues> values))
                 {
                     var vals = values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
-                    vals.LastRead = DateTimeOffset.UtcNow;
-                    return vals;
+                    if (vals != null)
+                    {
+                        vals.LastRead = DateTimeOffset.UtcNow;
+                        return vals;
+                    }
                 }
             }
             return null;
