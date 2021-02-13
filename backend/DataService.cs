@@ -109,7 +109,7 @@ namespace plugin_dotnet
             {
                 var key = querygroup.Key;
                 var nodes = querygroup.Value.ToArray();
-                var historyValues = session.ReadHistoryRaw(key.StartTime, key.EndTime, key.MaxValues, nodes);
+                var historyValues = session.ReadHistoryRaw(key.StartTime, key.EndTime, key.MaxValues, nodes, true);
                 var indices = indexMap[key];
                 for (int i = 0; i < indices.Count; i++)
                 {
@@ -124,10 +124,18 @@ namespace plugin_dotnet
         {
             if (valuesResult.Success)
             {
+                DateTime queryFromTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.FromEpochMS).UtcDateTime;
+                DateTime queryToTime = DateTimeOffset.FromUnixTimeMilliseconds(query.timeRange.ToEpochMS).UtcDateTime;
+                log.Debug("Time [{0} => {1}]", queryFromTime, queryToTime);
+
                 var dataResponse = new DataResponse();
                 var dataFrame = new DataFrame(query.refId);
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
                 Field valueField = null;
+
+                DateTime firstTime = new DateTime(0);
+                DateTime zeroTime = new DateTime(0);
+                
                 foreach (DataValue entry in valuesResult.Value.DataValues)
                 {
                     if (valueField == null && entry.Value != null)
@@ -138,7 +146,18 @@ namespace plugin_dotnet
                     if (valueField != null)
                     {
                         valueField.Append(entry.Value);
-                        timeField.Append(entry.SourceTimestamp);
+                        
+                        var timestamp = entry.SourceTimestamp;
+                        if (timestamp < queryFromTime || timestamp > queryToTime)
+                        {
+                            if (firstTime == zeroTime) 
+                            {
+                                firstTime = timestamp;
+                            }
+                            timestamp = queryFromTime + (timestamp - firstTime);
+                        }
+
+                        timeField.Append(timestamp);
                     }
                 }
                 dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
@@ -351,10 +370,12 @@ namespace plugin_dotnet
                     }
                     catch (Exception e)
                     {
-                        log.Debug("Responses is {0}", response);
+                        log.Debug("We caught an exception {0}", e.Message);
                         foreach (var q in queries)
                         {
-                            response.Responses[q.refId].Error = e.ToString();
+                            DataResponse r = new DataResponse();
+                            r.Error = e.Message;
+                            response.Responses[q.RefID] = r;
                         }
                         log.Error(e.ToString());
                     }

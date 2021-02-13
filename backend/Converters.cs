@@ -1,4 +1,5 @@
 ﻿using Apache.Arrow;
+using Grpc.Core.Logging;
 using Microsoft.Data.Analysis;
 using Opc.Ua;
 using System;
@@ -23,6 +24,8 @@ namespace plugin_dotnet
 
 	internal static class DataFrameColumnFactory
 	{
+        static ILogger log = new ConsoleLogger();
+
         internal static DataFrameColumn Create(Field field)
 		{
             switch (field.Type.Name)
@@ -65,6 +68,14 @@ namespace plugin_dotnet
                     return new OpcUaDataFrameColumn<bool>(field.Name, field.DataAs<bool>());
                 case "DateTime":
                     return new OpcUaDataFrameColumn<DateTime>(field.Name, field.DataAs<DateTime>());
+                case "ExtensionObject":
+                    List<ExtensionObject> values = field.DataAs<ExtensionObject>();
+                    //HistoryData values = ExtensionObject.ToEncodeable(field.Data as ExtensionObject) as HistoryData;
+                    foreach (ExtensionObject value in values) 
+                    {
+                        log.Debug("We got an extension object [{0}]", ExtensionObject.ToArray(value, typeof(Byte[])));
+                    }
+                    return new OpcUaDataFrameColumn<int>(field.Name, new List<int>());
                 case "string":
                 case "String":
                     var stringArray = CreateStringArray(field.DataAs<string>());
