@@ -87,7 +87,7 @@ jobs:
           name: Build backend (Linux)
           command: |
             [ ! -d "ci/dist/linux" ] && mkdir -pv ci/dist/linux
-            dotnet publish ./pkg/dotnet/plugin-dotnet/.linux.build.csproj -r linux-x64 -o ci/dist/linux --self-contained true
+            dotnet publish ./backend/.linux.build.csproj -r linux-x64 -o ci/dist/linux --self-contained true
       - persist_to_workspace:
           root: .
           paths:
@@ -103,7 +103,7 @@ jobs:
           name: Build backend (OSX)
           command: |
             [ ! -d "ci/dist/osx" ] && mkdir -pv ci/dist/osx
-            dotnet publish ./pkg/dotnet/plugin-dotnet/.osx.build.csproj -r osx-x64 -o ci/dist/osx --self-contained true
+            dotnet publish ./backend/.osx.build.csproj -r osx-x64 -o ci/dist/osx --self-contained true
       - persist_to_workspace:
           root: .
           paths:
@@ -119,7 +119,7 @@ jobs:
           name: Build backend (Windows)
           command: |
             [ ! -d "ci/dist/win" ] && mkdir -pv ci/dist/win
-            dotnet publish ./pkg/dotnet/plugin-dotnet/.win.build.csproj -r win-x64 -o ci/dist/win --self-contained true
+            dotnet publish ./backend/.win.build.csproj -r win-x64 -o ci/dist/win --self-contained true
       - persist_to_workspace:
           root: .
           paths:
