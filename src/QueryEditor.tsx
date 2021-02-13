@@ -287,6 +287,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       <>
         <SegmentFrame width={7} label="Max Values">
           <Input
+            css=""
             width={10}
             value={-1}
             onChange={() => console.log('not implemented yet')}
@@ -461,7 +462,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         </SegmentFrame>
         {value[0] === defaultTag ? <></> : this.renderQueryOptions()}
         <SegmentFrame width={7} label="Alias">
-          <Input value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={60} />
+          <Input css="" value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={60} />
         </SegmentFrame>
       </>
     );

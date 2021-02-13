@@ -28,6 +28,8 @@
     <PackageReference Include="Prediktor.UA.Client" Version="1.0.4" />
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="Websocket.Client" Version="4.3.21" />
   </ItemGroup>
   
   <ItemGroup>
