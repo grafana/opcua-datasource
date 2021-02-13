@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { GroupProps } from 'react-select';
 
-interface ExtendedGroupProps extends GroupProps<any> {
+interface ExtendedGroupProps extends GroupProps<any, any> {
   data: {
     label: string;
     expanded: boolean;
@@ -25,7 +25,7 @@ export default class SelectOptionGroup extends PureComponent<ExtendedGroupProps,
     } else if (this.props.selectProps && this.props.selectProps.value) {
       const { value } = this.props.selectProps.value;
 
-      if (value && this.props.options.some(option => option.value === value)) {
+      if (value && this.props.options.some((option) => option.value === value)) {
         this.setState({ expanded: true });
       }
     }
@@ -38,7 +38,7 @@ export default class SelectOptionGroup extends PureComponent<ExtendedGroupProps,
   }
 
   onToggleChildren = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       expanded: !prevState.expanded,
     }));
     this.props.data.onExpand(this);

@@ -53,7 +53,10 @@ export class EventFilterTable extends PureComponent<Props, State> {
           {row.oper}
         </TableCell>
         {row.operands.map((oper, idx) => (
-          <TableCell style={{ color: 'white', border: 0, padding: 0 }}> {oper[idx]} </TableCell>
+          <TableCell key={`option${idx}`} style={{ color: 'white', border: 0, padding: 0 }}>
+            {' '}
+            {oper[idx]}{' '}
+          </TableCell>
         ))}
       </TableRow>
     );

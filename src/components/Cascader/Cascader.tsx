@@ -80,7 +80,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
       if (!option.items) {
         selectOptions.push({
           singleLabel: cpy[cpy.length - 1].label,
-          label: cpy.map(o => o.label).join(this.props.separator || ' / '),
+          label: cpy.map((o) => o.label).join(this.props.separator || ' / '),
           //value: cpy.map(o => o.value),
         });
       } else {
@@ -212,6 +212,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
           >
             <div className={disableDivFocus}>
               <Input
+                css=""
                 width={width}
                 placeholder={placeholder}
                 onBlur={this.onBlurCascade}

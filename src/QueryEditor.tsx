@@ -42,7 +42,7 @@ export class QueryEditor extends PureComponent<Props, State> {
       eventFields: this.eventFields,
       eventTypeNodeId: '',
       eventFilters: [],
-      tabs: this.readTypeOptions.map(o => ({
+      tabs: this.readTypeOptions.map((o) => ({
         label: o.label || '',
         active: o.active,
       })),
@@ -101,7 +101,7 @@ export class QueryEditor extends PureComponent<Props, State> {
 
   onChange = (selected: string[], selectedItems: CascaderOption[]) => {
     const { query, onChange, onRunQuery } = this.props;
-    const value = selectedItems.map(item => (item.label ? item.label.toString() : ''));
+    const value = selectedItems.map((item) => (item.label ? item.label.toString() : ''));
     const nodeId = selected[selected.length - 1];
     this.setState({ value });
     onChange({
@@ -128,7 +128,7 @@ export class QueryEditor extends PureComponent<Props, State> {
   };
 
   onChangeEventType = (selected: string[], selectedItems: CascaderOption[]) => {
-    const evtTypes = selectedItems.map(item => (item.label ? item.label.toString() : ''));
+    const evtTypes = selectedItems.map((item) => (item.label ? item.label.toString() : ''));
     const nid = selected[selected.length - 1];
     this.setState({ eventTypeNodeId: nid, eventTypes: evtTypes }, () => this.updateEventQuery());
   };
@@ -159,7 +159,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         .getResource('browse', { nodeId: targetOption.value })
         .then((results: OpcUaBrowseResults[]) => {
           targetOption.loading = false;
-          targetOption.children = results.map(r => this.toCascaderOption(r));
+          targetOption.children = results.map((r) => this.toCascaderOption(r));
           this.setState({
             options: [...this.state.options],
           });
@@ -175,7 +175,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         .getResource('browseTypes', { nodeId: targetOption.value })
         .then((results: OpcUaBrowseResults[]) => {
           targetOption.loading = false;
-          targetOption.children = results.map(r => this.toCascaderOption(r));
+          targetOption.children = results.map((r) => this.toCascaderOption(r));
           this.setState({
             eventOptions: [...this.state.eventOptions],
           });
@@ -236,10 +236,10 @@ export class QueryEditor extends PureComponent<Props, State> {
   updateEventQuery = () => {
     const { query, onChange, onRunQuery } = this.props;
 
-    let eventColumns = this.state.eventFields.map(c => this.toEventColumns(c));
+    let eventColumns = this.state.eventFields.map((c) => this.toEventColumns(c));
     let evtTypes = this.state.eventTypes;
     let nid = this.state.eventTypeNodeId;
-    let eventFilters = this.state.eventFilters.map(c => this.toEventFilter(c));
+    let eventFilters = this.state.eventFilters.map((c) => this.toEventFilter(c));
     let eventQuery = {
       eventTypeNodeId: nid,
       eventTypes: evtTypes,
@@ -274,7 +274,7 @@ export class QueryEditor extends PureComponent<Props, State> {
           <SegmentAsync
             value={query.aggregate?.name ?? selectText('aggregate')}
             loadOptions={() => this.browseNodeSV('i=11201')}
-            onChange={e => this.onChangeField('aggregate', e)}
+            onChange={(e) => this.onChangeField('aggregate', e)}
           />
         </SegmentFrame>
       </>
@@ -336,7 +336,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         browsename: c.browseName,
       }));
     }
-    return fields.map(item => ({
+    return fields.map((item) => ({
       label: item.browsename,
       value: item,
     }));
@@ -345,10 +345,10 @@ export class QueryEditor extends PureComponent<Props, State> {
   onChangeColumns = (items: Array<SelectableValue<EventField>>) => {
     console.log('onChangeColumns', items);
     const { eventFields } = this.state;
-    items.forEach(item => {
+    items.forEach((item) => {
       if (
         item.value &&
-        !eventFields.find(ef => ef.alias === item.value?.alias && ef.browsename === item.value?.browsename)
+        !eventFields.find((ef) => ef.alias === item.value?.alias && ef.browsename === item.value?.browsename)
       ) {
         this.addSelectField(item.value.alias, item.value.browsename);
       }
@@ -363,11 +363,11 @@ export class QueryEditor extends PureComponent<Props, State> {
         <RadioButtonGroup
           options={this.readTypeOptions}
           value={query.readType}
-          onChange={e => e && this.onChangeField('readType', e)}
+          onChange={(e) => e && this.onChangeField('readType', e)}
         />
         <br />
         <SegmentFrame label="Event Source">
-          <div onBlur={e => console.log('onBlur', e)}>
+          <div onBlur={(e) => console.log('onBlur', e)}>
             <ButtonCascader
               //className="query-part"
               value={value}
@@ -419,7 +419,7 @@ export class QueryEditor extends PureComponent<Props, State> {
           <RadioButtonGroup
             options={this.readTypeOptions}
             value={query.readType}
-            onChange={readType => {
+            onChange={(readType) => {
               this.onChangeField('readType', readType!);
             }}
           />
@@ -448,7 +448,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <SegmentFrame width={7} label="Tag">
-          <div onBlur={e => console.log('onBlur', e)}>
+          <div onBlur={(e) => console.log('onBlur', e)}>
             <ButtonCascader
               //className="query-part"
               value={value}
@@ -462,7 +462,13 @@ export class QueryEditor extends PureComponent<Props, State> {
         </SegmentFrame>
         {value[0] === defaultTag ? <></> : this.renderQueryOptions()}
         <SegmentFrame width={7} label="Alias">
-          <Input css="" value={undefined} placeholder={'alias'} onChange={e => this.onChangeField('alias', e)} width={60} />
+          <Input
+            css=""
+            value={undefined}
+            placeholder={'alias'}
+            onChange={(e) => this.onChangeField('alias', e)}
+            width={60}
+          />
         </SegmentFrame>
       </>
     );

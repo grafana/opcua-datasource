@@ -63,7 +63,11 @@ export class AddEventFilter extends PureComponent<Props, State> {
     return (
       <select onSelect={this.changeOperator}>
         {EventFilterOperatorUtil.operNames.map((n, idx) => {
-          return <option value={idx}>{n}</option>;
+          return (
+            <option key={`option${idx}`} value={idx}>
+              {n}
+            </option>
+          );
         })}
       </select>
     );
@@ -83,7 +87,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
                 name="browsename"
                 type="input"
                 value={this.state.eventFilter.operands[0]}
-                onChange={ev => this.changeOperand(ev, 0)}
+                onChange={(ev) => this.changeOperand(ev, 0)}
               />
             </SegmentFrame>
             <SegmentFrame label="Alias" marginLeft>
@@ -91,7 +95,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
                 name="alias"
                 type="input"
                 value={this.state.eventFilter.operands[1]}
-                onChange={ev => this.changeOperand(ev, 1)}
+                onChange={(ev) => this.changeOperand(ev, 1)}
               />
             </SegmentFrame>
           </>
