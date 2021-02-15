@@ -178,6 +178,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
                     <br />
                     <h2>Event Filters</h2>
                     <EventFilterTable
+                        getNamespaceIndices={() => this.getNamespaceIndices()}
                         theme={this.props.theme}
                         rows={this.state.eventFilters}
                         ondelete={(idx: number) => {
