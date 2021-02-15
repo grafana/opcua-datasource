@@ -144,7 +144,7 @@ export class QueryEditor extends PureComponent<Props, State> {
         };
       });
     });
-    };
+  };
 
 
   optionalParams = (query: OpcUaQuery, onRunQuery: () => void): JSX.Element => {

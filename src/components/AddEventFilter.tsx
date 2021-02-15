@@ -29,6 +29,8 @@ export interface Props {
     theme: GrafanaTheme | null;
     add(filter: EventFilter): void;
     getNamespaceIndices(): Promise<string[]>;
+    translateBrowsePathToNode(rootId: string, browsePath: QualifiedName[]): Promise<OpcUaNodeInfo>;
+    getDataType(nodeId: string): Promise<NodePath>;
 }
 
 type State = {
@@ -115,6 +117,14 @@ export class AddEventFilter extends PureComponent<Props, State> {
         );
     }
 
+    browsePathChanged(bp: QualifiedName[]) {
+        this.setState({ browsePath: bp }, () => this.onBrowsePathChanged())
+    }
+
+    onBrowsePathChanged() {
+        this.props.translateBrowsePathToNode(this.props.eventTypeNodeId, this.state.browsePath).then(node => this.props.getDataType(node.nodeId)).then(dt => this.setState({ typeId: dt })).catch(err => console.log(err));
+    }
+
     renderOperandsBeforeOperator(oper: FilterOperator) {
         switch (oper) {
             case FilterOperator.GreaterThan:
@@ -133,7 +143,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
                             openBrowser={(id: string) => this.setState({ browserOpened: id })}
                             browsePath={this.state.browsePath}
                             rootNodeId={this.props.eventTypeNodeId}
-                            onChangeBrowsePath={bp => this.setState({ browsePath: bp })}
+                            onChangeBrowsePath={bp => this.browsePathChanged(bp)}
                             browse={nodeId => this.browseEventFields(nodeId)}
                         >
                             {' '}

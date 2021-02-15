@@ -42,6 +42,7 @@ namespace plugin_dotnet
             _resourceHandlers.Add("browseDataTypes", BrowseDataTypes);
             _resourceHandlers.Add("browseEventFields", BrowseEventFields);
             _resourceHandlers.Add("getNodePath", GetNodePath);
+            _resourceHandlers.Add("translateBrowsePathToNode", TranslateBrowsePathToNode);
             _resourceHandlers.Add("getNamespaceIndices", GetNamespaceIndices);
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
             _resourceHandlers.Add("getdashboard", GetDashboard);
@@ -51,6 +52,7 @@ namespace plugin_dotnet
             _resourceHandlers.Add("browsereferencetargets", BrowseReferenceTargets);
             _resourceHandlers.Add("getnamespaces", GetNamespaces);
             _resourceHandlers.Add("isnodepresent", IsNodePresent);
+            _resourceHandlers.Add("getDataType", GetDataType);
         }
 
         private CallResourceResponse IsNodePresent(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
@@ -336,17 +338,23 @@ namespace plugin_dotnet
             return response;
         }
 
-        private CallResourceResponse ReadNode(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        private NodeInfo ReadNodeInfo(Session connection, NamespaceTable nsTable, string nodeId)
         {
-            CallResourceResponse response = new CallResourceResponse();
-            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
             var nId = Converter.GetNodeId(nodeId, nsTable);
             var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
             var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
             var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
             var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
             var nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), displayName = displayName.Text, nodeClass = (uint)nodeClass, nodeId = nodeId };
+            return nodeInfo;
+        }
 
+
+        private CallResourceResponse ReadNode(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            var nodeInfo = ReadNodeInfo(connection, nsTable, nodeId);
             var result = JsonSerializer.Serialize(nodeInfo);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
@@ -420,6 +428,7 @@ namespace plugin_dotnet
             var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
             if (!readRes[0].Success)
                 throw new ArgumentException(readRes[0].Error + " StatusCode: " + readRes[0].StatusCode.ToString());
+
             var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
             var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
             var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
@@ -440,6 +449,77 @@ namespace plugin_dotnet
             return response;
             
         }
+
+
+        private CallResourceResponse TranslateBrowsePathToNode(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            var body = request.Body.ToString(Encoding.UTF8);
+            var relativeBrowsePath = JsonSerializer.Deserialize<RelativeBrowsePath>(body);
+            var rootId = relativeBrowsePath.startNode;
+            var bp = relativeBrowsePath.browsePath;
+
+            var bpColl = new BrowsePathCollection();
+
+            var browsePath = new BrowsePath();
+            browsePath.StartingNode = Converter.GetNodeId(rootId, nsTable);
+            var relativePaths = bp.Select(qm => new RelativePathElement() { TargetName = Converter.GetQualifiedName(qm, nsTable), IsInverse=false, IncludeSubtypes = true, ReferenceTypeId = Opc.Ua.ReferenceTypeIds.HierarchicalReferences });
+            browsePath.RelativePath.Elements.AddRange(relativePaths);
+            bpColl.Add(browsePath);
+            connection.TranslateBrowsePathsToNodeIds(null, bpColl, out BrowsePathResultCollection results, out DiagnosticInfoCollection diagnosticInfos);
+            if (Opc.Ua.StatusCode.IsBad(results[0].StatusCode))
+                throw new ArgumentException(results[0].StatusCode.ToString());
+            if (results[0].Targets.Count == 0)
+                throw new ArgumentException("Could find node for browse path.");
+            var nodeId = ExpandedNodeId.ToNodeId(results[0].Targets[0].TargetId, nsTable);
+
+            var nodeInfo = ReadNodeInfo(connection, nsTable, Converter.GetNodeIdAsJson(nodeId, nsTable));
+            var result = JsonSerializer.Serialize(nodeInfo);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            return response;
+        }
+        
+
+
+        private CallResourceResponse GetDataType(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
+        {
+            CallResourceResponse response = new CallResourceResponse();
+            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
+            if (string.IsNullOrEmpty(nodeId))
+            {
+                response.Code = 200;
+                response.Body = ByteString.CopyFrom("", Encoding.ASCII);
+                return response;
+            }
+            var nId = Converter.GetNodeId(nodeId, nsTable);
+
+            var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.DataType });
+            if (!readRes[0].Success)
+                throw new ArgumentException(readRes[0].Error + " StatusCode: " + readRes[0].StatusCode.ToString());
+
+            var dataTypeNodeId = (Opc.Ua.NodeId)readRes[0].Value;
+
+            readRes = connection.ReadAttributes(dataTypeNodeId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
+            var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
+            var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
+            var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
+            var nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), 
+                displayName = displayName.Text, 
+                nodeClass = (uint)nodeClass, 
+                nodeId = Converter.GetNodeIdAsJson(dataTypeNodeId, nsTable)
+            };
+
+            var nodePath = FindBrowsePath(connection, dataTypeNodeId, Opc.Ua.DataTypeIds.BaseDataType, browseName, nsTable);
+
+            var np = new NodePath() { node = nodeInfo, browsePath = nodePath };
+            var result = JsonSerializer.Serialize(np);
+            response.Code = 200;
+            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
+            return response;
+        }
+
+
 
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
         {

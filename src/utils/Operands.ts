@@ -32,8 +32,8 @@ export class EventFilterOperatorUtil {
     }
 
     static GetSimpleAttributeString(op: SimpleAttributeOp): string {
-        let s = '[' + op.typeId + '] ';
-        s += browsePathToShortString(op.browsePath);
+        let s = browsePathToShortString(op.browsePath);
+        s += ' [' + op.typeId + ']';
         return s;
     }
 

@@ -9,6 +9,7 @@ import {
     NodePath,
     BrowseFilter,
     NodeClass,
+    OpcUaNodeInfo,
 } from '../types';
 import { EventFieldTable } from './EventFieldTable';
 import { EventFilterTable } from './EventFilterTable';
@@ -187,6 +188,8 @@ export class EventQueryEditor extends PureComponent<Props, State> {
                     <AddEventFilter
                         theme={this.props.theme}
                         getNamespaceIndices={() => this.getNamespaceIndices()}
+                        translateBrowsePathToNode={(startNode, bp) => this.translateBrowsePathToNode(startNode, bp)}
+                        getDataType={(dt) => this.getDataType(dt)}
                         add={(eventFilter: EventFilter) => {
                             this.addEventFilter(eventFilter);
                         }}
@@ -244,6 +247,15 @@ export class EventQueryEditor extends PureComponent<Props, State> {
 
     readNode(nodeId: string): Promise<import('../types').OpcUaNodeInfo> {
         return this.props.datasource.getResource('readNode', { nodeId: nodeId });
+    }
+
+
+    translateBrowsePathToNode(startNode: string, browsePath: QualifiedName[]): Promise<OpcUaNodeInfo> {
+        return this.props.datasource.postResource('translateBrowsePathToNode', { startNode: startNode, browsePath: browsePath });
+    }
+
+    getDataType(nodeId: string): Promise<NodePath> {
+        return this.props.datasource.getResource('getDataType', { nodeId: nodeId });
     }
 
     render() {

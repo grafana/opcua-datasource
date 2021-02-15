@@ -43,9 +43,30 @@ namespace plugin_dotnet
 
     public class NodePath
     {
+        /// <summary>
+        /// Contains info about a node.
+        /// </summary>
         public NodeInfo node { get; set; }
+        /// <summary>
+        /// Path from a predefined (depends on context) node to this node.
+        /// </summary>
         public QualifiedName[] browsePath { get; set; }
     }
+
+
+    public class RelativeBrowsePath
+    {
+        /// <summary>
+        /// The node where the relative path starts
+        /// </summary>
+        public string startNode { get; set; }
+        /// <summary>
+        /// Browse path. (Reference types are omitted. Usually this means hierarchical reference type is used)
+        /// </summary>
+        public QualifiedName[] browsePath { get; set; }
+    }
+
+
 
     public enum FilterOperandEnum
     { 
