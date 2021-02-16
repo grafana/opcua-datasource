@@ -77,7 +77,15 @@ jobs:
           key: cypress-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Build and test frontend
-          command: ./node_modules/.bin/grafana-toolkit plugin:ci-build
+          command: |
+            # hack for rxjs issue
+            rm -rf ./node_modules/@grafana/data/node_modules/rxjs
+            ./node_modules/.bin/grafana-toolkit plugin:ci-build --maxJestWorkers=1
+            ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ci
 
   build_backend_linux:
     executor: dotnet_exec
@@ -131,13 +139,12 @@ jobs:
     executor: default_exec
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - restore_cache:
           name: restore node_modules
           keys:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
-      - run:
-          name: Move results to ci folder
-          command: ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
       - run:
           name: Package distribution
           command: |
