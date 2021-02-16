@@ -29,7 +29,6 @@ namespace plugin_dotnet
         }
 
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
-<<<<<<< HEAD:backend/ResourceService.cs
         {            
             CallResourceResponse response = new CallResourceResponse();
             try
@@ -39,40 +38,14 @@ namespace plugin_dotnet
                 Uri uri = new Uri(fullUrl);
                 NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
                 var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
-=======
-        {
-            log.Debug("Call Resource {0} | {1}", request, context);
-            
-            try
-            {
-                CallResourceResponse response = new CallResourceResponse();
-                string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + request.Url);
-                Uri uri = new Uri(fullUrl);
-                NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
-                OpcUAConnection connection = Connections.Get(request.PluginContext.DataSourceInstanceSettings);
->>>>>>> master:pkg/dotnet/plugin-dotnet/ResourceService.cs
                 switch (request.Path)
                 {
                     case "browse":
                         {
                             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-<<<<<<< HEAD:backend/ResourceService.cs
                             var nId = Opc.Ua.NodeId.Parse(nodeId);
                             var browseResult = connection.Browse(nId);
                             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a)).ToArray());
-=======
-                            string refId = HttpUtility.UrlDecode(queryParams["refId"]);
-                            log.Debug("Got a subscription: NodeId[{0}], RefId[{1}]", nodeId, refId);
-                            this.responseStream = responseStream;
-                            connection.AddSubscription(refId, nodeId, SubscriptionCallback);
-                            response.Code = 204;
-                        }
-                        break;
-
-                    case "browseTypes":
-                        {
-                            string results = connection.BrowseTypes();
->>>>>>> master:pkg/dotnet/plugin-dotnet/ResourceService.cs
                             response.Code = 200;
                             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                             log.Debug("We got a result from browse => {0}", result);
@@ -98,12 +71,6 @@ namespace plugin_dotnet
                 log.Debug("Got browse exception {0}", ex);
                 throw ex;
             }
-<<<<<<< HEAD:backend/ResourceService.cs
-
-            responseStream.WriteAsync(response);
-            return Task.CompletedTask;
-=======
->>>>>>> master:pkg/dotnet/plugin-dotnet/ResourceService.cs
         }
 
         private void SubscriptionCallback(string refId, MonitoredItem item, MonitoredItemNotificationEventArgs eventArgs) {
