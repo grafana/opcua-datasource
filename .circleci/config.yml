@@ -149,6 +149,15 @@ jobs:
           name: Package distribution
           command: |
             ./node_modules/.bin/grafana-toolkit plugin:ci-package
+      - persist_to_workspace:
+          root: .
+          paths:
+          - ci/jobs/package
+          - ci/packages
+          - ci/dist
+          - ci/grafana-test-env
+      - store_artifacts:
+          path: ci
 
   report:
     executor: default_exec
