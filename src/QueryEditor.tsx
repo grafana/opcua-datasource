@@ -103,6 +103,7 @@ export class QueryEditor extends PureComponent<Props, State> {
     const { query, onChange, onRunQuery } = this.props;
     const value = selectedItems.map((item) => (item.label ? item.label.toString() : ''));
     const nodeId = selected[selected.length - 1];
+    console.log('value', value, 'nodeId', nodeId);
     this.setState({ value });
     onChange({
       ...query,

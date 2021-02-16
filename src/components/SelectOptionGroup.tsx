@@ -1,7 +1,11 @@
 import React, { PureComponent } from 'react';
 import { GroupProps } from 'react-select';
 
+<<<<<<< HEAD
 interface ExtendedGroupProps extends GroupProps<any, any> {
+=======
+interface ExtendedGroupProps extends GroupProps<any, false> {
+>>>>>>> master
   data: {
     label: string;
     expanded: boolean;

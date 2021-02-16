@@ -229,7 +229,7 @@ namespace plugin_dotnet
         {
             var columns = fields.Select(field => DataFrameColumnFactory.Create(field));
 
-            //log.Debug(string.Format("We have columns [{0}]", columns.ToArray().ToString()));
+            log.Debug(string.Format("We have columns [{0}]", columns.ToArray().ToString()));
             Microsoft.Data.Analysis.DataFrame dataFrame = new Microsoft.Data.Analysis.DataFrame(columns.ToArray());
 
             MemoryStream stream = new MemoryStream();

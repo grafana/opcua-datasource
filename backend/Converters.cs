@@ -70,12 +70,15 @@ namespace plugin_dotnet
                     return new OpcUaDataFrameColumn<DateTime>(field.Name, field.DataAs<DateTime>());
                 case "ExtensionObject":
                     List<ExtensionObject> values = field.DataAs<ExtensionObject>();
-                    //HistoryData values = ExtensionObject.ToEncodeable(field.Data as ExtensionObject) as HistoryData;
                     foreach (ExtensionObject value in values) 
                     {
-                        log.Debug("We got an extension object [{0}]", ExtensionObject.ToArray(value, typeof(Byte[])));
+                        // TODO: In progress. Not sure what to do with these yet... So, just returning nothing. 
+                        byte[] decoded = BaseDataVariableState.DecodeExtensionObject(null, value.Body.GetType(), value, true) as byte[];
+                        
+                        //DataValue val = BaseVariableState.ExtractValueFromVariant<DataValue>(null, value, false) as DataValue;
+                        log.Debug("We decoded a value [{0}, {1}, {2}, {3}, {4}]", decoded[0], decoded[1], decoded[2], decoded[3], decoded[4]);
                     }
-                    return new OpcUaDataFrameColumn<int>(field.Name, new List<int>());
+                    throw new Exception("Cannot decode the type 'extensionobject'. This is a work in progress");
                 case "string":
                 case "String":
                     var stringArray = CreateStringArray(field.DataAs<string>());
