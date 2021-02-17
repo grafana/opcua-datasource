@@ -306,6 +306,14 @@ namespace plugin_dotnet
             return response;
         }
 
+        private uint GetMaxResults(BrowseFilter browseFilter)
+        {
+            var max = browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue;
+            if (max > 0)
+                return max;
+            return uint.MaxValue;
+        }
+
         private CallResourceResponse Browse(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
         {
             CallResourceResponse response = new CallResourceResponse();
@@ -327,7 +335,7 @@ namespace plugin_dotnet
                     hasMask = false;
             }
             var nId = Converter.GetNodeId(nodeId, nsTable);
-            IEnumerable<ReferenceDescription> browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue);
+            IEnumerable<ReferenceDescription> browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), GetMaxResults(browseFilter));
             if (!string.IsNullOrEmpty(browseFilter?.browseName))
                 browseResult = browseResult.Where(a => a.BrowseName.Name.Contains(browseFilter.browseName));
 
