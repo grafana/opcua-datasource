@@ -127,6 +127,7 @@
   dependencies:
     "@babel/highlight" "^7.8.3"
 
+<<<<<<< HEAD
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.11", "@babel/code-frame@^7.8.3":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"
@@ -138,6 +139,23 @@
   version "7.12.7"
   resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.12.7.tgz#9329b4782a7d6bbd7eef57e11addf91ee3ef1e41"
   integrity sha512-YaxPMGs/XIWtYqrdEOZOCPsVWfEoriXopnsz3/i7apYPXQ3698UFhS6dVT1KN5qOsWmVgw/FOrmQgpRaZayGsw==
+=======
+"@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.3", "@babel/code-frame@^7.8.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.3.tgz#324bcfd8d35cd3d47dae18cde63d752086435e9a"
+  integrity sha512-fDx9eNW0qz0WkUeqL6tXEXzVlPh6Y5aCDEZesl0xBGA8ndRukX91Uk44ZqnkECp01NAZUdCAl+aiQNGi0k88Eg==
+  dependencies:
+    "@babel/highlight" "^7.10.3"
+
+"@babel/compat-data@^7.10.1", "@babel/compat-data@^7.9.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/compat-data/-/compat-data-7.10.3.tgz#9af3e033f36e8e2d6e47570db91e64a846f5d382"
+  integrity sha512-BDIfJ9uNZuI0LajPfoYV28lX8kyCPMHY6uY4WH1lJdcicmAfxCK5ASzaeV0D/wsUaRH/cLk+amuxtC37sZ8TUg==
+  dependencies:
+    browserslist "^4.12.0"
+    invariant "^2.2.4"
+    semver "^5.5.0"
+>>>>>>> prediktor-opc-ae
 
 "@babel/core@7.9.0":
   version "7.9.0"
@@ -161,6 +179,7 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
+<<<<<<< HEAD
 "@babel/core@^7.1.0", "@babel/core@^7.7.5":
   version "7.12.10"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.12.10.tgz#b79a2e1b9f70ed3d84bbfb6d8c4ef825f606bccd"
@@ -174,6 +193,21 @@
     "@babel/template" "^7.12.7"
     "@babel/traverse" "^7.12.10"
     "@babel/types" "^7.12.10"
+=======
+"@babel/core@^7.1.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.10.3.tgz#73b0e8ddeec1e3fdd7a2de587a60e17c440ec77e"
+  integrity sha512-5YqWxYE3pyhIi84L84YcwjeEgS+fa7ZjK6IBVGTjDVfm64njkR2lfDhVR5OudLk8x2GK59YoSyVv+L/03k1q9w==
+  dependencies:
+    "@babel/code-frame" "^7.10.3"
+    "@babel/generator" "^7.10.3"
+    "@babel/helper-module-transforms" "^7.10.1"
+    "@babel/helpers" "^7.10.1"
+    "@babel/parser" "^7.10.3"
+    "@babel/template" "^7.10.3"
+    "@babel/traverse" "^7.10.3"
+    "@babel/types" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     convert-source-map "^1.7.0"
     debug "^4.1.0"
     gensync "^1.0.0-beta.1"
@@ -182,12 +216,21 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
+<<<<<<< HEAD
 "@babel/generator@^7.12.10", "@babel/generator@^7.12.11", "@babel/generator@^7.4.0", "@babel/generator@^7.9.0":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.12.11.tgz#98a7df7b8c358c9a37ab07a24056853016aba3af"
   integrity sha512-Ggg6WPOJtSi8yYQvLVjG8F/TlpWDlKx0OpS4Kt+xMQPs5OaGYWy+v1A+1TvxI6sAMGZpKWWoAQ1DaeQbImlItA==
   dependencies:
     "@babel/types" "^7.12.11"
+=======
+"@babel/generator@^7.10.3", "@babel/generator@^7.4.0", "@babel/generator@^7.9.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.10.3.tgz#32b9a0d963a71d7a54f5f6c15659c3dbc2a523a5"
+  integrity sha512-drt8MUHbEqRzNR0xnF8nMehbY11b1SDkRw03PSNH/3Rb2Z35oxkddVSi3rcaak0YJQ86PCuE7Qx1jSFhbLNBMA==
+  dependencies:
+    "@babel/types" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     jsesc "^2.5.1"
     source-map "^0.5.0"
 
@@ -198,6 +241,7 @@
   dependencies:
     "@babel/types" "^7.12.10"
 
+<<<<<<< HEAD
 "@babel/helper-builder-binary-assignment-operator-visitor@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/helper-builder-binary-assignment-operator-visitor/-/helper-builder-binary-assignment-operator-visitor-7.10.4.tgz#bb0b75f31bf98cbf9ff143c1ae578b87274ae1a3"
@@ -210,12 +254,27 @@
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/helper-compilation-targets/-/helper-compilation-targets-7.12.5.tgz#cb470c76198db6a24e9dbc8987275631e5d29831"
   integrity sha512-+qH6NrscMolUlzOYngSBMIOQpKUGPPsc61Bu5W10mg84LxZ7cmvnBHzARKbDoFxVvqqAbj6Tg6N7bSrWSPXMyw==
+=======
+"@babel/helper-builder-binary-assignment-operator-visitor@^7.10.1":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-builder-binary-assignment-operator-visitor/-/helper-builder-binary-assignment-operator-visitor-7.10.3.tgz#4e9012d6701bef0030348d7f9c808209bd3e8687"
+  integrity sha512-lo4XXRnBlU6eRM92FkiZxpo1xFLmv3VsPFk61zJKMm7XYJfwqXHsYJTY6agoc4a3L8QPw1HqWehO18coZgbT6A==
+  dependencies:
+    "@babel/helper-explode-assignable-expression" "^7.10.3"
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-compilation-targets@^7.8.7":
+  version "7.10.2"
+  resolved "https://registry.yarnpkg.com/@babel/helper-compilation-targets/-/helper-compilation-targets-7.10.2.tgz#a17d9723b6e2c750299d2a14d4637c76936d8285"
+  integrity sha512-hYgOhF4To2UTB4LTaZepN/4Pl9LD4gfbJx8A34mqoluT8TLbof1mhUlYuNWTEebONa8+UlCC4X0TEXu7AOUyGA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/compat-data" "^7.12.5"
     "@babel/helper-validator-option" "^7.12.1"
     browserslist "^4.14.5"
     semver "^5.5.0"
 
+<<<<<<< HEAD
 "@babel/helper-create-regexp-features-plugin@^7.12.1":
   version "7.12.7"
   resolved "https://registry.yarnpkg.com/@babel/helper-create-regexp-features-plugin/-/helper-create-regexp-features-plugin-7.12.7.tgz#2084172e95443fa0a09214ba1bb328f9aea1278f"
@@ -248,12 +307,102 @@
     "@babel/helper-get-function-arity" "^7.12.10"
     "@babel/template" "^7.12.7"
     "@babel/types" "^7.12.11"
+=======
+"@babel/helper-create-regexp-features-plugin@^7.10.1", "@babel/helper-create-regexp-features-plugin@^7.8.3":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-create-regexp-features-plugin/-/helper-create-regexp-features-plugin-7.10.1.tgz#1b8feeab1594cbcfbf3ab5a3bbcabac0468efdbd"
+  integrity sha512-Rx4rHS0pVuJn5pJOqaqcZR4XSgeF9G/pO/79t+4r7380tXFJdzImFnxMU19f83wjSrmKHq6myrM10pFHTGzkUA==
+  dependencies:
+    "@babel/helper-annotate-as-pure" "^7.10.1"
+    "@babel/helper-regex" "^7.10.1"
+    regexpu-core "^4.7.0"
+
+"@babel/helper-define-map@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-define-map/-/helper-define-map-7.10.3.tgz#d27120a5e57c84727b30944549b2dfeca62401a8"
+  integrity sha512-bxRzDi4Sin/k0drWCczppOhov1sBSdBvXJObM1NLHQzjhXhwRtn7aRWGvLJWCYbuu2qUk3EKs6Ci9C9ps8XokQ==
+  dependencies:
+    "@babel/helper-function-name" "^7.10.3"
+    "@babel/types" "^7.10.3"
+    lodash "^4.17.13"
+
+"@babel/helper-explode-assignable-expression@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-explode-assignable-expression/-/helper-explode-assignable-expression-7.10.3.tgz#9dc14f0cfa2833ea830a9c8a1c742b6e7461b05e"
+  integrity sha512-0nKcR64XrOC3lsl+uhD15cwxPvaB6QKUDlD84OT9C3myRbhJqTMYir69/RWItUvHpharv0eJ/wk7fl34ONSwZw==
+  dependencies:
+    "@babel/traverse" "^7.10.3"
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-function-name@^7.10.1", "@babel/helper-function-name@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-function-name/-/helper-function-name-7.10.3.tgz#79316cd75a9fa25ba9787ff54544307ed444f197"
+  integrity sha512-FvSj2aiOd8zbeqijjgqdMDSyxsGHaMt5Tr0XjQsGKHD3/1FP3wksjnLAWzxw7lvXiej8W1Jt47SKTZ6upQNiRw==
+  dependencies:
+    "@babel/helper-get-function-arity" "^7.10.3"
+    "@babel/template" "^7.10.3"
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-get-function-arity@^7.10.1", "@babel/helper-get-function-arity@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.10.3.tgz#3a28f7b28ccc7719eacd9223b659fdf162e4c45e"
+  integrity sha512-iUD/gFsR+M6uiy69JA6fzM5seno8oE85IYZdbVVEuQaZlEzMO2MXblh+KSPJgsZAUx0EEbWXU0yJaW7C9CdAVg==
+  dependencies:
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-hoist-variables@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-hoist-variables/-/helper-hoist-variables-7.10.3.tgz#d554f52baf1657ffbd7e5137311abc993bb3f068"
+  integrity sha512-9JyafKoBt5h20Yv1+BXQMdcXXavozI1vt401KBiRc2qzUepbVnd7ogVNymY1xkQN9fekGwfxtotH2Yf5xsGzgg==
+  dependencies:
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-member-expression-to-functions@^7.10.1":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-member-expression-to-functions/-/helper-member-expression-to-functions-7.10.3.tgz#bc3663ac81ac57c39148fef4c69bf48a77ba8dd6"
+  integrity sha512-q7+37c4EPLSjNb2NmWOjNwj0+BOyYlssuQ58kHEWk1Z78K5i8vTUsteq78HMieRPQSl/NtpQyJfdjt3qZ5V2vw==
+  dependencies:
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-module-imports@^7.0.0", "@babel/helper-module-imports@^7.10.1", "@babel/helper-module-imports@^7.8.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.10.3.tgz#766fa1d57608e53e5676f23ae498ec7a95e1b11a"
+  integrity sha512-Jtqw5M9pahLSUWA+76nhK9OG8nwYXzhQzVIGFoNaHnXF/r4l7kz4Fl0UAW7B6mqC5myoJiBP5/YQlXQTMfHI9w==
+  dependencies:
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-module-transforms@^7.10.1", "@babel/helper-module-transforms@^7.9.0":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-module-transforms/-/helper-module-transforms-7.10.1.tgz#24e2f08ee6832c60b157bb0936c86bef7210c622"
+  integrity sha512-RLHRCAzyJe7Q7sF4oy2cB+kRnU4wDZY/H2xJFGof+M+SJEGhZsb+GFj5j1AD8NiSaVBJ+Pf0/WObiXu/zxWpFg==
+  dependencies:
+    "@babel/helper-module-imports" "^7.10.1"
+    "@babel/helper-replace-supers" "^7.10.1"
+    "@babel/helper-simple-access" "^7.10.1"
+    "@babel/helper-split-export-declaration" "^7.10.1"
+    "@babel/template" "^7.10.1"
+    "@babel/types" "^7.10.1"
+    lodash "^4.17.13"
+
+"@babel/helper-optimise-call-expression@^7.10.1", "@babel/helper-optimise-call-expression@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-optimise-call-expression/-/helper-optimise-call-expression-7.10.3.tgz#f53c4b6783093195b0f69330439908841660c530"
+  integrity sha512-kT2R3VBH/cnSz+yChKpaKRJQJWxdGoc6SjioRId2wkeV3bK0wLLioFpJROrX0U4xr/NmxSSAWT/9Ih5snwIIzg==
+  dependencies:
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-plugin-utils@^7.0.0", "@babel/helper-plugin-utils@^7.10.1", "@babel/helper-plugin-utils@^7.10.3", "@babel/helper-plugin-utils@^7.8.0", "@babel/helper-plugin-utils@^7.8.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-plugin-utils/-/helper-plugin-utils-7.10.3.tgz#aac45cccf8bc1873b99a85f34bceef3beb5d3244"
+  integrity sha512-j/+j8NAWUTxOtx4LKHybpSClxHoq6I91DQ/mKgAXn5oNUPIUiGppjPIX3TDtJWPrdfP9Kfl7e4fgVMiQR9VE/g==
+>>>>>>> prediktor-opc-ae
 
 "@babel/helper-get-function-arity@^7.12.10":
   version "7.12.10"
   resolved "https://registry.yarnpkg.com/@babel/helper-get-function-arity/-/helper-get-function-arity-7.12.10.tgz#b158817a3165b5faa2047825dfa61970ddcc16cf"
   integrity sha512-mm0n5BPjR06wh9mPQaDdXWDoll/j5UpCAPl1x8fS71GHm7HA6Ua2V4ylG1Ju8lvcTOietbPNNPaSilKj+pj+Ag==
   dependencies:
+<<<<<<< HEAD
     "@babel/types" "^7.12.10"
 
 "@babel/helper-hoist-variables@^7.10.4":
@@ -394,6 +543,91 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
     "@babel/helper-remap-async-to-generator" "^7.12.1"
+=======
+    lodash "^4.17.13"
+
+"@babel/helper-remap-async-to-generator@^7.10.1", "@babel/helper-remap-async-to-generator@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-remap-async-to-generator/-/helper-remap-async-to-generator-7.10.3.tgz#18564f8a6748be466970195b876e8bba3bccf442"
+  integrity sha512-sLB7666ARbJUGDO60ZormmhQOyqMX/shKBXZ7fy937s+3ID8gSrneMvKSSb+8xIM5V7Vn6uNVtOY1vIm26XLtA==
+  dependencies:
+    "@babel/helper-annotate-as-pure" "^7.10.1"
+    "@babel/helper-wrap-function" "^7.10.1"
+    "@babel/template" "^7.10.3"
+    "@babel/traverse" "^7.10.3"
+    "@babel/types" "^7.10.3"
+
+"@babel/helper-replace-supers@^7.10.1":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-replace-supers/-/helper-replace-supers-7.10.1.tgz#ec6859d20c5d8087f6a2dc4e014db7228975f13d"
+  integrity sha512-SOwJzEfpuQwInzzQJGjGaiG578UYmyi2Xw668klPWV5n07B73S0a9btjLk/52Mlcxa+5AdIYqws1KyXRfMoB7A==
+  dependencies:
+    "@babel/helper-member-expression-to-functions" "^7.10.1"
+    "@babel/helper-optimise-call-expression" "^7.10.1"
+    "@babel/traverse" "^7.10.1"
+    "@babel/types" "^7.10.1"
+
+"@babel/helper-simple-access@^7.10.1":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-simple-access/-/helper-simple-access-7.10.1.tgz#08fb7e22ace9eb8326f7e3920a1c2052f13d851e"
+  integrity sha512-VSWpWzRzn9VtgMJBIWTZ+GP107kZdQ4YplJlCmIrjoLVSi/0upixezHCDG8kpPVTBJpKfxTH01wDhh+jS2zKbw==
+  dependencies:
+    "@babel/template" "^7.10.1"
+    "@babel/types" "^7.10.1"
+
+"@babel/helper-split-export-declaration@^7.10.1":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-split-export-declaration/-/helper-split-export-declaration-7.10.1.tgz#c6f4be1cbc15e3a868e4c64a17d5d31d754da35f"
+  integrity sha512-UQ1LVBPrYdbchNhLwj6fetj46BcFwfS4NllJo/1aJsT+1dLTEnXJL0qHqtY7gPzF8S2fXBJamf1biAXV3X077g==
+  dependencies:
+    "@babel/types" "^7.10.1"
+
+"@babel/helper-validator-identifier@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-validator-identifier/-/helper-validator-identifier-7.10.3.tgz#60d9847f98c4cea1b279e005fdb7c28be5412d15"
+  integrity sha512-bU8JvtlYpJSBPuj1VUmKpFGaDZuLxASky3LhaKj3bmpSTY6VWooSM8msk+Z0CZoErFye2tlABF6yDkT3FOPAXw==
+
+"@babel/helper-wrap-function@^7.10.1":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-wrap-function/-/helper-wrap-function-7.10.1.tgz#956d1310d6696257a7afd47e4c42dfda5dfcedc9"
+  integrity sha512-C0MzRGteVDn+H32/ZgbAv5r56f2o1fZSA/rj/TYo8JEJNHg+9BdSmKBUND0shxWRztWhjlT2cvHYuynpPsVJwQ==
+  dependencies:
+    "@babel/helper-function-name" "^7.10.1"
+    "@babel/template" "^7.10.1"
+    "@babel/traverse" "^7.10.1"
+    "@babel/types" "^7.10.1"
+
+"@babel/helpers@^7.10.1", "@babel/helpers@^7.9.0":
+  version "7.10.1"
+  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.10.1.tgz#a6827b7cb975c9d9cef5fd61d919f60d8844a973"
+  integrity sha512-muQNHF+IdU6wGgkaJyhhEmI54MOZBKsFfsXFhboz1ybwJ1Kl7IHlbm2a++4jwrmY5UYsgitt5lfqo1wMFcHmyw==
+  dependencies:
+    "@babel/template" "^7.10.1"
+    "@babel/traverse" "^7.10.1"
+    "@babel/types" "^7.10.1"
+
+"@babel/highlight@^7.10.3", "@babel/highlight@^7.8.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/highlight/-/highlight-7.10.3.tgz#c633bb34adf07c5c13156692f5922c81ec53f28d"
+  integrity sha512-Ih9B/u7AtgEnySE2L2F0Xm0GaM729XqqLfHkalTsbjXGyqmf/6M0Cu0WpvqueUlW+xk88BHw9Nkpj49naU+vWw==
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.10.3"
+    chalk "^2.0.0"
+    js-tokens "^4.0.0"
+
+"@babel/parser@^7.1.0", "@babel/parser@^7.10.3", "@babel/parser@^7.4.3", "@babel/parser@^7.9.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.10.3.tgz#7e71d892b0d6e7d04a1af4c3c79d72c1f10f5315"
+  integrity sha512-oJtNJCMFdIMwXGmx+KxuaD7i3b8uS7TTFYW/FNG2BT8m+fmGHoiPYoH0Pe3gya07WuFmM5FCDIr1x0irkD/hyA==
+
+"@babel/plugin-proposal-async-generator-functions@^7.8.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-async-generator-functions/-/plugin-proposal-async-generator-functions-7.10.3.tgz#5a02453d46e5362e2073c7278beab2e53ad7d939"
+  integrity sha512-WUUWM7YTOudF4jZBAJIW9D7aViYC/Fn0Pln4RIHlQALyno3sXSjqmTA4Zy1TKC2D49RCR8Y/Pn4OIUtEypK3CA==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.10.3"
+    "@babel/helper-remap-async-to-generator" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     "@babel/plugin-syntax-async-generators" "^7.8.0"
 
 "@babel/plugin-proposal-dynamic-import@^7.8.3":
@@ -429,11 +663,19 @@
     "@babel/plugin-syntax-numeric-separator" "^7.10.4"
 
 "@babel/plugin-proposal-object-rest-spread@^7.9.0":
+<<<<<<< HEAD
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-object-rest-spread/-/plugin-proposal-object-rest-spread-7.12.1.tgz#def9bd03cea0f9b72283dac0ec22d289c7691069"
   integrity sha512-s6SowJIjzlhx8o7lsFx5zmY4At6CTtDvgNQDdPzkBQucle58A6b/TTeEBYtyDgmcXjUTM+vE8YOGHZzzbc/ioA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-object-rest-spread/-/plugin-proposal-object-rest-spread-7.10.3.tgz#b8d0d22f70afa34ad84b7a200ff772f9b9fce474"
+  integrity sha512-ZZh5leCIlH9lni5bU/wB/UcjtcVLgR8gc+FAgW2OOY+m9h1II3ItTO1/cewNUcsIDZSYcSaz/rYVls+Fb0ExVQ==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     "@babel/plugin-syntax-object-rest-spread" "^7.8.0"
     "@babel/plugin-transform-parameters" "^7.12.1"
 
@@ -446,12 +688,20 @@
     "@babel/plugin-syntax-optional-catch-binding" "^7.8.0"
 
 "@babel/plugin-proposal-optional-chaining@^7.9.0":
+<<<<<<< HEAD
   version "7.12.7"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.12.7.tgz#e02f0ea1b5dc59d401ec16fb824679f683d3303c"
   integrity sha512-4ovylXZ0PWmwoOvhU2vhnzVNnm88/Sm9nx7V8BPgMvAzn5zDou3/Awy0EjglyubVHasJj+XCEkr/r1X3P5elCA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
     "@babel/helper-skip-transparent-expression-wrappers" "^7.12.1"
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.10.3.tgz#9a726f94622b653c0a3a7a59cdce94730f526f7c"
+  integrity sha512-yyG3n9dJ1vZ6v5sfmIlMMZ8azQoqx/5/nZTSWX1td6L1H1bsjzA8TInDChpafCZiJkeOFzp/PtrfigAQXxI1Ng==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     "@babel/plugin-syntax-optional-chaining" "^7.8.0"
 
 "@babel/plugin-proposal-unicode-property-regex@^7.4.4", "@babel/plugin-proposal-unicode-property-regex@^7.8.3":
@@ -584,6 +834,7 @@
     "@babel/helper-plugin-utils" "^7.10.4"
 
 "@babel/plugin-transform-classes@^7.9.0":
+<<<<<<< HEAD
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-classes/-/plugin-transform-classes-7.12.1.tgz#65e650fcaddd3d88ddce67c0f834a3d436a32db6"
   integrity sha512-/74xkA7bVdzQTBeSUhLLJgYIcxw/dpEpCdRDiHgPJ3Mv6uC11UhjpOhl72CgqbBCmt1qtssCyB2xnJm1+PFjog==
@@ -603,6 +854,27 @@
   integrity sha512-vVUOYpPWB7BkgUWPo4C44mUQHpTZXakEqFjbv8rQMg7TC6S6ZhGZ3otQcRH6u7+adSlE5i0sp63eMC/XGffrzg==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-classes/-/plugin-transform-classes-7.10.3.tgz#8d9a656bc3d01f3ff69e1fccb354b0f9d72ac544"
+  integrity sha512-irEX0ChJLaZVC7FvvRoSIxJlmk0IczFLcwaRXUArBKYHCHbOhe57aG8q3uw/fJsoSXvZhjRX960hyeAGlVBXZw==
+  dependencies:
+    "@babel/helper-annotate-as-pure" "^7.10.1"
+    "@babel/helper-define-map" "^7.10.3"
+    "@babel/helper-function-name" "^7.10.3"
+    "@babel/helper-optimise-call-expression" "^7.10.3"
+    "@babel/helper-plugin-utils" "^7.10.3"
+    "@babel/helper-replace-supers" "^7.10.1"
+    "@babel/helper-split-export-declaration" "^7.10.1"
+    globals "^11.1.0"
+
+"@babel/plugin-transform-computed-properties@^7.8.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-computed-properties/-/plugin-transform-computed-properties-7.10.3.tgz#d3aa6eef67cb967150f76faff20f0abbf553757b"
+  integrity sha512-GWzhaBOsdbjVFav96drOz7FzrcEW6AP5nax0gLIpstiFaI3LOb2tAg06TimaWU6YKOfUACK3FVrxPJ4GSc5TgA==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.10.3"
+>>>>>>> prediktor-opc-ae
 
 "@babel/plugin-transform-destructuring@^7.8.3":
   version "7.12.1"
@@ -683,6 +955,7 @@
     babel-plugin-dynamic-import-node "^2.3.3"
 
 "@babel/plugin-transform-modules-systemjs@^7.9.0":
+<<<<<<< HEAD
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-systemjs/-/plugin-transform-modules-systemjs-7.12.1.tgz#663fea620d593c93f214a464cd399bf6dc683086"
   integrity sha512-Hn7cVvOavVh8yvW6fLwveFqSnd7rbQN3zJvoPNyNaQSvgfKmDBO9U1YL9+PCXGRlZD9tNdWTy5ACKqMuzyn32Q==
@@ -691,6 +964,15 @@
     "@babel/helper-module-transforms" "^7.12.1"
     "@babel/helper-plugin-utils" "^7.10.4"
     "@babel/helper-validator-identifier" "^7.10.4"
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-modules-systemjs/-/plugin-transform-modules-systemjs-7.10.3.tgz#004ae727b122b7b146b150d50cba5ffbff4ac56b"
+  integrity sha512-GWXWQMmE1GH4ALc7YXW56BTh/AlzvDWhUNn9ArFF0+Cz5G8esYlVbXfdyHa1xaD1j+GnBoCeoQNlwtZTVdiG/A==
+  dependencies:
+    "@babel/helper-hoist-variables" "^7.10.3"
+    "@babel/helper-module-transforms" "^7.10.1"
+    "@babel/helper-plugin-utils" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     babel-plugin-dynamic-import-node "^2.3.3"
 
 "@babel/plugin-transform-modules-umd@^7.9.0":
@@ -702,9 +984,15 @@
     "@babel/helper-plugin-utils" "^7.10.4"
 
 "@babel/plugin-transform-named-capturing-groups-regex@^7.8.3":
+<<<<<<< HEAD
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-named-capturing-groups-regex/-/plugin-transform-named-capturing-groups-regex-7.12.1.tgz#b407f5c96be0d9f5f88467497fa82b30ac3e8753"
   integrity sha512-tB43uQ62RHcoDp9v2Nsf+dSM8sbNodbEicbQNA53zHz8pWUhsgHSJCGpt7daXxRydjb0KnfmB+ChXOv3oADp1Q==
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-named-capturing-groups-regex/-/plugin-transform-named-capturing-groups-regex-7.10.3.tgz#a4f8444d1c5a46f35834a410285f2c901c007ca6"
+  integrity sha512-I3EH+RMFyVi8Iy/LekQm948Z4Lz4yKT7rK+vuCAeRm0kTa6Z5W7xuhRxDNJv0FPya/her6AUgrDITb70YHtTvA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/helper-create-regexp-features-plugin" "^7.12.1"
 
@@ -738,9 +1026,15 @@
     "@babel/helper-plugin-utils" "^7.10.4"
 
 "@babel/plugin-transform-regenerator@^7.8.7":
+<<<<<<< HEAD
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-regenerator/-/plugin-transform-regenerator-7.12.1.tgz#5f0a28d842f6462281f06a964e88ba8d7ab49753"
   integrity sha512-gYrHqs5itw6i4PflFX3OdBPMQdPbF4bj2REIUxlMRUFk0/ZOAIpDFuViuxPjUL7YC8UPnf+XG7/utJvqXdPKng==
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-regenerator/-/plugin-transform-regenerator-7.10.3.tgz#6ec680f140a5ceefd291c221cb7131f6d7e8cb6d"
+  integrity sha512-H5kNeW0u8mbk0qa1jVIVTeJJL6/TJ81ltD4oyPx0P499DhMJrTmmIFCmJ3QloGpQG8K9symccB7S7SJpCKLwtw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     regenerator-transform "^0.14.2"
 
@@ -774,11 +1068,20 @@
     "@babel/helper-plugin-utils" "^7.10.4"
 
 "@babel/plugin-transform-template-literals@^7.8.3":
+<<<<<<< HEAD
   version "7.12.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-template-literals/-/plugin-transform-template-literals-7.12.1.tgz#b43ece6ed9a79c0c71119f576d299ef09d942843"
   integrity sha512-b4Zx3KHi+taXB1dVRBhVJtEPi9h1THCeKmae2qP0YdUHIFhVjtpqqNfxeVAa1xeHVhAy4SbHxEwx5cltAu5apw==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
+=======
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-template-literals/-/plugin-transform-template-literals-7.10.3.tgz#69d39b3d44b31e7b4864173322565894ce939b25"
+  integrity sha512-yaBn9OpxQra/bk0/CaA4wr41O0/Whkg6nqjqApcinxM7pro51ojhX6fv1pimAnVjVfDy14K0ULoRL70CA9jWWA==
+  dependencies:
+    "@babel/helper-annotate-as-pure" "^7.10.1"
+    "@babel/helper-plugin-utils" "^7.10.3"
+>>>>>>> prediktor-opc-ae
 
 "@babel/plugin-transform-typeof-symbol@^7.8.4":
   version "7.12.10"
@@ -872,6 +1175,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
+<<<<<<< HEAD
 "@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.11.1", "@babel/runtime@^7.11.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
@@ -899,10 +1203,47 @@
     "@babel/helper-split-export-declaration" "^7.12.11"
     "@babel/parser" "^7.12.11"
     "@babel/types" "^7.12.12"
+=======
+"@babel/runtime@^7.0.0":
+  version "7.10.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.4.tgz#a6724f1a6b8d2f6ea5236dbfe58c7d7ea9c5eb99"
+  integrity sha512-UpTN5yUJr9b4EX2CnGNWIvER7Ab83ibv0pcvvHc4UOdrBI5jb8bj+32cCwPX6xu0mt2daFNjYhoi+X7beH0RSw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.1", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.3.tgz#670d002655a7c366540c67f6fd3342cd09500364"
+  integrity sha512-RzGO0RLSdokm9Ipe/YD+7ww8X2Ro79qiXZF3HU9ljrM+qnJmH1Vqth+hbiQZy761LnMJTMitHDuKVYTk3k4dLw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/template@^7.10.1", "@babel/template@^7.10.3", "@babel/template@^7.4.0", "@babel/template@^7.8.6":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.10.3.tgz#4d13bc8e30bf95b0ce9d175d30306f42a2c9a7b8"
+  integrity sha512-5BjI4gdtD+9fHZUsaxPHPNpwa+xRkDO7c7JbhYn2afvrkDu5SfAAbi9AIMXw2xEhO/BR35TqiW97IqNvCo/GqA==
+  dependencies:
+    "@babel/code-frame" "^7.10.3"
+    "@babel/parser" "^7.10.3"
+    "@babel/types" "^7.10.3"
+
+"@babel/traverse@^7.1.0", "@babel/traverse@^7.10.1", "@babel/traverse@^7.10.3", "@babel/traverse@^7.4.3", "@babel/traverse@^7.9.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.10.3.tgz#0b01731794aa7b77b214bcd96661f18281155d7e"
+  integrity sha512-qO6623eBFhuPm0TmmrUFMT1FulCmsSeJuVGhiLodk2raUDFhhTECLd9E9jC4LBIWziqt4wgF6KuXE4d+Jz9yug==
+  dependencies:
+    "@babel/code-frame" "^7.10.3"
+    "@babel/generator" "^7.10.3"
+    "@babel/helper-function-name" "^7.10.3"
+    "@babel/helper-split-export-declaration" "^7.10.1"
+    "@babel/parser" "^7.10.3"
+    "@babel/types" "^7.10.3"
+>>>>>>> prediktor-opc-ae
     debug "^4.1.0"
     globals "^11.1.0"
     lodash "^4.17.19"
 
+<<<<<<< HEAD
 "@babel/types@^7.0.0", "@babel/types@^7.10.4", "@babel/types@^7.10.5", "@babel/types@^7.12.1", "@babel/types@^7.12.10", "@babel/types@^7.12.11", "@babel/types@^7.12.12", "@babel/types@^7.12.5", "@babel/types@^7.12.7", "@babel/types@^7.2.0", "@babel/types@^7.3.0", "@babel/types@^7.3.3", "@babel/types@^7.4.0", "@babel/types@^7.4.4", "@babel/types@^7.9.0":
   version "7.12.12"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.12.12.tgz#4608a6ec313abbd87afa55004d373ad04a96c299"
@@ -910,6 +1251,15 @@
   dependencies:
     "@babel/helper-validator-identifier" "^7.12.11"
     lodash "^4.17.19"
+=======
+"@babel/types@^7.0.0", "@babel/types@^7.10.1", "@babel/types@^7.10.3", "@babel/types@^7.2.0", "@babel/types@^7.3.0", "@babel/types@^7.4.0", "@babel/types@^7.4.4", "@babel/types@^7.9.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.10.3.tgz#6535e3b79fea86a6b09e012ea8528f935099de8e"
+  integrity sha512-nZxaJhBXBQ8HVoIcGsf9qWep3Oh3jCENK54V4mRF7qaJabVsAYdbTtmSD8WmAp1R6ytPiu5apMwSXyxB1WlaBA==
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.10.3"
+    lodash "^4.17.13"
+>>>>>>> prediktor-opc-ae
     to-fast-properties "^2.0.0"
 
 "@bcoe/v8-coverage@^0.2.3":
@@ -1012,10 +1362,17 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
+<<<<<<< HEAD
 "@grafana/data@7.3.6", "@grafana/data@next":
   version "7.3.6"
   resolved "https://registry.yarnpkg.com/@grafana/data/-/data-7.3.6.tgz#04b3e90ddce31a76bc0831cacb5b996665776c05"
   integrity sha512-mIUfvSxjon1kuSeAmIpVgmNZA78GguxZESchhuzNFzWXkpj/WTW92NGrQxr6AfEz2UKsytcIGzo3TIKVMCrXmw==
+=======
+"@grafana/data@7.0.4", "@grafana/data@next":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@grafana/data/-/data-7.0.4.tgz#43452ca169bd64b01964db32cf1775ba338e1532"
+  integrity sha512-KUZk1+oI0F0arqAfWj2J9/UWMP7Vb8fcgKM28+xFa13UBwnDQeGl3pf1mRAWgKlHf+euFa900L1JB207ZP/2iA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@braintree/sanitize-url" "4.0.0"
     "@types/d3-interpolate" "^1.3.1"
@@ -1024,10 +1381,17 @@
     rxjs "6.6.2"
     xss "1.0.6"
 
+<<<<<<< HEAD
 "@grafana/e2e-selectors@7.3.6":
   version "7.3.6"
   resolved "https://registry.yarnpkg.com/@grafana/e2e-selectors/-/e2e-selectors-7.3.6.tgz#209b92f4153d0286930dbc2e1cd9cb8ef8b78265"
   integrity sha512-sZTVoeRpJ+OOquM0qw8gd5NnVH1z88D6um0R8T/kr3PXujfLTOPHvB+zPPvuxm68OwS9oKTKWIzEY+4MM9xZsQ==
+=======
+"@grafana/e2e-selectors@7.0.4":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@grafana/e2e-selectors/-/e2e-selectors-7.0.4.tgz#c6718c23880998980a6d8b4e1cd5c88322133ab9"
+  integrity sha512-saOHrMA31HZTIY7rpNkWijkrEN9iQpD96IWaTLJlpiUPDfpyoCsCThPWH3StmLfaOpCAwvDqo33mdzFoCJFSSw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@grafana/tsconfig" "^1.0.0-rc1"
     commander "5.0.0"
@@ -1051,12 +1415,21 @@
     typescript "4.0.2"
 
 "@grafana/runtime@next":
+<<<<<<< HEAD
   version "7.3.6"
   resolved "https://registry.yarnpkg.com/@grafana/runtime/-/runtime-7.3.6.tgz#499ecd07562c054dfc268a1007edaf5636828180"
   integrity sha512-w54rVsFd9kXj8Ry/mtqWKQeY264rjA7eyXRm/H4tu6Q+aEUH8OxZcgp8zsr2JEVnh4zqzzCWEUe8OmLHYPQNPA==
   dependencies:
     "@grafana/data" "7.3.6"
     "@grafana/ui" "7.3.6"
+=======
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@grafana/runtime/-/runtime-7.0.4.tgz#05ece5236d1f4ea70fef64e808d4ef4b16564b8e"
+  integrity sha512-B/fJZ0W7ThYq6JAix85ANA4xKzuTABHT4yfg/9FlDhLQ/l0yIpXbyLbDO+rcyCpV0WpQlhxBw3pVFO8Uqys0eA==
+  dependencies:
+    "@grafana/data" "7.0.4"
+    "@grafana/ui" "7.0.4"
+>>>>>>> prediktor-opc-ae
     systemjs "0.20.19"
     systemjs-plugin-css "0.1.37"
 
@@ -1083,6 +1456,7 @@
     tiny-warning "^0.0.3"
 
 "@grafana/toolkit@next":
+<<<<<<< HEAD
   version "7.3.6"
   resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-7.3.6.tgz#588fb67c00ef3a0b4b01df54c4b10fb23f44e577"
   integrity sha512-S2xhqUZyLuEF97S+t6Fa7gT0k9uSZyPWlE8+KmjuV8yLhe5w31rc6Jd32VEbuA/zApWO8gUtcDg+eoYw7BshlA==
@@ -1093,6 +1467,18 @@
     "@grafana/eslint-config" "2.0.3"
     "@grafana/tsconfig" "^1.0.0-rc1"
     "@grafana/ui" next
+=======
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-7.0.4.tgz#42cff46cd5c7acb2d5503a54259bc0fdf05aa97d"
+  integrity sha512-5ONlzhNedygW11TrZxWaSxUQG3gprB2IAqs/bFAV+uK0mDyGr9uPsSgFUhh2SesDFRy75POaXXhcfqzyH+pWPg==
+  dependencies:
+    "@babel/core" "7.9.0"
+    "@babel/preset-env" "7.9.0"
+    "@grafana/data" "7.0.4"
+    "@grafana/eslint-config" "^1.0.0-rc1"
+    "@grafana/tsconfig" "^1.0.0-rc1"
+    "@grafana/ui" "7.0.4"
+>>>>>>> prediktor-opc-ae
     "@types/command-exists" "^1.2.0"
     "@types/execa" "^0.9.0"
     "@types/expect-puppeteer" "3.3.1"
@@ -1175,6 +1561,7 @@
   resolved "https://registry.yarnpkg.com/@grafana/tsconfig/-/tsconfig-1.0.0-rc1.tgz#d07ea16755a50cae21000113f30546b61647a200"
   integrity sha512-nucKPGyzlSKYSiJk5RA8GzMdVWhdYNdF+Hh65AXxjD9PlY69JKr5wANj8bVdQboag6dgg0BFKqgKPyY+YtV4Iw==
 
+<<<<<<< HEAD
 "@grafana/ui@7.3.6", "@grafana/ui@next":
   version "7.3.6"
   resolved "https://registry.yarnpkg.com/@grafana/ui/-/ui-7.3.6.tgz#8a9c83edf26df38edd483ff6dc04a5c873c9949b"
@@ -1183,6 +1570,16 @@
     "@emotion/core" "^10.0.27"
     "@grafana/data" "7.3.6"
     "@grafana/e2e-selectors" "7.3.6"
+=======
+"@grafana/ui@7.0.4", "@grafana/ui@next":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@grafana/ui/-/ui-7.0.4.tgz#e54271d7d68a5f3151570dec5626045e6943723e"
+  integrity sha512-7Rwtq+NRLGTGLf9nhGzHj6XPWpeT9gMx+LPL5WrweZNyzRC+RE8DBCqbBQjcaqaGSIVTzI8ZWUjwYvsudij7JQ==
+  dependencies:
+    "@emotion/core" "^10.0.27"
+    "@grafana/data" "7.0.4"
+    "@grafana/e2e-selectors" "7.0.4"
+>>>>>>> prediktor-opc-ae
     "@grafana/slate-react" "0.22.9-grafana"
     "@grafana/tsconfig" "^1.0.0-rc1"
     "@iconscout/react-unicons" "1.1.4"
@@ -1201,7 +1598,11 @@
     hoist-non-react-statics "3.3.2"
     immutable "3.8.2"
     jquery "3.5.1"
+<<<<<<< HEAD
     lodash "4.17.19"
+=======
+    lodash "4.17.15"
+>>>>>>> prediktor-opc-ae
     moment "2.24.0"
     monaco-editor "0.20.0"
     papaparse "5.3.0"
@@ -1499,10 +1900,17 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+<<<<<<< HEAD
 "@jest/types@^26.6.2":
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/@jest/types/-/types-26.6.2.tgz#bef5a532030e1d88a2f5a6d933f84e97226ed48e"
   integrity sha512-fC6QCp7Sc5sX6g8Tvbmj4XUTbyrik0akgRy03yjXbQaBWWNWGE7SGtJk98m0N8nzegD/7SggrUlivxo5ax4KWQ==
+=======
+"@jest/types@^26.1.0":
+  version "26.1.0"
+  resolved "https://registry.yarnpkg.com/@jest/types/-/types-26.1.0.tgz#f8afaaaeeb23b5cad49dd1f7779689941dcb6057"
+  integrity sha512-GXigDDsp6ZlNMhXQDeuy/iYCDsRIHJabWtDzvnn36+aqFfG14JmFV0e/iXxY4SP9vbXSiPNOWdehU5MeqrYHBQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/istanbul-lib-coverage" "^2.0.0"
     "@types/istanbul-reports" "^3.0.0"
@@ -1511,6 +1919,7 @@
     chalk "^4.0.0"
 
 "@material-ui/core@^4.10.2":
+<<<<<<< HEAD
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.11.2.tgz#f8276dfa40d88304e6ceb98962af73803d27d42d"
   integrity sha512-/D1+AQQeYX/WhT/FUk78UCRj8ch/RCglsQLYujYTIqPSJlwZHKcvHidNeVhODXeApojeXjkl0tWdk5C9ofwOkQ==
@@ -1520,11 +1929,23 @@
     "@material-ui/system" "^4.11.2"
     "@material-ui/types" "^5.1.0"
     "@material-ui/utils" "^4.11.2"
+=======
+  version "4.10.2"
+  resolved "https://registry.yarnpkg.com/@material-ui/core/-/core-4.10.2.tgz#0ef78572132fcef1a25f6969bce0d34652d42e31"
+  integrity sha512-Uf4iDLi9sW6HKbVQDyDZDr1nMR4RUAE7w/RIIJZGNVZResC0xwmpLRZMtaUdSO43N0R0yJehfxTi4Z461Cd49A==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/styles" "^4.10.0"
+    "@material-ui/system" "^4.9.14"
+    "@material-ui/types" "^5.1.0"
+    "@material-ui/utils" "^4.10.2"
+>>>>>>> prediktor-opc-ae
     "@types/react-transition-group" "^4.2.0"
     clsx "^1.0.4"
     hoist-non-react-statics "^3.3.2"
     popper.js "1.16.1-lts"
     prop-types "^15.7.2"
+<<<<<<< HEAD
     react-is "^16.8.0 || ^17.0.0"
     react-transition-group "^4.4.0"
 
@@ -1532,11 +1953,24 @@
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.11.2.tgz#e70558be3f41719e8c0d63c7a3c9ae163fdc84cb"
   integrity sha512-xbItf8zkfD3FuGoD9f2vlcyPf9jTEtj9YTJoNNV+NMWaSAHXgrW6geqRoo/IwBuMjqpwqsZhct13e2nUyU9Ljw==
+=======
+    react-is "^16.8.0"
+    react-transition-group "^4.4.0"
+
+"@material-ui/styles@^4.10.0":
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/@material-ui/styles/-/styles-4.10.0.tgz#2406dc23aa358217aa8cc772e6237bd7f0544071"
+  integrity sha512-XPwiVTpd3rlnbfrgtEJ1eJJdFCXZkHxy8TrdieaTvwxNYj42VnnCyFzxYeNW9Lhj4V1oD8YtQ6S5Gie7bZDf7Q==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@emotion/hash" "^0.8.0"
     "@material-ui/types" "^5.1.0"
+<<<<<<< HEAD
     "@material-ui/utils" "^4.11.2"
+=======
+    "@material-ui/utils" "^4.9.6"
+>>>>>>> prediktor-opc-ae
     clsx "^1.0.4"
     csstype "^2.5.2"
     hoist-non-react-statics "^3.3.2"
@@ -1550,6 +1984,7 @@
     jss-plugin-vendor-prefixer "^10.0.3"
     prop-types "^15.7.2"
 
+<<<<<<< HEAD
 "@material-ui/system@^4.11.2":
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.11.2.tgz#7f0a754bba3673ed5fdbfa02fe438096c104b1f6"
@@ -1557,6 +1992,15 @@
   dependencies:
     "@babel/runtime" "^7.4.4"
     "@material-ui/utils" "^4.11.2"
+=======
+"@material-ui/system@^4.9.14":
+  version "4.9.14"
+  resolved "https://registry.yarnpkg.com/@material-ui/system/-/system-4.9.14.tgz#4b00c48b569340cefb2036d0596b93ac6c587a5f"
+  integrity sha512-oQbaqfSnNlEkXEziDcJDDIy8pbvwUmZXWNqlmIwDqr/ZdCK8FuV3f4nxikUh7hvClKV2gnQ9djh5CZFTHkZj3w==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    "@material-ui/utils" "^4.9.6"
+>>>>>>> prediktor-opc-ae
     csstype "^2.5.2"
     prop-types "^15.7.2"
 
@@ -1565,6 +2009,7 @@
   resolved "https://registry.yarnpkg.com/@material-ui/types/-/types-5.1.0.tgz#efa1c7a0b0eaa4c7c87ac0390445f0f88b0d88f2"
   integrity sha512-7cqRjrY50b8QzRSYyhSpx4WRw2YuO0KKIGQEVk5J8uoz2BanawykgZGoWEqKm7pVIbzFDN0SpPcVV4IhOFkl8A==
 
+<<<<<<< HEAD
 "@material-ui/utils@^4.11.2":
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.11.2.tgz#f1aefa7e7dff2ebcb97d31de51aecab1bb57540a"
@@ -1573,6 +2018,16 @@
     "@babel/runtime" "^7.4.4"
     prop-types "^15.7.2"
     react-is "^16.8.0 || ^17.0.0"
+=======
+"@material-ui/utils@^4.10.2", "@material-ui/utils@^4.9.6":
+  version "4.10.2"
+  resolved "https://registry.yarnpkg.com/@material-ui/utils/-/utils-4.10.2.tgz#3fd5470ca61b7341f1e0468ac8f29a70bf6df321"
+  integrity sha512-eg29v74P7W5r6a4tWWDAAfZldXIzfyO1am2fIsC39hdUUHm/33k6pGOKPbgDjg/U/4ifmgAePy/1OjkKN6rFRw==
+  dependencies:
+    "@babel/runtime" "^7.4.4"
+    prop-types "^15.7.2"
+    react-is "^16.8.0"
+>>>>>>> prediktor-opc-ae
 
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
@@ -1646,6 +2101,7 @@
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
   integrity sha512-/+CRPXpBDpo2RK9C68N3b2cOvO0Cf5B9aPijHsoDQTHivnGSObdOF2BRQOYjojWTDy6nQvMjmqRXIxH55VjxxA==
 
+<<<<<<< HEAD
 "@types/async@^3.2.3":
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.5.tgz#febca3166039b8946eb162a14a91e8de9a373ebc"
@@ -1655,6 +2111,17 @@
   version "7.1.12"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.12.tgz#4d8e9e51eb265552a7e4f1ff2219ab6133bdfb2d"
   integrity sha512-wMTHiiTiBAAPebqaPiPDLFA4LYPKr6Ph0Xq/6rq1Ur3v66HXyG+clfR9CNETkD7MQS8ZHvpQOtA53DLws5WAEQ==
+=======
+"@types/async@^3.2.2":
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.3.tgz#c56f5e0fc02f8b37196f79239cc857e789b97bb4"
+  integrity sha512-deXFjLZc1h6SOh3hicVgD+S2EAkhSBGX/vdlD4nTzCjjOFQ+bfNiXocQ21xJjFAUwqaCeyvOQMgrnbg4QEV63A==
+
+"@types/babel__core@^7.1.0":
+  version "7.1.9"
+  resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.9.tgz#77e59d438522a6fb898fa43dc3455c6e72f3963d"
+  integrity sha512-sY2RsIJ5rpER1u3/aQ8OFSI7qGIy8o1NEEbgb2UaJcvOtXOMpd39ko723NBpjQFg9SIX7TXtjejZVGeIMLhoOw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/parser" "^7.1.0"
     "@babel/types" "^7.0.0"
@@ -1678,9 +2145,15 @@
     "@babel/types" "^7.0.0"
 
 "@types/babel__traverse@*", "@types/babel__traverse@^7.0.6":
+<<<<<<< HEAD
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.11.0.tgz#b9a1efa635201ba9bc850323a8793ee2d36c04a0"
   integrity sha512-kSjgDMZONiIfSH1Nxcr5JIRMwUetDki63FSQfpTCz8ogF3Ulqm8+mr5f78dUYs6vMiB6gBusQqfQmBvHZj/lwg==
+=======
+  version "7.0.12"
+  resolved "https://registry.yarnpkg.com/@types/babel__traverse/-/babel__traverse-7.0.12.tgz#22f49a028e69465390f87bb103ebd61bd086b8f5"
+  integrity sha512-t4CoEokHTfcyfb4hUaF9oOHu9RmmNWnm1CP0YmMqOOfClKascOmvlEM736vlqeScuGvBDsHkf8R2INd4DWreQA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/types" "^7.3.0"
 
@@ -1708,9 +2181,15 @@
     "@types/node" "*"
 
 "@types/clean-css@*":
+<<<<<<< HEAD
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/@types/clean-css/-/clean-css-4.2.3.tgz#12c13cc815f5e793014ee002c6324455907d851c"
   integrity sha512-ET0ldU/vpXecy5vO8JRIhtJWSrk1vzXdJcp3Bjf8bARZynl6vfkhEKY/A7njfNIRlmyTGuVFuqnD6I3tOGdXpQ==
+=======
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/@types/clean-css/-/clean-css-4.2.2.tgz#99fd79f6939c2b325938a1c569712e07dd97d709"
+  integrity sha512-xiTJn3bmDh1lA8c6iVJs4ZhHw+pcmxXlJQXOB6G1oULaak8rmarIeFKI4aTJ7849dEhaO612wgIualZfbxTJwA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/node" "*"
     source-map "^0.6.0"
@@ -1748,9 +2227,15 @@
     "@types/d3-color" "^1"
 
 "@types/eslint@*":
+<<<<<<< HEAD
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.6.tgz#5e9aff555a975596c03a98b59ecd103decc70c3c"
   integrity sha512-I+1sYH+NPQ3/tVqCeUSBwTE/0heyvtXqpIopUUArlBm0Kpocb8FbMa3AZ/ASKIFpN3rnEx932TTXDbt9OXsNDw==
+=======
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.0.tgz#eb5c5b575237334df24c53195e37b53d66478d7b"
+  integrity sha512-LpUXkr7fnmPXWGxB0ZuLEzNeTURuHPavkC5zuU4sg62/TgL5ZEjamr5Y8b6AftwHtx2bPJasI+CL0TT2JwQ7aA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/estree" "*"
     "@types/json-schema" "*"
@@ -1776,9 +2261,15 @@
     "@types/puppeteer" "*"
 
 "@types/express-serve-static-core@*":
+<<<<<<< HEAD
   version "4.17.17"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.17.tgz#6ba02465165b6c9c3d8db3a28def6b16fc9b70f5"
   integrity sha512-YYlVaCni5dnHc+bLZfY908IG1+x5xuibKZMGv8srKkvtul3wUuanYvpIj9GXXoWkQbaAdR+kgX46IETKUALWNQ==
+=======
+  version "4.17.8"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.8.tgz#b8f7b714138536742da222839892e203df569d1c"
+  integrity sha512-1SJZ+R3Q/7mLkOD9ewCBDYD2k0WyZQtWYqF/2VvoNN2/uhI49J9CDN4OAm+wGMA0DbArA4ef27xl4+JwMtGggw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/node" "*"
     "@types/qs" "*"
@@ -1807,9 +2298,15 @@
     "@types/node" "*"
 
 "@types/glob@*", "@types/glob@^7.1.1":
+<<<<<<< HEAD
   version "7.1.3"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.3.tgz#e6ba80f36b7daad2c685acd9266382e68985c183"
   integrity sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w==
+=======
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.1.2.tgz#06ca26521353a545d94a0adc74f38a59d232c987"
+  integrity sha512-VgNIkxK+j7Nz5P7jvUZlRvhuPSmsEfS03b0alKcq5V/STUKAa3Plemsn5mrQUO7am6OErJ4rhGEGJbACclrtRA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/minimatch" "*"
     "@types/node" "*"
@@ -1871,7 +2368,11 @@
     "@types/through" "*"
     rxjs "^6.4.0"
 
+<<<<<<< HEAD
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0", "@types/istanbul-lib-coverage@^2.0.1":
+=======
+"@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
+>>>>>>> prediktor-opc-ae
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.3.tgz#4ba8ddb720221f432e443bd5f9117fd22cfd4762"
   integrity sha512-sz7iLqvVUg1gIedBOvlkxPlc8/uVzyS5OwGz1cKjXzkl3FpL3al0crU8YGU1WoHkxn0Wxbw5tyi6hvzJKNzFsw==
@@ -1905,10 +2406,17 @@
   dependencies:
     jest-diff "*"
 
+<<<<<<< HEAD
 "@types/jest@*", "@types/jest@26.x":
   version "26.0.19"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.19.tgz#e6fa1e3def5842ec85045bd5210e9bb8289de790"
   integrity sha512-jqHoirTG61fee6v6rwbnEuKhpSKih0tuhqeFbCmMmErhtu3BYlOZaXWjffgOstMM4S/3iQD31lI5bGLTrs97yQ==
+=======
+"@types/jest@*":
+  version "26.0.3"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-26.0.3.tgz#79534e0e94857171c0edc596db0ebe7cb7863251"
+  integrity sha512-v89ga1clpVL/Y1+YI0eIu1VMW+KU7Xl8PhylVtDKVWaSUHBHYPLXMQGBdrpHewaKoTvlXkksbYqPgz8b4cmRZg==
+>>>>>>> prediktor-opc-ae
   dependencies:
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
@@ -1920,6 +2428,7 @@
   dependencies:
     "@types/jest-diff" "*"
 
+<<<<<<< HEAD
 "@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.5":
   version "7.0.6"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.6.tgz#f4c7ec43e81b319a9815115031709f26987891f0"
@@ -1934,6 +2443,17 @@
   version "4.14.167"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.167.tgz#ce7d78553e3c886d4ea643c37ec7edc20f16765e"
   integrity sha512-w7tQPjARrvdeBkX/Rwg95S592JwxqOjmms3zWQ0XZgSyxSLdzWaYH3vErBhdVS/lRBX7F8aBYcYJYTr5TMGOzw==
+=======
+"@types/json-schema@*", "@types/json-schema@^7.0.3", "@types/json-schema@^7.0.4":
+  version "7.0.5"
+  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.5.tgz#dcce4430e64b443ba8945f0290fb564ad5bac6dd"
+  integrity sha512-7+2BITlgjgDhH0vvwZU/HZJVyk+2XUlvxXe8dFMedNX/aMkaOq++rMAFXc0tM7ij15QaWlbdQASBR9dihi+bDQ==
+
+"@types/lodash@^4.14.134":
+  version "4.14.157"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.157.tgz#fdac1c52448861dfde1a2e1515dbc46e54926dc8"
+  integrity sha512-Ft5BNFmv2pHDgxV5JDsndOWTRJ+56zte0ZpYLowp03tW+K+t8u8YMOzAnpuqPgzX6WO1XpDIUm7u04M8vdDiVQ==
+>>>>>>> prediktor-opc-ae
 
 "@types/long@*":
   version "4.0.1"
@@ -1958,6 +2478,7 @@
     "@types/node" "*"
 
 "@types/node@*":
+<<<<<<< HEAD
   version "14.14.19"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.19.tgz#5135176a8330b88ece4e9ab1fdcfc0a545b4bab4"
   integrity sha512-4nhBPStMK04rruRVtVc6cDqhu7S9GZai0fpXgPXrFpcPX6Xul8xnrjSdGB4KPBVYG/R5+fXWdCM8qBoiULWGPQ==
@@ -1971,6 +2492,16 @@
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==
+=======
+  version "14.0.14"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.14.tgz#24a0b5959f16ac141aeb0c5b3cd7a15b7c64cbce"
+  integrity sha512-syUgf67ZQpaJj01/tRTknkMNoBBLWJOBODF0Zm4NrXmiSuxjymFrxnTu1QVYRubhVkRcZLYZG8STTwJRdVm/WQ==
+
+"@types/node@^12.0.4":
+  version "12.12.47"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.47.tgz#5007b8866a2f9150de82335ca7e24dd1d59bdfb5"
+  integrity sha512-yzBInQFhdY8kaZmqoL2+3U5dSTMrKaYcb561VU+lDzAYvqt+2lojvBEy+hmpSNuXnPTx7m9+04CzWYOUqWME2A==
+>>>>>>> prediktor-opc-ae
 
 "@types/once@^1.4.0":
   version "1.4.0"
@@ -2093,6 +2624,7 @@
     "@types/react" "*"
 
 "@types/react@*":
+<<<<<<< HEAD
   version "17.0.0"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.0.tgz#5af3eb7fad2807092f0046a1302b7823e27919b8"
   integrity sha512-aj/L7RIMsRlWML3YB6KZiXB3fV2t41+5RBGYF8z+tAKU43Px8C3cYUZsDvf1/+Bm4FK21QWBrDutu8ZJ/70qOw==
@@ -2104,6 +2636,11 @@
   version "16.14.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.2.tgz#85dcc0947d0645349923c04ccef6018a1ab7538c"
   integrity sha512-BzzcAlyDxXl2nANlabtT4thtvbbnhee8hMmH/CcJrISDBVcJS1iOsP1f0OAgSdGE0MsY9tqcrb9YoZcOFv9dbQ==
+=======
+  version "16.9.41"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.41.tgz#925137ee4d2ff406a0ecf29e8e9237390844002e"
+  integrity sha512-6cFei7F7L4wwuM+IND/Q2cV1koQUvJ8iSV+Gwn0c3kvABZ691g7sp3hfEQHOUBJtccl1gPi+EyNjMIl9nGA0ug==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -2117,6 +2654,14 @@
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@types/rimraf/-/rimraf-2.0.4.tgz#403887b0b53c6100a6c35d2ab24f6ccc042fec46"
   integrity sha512-8gBudvllD2A/c0CcEX/BivIDorHFt5UI5m46TsNj8DjWCCTTZT74kEe4g+QsY7P/B9WdO98d82zZgXO/RQzu2Q==
+  dependencies:
+    "@types/glob" "*"
+    "@types/node" "*"
+
+"@types/rimraf@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/rimraf/-/rimraf-3.0.0.tgz#b9d03f090ece263671898d57bb7bb007023ac19f"
+  integrity sha512-7WhJ0MdpFgYQPXlF4Dx+DhgvlPCfz/x5mHaeDQAKhcenvQP1KCpLQ18JklAqeGMYSAT2PxLpzd0g2/HE7fj7hQ==
   dependencies:
     "@types/glob" "*"
     "@types/node" "*"
@@ -2198,10 +2743,17 @@
   dependencies:
     source-map "^0.6.1"
 
+<<<<<<< HEAD
 "@types/underscore@^1.10.24":
   version "1.10.24"
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.10.24.tgz#dede004deed3b3f99c4db0bdb9ee21cae25befdd"
   integrity sha512-T3NQD8hXNW2sRsSbLNjF/aBo18MyJlbw0lSpQHB/eZZtScPdexN4HSa8cByYwTw9Wy7KuOFr81mlDQcQQaZ79w==
+=======
+"@types/underscore@^1.10.0":
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.10.1.tgz#e37616e1013d486ee5e9a53c178becbaee2f781e"
+  integrity sha512-RRQWytGzPUhybKdf7jhfcySkdEHMDsVZ0gU3XVIxeqms1UKu3+ICaTXNaNGAkcUbIJ8SUKpmUIS1z9mDVc7seg==
+>>>>>>> prediktor-opc-ae
 
 "@types/webpack-dev-server@*":
   version "3.11.1"
@@ -2215,18 +2767,30 @@
     "@types/webpack" "*"
 
 "@types/webpack-sources@*":
+<<<<<<< HEAD
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-2.1.0.tgz#8882b0bd62d1e0ce62f183d0d01b72e6e82e8c10"
   integrity sha512-LXn/oYIpBeucgP1EIJbKQ2/4ZmpvRl+dlrFdX7+94SKRUV3Evy3FsfMZY318vGhkWUS5MPhtOM3w1/hCOAOXcg==
+=======
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/webpack-sources/-/webpack-sources-1.4.0.tgz#e58f1f05f87d39a5c64cf85705bdbdbb94d4d57e"
+  integrity sha512-c88dKrpSle9BtTqR6ifdaxu1Lvjsl3C5OsfvuUbUwdXymshv1TkufUAXBajCCUM/f/TmnkZC/Esb03MinzSiXQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/node" "*"
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
 "@types/webpack@*":
+<<<<<<< HEAD
   version "4.41.25"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.25.tgz#4d3b5aecc4e44117b376280fbfd2dc36697968c4"
   integrity sha512-cr6kZ+4m9lp86ytQc1jPOJXgINQyz3kLLunZ57jznW+WIAL0JqZbGubQk4GlD42MuQL5JGOABrxdpqqWeovlVQ==
+=======
+  version "4.41.17"
+  resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.17.tgz#0a69005e644d657c85b7d6ec1c826a71bebd1c93"
+  integrity sha512-6FfeCidTSHozwKI67gIVQQ5Mp0g4X96c2IXxX75hYEQJwST/i6NyZexP//zzMOBb+wG9jJ7oO8fk9yObP2HWAw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/anymatch" "*"
     "@types/node" "*"
@@ -2525,10 +3089,17 @@ acorn@^6.0.1, acorn@^6.2.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
   integrity sha512-XtGIhXwF8YM8bJhGxG5kXgjkEuNGLTkoYqVE+KMR+aspr4KGYmKYg7yUe3KghyQ9yheNwLnjmzh/7+gfDBmHCQ==
 
+<<<<<<< HEAD
 acorn@^7.1.0, acorn@^7.4.0:
   version "7.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
+=======
+acorn@^7.1.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.3.1.tgz#85010754db53c3fbaf3b9ea3e083aa5c5d147ffd"
+  integrity sha512-tLc0wSnatxAQHVHUapaHdz72pi9KUyHjq5KyHjGg9Y8Ifdc79pTh2XvI6I1/chZbnM7QtNKzh66ooDogPZSleA==
+>>>>>>> prediktor-opc-ae
 
 add-dom-event-listener@^1.1.0:
   version "1.1.0"
@@ -2567,6 +3138,7 @@ ajv-errors@^1.0.0:
   resolved "https://registry.yarnpkg.com/ajv-errors/-/ajv-errors-1.0.1.tgz#f35986aceb91afadec4102fbd85014950cefa64d"
   integrity sha512-DCRfO/4nQ+89p/RK43i8Ezd41EqdGIU4ld7nGF8OQ14oc/we5rEntLCUa7+jrn3nn83BosfwZA0wb4pon2o8iQ==
 
+<<<<<<< HEAD
 ajv-keywords@^3.1.0, ajv-keywords@^3.4.1, ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
@@ -2576,6 +3148,17 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.3, ajv@^6.12.4:
   version "6.12.6"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.6.tgz#baf5a62e802b07d977034586f8c3baf5adf26df4"
   integrity sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==
+=======
+ajv-keywords@^3.1.0, ajv-keywords@^3.4.1:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.0.tgz#5c894537098785926d71e696114a53ce768ed773"
+  integrity sha512-eyoaac3btgU8eJlvh01En8OCKzRqlLe2G5jDsCr3RiE2uLGMEEB1aaGwVVpwR8M95956tGH6R+9edC++OvzaVw==
+
+ajv@^6.1.0, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.2, ajv@^6.5.5:
+  version "6.12.2"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.12.2.tgz#c629c5eced17baf314437918d2da88c99d5958cd"
+  integrity sha512-k+V+hzjm5q/Mr8ef/1Y9goCmlsK4I6Sm74teeyGvFk1XrOsbsKLjEdrvny42CZ+a8sXbk8KWpY/bDwS+FLL2UQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     fast-deep-equal "^3.1.1"
     fast-json-stable-stringify "^2.0.0"
@@ -2670,9 +3253,15 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
     color-convert "^2.0.1"
 
 antd@^3.24.1:
+<<<<<<< HEAD
   version "3.26.20"
   resolved "https://registry.yarnpkg.com/antd/-/antd-3.26.20.tgz#f3f570efaaa5950a144942f21eb2aaaa088e9407"
   integrity sha512-VIous4ofZfxFtd9K1h9MpRX2sDDpj3QcOFi3YgIc9B/uyDli/GlLb8SWKfQfJaMkaxwatIv503dag2Tog+hiEg==
+=======
+  version "3.26.18"
+  resolved "https://registry.yarnpkg.com/antd/-/antd-3.26.18.tgz#541e26a6865dd20e5d192027c45599b963146e67"
+  integrity sha512-TPuacNJJNPji+LnapU46uWGqi+6JlyH75paMNs95IH0F7gGYtp4oSkua88gGsoAaUbDxTIF+cWI9mdIsr7ywlw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@ant-design/create-react-context" "^0.2.4"
     "@ant-design/icons" "~2.1.1"
@@ -2962,6 +3551,7 @@ atob@^2.1.2:
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
 autoprefixer@^9.6.1:
+<<<<<<< HEAD
   version "9.8.6"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-9.8.6.tgz#3b73594ca1bf9266320c5acf1588d74dea74210f"
   integrity sha512-XrvP4VVHdRBCdX1S3WXVD8+RyG9qeb1D5Sn1DeLiG2xfSpzellk5k54xbUERJ3M5DggQxes39UGOTP8CFrEGbg==
@@ -2969,6 +3559,15 @@ autoprefixer@^9.6.1:
     browserslist "^4.12.0"
     caniuse-lite "^1.0.30001109"
     colorette "^1.2.1"
+=======
+  version "9.8.4"
+  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-9.8.4.tgz#736f1012673a70fa3464671d78d41abd54512863"
+  integrity sha512-84aYfXlpUe45lvmS+HoAWKCkirI/sw4JK0/bTeeqgHYco3dcsOn0NqdejISjptsYwNji/21dnkDri9PsYKk89A==
+  dependencies:
+    browserslist "^4.12.0"
+    caniuse-lite "^1.0.30001087"
+    colorette "^1.2.0"
+>>>>>>> prediktor-opc-ae
     normalize-range "^0.1.2"
     num2fraction "^1.2.2"
     postcss "^7.0.32"
@@ -3423,6 +4022,7 @@ browserslist@4.10.0:
     node-releases "^1.1.52"
     pkg-up "^3.1.0"
 
+<<<<<<< HEAD
 browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.14.5, browserslist@^4.15.0, browserslist@^4.6.4, browserslist@^4.9.1:
   version "4.16.0"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.0.tgz#410277627500be3cb28a1bfe037586fbedf9488b"
@@ -3433,6 +4033,17 @@ browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.14.5, browserslist@^4
     electron-to-chromium "^1.3.621"
     escalade "^3.1.1"
     node-releases "^1.1.67"
+=======
+browserslist@^4.0.0, browserslist@^4.12.0, browserslist@^4.6.4, browserslist@^4.8.5, browserslist@^4.9.1:
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.12.1.tgz#6d08bef149b70d153930780ba762644e0f329122"
+  integrity sha512-WMjXwFtPskSW1pQUDJRxvRKRkeCr7usN0O/Za76N+F4oadaTdQHotSGcX9jT/Hs7mSKPkyMFNvqawB/1HzYDKQ==
+  dependencies:
+    caniuse-lite "^1.0.30001088"
+    electron-to-chromium "^1.3.481"
+    escalade "^3.0.1"
+    node-releases "^1.1.58"
+>>>>>>> prediktor-opc-ae
 
 bs-logger@0.x:
   version "0.2.6"
@@ -3655,10 +4266,17 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
+<<<<<<< HEAD
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001165:
   version "1.0.30001171"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001171.tgz#3291e11e02699ad0a29e69b8d407666fc843eba7"
   integrity sha512-5Alrh8TTYPG9IH4UkRqEBZoEToWRLvPbSQokvzSz0lii8/FOWKG4keO1HoYfPWs8IF/NH/dyNPg1cmJGvV3Zlg==
+=======
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, caniuse-lite@^1.0.30001087, caniuse-lite@^1.0.30001088:
+  version "1.0.30001088"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001088.tgz#23a6b9e192106107458528858f2c0e0dba0d9073"
+  integrity sha512-6eYUrlShRYveyqKG58HcyOfPgh3zb2xqs7NvT2VVtP3hEUeeWvc3lqhpeMTxYWBBeeaT9A4bKsrtjATm66BTHg==
+>>>>>>> prediktor-opc-ae
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -3708,7 +4326,11 @@ chalk@^3.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
+<<<<<<< HEAD
 chalk@^4.0.0, chalk@^4.1.0:
+=======
+chalk@^4.0.0:
+>>>>>>> prediktor-opc-ae
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.0.tgz#4e14870a618d9e2edd97dd8345fd9d9dc315646a"
   integrity sha512-qwx12AxXe2Q5xQ43Ac//I6v5aXTipYrSESdOgzrN+9XjgEpyjpKuvSGaN4qE93f7TQTlerQQ8S+EQ0EyDoVL1A==
@@ -4000,7 +4622,21 @@ color@^3.0.0:
   integrity sha512-xgXAcTHa2HeFCGLE9Xs/R82hujGtu9Jd9x4NW3T34+OMs7VoPsjwzRczKHvTAHeJwWFwX5j15+MgAppE8ztObQ==
   dependencies:
     color-convert "^1.9.1"
+<<<<<<< HEAD
     color-string "^1.5.4"
+=======
+    color-string "^1.5.2"
+
+colorette@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/colorette/-/colorette-1.2.0.tgz#45306add826d196e8c87236ac05d797f25982e63"
+  integrity sha512-soRSroY+OF/8OdA3PTQXwaDJeMc7TfknKKrxeSCencL2a4+Tx5zhxmmv7hdpCjhKBjehzp8+bwe/T68K0hpIjw==
+
+colors@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
+  integrity sha1-BDP0TYCWgP3rYO0mDxsMJi6CpAs=
+>>>>>>> prediktor-opc-ae
 
 colorette@^1.2.1:
   version "1.2.1"
@@ -4070,10 +4706,17 @@ commander@~2.19.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.19.0.tgz#f6198aa84e5b83c46054b94ddedbfed5ee9ff12a"
   integrity sha512-6tvAOO+D6OENvRAh524Dh9jcfKTYDQAqvqezbCW82xj5X0pSrcpxtvRKHLG0yBY6SD7PSDrJaj+0AiOcKVd1Xg==
 
+<<<<<<< HEAD
 comment-parser@^0.7.5:
   version "0.7.6"
   resolved "https://registry.yarnpkg.com/comment-parser/-/comment-parser-0.7.6.tgz#0e743a53c8e646c899a1323db31f6cd337b10f12"
   integrity sha512-GKNxVA7/iuTnAqGADlTWX4tkhzxZKXp5fLJqKTlQLHkE65XDUKutZ3BHaJC5IGcper2tT3QRD1xr4o3jNpgXXg==
+=======
+comment-parser@^0.7.2:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/comment-parser/-/comment-parser-0.7.5.tgz#06db157a3b34addf8502393743e41897e2c73059"
+  integrity sha512-iH9YA35ccw94nx5244GVkpyC9eVTsL71jZz6iz5w6RIf79JLF2AsXHXq9p6Oaohyl3sx5qSMnGsWUDFIAfWL4w==
+>>>>>>> prediktor-opc-ae
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -4418,23 +5061,40 @@ css-has-pseudo@^0.10.0:
     postcss "^7.0.6"
     postcss-selector-parser "^5.0.0-rc.4"
 
+<<<<<<< HEAD
 css-loader@3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-3.4.2.tgz#d3fdb3358b43f233b78501c5ed7b1c6da6133202"
   integrity sha512-jYq4zdZT0oS0Iykt+fqnzVLRIeiPWhka+7BqPn+oSIpWJAHak5tmB/WZrJ2a21JhCeFyNnnlroSl8c+MtVndzA==
+=======
+css-loader@^3.0.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/css-loader/-/css-loader-3.6.0.tgz#2e4b2c7e6e2d27f8c8f28f61bffcd2e6c91ef645"
+  integrity sha512-M5lSukoWi1If8dhQAUCvj4H8vUt3vOnwbQBH9DdTm/s4Ym2B/3dPMtYZeJmq7Q3S3Pa+I94DcZ7pc9bP14cWIQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     camelcase "^5.3.1"
     cssesc "^3.0.0"
     icss-utils "^4.1.1"
     loader-utils "^1.2.3"
     normalize-path "^3.0.0"
+<<<<<<< HEAD
     postcss "^7.0.23"
+=======
+    postcss "^7.0.32"
+>>>>>>> prediktor-opc-ae
     postcss-modules-extract-imports "^2.0.0"
     postcss-modules-local-by-default "^3.0.2"
     postcss-modules-scope "^2.1.1"
     postcss-modules-values "^3.0.0"
+<<<<<<< HEAD
     postcss-value-parser "^4.0.2"
     schema-utils "^2.6.0"
+=======
+    postcss-value-parser "^4.1.0"
+    schema-utils "^2.7.0"
+    semver "^6.3.0"
+>>>>>>> prediktor-opc-ae
 
 css-prefers-color-scheme@^3.1.1:
   version "3.1.1"
@@ -4481,11 +5141,24 @@ css-vendor@^2.0.8:
   dependencies:
     "@babel/runtime" "^7.8.3"
     is-in-browser "^1.0.2"
+<<<<<<< HEAD
 
 css-what@^3.2.1:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/css-what/-/css-what-3.4.2.tgz#ea7026fcb01777edbde52124e21f327e7ae950e4"
   integrity sha512-ACUm3L0/jiZTqfzRM3Hi9Q8eZqd6IK37mMWPLz9PJxkLWllYeRf+EHUSHYEtFop2Eqytaq1FizFVh7XfBnXCDQ==
+=======
+
+css-what@2.1:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/css-what/-/css-what-2.1.3.tgz#a6d7604573365fe74686c3f311c56513d88285f2"
+  integrity sha512-a+EPoD+uZiNfh+5fxw2nO9QwFa6nJe2Or35fGY6Ipw1R3R4AGz1d1TEZrCegvw2YTmZ0jXirGYlzxxpYSHwpEg==
+
+css-what@^3.2.1:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/css-what/-/css-what-3.3.0.tgz#10fec696a9ece2e591ac772d759aacabac38cd39"
+  integrity sha512-pv9JPyatiPaQ6pf4OvD/dbfm0o5LviWmwxNWzblYf/1u9QZd0ihV+PMwy5jdQWQ3349kZmKEx9WXuSka2dM4cg==
+>>>>>>> prediktor-opc-ae
 
 cssdb@^4.4.0:
   version "4.4.0"
@@ -4609,10 +5282,17 @@ csstype@^2.5.2, csstype@^2.5.7:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.14.tgz#004822a4050345b55ad4dcc00be1d9cf2f4296de"
   integrity sha512-2mSc+VEpGPblzAxyeR+vZhJKgYg0Og0nnRi7pmRXFYYxSfnOnW8A5wwQb4n4cE2nIOzqKOAzLCaEX6aBmNEv8A==
 
+<<<<<<< HEAD
 csstype@^3.0.2:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.0.5.tgz#7fdec6a28a67ae18647c51668a9ff95bb2fa7bb8"
   integrity sha512-uVDi8LpBUKQj6sdxNaTetL6FpeCqTjOvAQuQUa/qAqq8oOd4ivkbhgnqayl0dnPal8Tb/yB1tF+gOvCBiicaiQ==
+=======
+csstype@^2.2.0, csstype@^2.5.2, csstype@^2.5.7, csstype@^2.6.5, csstype@^2.6.7:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.10.tgz#e63af50e66d7c266edb6b32909cfd0aabe03928b"
+  integrity sha512-D34BqZU4cIlMCY93rZHbrq9pjTAQJ3U8S8rfBqjwHxkGPThWFjzZDQpgMJY0QViLxth6ZKYiwFBo14RdN44U/w==
+>>>>>>> prediktor-opc-ae
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -5300,12 +5980,21 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
+<<<<<<< HEAD
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.621:
   version "1.3.633"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.633.tgz#16dd5aec9de03894e8d14a1db4cda8a369b9b7fe"
   integrity sha512-bsVCsONiVX1abkWdH7KtpuDAhsQ3N3bjPYhROSAXE78roJKet0Y5wznA14JE9pzbwSZmSMAW6KiKYf1RvbTJkA==
 
 elliptic@^6.5.3:
+=======
+electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.481:
+  version "1.3.483"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.483.tgz#9269e7cfc1c8e72709824da171cbe47ca5e3ca9e"
+  integrity sha512-+05RF8S9rk8S0G8eBCqBRBaRq7+UN3lDs2DAvnG8SBSgQO3hjy0+qt4CmRk5eiuGbTcaicgXfPmBi31a+BD3lg==
+
+elliptic@^6.0.0, elliptic@^6.5.2:
+>>>>>>> prediktor-opc-ae
   version "6.5.3"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.3.tgz#cb59eb2efdaf73a0bd78ccd7015a62ad6e0f93d6"
   integrity sha512-IMqzv5wNQf+E6aHeIqATs0tOLeOTwj1QKbRcS3jBbYkl5oLAserA8yJTT7/VyHUYG91PRmPyeQDObKLPpeS4dw==
@@ -5361,9 +6050,15 @@ end-of-stream@^1.0.0, end-of-stream@^1.1.0:
     once "^1.4.0"
 
 enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.0:
+<<<<<<< HEAD
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-4.3.0.tgz#3b806f3bfafc1ec7de69551ef93cca46c1704126"
   integrity sha512-3e87LvavsdxyoCfGusJnrZ5G8SLPOFeHSNpZI/ATL9a5leXo2k0w6MKnbqhdBad9qTobSfB20Ld7UmgoNbAZkQ==
+=======
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/enhanced-resolve/-/enhanced-resolve-4.2.0.tgz#5d43bda4a0fd447cb0ebbe71bef8deff8805ad0d"
+  integrity sha512-S7eiFb/erugyd1rLb6mQ3Vuq+EXHv5cpCkNqqIkYkBgN2QdFnyCZzFBleqwGEx4lgNGYij81BWnCrFNK7vxvjQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     graceful-fs "^4.1.2"
     memory-fs "^0.5.0"
@@ -5387,9 +6082,15 @@ entities@^1.1.1:
   integrity sha512-f2LZMYl1Fzu7YSBKg+RoROelpOaNrcGmE9AZubeDfrCEia483oW4MI4VyFd5VNHIgQ/7qm1I0wUHK1eJnn2y2w==
 
 entities@^2.0.0:
+<<<<<<< HEAD
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.1.0.tgz#992d3129cf7df6870b96c57858c249a120f8b8b5"
   integrity sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==
+=======
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.3.tgz#5c487e5742ab93c15abb5da22759b8590ec03b7f"
+  integrity sha512-MyoZ0jgnLvB2X3Lg5HqpFmn1kybDiIfEQmKzTb5apr51Rb+T3KdmMiqa70T+bhGnyv7bQ6WMj2QMHpGMmlrUYQ==
+>>>>>>> prediktor-opc-ae
 
 env-paths@^2.2.0:
   version "2.2.0"
@@ -5410,15 +6111,23 @@ error-ex@^1.2.0, error-ex@^1.3.1:
   dependencies:
     is-arrayish "^0.2.1"
 
+<<<<<<< HEAD
 es-abstract@^1.17.0-next.1, es-abstract@^1.17.2:
   version "1.17.7"
   resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.17.7.tgz#a4de61b2f66989fc7421676c1cb9787573ace54c"
   integrity sha512-VBl/gnfcJ7OercKA9MVaegWsBHFjV492syMudcnQZvt/Dw8ezpcOHYZXa/J96O8vx+g4x65YKhxOwDUh63aS5g==
+=======
+es-abstract@^1.17.0-next.1, es-abstract@^1.17.2, es-abstract@^1.17.5:
+  version "1.17.6"
+  resolved "https://registry.yarnpkg.com/es-abstract/-/es-abstract-1.17.6.tgz#9142071707857b2cacc7b89ecb670316c3e2d52a"
+  integrity sha512-Fr89bON3WFyUi5EvAeI48QTWX0AyekGgLA8H+c+7fbfCkJwRWRMLd8CQedNEyJuoYYhmtEqY92pgte1FAhBlhw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     es-to-primitive "^1.2.1"
     function-bind "^1.1.1"
     has "^1.0.3"
     has-symbols "^1.0.1"
+<<<<<<< HEAD
     is-callable "^1.2.2"
     is-regex "^1.1.1"
     object-inspect "^1.8.0"
@@ -5442,6 +6151,13 @@ es-abstract@^1.18.0-next.1:
     object-inspect "^1.8.0"
     object-keys "^1.1.1"
     object.assign "^4.1.1"
+=======
+    is-callable "^1.2.0"
+    is-regex "^1.1.0"
+    object-inspect "^1.7.0"
+    object-keys "^1.1.1"
+    object.assign "^4.1.0"
+>>>>>>> prediktor-opc-ae
     string.prototype.trimend "^1.0.1"
     string.prototype.trimstart "^1.0.1"
 
@@ -5474,6 +6190,7 @@ es6-templates@^0.2.3:
     recast "~0.11.12"
     through "~2.3.6"
 
+<<<<<<< HEAD
 escalade@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.1.1.tgz#d8cfdc7000965c5a0174b4a82eaa5c0552742e40"
@@ -5485,6 +6202,14 @@ escape-goat@^2.0.0:
   integrity sha512-8/uIhbG12Csjy2JEW7D9pHbreaVaS/OpN3ycnyvElTdwM5n6GY6W6e2IPemfvGZeUMqZ9A/3GqIZMgKnBhAw/Q==
 
 escape-string-regexp@2.0.0, escape-string-regexp@^2.0.0:
+=======
+escalade@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/escalade/-/escalade-3.0.1.tgz#52568a77443f6927cd0ab9c73129137533c965ed"
+  integrity sha512-DR6NO3h9niOT+MZs7bjxlj2a1k+POu5RN8CLTPX2+i78bRi9eLe7+0zXgUHMnGXWybYcL61E9hGhPKqedy8tQA==
+
+escape-string-regexp@2.0.0:
+>>>>>>> prediktor-opc-ae
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
   integrity sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w==
@@ -5494,7 +6219,11 @@ escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
+<<<<<<< HEAD
 escodegen@^1.11.1:
+=======
+escodegen@^1.9.1:
+>>>>>>> prediktor-opc-ae
   version "1.14.3"
   resolved "https://registry.yarnpkg.com/escodegen/-/escodegen-1.14.3.tgz#4e7b81fba61581dc97582ed78cab7f0e8d63f503"
   integrity sha512-qFcX0XJkdg+PB3xjZZG/wKSuT1PnQWx57+TVSjIMmILd2yC/6ByYElPwJnslDsuWuSAp4AwJGumarAAmJch5Kw==
@@ -5546,10 +6275,17 @@ eslint-scope@^4.0.3:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
+<<<<<<< HEAD
 eslint-scope@^5.0.0, eslint-scope@^5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-5.1.1.tgz#e786e59a66cb92b3f6c1fb0d508aab174848f48c"
   integrity sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==
+=======
+eslint-scope@^5.0.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-5.1.0.tgz#d0f971dfe59c69e0cada684b23d49dbf82600ce5"
+  integrity sha512-iiGRvtxWqgtx5m8EyQUJihBloE4EnYeGE/bz1wSPwJE6tZuJUtHlhqDM4Xj2ukE8Dyy1+HCZ4hE0fzIVMzb58w==
+>>>>>>> prediktor-opc-ae
   dependencies:
     esrecurse "^4.3.0"
     estraverse "^4.1.1"
@@ -5561,7 +6297,11 @@ eslint-utils@^2.0.0:
   dependencies:
     eslint-visitor-keys "^1.1.0"
 
+<<<<<<< HEAD
 eslint-visitor-keys@^1.1.0, eslint-visitor-keys@^1.2.0, eslint-visitor-keys@^1.3.0:
+=======
+eslint-visitor-keys@^1.1.0:
+>>>>>>> prediktor-opc-ae
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-1.3.0.tgz#30ebd1ef7c2fdff01c3a4f151044af25fab0523e"
   integrity sha512-6J72N8UNa462wa/KFODt/PJ3IU60SDpC3QXC1Hjc1BXXpfL2C9R5+AU7jhe0F6GREqVMh4Juu+NY7xn+6dipUQ==
@@ -5831,7 +6571,11 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
+<<<<<<< HEAD
 fast-deep-equal@^3.1.1:
+=======
+fast-deep-equal@^3.0.0, fast-deep-equal@^3.1.1:
+>>>>>>> prediktor-opc-ae
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
@@ -5853,7 +6597,11 @@ fast-glob@^2.0.2:
     merge2 "^1.2.3"
     micromatch "^3.1.10"
 
+<<<<<<< HEAD
 fast-glob@^3.0.3, fast-glob@^3.1.1:
+=======
+fast-glob@^3.0.3:
+>>>>>>> prediktor-opc-ae
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/fast-glob/-/fast-glob-3.2.4.tgz#d20aefbf99579383e7f3cc66529158c9b98554d3"
   integrity sha512-kr/Oo6PX51265qeuCYsyGypiO5uJFgBS0jksyG7FUeCyQzNwYnzrNIMR1NXfkZXsMYXYLRAHgISHBz8gQcxKHQ==
@@ -6493,15 +7241,25 @@ growly@^1.3.0:
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
 grpc@^1.24.0:
+<<<<<<< HEAD
   version "1.24.4"
   resolved "https://registry.yarnpkg.com/grpc/-/grpc-1.24.4.tgz#9240a3ea33cfaf04cd32ce8346798709bbd6782d"
   integrity sha512-mHRAwuitCMuSHo1tp1+Zc0sz3cYa7pkhVJ77pkIXD5gcVORtkRiyW6msXYqTDT+35jazg98lbO3XzuTo2+XrcA==
+=======
+  version "1.24.3"
+  resolved "https://registry.yarnpkg.com/grpc/-/grpc-1.24.3.tgz#92efe28dfc1250dca179b8133e40b4f2341473d9"
+  integrity sha512-EDemzuZTfhM0hgrXqC4PtR76O3t+hTIYJYR5vgiW0yt2WJqo4mhxUqZUirzUQz34Psz7dbLp38C6Cl7Ij2vXRQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/bytebuffer" "^5.0.40"
     lodash.camelcase "^4.3.0"
     lodash.clone "^4.5.0"
     nan "^2.13.2"
+<<<<<<< HEAD
     node-pre-gyp "^0.16.0"
+=======
+    node-pre-gyp "^0.15.0"
+>>>>>>> prediktor-opc-ae
     protobufjs "^5.0.3"
 
 gud@^1.0.0:
@@ -6656,7 +7414,16 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
+<<<<<<< HEAD
 hoist-non-react-statics@3.3.2, hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
+=======
+hoist-non-react-statics@^2.3.1:
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
+  integrity sha512-rqcy4pJo55FTTLWt+bU8ukscqHeE/e9KWvsOW2b/a3afxQZhwkQdT1rPPCJ0rYXdj4vNcasY8zHTH+jF/qStxw==
+
+hoist-non-react-statics@^3.3.0, hoist-non-react-statics@^3.3.2:
+>>>>>>> prediktor-opc-ae
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==
@@ -6787,11 +7554,19 @@ humanize@0.0.9:
   integrity sha1-GZT/rs3+nEQe0r2sdFK3u0yeQaQ=
 
 hyphenate-style-name@^1.0.3:
+<<<<<<< HEAD
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.4.tgz#691879af8e220aea5750e8827db4ef62a54e361d"
   integrity sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==
 
 iconv-lite@0.4, iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@^0.4.4:
+=======
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/hyphenate-style-name/-/hyphenate-style-name-1.0.3.tgz#097bb7fa0b8f1a9cf0bd5c734cf95899981a9b48"
+  integrity sha512-EcuixamT82oplpoJ2XU4pDtKGWQ7b00CD9f1ug9IaQ3p1bkHMiKCZ9ut9QDI6qsa6cpUuB+A/I+zLtdNK4n2DQ==
+
+iconv-lite@0.4, iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
+>>>>>>> prediktor-opc-ae
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
@@ -6839,7 +7614,11 @@ ignore@^4.0.6:
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
 
+<<<<<<< HEAD
 ignore@^5.1.1, ignore@^5.1.4:
+=======
+ignore@^5.1.1:
+>>>>>>> prediktor-opc-ae
   version "5.1.8"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz#f150a8b50a34289b33e22f5889abd4d8016f0e57"
   integrity sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==
@@ -7017,6 +7796,28 @@ inquirer@^6.3.1:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
+<<<<<<< HEAD
+=======
+inquirer@^7.0.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.2.0.tgz#63ce99d823090de7eb420e4bb05e6f3449aa389a"
+  integrity sha512-E0c4rPwr9ByePfNlTIB8z51kK1s2n6jrHuJeEHENl/sbq2G/S1auvibgEwNR4uSyiU+PiYHqSwsgGiXjG8p5ZQ==
+  dependencies:
+    ansi-escapes "^4.2.1"
+    chalk "^3.0.0"
+    cli-cursor "^3.1.0"
+    cli-width "^2.0.0"
+    external-editor "^3.0.3"
+    figures "^3.0.0"
+    lodash "^4.17.15"
+    mute-stream "0.0.8"
+    run-async "^2.4.0"
+    rxjs "^6.5.3"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+    through "^2.3.6"
+
+>>>>>>> prediktor-opc-ae
 invariant@^2.2.2, invariant@^2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.4.tgz#610f3c92c9359ce1db616e538008d23ff35158e6"
@@ -7099,10 +7900,17 @@ is-buffer@^1.1.5:
   resolved "https://registry.yarnpkg.com/is-buffer/-/is-buffer-1.1.6.tgz#efaa2ea9daa0d7ab2ea13a97b2b8ad51fefbe8be"
   integrity sha512-NcdALwpXkTm5Zvvbk7owOUSvVvBKDgKP5/ewfXEznmQFfs4ZRmanOeKBTjRVjka3QFoN6XJ+9F3USqfHqTaU5w==
 
+<<<<<<< HEAD
 is-callable@^1.1.3, is-callable@^1.1.4, is-callable@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/is-callable/-/is-callable-1.2.2.tgz#c7c6715cd22d4ddb48d3e19970223aceabb080d9"
   integrity sha512-dnMqspv5nU3LoewK2N/y7KLtxtakvTuaCsU9FU50/QDmdbHNy/4/JuRtMHqRU22o3q+W89YQndQEeCVwK+3qrA==
+=======
+is-callable@^1.1.3, is-callable@^1.1.4, is-callable@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/is-callable/-/is-callable-1.2.0.tgz#83336560b54a38e35e3a2df7afd0454d691468bb"
+  integrity sha512-pyVD9AaGLxtg6srb2Ng6ynWJqkHU9bEM087AKck0w8QwDarTfNcpIYoU8x8Hv2Icm8u6kFJM18Dag8lyqGkviw==
+>>>>>>> prediktor-opc-ae
 
 is-ci@^2.0.0:
   version "2.0.0"
@@ -7262,6 +8070,7 @@ is-mobile@^2.1.0:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/is-mobile/-/is-mobile-2.2.2.tgz#f6c9c5d50ee01254ce05e739bdd835f1ed4e9954"
   integrity sha512-wW/SXnYJkTjs++tVK5b6kVITZpAZPtUrt9SF80vvxGiF/Oywal+COk1jlRkiVq15RFNEQKQY31TkV24/1T5cVg==
+<<<<<<< HEAD
 
 is-negative-zero@^2.0.0:
   version "2.0.1"
@@ -7272,6 +8081,8 @@ is-npm@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/is-npm/-/is-npm-4.0.0.tgz#c90dd8380696df87a7a6d823c20d0b12bbe3c84d"
   integrity sha512-96ECIfh9xtDDlPylNPXhzjsykHsMJZ18ASpaWzQyBr4YRTcVjUvzaHayDAES2oU/3KpljhHUjtSRNiDwi0F0ig==
+=======
+>>>>>>> prediktor-opc-ae
 
 is-number@^3.0.0:
   version "3.0.0"
@@ -7312,10 +8123,17 @@ is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   dependencies:
     isobject "^3.0.1"
 
+<<<<<<< HEAD
 is-regex@^1.0.4, is-regex@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.1.1.tgz#c6f98aacc546f6cec5468a07b7b153ab564a57b9"
   integrity sha512-1+QkEcxiLlB7VEyFtyBg94e08OAsvq7FUBgApTq/w2ymCLyKJgDPsybBENVtA7XCQEgEXxKPonG+mvYRxh/LIg==
+=======
+is-regex@^1.0.4, is-regex@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/is-regex/-/is-regex-1.1.0.tgz#ece38e389e490df0dc21caea2bd596f987f767ff"
+  integrity sha512-iI97M8KTWID2la5uYXlkbSDQIg4F6o1sYboZKKTDpnDQMLtUL86zxhgDet3Q2SriaYsyGqZ6Mn2SjbRKeLHdqw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     has-symbols "^1.0.1"
 
@@ -7570,6 +8388,7 @@ jest-coverage-badges@^1.1.2:
   dependencies:
     mkdirp "0.5.1"
 
+<<<<<<< HEAD
 jest-diff@*, jest-diff@^26.0.0:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-26.6.2.tgz#1aa7468b52c3a68d7d5c5fdcdfcd5e49bd164394"
@@ -7579,6 +8398,27 @@ jest-diff@*, jest-diff@^26.0.0:
     diff-sequences "^26.6.2"
     jest-get-type "^26.3.0"
     pretty-format "^26.6.2"
+=======
+jest-diff@*:
+  version "26.1.0"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-26.1.0.tgz#00a549bdc936c9691eb4dc25d1fbd78bf456abb2"
+  integrity sha512-GZpIcom339y0OXznsEKjtkfKxNdg7bVbEofK8Q6MnevTIiR1jNhDWKhRX6X0SDXJlwn3dy59nZ1z55fLkAqPWg==
+  dependencies:
+    chalk "^4.0.0"
+    diff-sequences "^26.0.0"
+    jest-get-type "^26.0.0"
+    pretty-format "^26.1.0"
+
+jest-diff@^24.9.0:
+  version "24.9.0"
+  resolved "https://registry.yarnpkg.com/jest-diff/-/jest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
+  integrity sha512-qMfrTs8AdJE2iqrTp0hzh7kTd2PQWrsFyj9tORoKmu32xjPjeE4NyjVRDz8ybYwqS2ik8N4hsIpiVTyFeo2lBQ==
+  dependencies:
+    chalk "^2.0.1"
+    diff-sequences "^24.9.0"
+    jest-get-type "^24.9.0"
+    pretty-format "^24.9.0"
+>>>>>>> prediktor-opc-ae
 
 jest-diff@^25.5.0:
   version "25.5.0"
@@ -8028,9 +8868,15 @@ jquery@3.5.1:
   integrity sha512-XwIBPqcMn57FxfT+Go5pzySnm4KWkT1Tv7gjrpT1srtf8Weynl6R273VJ5GjkRb51IzMp5nbaPjJXMWeju2MKg==
 
 js-base64@^2.1.8:
+<<<<<<< HEAD
   version "2.6.4"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.6.4.tgz#f4e686c5de1ea1f867dbcad3d46d969428df98c4"
   integrity sha512-pZe//GGmwJndub7ZghVHz7vjb2LgC1m8B07Au3eYqeqv9emhESByMXxaEgkUkEqJe87oBbSniGYoQNIBklc7IQ==
+=======
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.6.2.tgz#cf9301bc5cc756892a9a6c8d7138322e5944fb0d"
+  integrity sha512-1hgLrLIrmCgZG+ID3VoLNLOSwjGnoZa8tyrUdEteMeIzsT6PH7PMLyUvbDwzNE56P3PNxyvuIOx4Uh2E5rzQIw==
+>>>>>>> prediktor-opc-ae
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
@@ -8192,6 +9038,7 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+<<<<<<< HEAD
 jsrsasign@^10.1.4:
   version "10.1.4"
   resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-10.1.4.tgz#8fca72f4bce9b0cb24fe3390df60a5b4a059b446"
@@ -8274,6 +9121,82 @@ keyv@^3.0.0:
   integrity sha512-9ykJ/46SN/9KPM/sichzQ7OvXyGDYKGTaDlKMGCAlg2UK8KRy4jb0d8sFc+0Tt0YYnThq8X2RZgCg74RPxgcVA==
   dependencies:
     json-buffer "3.0.0"
+=======
+jsrsasign@^8.0.15:
+  version "8.0.20"
+  resolved "https://registry.yarnpkg.com/jsrsasign/-/jsrsasign-8.0.20.tgz#37d8029c9d8f794d8ac8d8998bce319921491f11"
+  integrity sha512-JTXt9+nqdynIB8wFsS6e8ffHhIjilhywXwdaEVHSj9OVmwldG2H0EoCqkQ+KXkm2tVqREfH/HEmklY4k1/6Rcg==
+
+jss-plugin-camel-case@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-camel-case/-/jss-plugin-camel-case-10.3.0.tgz#ae4da53b39a6e3ea94b70a20fc41c11f0b87386a"
+  integrity sha512-tadWRi/SLWqLK3EUZEdDNJL71F3ST93Zrl9JYMjV0QDqKPAl0Liue81q7m/nFUpnSTXczbKDy4wq8rI8o7WFqA==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    hyphenate-style-name "^1.0.3"
+    jss "^10.3.0"
+
+jss-plugin-default-unit@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-default-unit/-/jss-plugin-default-unit-10.3.0.tgz#cd74cf5088542620a82591f76c62c6b43a7e50a6"
+  integrity sha512-tT5KkIXAsZOSS9WDSe8m8lEHIjoEOj4Pr0WrG0WZZsMXZ1mVLFCSsD2jdWarQWDaRNyMj/I4d7czRRObhOxSuw==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    jss "^10.3.0"
+
+jss-plugin-global@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-global/-/jss-plugin-global-10.3.0.tgz#6b883e74900bb71f65ac2b19bea78f7d1e85af3f"
+  integrity sha512-etYTG/y3qIR/vxZnKY+J3wXwObyBDNhBiB3l/EW9/pE3WHE//BZdK8LFvQcrCO48sZW1Z6paHo6klxUPP7WbzA==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    jss "^10.3.0"
+
+jss-plugin-nested@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-nested/-/jss-plugin-nested-10.3.0.tgz#ae8aceac95e09c3d40c991ea32403fb647d9e0a8"
+  integrity sha512-qWiEkoXNEkkZ+FZrWmUGpf+zBsnEOmKXhkjNX85/ZfWhH9dfGxUCKuJFuOWFM+rjQfxV4csfesq4hY0jk8Qt0w==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    jss "^10.3.0"
+    tiny-warning "^1.0.2"
+
+jss-plugin-props-sort@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-props-sort/-/jss-plugin-props-sort-10.3.0.tgz#5b0625f87b6431a7969c56b0d8c696525969bfe4"
+  integrity sha512-boetORqL/lfd7BWeFD3K+IyPqyIC+l3CRrdZr+NPq7Noqp+xyg/0MR7QisgzpxCEulk+j2CRcEUoZsvgPC4nTg==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    jss "^10.3.0"
+
+jss-plugin-rule-value-function@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-rule-value-function/-/jss-plugin-rule-value-function-10.3.0.tgz#498b0e2bae16cb316a6bdb73fd783cf9604ba747"
+  integrity sha512-7WiMrKIHH3rwxTuJki9+7nY11r1UXqaUZRhHvqTD4/ZE+SVhvtD5Tx21ivNxotwUSleucA/8boX+NF21oXzr5Q==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    jss "^10.3.0"
+    tiny-warning "^1.0.2"
+
+jss-plugin-vendor-prefixer@^10.0.3:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss-plugin-vendor-prefixer/-/jss-plugin-vendor-prefixer-10.3.0.tgz#b09c13a4d05a055429d8a24e19cc01ce049f0ed4"
+  integrity sha512-sZQbrcZyP5V0ADjCLwUA1spVWoaZvM7XZ+2fSeieZFBj31cRsnV7X70FFDerMHeiHAXKWzYek+67nMDjhrZAVQ==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    css-vendor "^2.0.8"
+    jss "^10.3.0"
+
+jss@^10.0.3, jss@^10.3.0:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/jss/-/jss-10.3.0.tgz#2cf7be265f72b59c1764d816fdabff1c5dd18326"
+  integrity sha512-B5sTRW9B6uHaUVzSo9YiMEOEp3UX8lWevU0Fsv+xtRnsShmgCfIYX44bTH8bPJe6LQKqEXku3ulKuHLbxBS97Q==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    csstype "^2.6.5"
+    is-in-browser "^1.1.3"
+    tiny-warning "^1.0.2"
+>>>>>>> prediktor-opc-ae
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
@@ -8348,9 +9271,15 @@ less-loader@^5.0.0:
     pify "^4.0.1"
 
 less@^3.11.1:
+<<<<<<< HEAD
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/less/-/less-3.13.1.tgz#0ebc91d2a0e9c0c6735b83d496b0ab0583077909"
   integrity sha512-SwA1aQXGUvp+P5XdZslUOhhLnClSLIjWvJhmd+Vgib5BFIr9lMNlQwmwUNOjXThF/A0x+MCYYPeWEfeWiLRnTw==
+=======
+  version "3.11.3"
+  resolved "https://registry.yarnpkg.com/less/-/less-3.11.3.tgz#2d853954fcfe0169a8af869620bcaa16563dcc1c"
+  integrity sha512-VkZiTDdtNEzXA3LgjQiC3D7/ejleBPFVvq+aRI9mIj+Zhmif5TvFPM244bT4rzkvOCvJ9q4zAztok1M7Nygagw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     copy-anything "^2.0.1"
     tslib "^1.10.0"
@@ -8360,7 +9289,12 @@ less@^3.11.1:
     image-size "~0.5.0"
     make-dir "^2.1.0"
     mime "^1.4.1"
+<<<<<<< HEAD
     native-request "^1.0.5"
+=======
+    promise "^7.1.1"
+    request "^2.83.0"
+>>>>>>> prediktor-opc-ae
     source-map "~0.6.0"
 
 leven@^3.1.0:
@@ -8530,6 +9464,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
+<<<<<<< HEAD
 lodash@4.17.19:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
@@ -8539,6 +9474,12 @@ lodash@4.17.20, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.1.1, lodash@^4.16.5, lod
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
   integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
+=======
+lodash@4.17.15, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.1.1, lodash@^4.16.5, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@~4.17.10:
+  version "4.17.15"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
+  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+>>>>>>> prediktor-opc-ae
 
 log-symbols@^3.0.0:
   version "3.0.0"
@@ -8731,6 +9672,16 @@ memoize-one@^4.0.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-4.1.0.tgz#a2387c58c03fff27ca390c31b764a79addf3f906"
   integrity sha512-2GApq0yI/b22J2j9rhbrAlsHb0Qcz+7yWxeLG8h+95sl1XPUgeLimQSOdur4Vw7cUhrBHwaUZxWFZueojqNRzA==
+<<<<<<< HEAD
+=======
+
+memoizerific@^1.11.3:
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/memoizerific/-/memoizerific-1.11.3.tgz#7c87a4646444c32d75438570905f2dbd1b1a805a"
+  integrity sha1-fIekZGREwy11Q4VwkF8tvRsagFo=
+  dependencies:
+    map-or-similar "^1.5.0"
+>>>>>>> prediktor-opc-ae
 
 memory-fs@^0.4.1:
   version "0.4.1"
@@ -8995,6 +9946,7 @@ moment@2.24.0:
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 moment@2.x, moment@^2.24.0:
+<<<<<<< HEAD
   version "2.29.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
@@ -9008,6 +9960,11 @@ monaco-editor@0.20.0:
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.20.0.tgz#5d5009343a550124426cb4d965a4d27a348b4dea"
   integrity sha512-hkvf4EtPJRMQlPC3UbMoRs0vTAFAYdzFQ+gpMb8A+9znae1c43q8Mab9iVsgTcg/4PNiLGGn3SlDIa8uvK1FIQ==
+=======
+  version "2.27.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
+  integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
+>>>>>>> prediktor-opc-ae
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -9097,9 +10054,15 @@ natural-compare@^1.4.0:
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
 needle@^2.5.0:
+<<<<<<< HEAD
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/needle/-/needle-2.5.2.tgz#cf1a8fce382b5a280108bba90a14993c00e4010a"
   integrity sha512-LbRIwS9BfkPvNwNHlsA41Q29kL2L/6VaOJ0qisM5lLWsTV3nP15abO5ITL6L81zqFhzjRKDAYjpcBcwM0AVvLQ==
+=======
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/needle/-/needle-2.5.0.tgz#e6fc4b3cc6c25caed7554bd613a5cf0bac8c31c0"
+  integrity sha512-o/qITSDR0JCyCKEQ1/1bnUXMmznxabbwi/Y4WwJElf+evwJNFNwIDMCCt5IigFVxgeGBJESLohGtIS9gEzo1fA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     debug "^3.2.6"
     iconv-lite "^0.4.4"
@@ -9196,6 +10159,7 @@ node-notifier@^6.0.0:
     is-wsl "^2.1.1"
     semver "^6.3.0"
     shellwords "^0.1.1"
+<<<<<<< HEAD
     which "^1.3.1"
 
 node-opcua-address-space-for-conformance-testing@2.28.2:
@@ -9220,9 +10184,36 @@ node-opcua-address-space@2.28.2:
   integrity sha512-cOcWw2s/i/7YC70ywZMZoSs23aWcEEavC+IvMohJc97GgwBbRJJifXlYEjQLdP/0h8jE9OXOfdOq1MpWlDMWKQ==
   dependencies:
     "@types/lodash" "4.14.162"
+=======
+    which "^1.3.0"
+
+node-opcua-address-space-for-conformance-testing@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-address-space-for-conformance-testing/-/node-opcua-address-space-for-conformance-testing-2.7.0.tgz#b4099600089c5120f33ca03d4cf0c75e15a17e3f"
+  integrity sha512-NW57T5Jhf2KLVjKFbE1dvzOM8sZZNtYYWjpl9QRQJMEXctooNFH9Cl6j/fAWtS7dYrjaIuBhFN6oheISDfIiDw==
+  dependencies:
+    node-opcua-address-space "^2.7.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-data-access "^2.7.0"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-address-space@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-address-space/-/node-opcua-address-space-2.7.0.tgz#28e38c2ef965264f560fe3d31f1f471bba4ac315"
+  integrity sha512-cDBLlzEu0g1+NcKH3aGEUoiu23lYZVh2Aj6S7vxkLxVhX3+DKo028EjSWSYScQCv9XrYtat5YV73CcKLJpAnKQ==
+  dependencies:
+>>>>>>> prediktor-opc-ae
     async "^3.2.0"
     chalk "^4.1.0"
     dequeue "^1.0.5"
+<<<<<<< HEAD
     lodash "4.17.20"
     node-opcua-assert "2.22.0"
     node-opcua-basic-types "2.28.0"
@@ -9252,10 +10243,43 @@ node-opcua-address-space@2.28.2:
     node-opcua-variant "2.28.1"
     node-opcua-xml2json "2.28.0"
     pretty-error "^2.1.2"
+=======
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-client-dynamic-extension-object "^2.7.0"
+    node-opcua-common "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-data-access "^2.7.0"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-object-registry "^2.6.1"
+    node-opcua-pseudo-session "^2.7.0"
+    node-opcua-schemas "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-call "^2.7.0"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-history "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-service-write "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    node-opcua-xml2json "^2.7.0"
+    pretty-error "^2.1.1"
+>>>>>>> prediktor-opc-ae
     set-prototype-of "^1.0.0"
     thenify "^3.3.1"
     xml-writer "^1.7.0"
 
+<<<<<<< HEAD
 node-opcua-aggregates@2.28.2:
   version "2.28.2"
   resolved "https://registry.yarnpkg.com/node-opcua-aggregates/-/node-opcua-aggregates-2.28.2.tgz#33616c06a6cb3ce4a6be23cf4417c7aa12241f83"
@@ -9318,12 +10342,80 @@ node-opcua-certificate-manager@2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/node-opcua-certificate-manager/-/node-opcua-certificate-manager-2.28.0.tgz#b8f13c58d402ccecdf48cac2ff89db0109fabdcc"
   integrity sha512-9iWJMmnik/KRlqHijJwlG34HVzqGT0U5eE99eEt2PBDA9bhCAa8qj6xq7yn7xjXX55UzqQryIzHBBKiRJpo9NQ==
+=======
+node-opcua-aggregates@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-aggregates/-/node-opcua-aggregates-2.7.0.tgz#3a2169fa5803df7d61e73b4e3ba43ead34d64a82"
+  integrity sha512-U7u/2ybUgHbrSPY0NzXDGcdMscxUdv081Z3ZweNBhejVX2b/mV/Cxqb9BFH4s26vjTsJBxVBR/V5HPfks6wDdg==
+  dependencies:
+    "@types/async" "^3.2.2"
+    node-opcua-address-space "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-nodesets "^2.6.4"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-service-history "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+
+node-opcua-assert@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-assert/-/node-opcua-assert-2.6.1.tgz#b9523ad059b563a2f7d949d6305573466bda8bfe"
+  integrity sha512-lmvEMvr3BI7+JrYw7+rYwtD/0Dq0pGndlVCb6UlnX0Ec/RZ5EUPhYsIwzKeLq3r6GqJFGHO2cysgpOSOwN+SLg==
+  dependencies:
+    better-assert "^1.0.2"
+    chalk "^4.0.0"
+    pretty-error "^2.1.1"
+
+node-opcua-basic-types@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-basic-types/-/node-opcua-basic-types-2.7.0.tgz#03afc7fa9608b29815ca9508b15755f3fb018012"
+  integrity sha512-8MypyOVRer5ZJvDg6VpI2MG0gzxal7nwHDoZ5iSs9tR4CTbxXT/AVX5kn97iYzVfjixjAkOxvgRaGpfCRPCdxg==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-guid "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-binary-stream@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-binary-stream/-/node-opcua-binary-stream-2.6.1.tgz#431eba0a8252ae58c6ff95e8bcfed3bf62ee0913"
+  integrity sha512-qRJmGCRQoWgxjsLt0WrjQDSx8XnzhM7LO3HMrYH0/10rHazYwVH+AyK6M9gepATcPpuJC2I9fQtARrU2hLWckw==
+  dependencies:
+    colors "^1.4.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-buffer-utils "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-buffer-utils@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-buffer-utils/-/node-opcua-buffer-utils-2.6.1.tgz#5cf6c6f4c35f8188449e7e186090225840d19b2d"
+  integrity sha512-FAkvbNcOM5GXmpyy+GBgdXYlLQ9iIC4mVohfC37BpYTk24P61z6/tebnCoOWr8q/8AdcKYi5zCWIMEdkaB2QNQ==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+
+node-opcua-certificate-manager@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-certificate-manager/-/node-opcua-certificate-manager-2.7.0.tgz#e071e09a609fa07b0728877183a419a3f25a6f22"
+  integrity sha512-YkcPjwxhh7WwH/NmLe+HXPIPDdZd4MZr5gvy8qk8J+xYDuswWgjYC8iLuMJLzgYLyCjGtZj2BQGD4ygOF4xl+A==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@types/mkdirp" "0.5.2"
     chalk "^4.1.0"
     delayed "^2.0.0"
     env-paths "^2.2.0"
     mkdirp "0.5.5"
+<<<<<<< HEAD
     node-opcua-assert "2.22.0"
     node-opcua-basic-types "2.28.0"
     node-opcua-buffer-utils "2.28.0"
@@ -9422,10 +10514,115 @@ node-opcua-client@2.28.2:
     "@types/async" "^3.2.3"
     "@types/once" "^1.4.0"
     "@types/underscore" "^1.10.24"
+=======
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-common "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-debug "^2.6.1"
+    node-opcua-pki "^2.0.3"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    once "^1.4.0"
+    thenify "^3.3.0"
+    underscore "^1.10.2"
+
+node-opcua-chunkmanager@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-chunkmanager/-/node-opcua-chunkmanager-2.7.0.tgz#ecdc055cef606ed37c7725533742d76900122590"
+  integrity sha512-RvYClH3sRxjrQJj/bKe6XVrm9hOhJfIpmeFr3sP7mvHBYTjHsTGP3Dg5Ecr4y7Q3BxiOtfGnPmuhM11rAB5gIw==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-packet-assembler "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-client-crawler@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-client-crawler/-/node-opcua-client-crawler-2.7.0.tgz#2cc4dd4fb86d92ce1ce620f980070dddb0d5a237"
+  integrity sha512-t564gb9vsNNvCJVcva8zD3xjKymeLO/mx0FxzQRLjzWXYFVuOcz9/8eAfu09muZthk75iv47EWIN8jtlz7wzwQ==
+  dependencies:
+    async "^3.2.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-common "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-client-dynamic-extension-object@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-client-dynamic-extension-object/-/node-opcua-client-dynamic-extension-object-2.7.0.tgz#3585df863ff88e1975f89981e2dd5b074f92cd5d"
+  integrity sha512-Lff9RC4+weLbOqzEPQ03GI23Jzxmgg57h7lowliKrUjqO6lHlnVOv/X6MCyHAluOStgUNfXUYVUhCZ46DXGWog==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-pseudo-session "^2.7.0"
+    node-opcua-schemas "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-variant "^2.7.0"
+
+node-opcua-client-proxy@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-client-proxy/-/node-opcua-client-proxy-2.7.0.tgz#b41c8a58792799c83996009320ac84b9fa6832c0"
+  integrity sha512-6VnvV85B2Y5wf+Ii57YO2kTolC2MCHJFduGxVckIGdfiNEz67pseOe4aEDKw02iM6EtMfo7JA8ffDXsxYDIsjg==
+  dependencies:
+    async "^3.2.0"
+    node-opcua-address-space "^2.7.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-client "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-pseudo-session "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-call "^2.7.0"
+    node-opcua-service-read "^2.7.0"
+    node-opcua-service-subscription "^2.7.0"
+    node-opcua-service-write "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-client@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-client/-/node-opcua-client-2.7.0.tgz#e95361862ee866e78fde172a4d481ca120a65566"
+  integrity sha512-+W9ycuHQsVCZopL2ybt6usPhnegATYWusqC+dChriwplmIIqiX4mVuV1KvjfBnJhF2KoG1kXEttT3MvFp3sUPQ==
+  dependencies:
+    "@types/async" "^3.2.2"
+    "@types/once" "^1.4.0"
+    "@types/underscore" "^1.10.0"
+>>>>>>> prediktor-opc-ae
     async "^3.2.0"
     callbackify "^1.1.0"
     chalk "^4.1.0"
     delayed "^2.0.0"
+<<<<<<< HEAD
     node-opcua-assert "2.22.0"
     node-opcua-basic-types "2.28.0"
     node-opcua-buffer-utils "2.28.0"
@@ -9492,12 +10689,83 @@ node-opcua-crypto@^1.4.4, node-opcua-crypto@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/node-opcua-crypto/-/node-opcua-crypto-1.6.0.tgz#51bc5fe22cad7406598ce0be6a17c5c531db6697"
   integrity sha512-fwjlUkCf6Oy/dz5FElBGvairDJNsuDPx1UR/2bAjdLFmMPYXIenR8bWg8HTHh7LNvWbhweZcMGnepcl6N79Tjg==
+=======
+    node-opcua-aggregates "^2.7.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-certificate-manager "^2.7.0"
+    node-opcua-client-dynamic-extension-object "^2.7.0"
+    node-opcua-common "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-hostname "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-object-registry "^2.6.1"
+    node-opcua-pki "^2.0.3"
+    node-opcua-pseudo-session "^2.7.0"
+    node-opcua-schemas "^2.7.0"
+    node-opcua-secure-channel "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-call "^2.7.0"
+    node-opcua-service-discovery "^2.7.0"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-history "^2.7.0"
+    node-opcua-service-query "^2.7.0"
+    node-opcua-service-read "^2.7.0"
+    node-opcua-service-register-node "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-service-session "^2.7.0"
+    node-opcua-service-subscription "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-service-write "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    once "^1.4.0"
+    thenify "^3.3.0"
+    underscore "^1.10.2"
+
+node-opcua-common@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-common/-/node-opcua-common-2.7.0.tgz#f513dd29f2b513e0cd4d47804ee95087dc2884b3"
+  integrity sha512-ORgUt0Q98fj4UDksrw3pHKH7CMA49Jci7/GCOt+/D3i+uRiAOeE5kAEz9QNgEJZY5QfQWx4oUmFXRaFGTCx5IA==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-constants@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-constants/-/node-opcua-constants-2.6.1.tgz#5deafcf805aa77f4cac57fea415926518d922267"
+  integrity sha512-4KIzEf6mK/q02WlM9eMRo3JUbW+9BtJpbmDSfy1F9dr0wVV7wjTGf92yE/rZ0SChlBufiPs18zlQOhYG6GTW5Q==
+
+node-opcua-crypto@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/node-opcua-crypto/-/node-opcua-crypto-1.3.2.tgz#6910fd81179dae8e69b404ed48636db8f3130d5f"
+  integrity sha512-cS3JOVwaF49aFHWomgLwKltpZ3Ln7h1kn19yzPl7SE2xljH/1dn5dWMtsXe42AEWta7YDNaqvpys/AcbWuWTng==
+>>>>>>> prediktor-opc-ae
   dependencies:
     better-assert "^1.0.2"
     chalk "^4.1.0"
     hexy "^0.3.1"
     jsrsasign "^10.1.4"
     sshpk "^1.16.1"
+<<<<<<< HEAD
 
 node-opcua-data-access@2.28.1:
   version "2.28.1"
@@ -9548,18 +10816,85 @@ node-opcua-date-time@2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/node-opcua-date-time/-/node-opcua-date-time-2.28.0.tgz#2f4cb0fcae506a8a6afeaacc1e6d18def5e65b43"
   integrity sha512-iKNw7KDJIudgq10yBxl8WgRcRWKrYIkCgezgSXPsjPVdBvYwVLXt99UFrSSTAJAuTSfNPgqQ7sa3gb1J52AeSg==
+=======
+    underscore "^1.10.2"
+
+node-opcua-data-access@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-data-access/-/node-opcua-data-access-2.7.0.tgz#ebe6fa2bfba2be30b55afb1ea8c9ee5af17bacc1"
+  integrity sha512-rNRosKW0EIaQnT+sCvYGs16/n+FL71Tc+yARxaMJf9jeDmUw5TsBdbXANOdaUNyoHsSy3kYfjtjfS0CC3u5K0Q==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-data-model@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-data-model/-/node-opcua-data-model-2.7.0.tgz#09aeefc1e5b4b1930fa6f98ab7c1f8d8a36b2fed"
+  integrity sha512-520JWtdqYEDnDZt9T2HpSKwwb7mVXpjG5SB7xuMTW7kAQP7g3J8wbXCozIuDHUCXs8AW0gLns5VxJN0D61fO8w==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-data-value@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-data-value/-/node-opcua-data-value-2.7.0.tgz#e3d4f3e6946047a798d85994bd2a376172b84d90"
+  integrity sha512-pI+iSqS0zGw8PF4+i27P9RpP/cNGt5+ruDIdPZWsfhiCncAPFTTnBB7KAje+OYL+UXVYg4vhkJKkkn+/bhj99g==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-date-time@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-date-time/-/node-opcua-date-time-2.6.1.tgz#8ba81babfc45d9b5f5c82fc07bb2cbd8d2873482"
+  integrity sha512-LU2Ml4SrEV5ln+KQvKA5b23BZMWwTczECps61Ar2Rylhw6u4H/XDRCTN+2u/1Pnln8WRn41leUkXm8f1YitsYQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     browser-process-hrtime "^1.0.0"
     long "^4.0.0"
+<<<<<<< HEAD
     node-opcua-assert "2.22.0"
 
 node-opcua-debug@2.28.0:
   version "2.28.0"
   resolved "https://registry.yarnpkg.com/node-opcua-debug/-/node-opcua-debug-2.28.0.tgz#4e409fd90312c22e2039a74d298b71fd3045a3bb"
   integrity sha512-ortRaLOHHgJIaxLaAuoUTN5rkjniafy/5bQksUvNriwT6S8A3M1d1l2kA21n3QTRGGT3tRnYLJ45HaZuO9uJUA==
+=======
+    node-opcua-assert "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-debug@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-debug/-/node-opcua-debug-2.6.1.tgz#2e5a8a5d3cfa887e44fa334b80255247a30843ec"
+  integrity sha512-ByW1lDztTl7cODGmWJAybkTi3Ur4TonSZAkEb+mi2W5nsinf5UI2/v6ezSR1YbCkx9JMtQl6a2YigEJVZdxRRQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     chalk "^4.1.0"
     hexy "^0.3.0"
+<<<<<<< HEAD
     node-opcua-assert "2.22.0"
     node-opcua-buffer-utils "2.28.0"
 
@@ -9807,10 +11142,266 @@ node-opcua-server@2.28.3:
   integrity sha512-u1wmipdL8qb/B09syX/uQ2lX/rNml9GJq2ruZKdmOVLbr0zfl9sfgQqWKgggP0D7TR6AX7mu7jdgw6RiW70PoA==
   dependencies:
     "@types/underscore" "^1.10.24"
+=======
+    node-opcua-assert "^2.6.1"
+    node-opcua-buffer-utils "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-enum@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-enum/-/node-opcua-enum-2.6.1.tgz#b5850e323cacb6cf99026564c414afcdfa8a18df"
+  integrity sha512-aoSBWkdOCBTeev8/24gtWt3AOs2Hw/6D1jnq3hwVigveShDWrOgMWce8ZGZNdj29CC89m18PF7hytXmz54bpdw==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+
+node-opcua-extension-object@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-extension-object/-/node-opcua-extension-object-2.7.0.tgz#12a617a3af34c5d3143345d424db6bef9e5bd624"
+  integrity sha512-gFbAVV9hxDRmKcXUB5V4Vpdv6lqBNesfFb37k0gNet0ZdbRY+Bnbzq33hP7RT+OCk80GAqHxiCG6G+eD1z2lVg==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+
+node-opcua-factory@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-factory/-/node-opcua-factory-2.7.0.tgz#cb044f3f1e788a406e89689ed2d03f10dec0f151"
+  integrity sha512-TG/o3hc+bRdm3v/pvB+jg37iuPO6jVtJ6c5Dt7vcxGdRlCn4U3r4gl0kNkkXRQzpqHWYAAFv1stXXJX+0dOj2w==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-guid "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-generator@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-generator/-/node-opcua-generator-2.7.0.tgz#a685a5f8494b77c49f1215e9f40be20d6d8b8c7e"
+  integrity sha512-StjQ82JZcpTLqfMOMv6wr9BCbmaoaNcuNBEIqUf/Z/+RO7I5ypIlXcpAd8aBkroWU/B6sh86Y5UmTPmsXb+UZw==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-constants "^2.6.1"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-guid "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-schemas "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-xml2json "^2.7.0"
+    prettier "^2.0.5"
+    typescript "^3.9.2"
+    underscore "^1.10.2"
+
+node-opcua-guid@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-guid/-/node-opcua-guid-2.6.1.tgz#17c07aa1dc7d9e21e5be540c624a7efd06c33b30"
+  integrity sha512-o9OvHQS6A5RhxtCVZ7CHY6fIv4A/bI0RXuVgbBFSTFWERZnsPPgqERBTfi/Vp+XNYKlQxCPNg6DAO0xx/aiJQg==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+
+node-opcua-hostname@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-hostname/-/node-opcua-hostname-2.6.1.tgz#d0d22214a5765964e608e5a8162042b5facbea2a"
+  integrity sha512-cE20baaVXugOo0Rke1Ak+7eg5kADF60dxmtRzeuHnd2cqBg9Ovo6DoO6Cfayp+yfNEERVRIYP3C0E3yazXxSew==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+
+node-opcua-nodeid@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-nodeid/-/node-opcua-nodeid-2.6.1.tgz#6d06705397adfeaf99e7080e7cf6cbd107bca621"
+  integrity sha512-Sr50AKqtmt3jgLVLKIBEH5MPqTHPM/TeURq2fJOyM2KERgKVbcp4amTwfcC8Uvmj8+ltNwl4xTXLn5QKadfs9Q==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-constants "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-guid "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-nodesets@^2.6.4:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/node-opcua-nodesets/-/node-opcua-nodesets-2.6.4.tgz#b76f09e0afbcdaae4a39b0f5331a410f7ccbe9dc"
+  integrity sha512-GUFDDqT+m+6QViORWu9hZDJZrNwq9bdTRxb3PzXG83j9iNjc2aD22eLtsfhS/4Y3faFwy8sNi5a5J+al28ZpCg==
+
+node-opcua-numeric-range@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-numeric-range/-/node-opcua-numeric-range-2.7.0.tgz#590c85402794614e4544450306bbf5bb1b99b3e8"
+  integrity sha512-yyam3OL+srrzYhPF+tWSraKIQbkkDgHwY58Eng2mWmlFRWlrgZaJe4mQTyPKo1XPsUPmzvWL83KeMYfzQjOWRQ==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-object-registry@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-object-registry/-/node-opcua-object-registry-2.6.1.tgz#8bc4671f23e48fe2cb105c9b6849d3d6f84c0111"
+  integrity sha512-TVONFjJ9/5TGGVLzBGPPNgl2u/zFVlkGLht5mOlzkF6/oQg3PNN+Fbkg32YlxoTGSLbvFh3BvaCj91FkibYQig==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-packet-analyzer@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-packet-analyzer/-/node-opcua-packet-analyzer-2.7.0.tgz#60096653f345fbfd0b809cf15833325d8a779098"
+  integrity sha512-skEoO1jOKjQ7/qqiYxlpbJv0aMMpvnQii4EK7UCBExJoKSCNhuwRr3hBTp8gnuP+FaxHoV3rW2tkvhH+NSf4+Q==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-packet-assembler@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-packet-assembler/-/node-opcua-packet-assembler-2.6.1.tgz#817f4ca53f17330d56dfeb24bb93bd7dd5a22852"
+  integrity sha512-zdhMDUQiI7O3iLzu9g1z+AJwJ29szJ1AKK6l0IDeQKX3zvu0yUqeozqVuAoH7AfTzz5u/T/6Px+Z2lzaoHXOLA==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-pki@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/node-opcua-pki/-/node-opcua-pki-2.0.3.tgz#d73394dac62712b88f529c8cb3cd4d2b05b354b4"
+  integrity sha512-mv4bEpSHka/wyRdRUFFYP5BjkXbNBkR0gmWhEuX5aXRn3gp5JAve8NMSyzjeZqfKYuGGK1cm/4GvuM01LENepg==
+  dependencies:
+    "@types/rimraf" "^3.0.0"
+    async "^3.2.0"
+    better-assert "^1.0.2"
+    byline "^5.0.0"
+    chalk "^4.0.0"
+    chokidar "^3.4.0"
+    cli-spinner "^0.2.10"
+    cli-table "^0.3.1"
+    del "^5.1.0"
+    node-opcua-crypto "^1.3.2"
+    progress "^2.0.3"
+    rimraf "^3.0.2"
+    thenify "^3.3.0"
+    underscore "^1.10.2"
+    walk "^2.3.14"
+    wget-improved "^3.2.0"
+    yargs "^15.3.1"
+    yauzl "^2.10.0"
+
+node-opcua-pseudo-session@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-pseudo-session/-/node-opcua-pseudo-session-2.7.0.tgz#edb7a3226a4cd8e96091f39cdf8acedfa4b91d2d"
+  integrity sha512-EnCJXDTqHVX2bc9HzXz+S7e6veg1vbcoLRfUoSZ9JnVwq6VyZ7kRbsdwqvHEktC3LJIYv1i4Dz37DhbPLyKYxA==
+  dependencies:
+    async "^3.2.0"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-call "^2.7.0"
+    node-opcua-service-read "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-service-write "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-schemas@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-schemas/-/node-opcua-schemas-2.7.0.tgz#fa2af0fada7cfc3278ead99e2b7468d504eeada4"
+  integrity sha512-qjo58zcIICHpiwnn63vMngs7RyhjUbFiWJlV0tgYqa0tSsmpVqBiGluq6xsg+QTj2wD8dBDwPIlkWloeQxbK6A==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    node-opcua-xml2json "^2.7.0"
+    thenify "^3.3.0"
+
+node-opcua-secure-channel@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-secure-channel/-/node-opcua-secure-channel-2.7.0.tgz#1d425ea07ee4e92c34c4c1cad54e9a9150d63e7a"
+  integrity sha512-Yt5T7S5GZ51o1hpmzCgYWGY/KfuMrTIilS+2IqML7IcKdyCTvS9H6MIN+fhds8urwq2zP1QGplUVWnNIM2SjuQ==
+  dependencies:
+    backoff "^2.5.0"
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-certificate-manager "^2.7.0"
+    node-opcua-chunkmanager "^2.7.0"
+    node-opcua-common "^2.7.0"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-object-registry "^2.6.1"
+    node-opcua-packet-analyzer "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-transport "^2.7.0"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-server-discovery@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-server-discovery/-/node-opcua-server-discovery-2.7.0.tgz#43fe7aa2f91125053cff3727d90a2e7104395bbc"
+  integrity sha512-v+CkzakDlkJ4jZwW3G/lGrQmOymEk3KrqDwfHynYnelCT0S+XVuOCE6p3UfWxkwbBpDvM7EpF9P7eIh+rXOB1Q==
+  dependencies:
+    "@types/bonjour" "^3.5.6"
+    bonjour "^3.5.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-certificate-manager "^2.7.0"
+    node-opcua-common "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-hostname "^2.6.1"
+    node-opcua-pki "^2.0.3"
+    node-opcua-secure-channel "^2.7.0"
+    node-opcua-server "^2.7.0"
+    node-opcua-service-discovery "^2.7.0"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-server@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-server/-/node-opcua-server-2.7.0.tgz#ab0c331c858e57322430c1460897f82e35f45262"
+  integrity sha512-Z4/k8EJIRIioGxgZGE91Zt5Z4S0Os5F3qg3XMQ+4RLGqDx5F1RnPJieVKVXC5yleJ2mrpedm7jhbLsI9Mn75cA==
+  dependencies:
+>>>>>>> prediktor-opc-ae
     async "^3.2.0"
     bonjour "^3.5.0"
     browser-process-hrtime "^1.0.0"
     dequeue "^1.0.5"
+<<<<<<< HEAD
     node-opcua-address-space "2.28.2"
     node-opcua-assert "2.22.0"
     node-opcua-basic-types "2.28.0"
@@ -10253,6 +11844,468 @@ node-pre-gyp@^0.16.0:
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.16.0.tgz#238fa540364784e5015dfcdba78da3937e18dbdc"
   integrity sha512-4efGA+X/YXAHLi1hN8KaPrILULaUn2nWecFrn1k2I+99HpoyvcOGEbtcOxpDiUwPF2ZANMJDh32qwOUPenuR1g==
+=======
+    node-opcua-address-space "^2.7.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-certificate-manager "^2.7.0"
+    node-opcua-client "^2.7.0"
+    node-opcua-client-dynamic-extension-object "^2.7.0"
+    node-opcua-common "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-hostname "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-nodesets "^2.6.4"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-object-registry "^2.6.1"
+    node-opcua-pki "^2.0.3"
+    node-opcua-secure-channel "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-call "^2.7.0"
+    node-opcua-service-discovery "^2.7.0"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-history "^2.7.0"
+    node-opcua-service-node-management "^2.7.0"
+    node-opcua-service-query "^2.7.0"
+    node-opcua-service-read "^2.7.0"
+    node-opcua-service-register-node "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-service-session "^2.7.0"
+    node-opcua-service-subscription "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-service-write "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-browse@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-browse/-/node-opcua-service-browse-2.7.0.tgz#075f581a428bc2d6aa2779cdf9739b0c9c382f71"
+  integrity sha512-dJjA2K6upqkyaQhFF51qekJdRse04kv1kzlHMpG7YBjWjSAm1aQc/KZlRPJyji3Yk+lxcDeKzRHIBqvzYRBasA==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-call@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-call/-/node-opcua-service-call-2.7.0.tgz#12f653188b577797ef540105874525c2fec5646d"
+  integrity sha512-FTf4UcNuhZNRVHKcNfGSqrzAVUuNfh6Gh/TI1Z/DkFRjMO0AbYvQAL0kU7N1SMVYYSY5Jb4INKAfk7HpM2IY6A==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-discovery@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-discovery/-/node-opcua-service-discovery-2.7.0.tgz#06a9077eafe64481ec4b18c723ac0098b013f1ff"
+  integrity sha512-/egs8FB+PnZM1dZhJFMuUi2u19dNTw8A4bzXDlf27/IskNsjizbK0EmyFb26zkkYVny8y/oXwee/luM/FxKkRw==
+  dependencies:
+    "@types/bonjour" "^3.5.6"
+    bonjour "^3.5.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-endpoints@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-endpoints/-/node-opcua-service-endpoints-2.7.0.tgz#a1f2c866b203a703e7866553c7b5466f458c2c05"
+  integrity sha512-TlUrBCox58ih9hY3+J/KJdkms2L25aFiF94JLPU0kdKe6OnXV1r4mn9BNW4Fws5Vf8nn2k07hMy7mwE4xhVT7w==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-filter@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-filter/-/node-opcua-service-filter-2.7.0.tgz#314d00c5eff6e69ea1eb589e405f96e870662392"
+  integrity sha512-b/d969IRcuiiuQxxEEiGhs6WIWCIX6VE8HRNMH8DXsyND2WDHcq1E2PMBA0B3Lb5goNdA+MbiAZ89HvSIQPSXw==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-constants "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-history@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-history/-/node-opcua-service-history-2.7.0.tgz#7eba98ce4aa827e4655cfde688de59dcea8f0479"
+  integrity sha512-jVKqjeOTAG+lZZ5vGPPKLScNi21L3C0McDX9DnB6BjQ11NFz27imTUB/V5k1eBuNK2Epyrt7cb6QZWaHHB3N6Q==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-node-management@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-node-management/-/node-opcua-service-node-management-2.7.0.tgz#c16c4857f2f739919bf06fb3cebb9b4bd32d4fbc"
+  integrity sha512-m3YGbxpkaWl5LsUmA1ove0KouxCrzh+WtgPOlVZi7DvULaOYA+wJ1FOD36D2/kxAnytUT5Qaf0LZAD0g7UxPNA==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-query@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-query/-/node-opcua-service-query-2.7.0.tgz#3bc900b3f7cdf193c960ec013ade9062fe2fea96"
+  integrity sha512-pB05UpZ3OvYx284tDh/a5ev/DTLQPIQFsMrXp6jZMvZPFG9Gwej7JTYgYtFeNDdiuAZQ+H0ekZGs9jRdNE7yeQ==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-service-subscription "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-read@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-read/-/node-opcua-service-read-2.7.0.tgz#12b1206706ffe0a3a39edf75b49adc64d30e48d2"
+  integrity sha512-iHVjRGLaAopK94VeMKHWiDA5+jm4D6Xl7gubR61dO8slwHiNS3obfS2KN2t8MT0k0uSRwC63xxbVHjOf7xE+ww==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-register-node@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-register-node/-/node-opcua-service-register-node-2.7.0.tgz#3e948f024c22698f23e782f5e95b09d52d800b5c"
+  integrity sha512-i8LHZaS3qChyDvnoClKoL0sgqe8Rt/3GEav2VJyIt8PpWUm2m6y9Iu2+MjfD/Q0lw6qa113eHOEhugkQ0zWlxQ==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-secure-channel@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-secure-channel/-/node-opcua-service-secure-channel-2.7.0.tgz#765d222351203844e3cdaaea693dc96e8fe1eba2"
+  integrity sha512-vqDhsVorOghjqR1/6zTKkuGSD8IwSVyKw9ZF1NvpAD0puAJfu9KYL0g2zvnbRIBZ6Zn5ZwcMHmcUDOHigsY7Bg==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-session@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-session/-/node-opcua-service-session-2.7.0.tgz#d00bf896faad175824aa5c504d5cc35684dbd81c"
+  integrity sha512-pc76WLdbmdW+u+1cISPfW2raaeVMB8bbL7xiJduxKpMAKSie+P58oLVMU/aZ8ruEfitOxeDd+L60w3OSoeYlog==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-subscription@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-subscription/-/node-opcua-service-subscription-2.7.0.tgz#4b406adf093c72295a474ca11c65e03280016ae8"
+  integrity sha512-/NsDV4/XY3irYHXf/ghheidc8FSbguAHRMAIW/IoURx39nV8LIy+ex/riwiaHR8tC/RhVpE6F+WQA3+i/bUmVA==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-read "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-translate-browse-path@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-translate-browse-path/-/node-opcua-service-translate-browse-path-2.7.0.tgz#54c5e8e8e22612322a7c3d38fc13017190387eaf"
+  integrity sha512-nsfAr/7JJwUgIIioWXrK8Bis4gXPFntt4sT/bAtVolw8i+adeROI2hn76/L/RAzuhcOXMVe92GX0YndDEUK2kA==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-constants "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-service-write@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-service-write/-/node-opcua-service-write-2.7.0.tgz#839f614ccabc0ebd33ef01517d3ea0174e66cd14"
+  integrity sha512-VO+3qSwfbkUycCsJIXGXMulFWHGtx9WOjLV9Ac2Ay3v1ZsSNNioLtPomSu6HAmtFk+xHBOwHbL4teHbk6Dgg2g==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-types "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-status-code@^2.6.1:
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/node-opcua-status-code/-/node-opcua-status-code-2.6.1.tgz#fb0d6f131ece786106364c4206456b7939288334"
+  integrity sha512-wthKDuP8f7czyE8m9kADH/rw7RkSWmGLRFQXaj8tDcfbCnyj9uwgLYu7QZ4F4t286Tww9WzTCbZsBMJ/ctdLeQ==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-constants "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-transport@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-transport/-/node-opcua-transport-2.7.0.tgz#8e6dca51accd4e9d1f4f6fccb3243c2c542c15f2"
+  integrity sha512-mLoCL7Ba/xJkUWmvoAWr3VnRycKqMA/wwl7pCRrOEzO9e84tdmsZXbMrmIZI0yh3Djir+bcMAiVfc+6OxFT1+g==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-chunkmanager "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-object-registry "^2.6.1"
+    node-opcua-packet-assembler "^2.6.1"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-types@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-types/-/node-opcua-types-2.7.0.tgz#38474c8655cdc2dc3617043d173c2f14605bb922"
+  integrity sha512-uoBSEuvFgvOQSMt0QsD/imwaKw8Wyt9uKKqiIJi/lZVnJYar8YO9rs04WOFQGYdRQUv4MZ5uBrkpcXAaNKzmVQ==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-buffer-utils "^2.6.1"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-date-time "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-generator "^2.7.0"
+    node-opcua-guid "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-packet-analyzer "^2.7.0"
+    node-opcua-schemas "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-utils@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-utils/-/node-opcua-utils-2.7.0.tgz#53c1845b7475428e1b3cd5a0c0cbbc257072e624"
+  integrity sha512-R0x7oOV3no8ytiu2YPunYERb7YKETUJBZu5OG/DT4wilAoUyUxAHYw2Kh+fIoBIMbaubSU//5zjJ8ayCMQHdqg==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    underscore "^1.10.2"
+
+node-opcua-variant@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-variant/-/node-opcua-variant-2.7.0.tgz#f9b6493198402b5d800801b81d22b73fcce16f4a"
+  integrity sha512-sXUa1Jbv70wLUT0BBubwaK01EvkN9zF54VLgnQePKL+NT/VbLvdeZl166Ta9JQHK+iXZ0mTEtQPLmm07tqPQ4g==
+  dependencies:
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-enum "^2.6.1"
+    node-opcua-extension-object "^2.7.0"
+    node-opcua-factory "^2.7.0"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+
+node-opcua-vendor-diagnostic@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-vendor-diagnostic/-/node-opcua-vendor-diagnostic-2.7.0.tgz#851e3d357fb12068045c26f5ffe8037650d11b5c"
+  integrity sha512-Ea+B4TI/pw4f2PAykCZe4ZZ1nskVIg7xPOZIT5lH9t8GgqXjPsXxLdAthrMFHk8dL8eZVFcsOi4atQ1q54ukcg==
+  dependencies:
+    humanize "0.0.9"
+    node-opcua-address-space "^2.7.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-constants "^2.6.1"
+    node-opcua-server "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-variant "^2.7.0"
+
+node-opcua-xml2json@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua-xml2json/-/node-opcua-xml2json-2.7.0.tgz#62a8e3033f6e98a296bee5b9696eaa3cb61c85c4"
+  integrity sha512-sekRVVhjlP1jRMZUh07hi9pYDvHWV8ricAmdzbMCb1utbg8Bq2PW+orjwcV0eqQBYcVebI5sWYec0dnF337xdg==
+  dependencies:
+    bomstrip "^0.1.4"
+    ltx "^2.9.2"
+    node-opcua-assert "^2.6.1"
+    node-opcua-debug "^2.6.1"
+    node-opcua-utils "^2.7.0"
+    underscore "^1.10.2"
+    xml-writer "^1.7.0"
+
+node-opcua@^2.1.9:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/node-opcua/-/node-opcua-2.7.0.tgz#960d7d891f0d9b02030920caa94801a4047dce29"
+  integrity sha512-a+sb2iSzhGk1NV/JjFjm3mMvm32io0oraZRoyHvP7t7QmLEQT53yxRUjrU4h82oo2SKzgVjPi63rN9W9a4mKrQ==
+  dependencies:
+    chalk "^4.0.0"
+    node-opcua-address-space "^2.7.0"
+    node-opcua-address-space-for-conformance-testing "^2.7.0"
+    node-opcua-assert "^2.6.1"
+    node-opcua-basic-types "^2.7.0"
+    node-opcua-binary-stream "^2.6.1"
+    node-opcua-certificate-manager "^2.7.0"
+    node-opcua-client "^2.7.0"
+    node-opcua-client-crawler "^2.7.0"
+    node-opcua-client-proxy "^2.7.0"
+    node-opcua-common "^2.7.0"
+    node-opcua-constants "^2.6.1"
+    node-opcua-crypto "^1.3.2"
+    node-opcua-data-access "^2.7.0"
+    node-opcua-data-model "^2.7.0"
+    node-opcua-data-value "^2.7.0"
+    node-opcua-debug "^2.6.1"
+    node-opcua-enum "^2.6.1"
+    node-opcua-factory "^2.7.0"
+    node-opcua-hostname "^2.6.1"
+    node-opcua-nodeid "^2.6.1"
+    node-opcua-nodesets "^2.6.4"
+    node-opcua-numeric-range "^2.7.0"
+    node-opcua-packet-analyzer "^2.7.0"
+    node-opcua-secure-channel "^2.7.0"
+    node-opcua-server "^2.7.0"
+    node-opcua-server-discovery "^2.7.0"
+    node-opcua-service-browse "^2.7.0"
+    node-opcua-service-call "^2.7.0"
+    node-opcua-service-discovery "^2.7.0"
+    node-opcua-service-endpoints "^2.7.0"
+    node-opcua-service-filter "^2.7.0"
+    node-opcua-service-history "^2.7.0"
+    node-opcua-service-node-management "^2.7.0"
+    node-opcua-service-query "^2.7.0"
+    node-opcua-service-read "^2.7.0"
+    node-opcua-service-register-node "^2.7.0"
+    node-opcua-service-secure-channel "^2.7.0"
+    node-opcua-service-session "^2.7.0"
+    node-opcua-service-subscription "^2.7.0"
+    node-opcua-service-translate-browse-path "^2.7.0"
+    node-opcua-service-write "^2.7.0"
+    node-opcua-status-code "^2.6.1"
+    node-opcua-transport "^2.7.0"
+    node-opcua-types "^2.7.0"
+    node-opcua-utils "^2.7.0"
+    node-opcua-variant "^2.7.0"
+    node-opcua-vendor-diagnostic "^2.7.0"
+    semver "^7.3.2"
+
+node-pre-gyp@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.15.0.tgz#c2fc383276b74c7ffa842925241553e8b40f1087"
+  integrity sha512-7QcZa8/fpaU/BKenjcaeFF9hLz2+7S9AqyXFhlH/rilsQ/hPZKK32RtR5EQHJElgu+q5RfbJ34KriI79UWaorA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     detect-libc "^1.0.2"
     mkdirp "^0.5.3"
@@ -10265,12 +12318,19 @@ node-pre-gyp@^0.16.0:
     semver "^5.3.0"
     tar "^4.4.2"
 
+<<<<<<< HEAD
 node-releases@^1.1.52, node-releases@^1.1.67:
   version "1.1.67"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.67.tgz#28ebfcccd0baa6aad8e8d4d8fe4cbc49ae239c12"
   integrity sha512-V5QF9noGFl3EymEwUYzO+3NTDpGfQB4ve6Qfnzf3UNydMhjQRVPR1DZTuvWiLzaFJYw2fmDwAfnRNEVb64hSIg==
+=======
+node-releases@^1.1.52, node-releases@^1.1.58:
+  version "1.1.58"
+  resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.58.tgz#8ee20eef30fa60e52755fcc0942def5a734fe935"
+  integrity sha512-NxBudgVKiRh/2aPWMgPR7bPTX0VPmGx5QBwCtdHitnqFE5/O8DeBXuIMH1nwNnw/aMo6AjOrpsHzfY3UbUJ7yg==
+>>>>>>> prediktor-opc-ae
 
-node-sass@^4.13.1:
+node-sass@^4.15.1:
   version "4.14.1"
   resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-4.14.1.tgz#99c87ec2efb7047ed638fb4c9db7f3a42e2217b5"
   integrity sha512-sjCuOlvGyCJS40R8BscF5vhVlQjNN069NtQ1gSxyK1u9iqvn6tf7O1R4GNowVZfiZUCRt5MmMs1xd+4V/7Yr0g==
@@ -10446,10 +12506,17 @@ object-hash@^1.1.8:
   resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-1.3.1.tgz#fde452098a951cb145f039bb7d455449ddc126df"
   integrity sha512-OSuu/pU4ENM9kmREg0BdNrUDIl1heYa4mBZacJc+vVWz4GtAwu7jO8s4AIt2aGRUTqxykpWzI3Oqnsm13tTMDA==
 
+<<<<<<< HEAD
 object-inspect@^1.8.0:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.9.0.tgz#c90521d74e1127b67266ded3394ad6116986533a"
   integrity sha512-i3Bp9iTqwhaLZBxGkRfo5ZbE07BQRT7MGu8+nNgwW9ItGp1TzCTw2DLEoWwjClxBjOFI/hWljTAmYGCEwmtnOw==
+=======
+object-inspect@^1.7.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/object-inspect/-/object-inspect-1.8.0.tgz#df807e5ecf53a609cc6bfe93eac3cc7be5b3a9d0"
+  integrity sha512-jLdtEOB112fORuypAyl/50VRVIBIdVQOSUUGQHzJ4xBSbit81zRarz7GThkEFZy1RceYrWYcPcBFPQwHyAc1gA==
+>>>>>>> prediktor-opc-ae
 
 object-inspect@~1.7.0:
   version "1.7.0"
@@ -10503,9 +12570,15 @@ object.pick@^1.3.0:
     isobject "^3.0.1"
 
 object.values@^1.1.0:
+<<<<<<< HEAD
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/object.values/-/object.values-1.1.2.tgz#7a2015e06fcb0f546bd652486ce8583a4731c731"
   integrity sha512-MYC0jvJopr8EK6dPBiO8Nb9mvjdypOachO5REGk6MXzujbBrAisKo3HmdEI6kZDL6fC31Mwee/5YbtMebixeag==
+=======
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/object.values/-/object.values-1.1.1.tgz#68a99ecde356b7e9295a3c5e0ce31dc8c953de5e"
+  integrity sha512-WTa54g2K8iu0kmS/us18jEmdv1a4Wi//BZ/DTVYEcH0XhLM5NYdpDHja3gt57VrZLcNAO2WGA+KpWsDBaHt6eA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     call-bind "^1.0.0"
     define-properties "^1.1.3"
@@ -10673,7 +12746,11 @@ p-is-promise@^2.0.0:
   resolved "https://registry.yarnpkg.com/p-is-promise/-/p-is-promise-2.1.0.tgz#918cebaea248a62cf7ffab8e3bca8c5f882fc42e"
   integrity sha512-Y3W0wlRPK8ZMRbNq97l4M5otioeA5lm1z7bkNkxCka8HSPjR0xRWmpCmc9utiaLP9Jb1eD8BgeIxTW4AIF45Pg==
 
+<<<<<<< HEAD
 p-limit@^2.0.0, p-limit@^2.2.0, p-limit@^2.2.1, p-limit@^2.2.2:
+=======
+p-limit@^2.0.0, p-limit@^2.2.0, p-limit@^2.2.1, p-limit@^2.3.0:
+>>>>>>> prediktor-opc-ae
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.3.0.tgz#3dd33c647a214fdfffd835933eb086da0dc21db1"
   integrity sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==
@@ -10701,6 +12778,14 @@ p-map@^3.0.0:
   dependencies:
     aggregate-error "^3.0.0"
 
+<<<<<<< HEAD
+=======
+p-reduce@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/p-reduce/-/p-reduce-1.0.0.tgz#18c2b0dd936a4690a529f8231f58a0fdb6a47dfa"
+  integrity sha1-GMKw3ZNqRpClKfgjH1ig/bakffo=
+
+>>>>>>> prediktor-opc-ae
 p-try@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/p-try/-/p-try-2.2.0.tgz#cb2868540e313d61de58fafbe35ce9004d5540e6"
@@ -11600,7 +13685,11 @@ postcss-value-parser@^3.0.0:
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-3.3.1.tgz#9ff822547e2893213cf1c30efa51ac5fd1ba8281"
   integrity sha512-pISE66AbVkp4fDQ7VHBwRNXzAAKJjw4Vw7nWI/+Q3vuly7SNfgYXvm6i5IgFylHGK5sP/xHAbB7N49OS4gWNyQ==
 
+<<<<<<< HEAD
 postcss-value-parser@^4.0.2, postcss-value-parser@^4.1.0:
+=======
+postcss-value-parser@^4.0.0, postcss-value-parser@^4.0.2, postcss-value-parser@^4.1.0:
+>>>>>>> prediktor-opc-ae
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-4.1.0.tgz#443f6a20ced6481a2bda4fa8532a6e55d789a2cb"
   integrity sha512-97DXOFbQJhk71ne5/Mt6cOu6yxsSfM0QGQyl0L25Gca4yGWEGJaig7l7gbCX623VqTBNGLRLaVUCnNkcedlRSQ==
@@ -11614,10 +13703,17 @@ postcss-values-parser@^2.0.0, postcss-values-parser@^2.0.1:
     indexes-of "^1.0.1"
     uniq "^1.0.1"
 
+<<<<<<< HEAD
 postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2, postcss@^7.0.23, postcss@^7.0.26, postcss@^7.0.27, postcss@^7.0.32, postcss@^7.0.5, postcss@^7.0.6:
   version "7.0.35"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-7.0.35.tgz#d2be00b998f7f211d8a276974079f2e92b970e24"
   integrity sha512-3QT8bBJeX/S5zKTTjTCIjRF3If4avAT6kqxcASlTWEtAFCb9NH0OUxNDfgZSWdP5fJnBYCMEWkIFfWeugjzYMg==
+=======
+postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.16, postcss@^7.0.17, postcss@^7.0.2, postcss@^7.0.26, postcss@^7.0.27, postcss@^7.0.32, postcss@^7.0.5, postcss@^7.0.6:
+  version "7.0.32"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-7.0.32.tgz#4310d6ee347053da3433db2be492883d62cec59d"
+  integrity sha512-03eXong5NLnNCD05xscnGKGDZ98CyzoqPSMjOe6SuoQY7Z2hIj0Ld1g/O/UQRuOle2aRtiIRDg9tDcTGAkLfKw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     chalk "^2.4.2"
     source-map "^0.6.1"
@@ -11665,10 +13761,22 @@ prettier@1.19.1, prettier@^1.19.1:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
   integrity sha512-s7PoyDv/II1ObgQunCbB9PdLmUcBZcnWOcxDh7O0N/UwDEsHyqkW+Qh28jW+mVuCdx7gLB0BotYI1Y6uI9iyew==
 
+<<<<<<< HEAD
 pretty-error@^2.0.2, pretty-error@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/pretty-error/-/pretty-error-2.1.2.tgz#be89f82d81b1c86ec8fdfbc385045882727f93b6"
   integrity sha512-EY5oDzmsX5wvuynAByrmY0P0hcp+QpnAKbJng2A2MPjVKXCxrDSUkzghVJ4ZGPIv+JC4gX8fPUWscC0RtjsWGw==
+=======
+prettier@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.0.5.tgz#d6d56282455243f2f92cc1716692c08aa31522d4"
+  integrity sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg==
+
+pretty-error@^2.0.2, pretty-error@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/pretty-error/-/pretty-error-2.1.1.tgz#5f4f87c8f91e5ae3f3ba87ab4cf5e03b1a17f1a3"
+  integrity sha1-X0+HyPkeWuPzuoerTPXgOxoX8aM=
+>>>>>>> prediktor-opc-ae
   dependencies:
     lodash "^4.17.20"
     renderkid "^2.0.4"
@@ -11701,12 +13809,21 @@ pretty-format@^25.5.0:
     ansi-styles "^4.0.0"
     react-is "^16.12.0"
 
+<<<<<<< HEAD
 pretty-format@^26.0.0, pretty-format@^26.6.2:
   version "26.6.2"
   resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.6.2.tgz#e35c2705f14cb7fe2fe94fa078345b444120fc93"
   integrity sha512-7AeGuCYNGmycyQbCqd/3PWH4eOoX/OiCa0uphp57NVTeAGdJGaAliecxwBDHYQCIvrW7aDBZCYeNTP/WX69mkg==
   dependencies:
     "@jest/types" "^26.6.2"
+=======
+pretty-format@^26.1.0:
+  version "26.1.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-26.1.0.tgz#272b9cd1f1a924ab5d443dc224899d7a65cb96ec"
+  integrity sha512-GmeO1PEYdM+non4BKCj+XsPJjFOJIPnsLewqhDVoqY1xo0yNmDas7tC2XwpMrRAHR3MaE2hPo37deX5OisJ2Wg==
+  dependencies:
+    "@jest/types" "^26.1.0"
+>>>>>>> prediktor-opc-ae
     ansi-regex "^5.0.0"
     ansi-styles "^4.0.0"
     react-is "^17.0.1"
@@ -11929,14 +14046,24 @@ rc-align@^2.4.0, rc-align@^2.4.1:
     rc-util "^4.0.4"
 
 rc-align@^4.0.0:
+<<<<<<< HEAD
   version "4.0.9"
   resolved "https://registry.yarnpkg.com/rc-align/-/rc-align-4.0.9.tgz#46d8801c4a139ff6a65ad1674e8efceac98f85f2"
   integrity sha512-myAM2R4qoB6LqBul0leaqY8gFaiECDJ3MtQDmzDo9xM9NRT/04TvWOYd2YHU9zvGzqk9QXF6S9/MifzSKDZeMw==
+=======
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/rc-align/-/rc-align-4.0.1.tgz#0566de141a82d9a1923b7672c70bdb19dcde6e23"
+  integrity sha512-RQ5Fhxl0LW+zsxbY8dxAcpXdaHkHH2jzRSSpvBTS7G9LMK3T+WRcn4ovjg/eqAESM6TdTx0hfqWF2S1pO75jxQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "2.x"
     dom-align "^1.7.0"
+<<<<<<< HEAD
     rc-util "^5.3.0"
+=======
+    rc-util "^5.0.1"
+>>>>>>> prediktor-opc-ae
     resize-observer-polyfill "^1.5.1"
 
 rc-animate@2.x, rc-animate@^2.10.1, rc-animate@^2.10.2, rc-animate@^2.3.0, rc-animate@^2.6.0, rc-animate@^2.8.2:
@@ -11952,15 +14079,22 @@ rc-animate@2.x, rc-animate@^2.10.1, rc-animate@^2.10.2, rc-animate@^2.3.0, rc-an
     rc-util "^4.15.3"
     react-lifecycles-compat "^3.0.4"
 
+<<<<<<< HEAD
 rc-animate@^3.0.0-rc.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-3.1.1.tgz#defdd863f56816c222534e4dc68feddecd081386"
   integrity sha512-8wg2Zg3EETy0k/9kYuis30NJNQg1D6/WSQwnCiz6SvyxQXNet/rVraRz3bPngwY6rcU2nlRvoShiYOorXyF7Sg==
+=======
+rc-animate@^3.0.0, rc-animate@^3.0.0-rc.1:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/rc-animate/-/rc-animate-3.1.0.tgz#051b689c2c7194e4c8ae016d32a0e5f9de6c8baa"
+  integrity sha512-8FsM+3B1H+0AyTyGggY6JyVldHTs1CyYT8CfTmG/nGHHXlecvSLeICJhcKgRLjUiQlctNnRtB1rwz79cvBVmrw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@ant-design/css-animation" "^1.7.2"
     classnames "^2.2.6"
     raf "^3.4.0"
-    rc-util "^4.15.3"
+    rc-util "^5.0.1"
 
 rc-calendar@~9.15.7:
   version "9.15.11"
@@ -12312,11 +14446,18 @@ rc-tooltip@^3.7.0, rc-tooltip@~3.7.3:
     rc-trigger "^2.2.2"
 
 rc-tooltip@^4.0.0:
+<<<<<<< HEAD
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/rc-tooltip/-/rc-tooltip-4.2.3.tgz#f6fb2a6d9e76ef64295a1d9b5a1618f8634c0645"
   integrity sha512-7ySkaPGeqLLM4a/QYrKQ280aDthPxyvjJqQMstWX/AWX7/b1p23HIdHXdjBkziuvcnvXkW4lgZdFTVsylDiX1w==
   dependencies:
     "@babel/runtime" "^7.11.2"
+=======
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/rc-tooltip/-/rc-tooltip-4.2.1.tgz#c1a2d5017ee03a771a9301c0dfdb46dfdf8fef94"
+  integrity sha512-oykuaGsHg7RFvPUaxUpxo7ScEqtH61C66x4JUmjlFlSS8gSx2L8JFtfwM1D68SLBxUqGqJObtxj4TED75gQTiA==
+  dependencies:
+>>>>>>> prediktor-opc-ae
     rc-trigger "^4.2.1"
 
 rc-tree-select@~2.9.1:
@@ -12376,6 +14517,7 @@ rc-trigger@^3.0.0:
     rc-util "^4.15.7"
 
 rc-trigger@^4.0.0, rc-trigger@^4.2.1:
+<<<<<<< HEAD
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/rc-trigger/-/rc-trigger-4.4.3.tgz#ed449cd6cce446555bc57f4394229c5c7154f4b0"
   integrity sha512-yq/WyuiPwxd2q6jy+VPyy0GUCRFJ2eFqAaCwPE27AOftXeIupOcJ/2t1wakSq63cfk7qtzev5DKHUAjb8LOJCw==
@@ -12385,6 +14527,17 @@ rc-trigger@^4.0.0, rc-trigger@^4.2.1:
     raf "^3.4.1"
     rc-align "^4.0.0"
     rc-motion "^1.0.0"
+=======
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/rc-trigger/-/rc-trigger-4.3.0.tgz#94ea1851d123359716d1dc3030083c015a92ecfb"
+  integrity sha512-jnGNzosXmDdivMBjPCYe/AfOXTpJU2/xQ9XukgoXDQEoZq/9lcI1r7eUIfq70WlWpLxlUEqQktiV3hwyy6Nw9g==
+  dependencies:
+    "@babel/runtime" "^7.10.1"
+    classnames "^2.2.6"
+    raf "^3.4.1"
+    rc-align "^4.0.0"
+    rc-animate "^3.0.0"
+>>>>>>> prediktor-opc-ae
     rc-util "^5.0.1"
 
 rc-upload@~2.9.1:
@@ -12408,15 +14561,26 @@ rc-util@^4.0.4, rc-util@^4.1.1, rc-util@^4.13.0, rc-util@^4.15.3, rc-util@^4.15.
     react-lifecycles-compat "^3.0.4"
     shallowequal "^1.1.0"
 
+<<<<<<< HEAD
 rc-util@^5.0.0, rc-util@^5.0.1, rc-util@^5.0.6, rc-util@^5.3.0:
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.6.2.tgz#7c3f4516a8a6215a57d8d41b65c1b9925d915d89"
   integrity sha512-AKG+5l3EXRnArgf8fm14CClkf20CovgV38juTz/uiQEHLa0nDyoJWw/7BvIIny893Pvwm3TTwokxIs3rsqZ6kw==
+=======
+rc-util@^5.0.0, rc-util@^5.0.1:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/rc-util/-/rc-util-5.0.4.tgz#297bd719b1bd00b3c947a884ab7ef0a07c55dce6"
+  integrity sha512-cd19RCrE0DJH6UcJ9+V3eaXA/5sNWyVKOKkWl8ZM2OqgNzVb8fv0obf/TkuvSN43tmTsgqY8k7OqpFYHhmef8g==
+>>>>>>> prediktor-opc-ae
   dependencies:
     react-is "^16.12.0"
     shallowequal "^1.1.0"
 
+<<<<<<< HEAD
 rc@^1.2.7, rc@^1.2.8:
+=======
+rc@^1.2.7:
+>>>>>>> prediktor-opc-ae
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/rc/-/rc-1.2.8.tgz#cd924bf5200a075b83c188cd6b9e211b7fc0d3ed"
   integrity sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==
@@ -12529,6 +14693,13 @@ react-hook-form@5.1.3:
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-5.1.3.tgz#24610e11878c6bd143569ce203320f7367893e75"
   integrity sha512-6+6wSge72A2Y7WGqMke4afOz0uDJ3gOPSysmYKkjJszSbmw8X8at7tJPzifnZ+cwLDR88b4on/D+jfH5azWbIw==
 
+react-icons@^3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.11.0.tgz#2ca2903dfab8268ca18ebd8cc2e879921ec3b254"
+  integrity sha512-JRgiI/vdF6uyBgyZhVyYJUZAop95Sy4XDe/jmT3R/bKliFWpO/uZBwvSjWEdxwzec7SYbEPNPck0Kff2tUGM2Q==
+  dependencies:
+    camelcase "^5.0.0"
+
 react-immutable-proptypes@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.2.0.tgz#cce96d68cc3c18e89617cbf3092d08e35126af4a"
@@ -12543,7 +14714,11 @@ react-input-autosize@^2.2.2:
   dependencies:
     prop-types "^15.5.8"
 
+<<<<<<< HEAD
 react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4:
+=======
+react-is@^16.12.0, react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.9.0:
+>>>>>>> prediktor-opc-ae
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
@@ -12659,9 +14834,15 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.0:
     prop-types "^15.6.2"
 
 react-window@^1.8.5:
+<<<<<<< HEAD
   version "1.8.6"
   resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.6.tgz#d011950ac643a994118632665aad0c6382e2a112"
   integrity sha512-8VwEEYyjz6DCnGBsd+MgkD0KJ2/OXFULyDtorIiTz+QzwoP94tBoA7CnbtyXMm+cCeAUER5KJcPtWl9cpKbOBg==
+=======
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/react-window/-/react-window-1.8.5.tgz#a56b39307e79979721021f5d06a67742ecca52d1"
+  integrity sha512-HeTwlNa37AFa8MDZFZOKcNEkuF2YflA0hpGPiTT9vR7OawEt+GZbfM6wqkBahD3D3pUjIabQYzsnY/BSJbgq6Q==
+>>>>>>> prediktor-opc-ae
   dependencies:
     "@babel/runtime" "^7.0.0"
     memoize-one ">=3.1.1 <6"
@@ -12849,9 +15030,15 @@ regenerate-unicode-properties@^8.2.0:
     regenerate "^1.4.0"
 
 regenerate@^1.4.0:
+<<<<<<< HEAD
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
   integrity sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==
+=======
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.1.tgz#cad92ad8e6b591773485fbe05a485caf4f457e6f"
+  integrity sha512-j2+C8+NtXQgEKWk49MMP5P/u2GhnahTtVkRIHr5R5lVRlbKvmQ+oS+A5aLKWp2ma5VkT8sh6v+v4hbH0YHR66A==
+>>>>>>> prediktor-opc-ae
 
 regenerator-runtime@^0.11.0:
   version "0.11.1"
@@ -13326,6 +15513,7 @@ schema-utils@^1.0.0:
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
 
+<<<<<<< HEAD
 schema-utils@^2.5.0, schema-utils@^2.6.0, schema-utils@^2.6.1, schema-utils@^2.6.4, schema-utils@^2.6.5:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-2.7.1.tgz#1ca4f32d1b24c590c203b8e7a50bf0ea4cd394d7"
@@ -13334,6 +15522,16 @@ schema-utils@^2.5.0, schema-utils@^2.6.0, schema-utils@^2.6.1, schema-utils@^2.6
     "@types/json-schema" "^7.0.5"
     ajv "^6.12.4"
     ajv-keywords "^3.5.2"
+=======
+schema-utils@^2.5.0, schema-utils@^2.6.5, schema-utils@^2.6.6, schema-utils@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-2.7.0.tgz#17151f76d8eae67fbbf77960c33c676ad9f4efc7"
+  integrity sha512-0ilKFI6QQF5nxDZLFn2dMjvc4hjg/Wkg7rHd3jK6/A4a1Hl9VFdQWvgB1UMGoU94pad1P/8N7fMcEnLnSiju8A==
+  dependencies:
+    "@types/json-schema" "^7.0.4"
+    ajv "^6.12.2"
+    ajv-keywords "^3.4.1"
+>>>>>>> prediktor-opc-ae
 
 scss-tokenizer@^0.2.3:
   version "0.2.3"
@@ -13387,10 +15585,17 @@ serialize-javascript@^2.1.2:
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-2.1.2.tgz#ecec53b0e0317bdc95ef76ab7074b7384785fa61"
   integrity sha512-rs9OggEUF0V4jUSecXazOYsLfu7OGK2qIn3c7IPBiffz32XniEp/TX9Xmc9LQfK2nQ2QKHvZ2oygKUGU0lG4jQ==
 
+<<<<<<< HEAD
 serialize-javascript@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-4.0.0.tgz#b525e1238489a5ecfc42afacc3fe99e666f4b1aa"
   integrity sha512-GaNA54380uFefWghODBWEGisLZFj00nS5ACs6yHa9nLqlLpVLO8ChDGeKRjZnV4Nh4n0Qi7nhYZD/9fCPzEqkw==
+=======
+serialize-javascript@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-3.1.0.tgz#8bf3a9170712664ef2561b44b691eafe399214ea"
+  integrity sha512-JIJT1DGiWmIKhzRsG91aS6Ze4sFUrYbltlkg2onR5OrnNM02Kl/hnY/T4FN2omvyeBbQmMJv+K4cPOpGzOTFBg==
+>>>>>>> prediktor-opc-ae
   dependencies:
     randombytes "^2.1.0"
 
@@ -13875,6 +16080,7 @@ string-width@^4.0.0, string-width@^4.1.0, string-width@^4.2.0:
     strip-ansi "^6.0.0"
 
 string.prototype.trim@~1.2.1:
+<<<<<<< HEAD
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.2.3.tgz#d23a22fde01c1e6571a7fadcb9be11decd8061a7"
   integrity sha512-16IL9pIBA5asNOSukPfxX2W68BaBvxyiRK16H3RA/lWW9BDosh+w7f+LhomPHpXJ82QEe7w7/rY/S1CV97raLg==
@@ -13895,6 +16101,28 @@ string.prototype.trimstart@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/string.prototype.trimstart/-/string.prototype.trimstart-1.0.3.tgz#9b4cb590e123bb36564401d59824298de50fd5aa"
   integrity sha512-oBIBUy5lea5tt0ovtOFiEQaBkoBBkyJhZXzJYrSmDo5IUUqbOPvVezuRs/agBIdZ2p2Eo1FD6bD9USyBLfl3xg==
+=======
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/string.prototype.trim/-/string.prototype.trim-1.2.1.tgz#141233dff32c82bfad80684d7e5f0869ee0fb782"
+  integrity sha512-MjGFEeqixw47dAMFMtgUro/I0+wNqZB5GKXGt1fFr24u3TzDXCPu7J9Buppzoe3r/LqkSDLDDJzE15RGWDGAVw==
+  dependencies:
+    define-properties "^1.1.3"
+    es-abstract "^1.17.0-next.1"
+    function-bind "^1.1.1"
+
+string.prototype.trimend@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/string.prototype.trimend/-/string.prototype.trimend-1.0.1.tgz#85812a6b847ac002270f5808146064c995fb6913"
+  integrity sha512-LRPxFUaTtpqYsTeNKaFOw3R4bxIzWOnbQ837QfBylo8jIxtcbK/A/sMV7Q+OAV/vWo+7s25pOE10KYSjaSO06g==
+  dependencies:
+    define-properties "^1.1.3"
+    es-abstract "^1.17.5"
+
+string.prototype.trimstart@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/string.prototype.trimstart/-/string.prototype.trimstart-1.0.1.tgz#14af6d9f34b053f7cfc89b72f8f2ee14b9039a54"
+  integrity sha512-XxZn+QpvrBI1FOcg6dIpxUPgWCPuNXvMD72aaRaUQv1eD4e/Qy8i/hFTe0BUmD60p/QA6bh1avmuPTfNjqVWRw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     call-bind "^1.0.0"
     define-properties "^1.1.3"
@@ -14180,21 +16408,50 @@ terser-webpack-plugin@2.3.5:
     webpack-sources "^1.4.3"
 
 terser-webpack-plugin@^1.4.3:
+<<<<<<< HEAD
   version "1.4.5"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.4.5.tgz#a217aefaea330e734ffacb6120ec1fa312d6040b"
   integrity sha512-04Rfe496lN8EYruwi6oPQkG0vo8C+HT49X687FZnpPF0qMAIHONI6HEXYPKDOE8e5HjXTyKfqRd/agHtH0kOtw==
+=======
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-1.4.4.tgz#2c63544347324baafa9a56baaddf1634c8abfc2f"
+  integrity sha512-U4mACBHIegmfoEe5fdongHESNJWqsGU+W0S/9+BmYGVQDw1+c2Ow05TpMhxjPK1sRb7cuYq1BPl1e5YHJMTCqA==
+>>>>>>> prediktor-opc-ae
   dependencies:
     cacache "^12.0.2"
     find-cache-dir "^2.1.0"
     is-wsl "^1.1.0"
     schema-utils "^1.0.0"
+<<<<<<< HEAD
     serialize-javascript "^4.0.0"
+=======
+    serialize-javascript "^3.1.0"
+>>>>>>> prediktor-opc-ae
     source-map "^0.6.1"
     terser "^4.1.2"
     webpack-sources "^1.4.0"
     worker-farm "^1.7.0"
 
+<<<<<<< HEAD
 terser@^4.1.2, terser@^4.4.3:
+=======
+terser-webpack-plugin@^2.3.4:
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-2.3.7.tgz#4910ff5d1a872168cc7fa6cd3749e2b0d60a8a0b"
+  integrity sha512-xzYyaHUNhzgaAdBsXxk2Yvo/x1NJdslUaussK3fdpBbvttm1iIwU+c26dj9UxJcwk2c5UWt5F55MUTIA8BE7Dg==
+  dependencies:
+    cacache "^13.0.1"
+    find-cache-dir "^3.3.1"
+    jest-worker "^25.4.0"
+    p-limit "^2.3.0"
+    schema-utils "^2.6.6"
+    serialize-javascript "^3.1.0"
+    source-map "^0.6.1"
+    terser "^4.6.12"
+    webpack-sources "^1.4.3"
+
+terser@^4.1.2, terser@^4.6.12:
+>>>>>>> prediktor-opc-ae
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/terser/-/terser-4.8.0.tgz#63056343d7c70bb29f3af665865a46fe03a0df17"
   integrity sha512-EAPipTNeWsb/3wLPeup1tVPaXfIaU68xMnVdPafIL1TV05OhASArYyIfFvnvJCNrR2NIOvDVNNTFRa+Re2MWyw==
@@ -14240,7 +16497,11 @@ text-table@0.2.0, text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
+<<<<<<< HEAD
 thenify@^3.3.1:
+=======
+thenify@^3.3.0:
+>>>>>>> prediktor-opc-ae
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/thenify/-/thenify-3.3.1.tgz#8932e686a4066038a016dd9e2ca46add9838a95f"
   integrity sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw==
@@ -14297,7 +16558,11 @@ tiny-warning@^1.0.2:
   resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.3.tgz#94a30db453df4c643d0fd566060d60a875d84754"
   integrity sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA==
 
+<<<<<<< HEAD
 tinycolor2@1.4.1:
+=======
+tinycolor2@1.4.1, tinycolor2@^1.4.1:
+>>>>>>> prediktor-opc-ae
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
   integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
@@ -14570,10 +16835,22 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
+<<<<<<< HEAD
 typescript@4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.2.tgz#7ea7c88777c723c681e33bf7988be5d008d05ac2"
   integrity sha512-e4ERvRV2wb+rRZ/IQeb3jm2VxBsirQLpQhdxplZ2MEzGvDkkMmPglecnNDfSUBivMjP93vRbngYYDQqQ/78bcQ==
+=======
+typescript@3.7.5:
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.7.5.tgz#0692e21f65fd4108b9330238aac11dd2e177a1ae"
+  integrity sha512-/P5lkRXkWHNAbcJIiHPfRoKqyd7bsyCma1hZNUGfn20qm64T6ZBlrzprymeu918H+mB/0rIg2gGK/BXkhhYgBw==
+
+typescript@^3.9.2:
+  version "3.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
+  integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
+>>>>>>> prediktor-opc-ae
 
 typical@^2.6.1:
   version "2.6.1"
@@ -14608,10 +16885,17 @@ uglify-to-browserify@~1.0.0:
   resolved "https://registry.yarnpkg.com/uglify-to-browserify/-/uglify-to-browserify-1.0.2.tgz#6e0924d6bda6b5afe349e39a6d632850a0f882b7"
   integrity sha1-bgkk1r2mta/jSeOabWMoUKD4grc=
 
+<<<<<<< HEAD
 underscore@^1.11.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.12.0.tgz#4814940551fc80587cef7840d1ebb0f16453be97"
   integrity sha512-21rQzss/XPMjolTiIezSu3JAjgagXKROtNrYFEOWK109qY1Uv2tVjPTZ1ci2HgvQDA16gHYSthQIJfB+XId/rQ==
+=======
+underscore@^1.10.2:
+  version "1.10.2"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.10.2.tgz#73d6aa3668f3188e4adb0f1943bd12cfd7efaaaf"
+  integrity sha512-N4P+Q/BuyuEKFJ43B9gYuOj4TQUHXX+j2FqguVOpjkssLUUrnJofCcBccJSCoeturDoZU6GorDTHSvUDlSQbTg==
+>>>>>>> prediktor-opc-ae
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
@@ -14823,6 +17107,7 @@ uuid@^3.3.2:
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
 v8-compile-cache@^2.0.3:
+<<<<<<< HEAD
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.2.0.tgz#9471efa3ef9128d2f7c6a7ca39c4dd6b5055b132"
   integrity sha512-gTpR5XQNKFwOd4clxfnhaqvfqMpqEwr4tOtCyz4MtYZX2JYhfr1JvBFKdS+7K/9rfpZR3VLX+YWBbKoxCgS43Q==
@@ -14835,6 +17120,11 @@ v8-to-istanbul@^4.1.3:
     "@types/istanbul-lib-coverage" "^2.0.1"
     convert-source-map "^1.6.0"
     source-map "^0.7.3"
+=======
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.1.1.tgz#54bc3cdd43317bca91e35dcaf305b1a7237de745"
+  integrity sha512-8OQ9CL+VWyt3JStj7HX7/ciTL2V3Rl1Wf5OL+SNTm0yK1KvtReVulksyeRnCANHHuUxHlQig+JJDlUhBt1NQDQ==
+>>>>>>> prediktor-opc-ae
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
@@ -14991,10 +17281,17 @@ webpack@4.41.5:
     watchpack "^1.6.0"
     webpack-sources "^1.4.1"
 
+<<<<<<< HEAD
 wget-improved@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/wget-improved/-/wget-improved-3.2.1.tgz#b71cbca9a9196f46f85c7c3ea7e61aa6e957d90a"
   integrity sha512-bZmRufYav/OFRdS8LerCbzP3b/L8tjRwqap6NhqcvEAfZrBMFwqjtFzbVk2gutEWdG78WKJgIn9yveI+ENQSlA==
+=======
+wget-improved@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/wget-improved/-/wget-improved-3.2.0.tgz#c9ec2e916bda46fa26306c8282311e3c96802747"
+  integrity sha512-QaUzW5TfCaorSBvXl4jUiOUAEcg1P9Lr9zKktmxry8stEexuNEWqF7zLDxIxPoaOTHGCzMNhgA14/+vlQGtSVw==
+>>>>>>> prediktor-opc-ae
   dependencies:
     minimist "1.2.5"
     tunnel "0.0.6"
@@ -15266,10 +17563,17 @@ yargs-parser@^13.1.2:
     camelcase "^5.0.0"
     decamelize "^1.2.0"
 
+<<<<<<< HEAD
 yargs@15.4.1, yargs@^15.0.2, yargs@^15.3.1:
   version "15.4.1"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.4.1.tgz#0d87a16de01aee9d8bec2bfbf74f67851730f4f8"
   integrity sha512-aePbxDmcYW++PaqBsJ+HYUFwCdv4LVvdnhBy78E57PIor8/OVvhMrADFFEDh8DHDFRv/O9i3lPhsENjO7QX0+A==
+=======
+yargs-parser@^18.1.1:
+  version "18.1.3"
+  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-18.1.3.tgz#be68c4975c6b2abf469236b0c870362fab09a7b0"
+  integrity sha512-o50j0JeToy/4K6OZcaQmW6lyXXKhq7csREXcDwk2omFPJEwUNOVtJKvmDr9EI1fAJZUyZcRF7kxGBWmRXudrCQ==
+>>>>>>> prediktor-opc-ae
   dependencies:
     cliui "^6.0.0"
     decamelize "^1.2.0"
@@ -15317,6 +17621,26 @@ yargs@^13.3.2:
     y18n "^4.0.0"
     yargs-parser "^13.1.2"
 
+<<<<<<< HEAD
+=======
+yargs@^15.0.2, yargs@^15.3.1:
+  version "15.3.1"
+  resolved "https://registry.yarnpkg.com/yargs/-/yargs-15.3.1.tgz#9505b472763963e54afe60148ad27a330818e98b"
+  integrity sha512-92O1HWEjw27sBfgmXiixJWT5hRBp2eobqXicLtPBIDBhYB+1HpwZlXmbW2luivBJHBzki+7VyCLRtAkScbTBQA==
+  dependencies:
+    cliui "^6.0.0"
+    decamelize "^1.2.0"
+    find-up "^4.1.0"
+    get-caller-file "^2.0.1"
+    require-directory "^2.1.1"
+    require-main-filename "^2.0.0"
+    set-blocking "^2.0.0"
+    string-width "^4.2.0"
+    which-module "^2.0.0"
+    y18n "^4.0.0"
+    yargs-parser "^18.1.1"
+
+>>>>>>> prediktor-opc-ae
 yargs@^3.10.0:
   version "3.32.0"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-3.32.0.tgz#03088e9ebf9e756b69751611d2a5ef591482c995"

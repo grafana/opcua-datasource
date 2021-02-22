@@ -19,6 +19,7 @@ interface CascaderProps {
   width?: number;
   initialValue?: string;
   allowCustomValue?: boolean;
+  onSelectChange: boolean;
   /** A function for formatting the message for custom value creation. Only applies when allowCustomValue is set to true*/
   formatCreateLabel?: (val: string) => string;
 }
@@ -200,7 +201,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
             onChange={onChangeCascader(this.onChange)}
             options={this.props.options}
             loadData={onLoadDataCascader(loadData)}
-            changeOnSelect
+            changeOnSelect={true}
             //value={rcValue.value}
             fieldNames={{ label: 'label', value: 'value', children: 'items' }}
             expandIcon={null}
@@ -216,7 +217,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
                 onBlur={this.onBlurCascade}
                 //value={activeLabel}
                 onKeyDown={this.onInputKeyDown}
-                onChange={() => {}}
+                onChange={this.onSelect}
                 suffix={
                   focusCascade ? (
                     <Icon name="angle-up" />

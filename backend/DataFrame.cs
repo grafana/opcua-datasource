@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Grpc.Core.Logging;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.Json;
 using Apache.Arrow;
@@ -12,6 +11,7 @@ using Microsoft.Data.Analysis;
 using System.Collections;
 using Microsoft.VisualBasic;
 using Apache.Arrow.Types;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
@@ -138,7 +138,7 @@ namespace plugin_dotnet
     [Serializable]
     class Field
     {
-        private ILogger log;
+        private ILogger _log;
         public string Name { get; set; }
         public Dictionary<string, string> Labels { get; set; }
 
@@ -146,12 +146,16 @@ namespace plugin_dotnet
         public Type Type { get;  }
         public List<object> Data { get; set; }
 
-        public Field(string name, Type type)
+        private bool _allowNull;
+
+        public Field(ILogger log, string name, Type type, bool allowNull = true)
         {
-            log = new ConsoleLogger();
+            _log = log;
             Name = name;
             Type = type;
+            _allowNull = allowNull;
             Data = new List<object>();
+            Config = new FieldConfig();
         }
 
         public List<T> DataAs<T>()
@@ -159,24 +163,35 @@ namespace plugin_dotnet
             return Data.Cast<T>().ToList();
         }
 
-        //public void Append<T>(T value)
-        //{ 
-        //    Data.Add(value);
-        //}
+        private static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
 
         public void Append(object value)
         {
             try
             {
-                if (value == null) {
-                    Data.Add(null);
-                } else {
+                if (value != null)
+                {
                     Data.Add(Convert.ChangeType(value, Type));
-                } 
+                }
+                else 
+                {
+                    if (_allowNull)
+                        Data.Add(null);
+                    else
+                        Data.Add(GetDefault(Type));
+                }
             }
             catch (Exception e)
             {
-                log.Error(e.ToString());
+                _log.LogError(e.ToString() + " type: " + Type.FullName);
+                Data.Add(GetDefault(Type));
             }
         }
     }
@@ -184,7 +199,7 @@ namespace plugin_dotnet
     [Serializable]
     class DataFrame
     {
-        private ILogger log;
+        private ILogger _log;
         public string Name { get; set; }
 
         protected List<Field> fields;
@@ -195,9 +210,9 @@ namespace plugin_dotnet
         // Meta is metadata about the Frame, and includes space for custom metadata.
         public FrameMeta Meta { get; set; }
 
-        public DataFrame(string name)
+        public DataFrame(ILogger log, string name)
         {
-            log = new ConsoleLogger();
+            _log = log;
             Name = name;
             fields = new List<Field>();
         }
@@ -209,7 +224,7 @@ namespace plugin_dotnet
 
         public Field AddField(string name, Type type)
         {
-            Field field = new Field(name, type);
+            Field field = new Field(_log, name, type);
             fields.Add(field);
             return field;
         }
@@ -229,7 +244,6 @@ namespace plugin_dotnet
         {
             var columns = fields.Select(field => DataFrameColumnFactory.Create(field));
 
-            log.Debug(string.Format("We have columns [{0}]", columns.ToArray().ToString()));
             Microsoft.Data.Analysis.DataFrame dataFrame = new Microsoft.Data.Analysis.DataFrame(columns.ToArray());
 
             MemoryStream stream = new MemoryStream();
@@ -250,14 +264,15 @@ namespace plugin_dotnet
         }
     }
 
-    public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T: unmanaged
+
+    public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T : unmanaged
     {
-        ILogger log;
-        List<T> _values;
-        public OpcUaDataFrameColumn(string name, List<T> values) : base(name, values)
+        List<T?> _values;
+        IDictionary<string, string> _metadata = null;
+        public OpcUaDataFrameColumn(string name, List<T?> values, IDictionary<string, string> metadata = null) : base(name, values)
         {
             _values = values;
-            log = new ConsoleLogger();
+            _metadata = metadata;
         }
 
         private IArrowType GetArrowType()
@@ -292,7 +307,7 @@ namespace plugin_dotnet
                 throw new NotImplementedException(nameof(T));
         }
 
-        protected override Apache.Arrow.Field GetArrowField() => new Apache.Arrow.Field(Name, GetArrowType(), NullCount != 0);
+        protected override Apache.Arrow.Field GetArrowField() => new Apache.Arrow.Field(Name, GetArrowType(), NullCount != 0, _metadata);
 
         protected override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
         {
@@ -307,7 +322,6 @@ namespace plugin_dotnet
                     List<byte> raw = new List<byte>();
                     for (int i = 0; i < _values.Count; i++) 
                     {
-                        
                         DateTime dateTime = Convert.ToDateTime(_values[i]);
                         long unixTime = ((DateTimeOffset)dateTime).ToUnixTimeMilliseconds();
                         raw.AddRange(BitConverter.GetBytes(unixTime));

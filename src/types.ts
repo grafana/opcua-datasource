@@ -1,10 +1,36 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
+export enum NodeClass {
+  Unspecified = 0,
+  Object = 1,
+  Variable = 2,
+  Method = 4,
+  ObjectType = 8,
+  VariableType = 16,
+  ReferenceType = 32,
+  DataType = 64,
+  View = 128,
+}
+
+export interface NSNodeId {
+    namespaceUrl: string;
+    id: string;
+}
+
+export interface BrowseFilter {
+  maxResults: number;
+  browseName: string;
+}
+
 export interface OpcUaQuery extends DataQuery {
-  nodeId: string;
-  value: string[];
+  useTemplate: boolean;
+  templateVariable: string;
+  nodePath: NodePath;
+  relativePath: QualifiedName[];
+  alias: string;
   readType: string;
   aggregate: OpcUaNodeDefinition;
+<<<<<<< HEAD
   interval: string;
   eventQuery: EventQuery;
 }
@@ -19,6 +45,36 @@ export interface EventQuery {
 export interface EventColumn {
   browseName: string;
   alias: string;
+=======
+  maxValuesPerNode: number;
+  resampleInterval: number;
+  eventQuery: EventQuery;
+}
+
+export interface NodePath {
+  node: OpcUaNodeInfo;
+  browsePath: QualifiedName[];
+}
+
+export interface EventQuery {
+  eventTypeNodeId: string;
+  eventColumns: EventColumn[];
+  eventFilters: EventFilterSer[];
+}
+
+export interface QualifiedName {
+  namespaceUrl: string;
+  name: string;
+}
+
+export interface EventColumn {
+  browsePath: QualifiedName[];
+  alias: string;
+}
+
+export interface DashboardInfo {
+  name: string;
+>>>>>>> prediktor-opc-ae
 }
 
 export interface OpcUaResultsEntry {
@@ -35,12 +91,15 @@ export interface OpcUaResponse {
   data: OpcUaResults;
 }
 
-export interface OpcUaBrowseResults {
+export interface OpcUaNodeInfo {
   displayName: string;
-  browseName: string;
+  browseName: QualifiedName;
   nodeId: string;
-  isForward: boolean;
   nodeClass: number;
+}
+
+export interface OpcUaBrowseResults extends OpcUaNodeInfo {
+  isForward: boolean;
 }
 
 export interface OpcUaNodeDefinition {
@@ -50,7 +109,52 @@ export interface OpcUaNodeDefinition {
 
 export interface EventFilter {
   oper: FilterOperator;
+<<<<<<< HEAD
   operands: string[];
+=======
+  operands: FilterOperand[];
+}
+
+export interface FilterOperand {
+  type: FilterOperandEnum;
+  value: object;
+}
+
+export interface EventFilterSer {
+  oper: FilterOperator;
+  operands: FilterOperandSer[];
+}
+
+export interface FilterOperandSer {
+  type: FilterOperandEnum;
+  value: string;
+}
+
+export enum FilterOperandEnum {
+  Literal = 1,
+  Element = 2,
+  Attribute = 3,
+  SimpleAttribute = 4,
+}
+
+export interface LiteralOp {
+  typeId: string;
+  value: string;
+}
+
+export interface ElementOp {
+  index: number;
+}
+
+export interface AttributeOp {
+  //TODO
+}
+
+export interface SimpleAttributeOp {
+  typeId: string;
+  browsePath: QualifiedName[];
+  attributeId: number;
+>>>>>>> prediktor-opc-ae
 }
 
 export enum FilterOperator {
@@ -74,6 +178,7 @@ export enum FilterOperator {
   BitwiseOr = 17,
 }
 
+<<<<<<< HEAD
 export class EventFilterOperatorUtil {
   static operNames: string[] = [
     '==',
@@ -99,6 +204,9 @@ export class EventFilterOperatorUtil {
     return EventFilterOperatorUtil.operNames[oper];
   }
 }
+=======
+
+>>>>>>> prediktor-opc-ae
 
 export const separator = ' / ';
 

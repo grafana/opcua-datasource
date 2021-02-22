@@ -2,70 +2,303 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Grpc.Core.Logging;
-using MicrosoftOpcUa.Client.Core;
-using MicrosoftOpcUa.Client.Utility;
 using Opc.Ua;
+using Opc.Ua.Client;
 using Pluginv2;
+using Prediktor.UA.Client;
+using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
-    public static class Connections
+    // TODO: move things into separate files...
+
+    public interface IConnection
     {
-        static ILogger log = new ConsoleLogger();
-        static Dictionary<string, OpcUAConnection> connections = new Dictionary<string, OpcUAConnection>();
+        Session Session { get; }
 
-        public static void Add(string url)
+        IEventSubscription EventSubscription { get; }
+        IDataValueSubscription DataValueSubscription { get; }
+        IEventDataResponse EventDataResponse { get; }
+        void Close();
+    }
+
+    public interface IEventSubscription
+    {
+        void Close();
+        Result<DataResponse> GetEventData( OpcUAQuery query, NodeId nodeId, Opc.Ua.EventFilter eventFilter);
+    }
+
+
+    public interface IDataValueSubscription
+    {
+        Result<DataValue>[] GetValues(NodeId[] nodeIds);
+
+        void Close();
+    }
+
+
+    public interface INodeCacheFactory
+    {
+        INodeCache Create(Session session);
+    }
+
+    public interface INodeCache
+    {
+        Opc.Ua.QualifiedName GetBrowseName(NodeId nodeId);
+    }
+
+    public class NodeCacheFactory : INodeCacheFactory
+    {
+        private ILogger _logger;
+        public NodeCacheFactory(ILogger logger)
         {
+            _logger = logger;
+        }
+        public INodeCache Create(Session session)
+        {
+            return new NodeCache(_logger, session);
+        }
+    }
+
+
+    public class NodeCache : INodeCache
+    {
+        private ILogger _logger;
+        private Session _session;
+        private Dictionary<NodeId, Dictionary<uint, object>> _nodeAttributes = new Dictionary<NodeId, Dictionary<uint, object>>();
+        public NodeCache(ILogger logger, Session session)
+        {
+            _logger = logger;
+            _session = session;
+        }
+
+        private T GetAttributeValue<T>(NodeId nodeId, uint attributeId, T defaultValue) where T : class
+        {
+            
+            lock (_nodeAttributes)
+            {
+                Dictionary<uint, object> node = null;
+                if (!_nodeAttributes.TryGetValue(nodeId, out node))
+                {
+                    node = new Dictionary<uint, object>();
+                    _nodeAttributes.Add(nodeId, node);
+                }
+                if (node.TryGetValue(attributeId, out object value))
+                {
+                    if (value is T)
+                        return (T)value;
+                    else
+                        node.Remove(attributeId);
+                }
+            }
+
             try
             {
-                lock(connections)
+                var readRes = _session.ReadAttributes(nodeId, new[] { attributeId });
+                if (readRes[0].Success)
                 {
-                    connections[key: url] = new OpcUAConnection(url);
+                    var value = readRes[0].Value;
+                    if (value != null && value is T)
+                    {
+                        lock (_nodeAttributes)
+                        {
+                            Dictionary<uint, object> node = null;
+                            if (!_nodeAttributes.TryGetValue(nodeId, out node))
+                            {
+                                node = new Dictionary<uint, object>();
+                                _nodeAttributes.Add(nodeId, node);
+                            }
+
+                            if (!node.ContainsKey(attributeId))
+                                node.Add(attributeId, value);
+                        }
+                        return (T)value;
+                    }
                 }
-                
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                _logger.LogError(e, "Error reading node: " + nodeId);
+            }
+            return defaultValue;
+        }
+
+
+        public Opc.Ua.QualifiedName GetBrowseName(NodeId nodeId)
+        {
+            return GetAttributeValue<Opc.Ua.QualifiedName>(nodeId, Attributes.BrowseName, null);
+        }
+    }
+
+
+    public class Connection : IConnection
+    {
+        private bool _closed = false;
+        private ISubscriptionReaper _subscriptionReaper;
+        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper, IEventDataResponse eventDataResponse)
+        {
+            _subscriptionReaper = subscriptionReaper;
+            Session = session;
+            EventSubscription = eventSubscription;
+            DataValueSubscription = dataValueSubscription;
+            EventDataResponse = eventDataResponse;
+        }
+
+        public Session Session { get; }
+
+        public IEventSubscription EventSubscription { get; }
+
+        public IDataValueSubscription DataValueSubscription { get; }
+
+        public IEventDataResponse EventDataResponse { get; }
+
+        public INodeCache NodeCache { get; }
+
+        public void Close()
+        {
+            lock (this)
+            {
+                if (!_closed)
+                {
+                    _closed = true;
+                    _subscriptionReaper.Stop();
+                    _subscriptionReaper.Dispose();
+                    DataValueSubscription.Close();
+                    EventSubscription.Close();
+                    Session.Close();
+                }
+            }
+        }
+    }
+
+
+
+    public interface IConnections
+    {
+        void Add(string url, string clientCert, string clientKey);
+        void Add(string url);
+        IConnection Get(DataSourceInstanceSettings settings);
+        IConnection Get(string url);
+
+        void Remove(string url);
+    }
+
+    public class Connections : IConnections
+    {
+        private ILogger _log;
+        private ISessionFactory _sessionFactory;
+        private INodeCacheFactory _nodeCacheFactory;
+        private Func<ApplicationConfiguration> _applicationConfiguration;
+        private Dictionary<string, IConnection> connections = new Dictionary<string, IConnection>();
+        public Connections(ILogger log, ISessionFactory sessionFactory, INodeCacheFactory nodeCacheFactory, Func<ApplicationConfiguration> applicationConfiguration)
+        {
+            _log = log;
+            _sessionFactory = sessionFactory;
+            _nodeCacheFactory = nodeCacheFactory;
+            _applicationConfiguration = applicationConfiguration;
+        }
+
+
+        private void CreateConnection(string url, Session session)
+        {
+            var subscriptionReaper = new SubscriptionReaper(_log, 60000);
+
+            var eventDataResponse = new EventDataResponse(_log);
+            var eventSubscription = new EventSubscription(_log, subscriptionReaper, eventDataResponse, _nodeCacheFactory, session, new TimeSpan(0, 60, 0));
+            var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
+
+            lock (connections)
+            {
+                var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
+                connections[key: url] = conn;
+                subscriptionReaper.Start();
             }
         }
 
-        public static void Add(string url, string clientCert, string clientKey)
+        public void Add(string url, string clientCert, string clientKey)
         {
             try
             {
-                lock(connections)
-                {
-                    connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
-                }
+                _log.LogInformation("Creating session: {0}", url);
+                //connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
+                X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(clientCert));
+                X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(clientKey));
+                CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
+
+                var userIdentity = new UserIdentity(certWithKey);
+
+
+                var appConfig = _applicationConfiguration();
+                appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
+                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
+                CreateConnection(url, session);
             }
             catch (Exception ex)
             {
-                log.Debug("Error while adding endpoint {0}: {1}", url, ex);
+                _log.LogError("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
-        public static OpcUAConnection Get(string url)
+        public void Add(string url)
         {
-            lock(connections) 
+            try
             {
-                if (!connections.ContainsKey(url) || !connections[url].Connected)
+                _log.LogInformation("Creating anonymous session: {0}", url);
+                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
+                CreateConnection(url, session);
+            }
+            catch (Exception ex)
+            {
+                _log.LogError("Error while adding endpoint {0}: {1}", url, ex);
+            }
+        }
+
+
+        public IConnection Get(string url)
+        {
+            lock (connections)
+            {
+
+                if (!connections.ContainsKey(url) || !connections[url].Session.Connected)
                 {
                     Add(url);
                 }
-            
+
                 return connections[url];
             }
         }
 
-        public static OpcUAConnection Get(DataSourceInstanceSettings settings)
+        public IConnection Get(DataSourceInstanceSettings settings)
         {
-            lock(connections)
+            lock (connections)
             {
-                if (!connections.ContainsKey(settings.Url) || !connections[settings.Url].Connected)
+
+                bool connect = true;
+                if (connections.TryGetValue(settings.Url, out IConnection value))
+                {
+                    connect = false;
+                    if (!value.Session.Connected || value.Session.KeepAliveStopped)
+                    {
+                        try
+                        {
+                            _log.LogInformation("Closing old session due to stale connection. Was connected {0}. KeepAliveStopped {1}", 
+                                value.Session.Connected, value.Session.KeepAliveStopped);
+                            value.Close();
+                            connections.Remove(settings.Url);
+                            _log.LogInformation("Old session closed successfully");
+                        }
+                        catch (Exception e)
+                        {
+                            _log.LogWarning(e, "Error when closing connection.");
+                        }
+                        connect = true;
+                    }
+                }
+
+                if (connect)
                 {
                     if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
                     {
@@ -79,132 +312,14 @@ namespace plugin_dotnet
 
                 return connections[settings.Url];
             }
-            
         }
 
-        public static void Remove(string url)
+        public void Remove(string url)
         {
-            lock(connections)
+            lock (connections)
             {
                 connections.Remove(url);
             }
-        }
-    }
-
-    public class OpcUAConnection : OpcUaClient
-    {
-        private const string rootNode = "i=84";
-        private const string objectsNode = "i=85";
-        private const string typesNode = "i=86";
-        private const string viewsNode = "i=87";
-        private string endpoint;
-
-        private ILogger log;
-
-        public OpcUAConnection()
-        {
-            log = new ConsoleLogger();
-        }
-
-        public OpcUAConnection(string url) : this()
-        {
-            base.UseSecurity = false;
-            endpoint = url;
-            ConnectServer(endpoint).Wait();
-        }
-
-        public OpcUAConnection(string url, string cert, string key) : this()
-        {
-            base.UseSecurity = true;
-            endpoint = url;
-            Connect(endpoint, cert, key);
-        }
-
-        public void Close()
-        {
-            base.Disconnect();
-            Connections.Remove(endpoint);
-        }
-
-        public string BrowseTypes(string nodeToBrowse = typesNode)
-        {
-            OpcNodeAttribute[] attributes = ReadNodeAttributes(nodeToBrowse);
-            return JsonSerializer.Serialize<OpcNodeAttribute[]>(attributes);
-        }
-
-        public BrowseResultsEntry[] TypesBrowse(string nodeToBrowse = typesNode)
-        {
-            List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
-
-            foreach (ReferenceDescription entry in this.BrowseNodeReference(nodeToBrowse))
-            {
-                BrowseResultsEntry bre = new BrowseResultsEntry();
-                log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
-
-                bre.displayName = entry.DisplayName.ToString();
-                bre.browseName = entry.BrowseName.ToString();
-                bre.nodeId = entry.NodeId.ToString();
-                browseResults.Add(bre);
-                if (entry.TypeDefinition.IdType == IdType.Opaque)
-                {
-                    browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
-                }
-            }
-
-            return browseResults.ToArray();
-        }
-
-        public BrowseResultsEntry[] FlatBrowse(string nodeToBrowse = typesNode)
-        {
-            List<BrowseResultsEntry> browseResults = new List<BrowseResultsEntry>();
-
-            foreach (ReferenceDescription entry in this.BrowseNodeReference(nodeToBrowse))
-            {
-                BrowseResultsEntry bre = new BrowseResultsEntry();
-                log.Debug("Processing entry {0}", JsonSerializer.Serialize<ReferenceDescription>(entry));
-                if (entry.NodeClass == NodeClass.Variable)
-                {
-                    bre.displayName = entry.DisplayName.ToString();
-                    bre.browseName = entry.BrowseName.ToString();
-                    bre.nodeId = entry.NodeId.ToString();
-                    browseResults.Add(bre);
-                }
-                browseResults.AddRange(FlatBrowse(entry.NodeId.ToString()));
-            }
-
-            return browseResults.ToArray();
-        }
-
-        public string Browse(string nodeId = typesNode)
-        {
-            log.Debug("Browsing node {0}", nodeId);
-            var results = this.BrowseNodeReference(nodeId);
-            log.Debug("After Browse {0}", nodeId);
-            BrowseResultsEntry[] browseResults = new BrowseResultsEntry[results.Length];
-            for (int i = 0; i < results.Length; i++)
-            {
-                browseResults[i] = new BrowseResultsEntry(
-                    results[i].DisplayName.ToString(),
-                    results[i].BrowseName.ToString(),
-                    results[i].NodeId.ToString(),
-                    results[i].TypeId,
-                    results[i].IsForward,
-                    Convert.ToUInt32(results[i].NodeClass));
-            }
-            return JsonSerializer.Serialize<BrowseResultsEntry[]>(browseResults);
-        }
-
-        private async void Connect(string endpoint, string cert, string key)
-        {
-            X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(cert));
-            X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(key));
-            CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
-
-            UserIdentity = new UserIdentity(certWithKey);
-            UseSecurity = true;
-            ApplicationCertificate = certificateIdentifier;
-
-            await ConnectServer(endpoint);
         }
     }
 }
