@@ -26,10 +26,7 @@
     "antd": "^3.24.1",
     "grpc": "^1.24.0",
     "rc-cascader": "1.0.1",
-<<<<<<< HEAD
-=======
     "react-icons": "^3.11.0",
->>>>>>> prediktor-opc-ae
     "react-select": "^3.0.8",
     "react-window": "^1.8.5"
   }

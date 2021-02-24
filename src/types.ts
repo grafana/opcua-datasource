@@ -30,22 +30,6 @@ export interface OpcUaQuery extends DataQuery {
   alias: string;
   readType: string;
   aggregate: OpcUaNodeDefinition;
-<<<<<<< HEAD
-  interval: string;
-  eventQuery: EventQuery;
-}
-
-export interface EventQuery {
-  eventTypeNodeId: string;
-  eventTypes: string[];
-  eventColumns: EventColumn[];
-  eventFilters: EventFilter[];
-}
-
-export interface EventColumn {
-  browseName: string;
-  alias: string;
-=======
   maxValuesPerNode: number;
   resampleInterval: number;
   eventQuery: EventQuery;
@@ -74,7 +58,6 @@ export interface EventColumn {
 
 export interface DashboardInfo {
   name: string;
->>>>>>> prediktor-opc-ae
 }
 
 export interface OpcUaResultsEntry {
@@ -109,9 +92,6 @@ export interface OpcUaNodeDefinition {
 
 export interface EventFilter {
   oper: FilterOperator;
-<<<<<<< HEAD
-  operands: string[];
-=======
   operands: FilterOperand[];
 }
 
@@ -154,7 +134,6 @@ export interface SimpleAttributeOp {
   typeId: string;
   browsePath: QualifiedName[];
   attributeId: number;
->>>>>>> prediktor-opc-ae
 }
 
 export enum FilterOperator {
@@ -177,36 +156,6 @@ export enum FilterOperator {
   BitwiseAnd = 16,
   BitwiseOr = 17,
 }
-
-<<<<<<< HEAD
-export class EventFilterOperatorUtil {
-  static operNames: string[] = [
-    '==',
-    'IsNull',
-    '>',
-    '<',
-    '>=',
-    '<=',
-    'Like',
-    'Not',
-    'Between',
-    'InList',
-    'And',
-    'Or',
-    'Cast',
-    'InView',
-    'OfType',
-    'RelatedTo',
-    'BitwiseAnd',
-    'BitwiseOr',
-  ];
-  static GetString(oper: FilterOperator): string {
-    return EventFilterOperatorUtil.operNames[oper];
-  }
-}
-=======
-
->>>>>>> prediktor-opc-ae
 
 export const separator = ' / ';
 
