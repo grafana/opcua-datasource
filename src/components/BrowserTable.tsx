@@ -16,19 +16,19 @@ import { BrowsePathTextEditor } from './BrowsePathTextEditor';
 import { Input, Button } from '@grafana/ui';
 
 type Props = {
-    browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
-    getNamespaceIndices(): Promise<string[]>;
+  browse: (nodeId: string, browseFilter: BrowseFilter) => Promise<OpcUaBrowseResults[]>;
+  getNamespaceIndices(): Promise<string[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
-    closeOnSelect: boolean;
-    theme: GrafanaTheme | null;
+  closeOnSelect: boolean;
+  theme: GrafanaTheme | null;
 
   onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
   closeBrowser: () => void;
 };
 
 type State = {
-    fetchingChildren: boolean;
+  fetchingChildren: boolean;
   fetchedChildren: boolean;
   currentNode: OpcUaBrowseResults;
   children: OpcUaBrowseResults[];
@@ -55,8 +55,8 @@ export class BrowserTable extends Component<Props, State> {
         nodeClass: -1,
         nodeId: '',
       },
-        children: [],
-        fetchingChildren: false,
+      children: [],
+      fetchingChildren: false,
       fetchedChildren: false,
       browsePath: [],
       maxResults: 1000,
@@ -79,14 +79,19 @@ export class BrowserTable extends Component<Props, State> {
     }
   };
 
-
   /**
    * Renders the component.
    */
   render() {
     const rootNodeId = this.props.rootNodeId;
     if (this.state.currentNode.nodeId === '') {
-        this.setState({ children: [], fetchingChildren: false, fetchedChildren: false, currentNode: rootNodeId, browsePath: [] });
+      this.setState({
+        children: [],
+        fetchingChildren: false,
+        fetchedChildren: false,
+        currentNode: rootNodeId,
+        browsePath: [],
+      });
     }
 
     let bg = '';
@@ -102,11 +107,12 @@ export class BrowserTable extends Component<Props, State> {
 
     return (
       <div className="panel-container">
-        <div onClick={e => this.navigateBack()}>
+        <div onClick={(e) => this.navigateBack()}>
           <FaChevronUp />
-                <div style={{ display: 'inline-block' }}>
-                    <BrowsePathTextEditor getNamespaceIndices={() => this.props.getNamespaceIndices()}
-              browsePath={this.state.browsePath.map(a => copyQualifiedName(a.browseName)).slice()}
+          <div style={{ display: 'inline-block' }}>
+            <BrowsePathTextEditor
+              getNamespaceIndices={() => this.props.getNamespaceIndices()}
+              browsePath={this.state.browsePath.map((a) => copyQualifiedName(a.browseName)).slice()}
               onBrowsePathChanged={() => this.onBrowsePathChange()}
             ></BrowsePathTextEditor>
           </div>
@@ -114,24 +120,26 @@ export class BrowserTable extends Component<Props, State> {
         <div>
           <div style={{ display: 'inline-block' }}>
             <Input
+              css=""
               label={'Maximum Results'}
               value={this.state.maxResults}
               placeholder={'Maximum Results'}
-              onChange={e => this.onChangeMaximumResults(e)}
-              onBlur={e => this.onFilter()}
+              onChange={(e) => this.onChangeMaximumResults(e)}
+              onBlur={(e) => this.onFilter()}
             ></Input>
           </div>
           <div style={{ display: 'inline-block' }}>
             <Input
+              css=""
               label={'Browse Name Filter'}
               value={this.state.browseNameFilter}
               placeholder={'Browse Name Filter'}
-              onChange={e => this.setState({ browseNameFilter: e.currentTarget.value })}
-              onBlur={e => this.onFilter()}
+              onChange={(e) => this.setState({ browseNameFilter: e.currentTarget.value })}
+              onBlur={(e) => this.onFilter()}
             ></Input>
           </div>
           <div style={{ display: 'inline-block' }}>
-            <Button onClick={e => this.onFilter()}>Filter</Button>
+            <Button onClick={(e) => this.onFilter()}>Filter</Button>
           </div>
         </div>
         <Paper>
@@ -147,17 +155,17 @@ export class BrowserTable extends Component<Props, State> {
             <TableBody style={{ backgroundColor: bg, color: txt }}>
               {this.state.children.map((row: OpcUaBrowseResults, index: number) => (
                 <TableRow style={{ height: 14 }} key={index}>
-                  <TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={e => this.onNodeChanged(index)}>
+                  <TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={(e) => this.onNodeChanged(index)}>
                     {row.displayName}
                   </TableCell>
-                  <TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={e => this.onNodeChanged(index)}>
+                  <TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={(e) => this.onNodeChanged(index)}>
                     {qualifiedNameToString(row.browseName)}
                   </TableCell>
-                  <TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={e => this.onNodeChanged(index)}>
+                  <TableCell style={{ color: txt, border: 0, padding: 2 }} onClick={(e) => this.onNodeChanged(index)}>
                     {nodeClassToString(row.nodeClass as NodeClass)}
                   </TableCell>
                   <TableCell style={{ color: txt, border: 0, padding: 2 }}>
-                    <span onClick={e => this.navigate(index)}>
+                    <span onClick={(e) => this.navigate(index)}>
                       <FaChevronRight />
                     </span>
                   </TableCell>
@@ -170,8 +178,8 @@ export class BrowserTable extends Component<Props, State> {
     );
   }
 
-    onFilter(): void {
-        this.forceFetchChildren();
+  onFilter(): void {
+    this.forceFetchChildren();
   }
 
   onChangeMaximumResults(e: React.FormEvent<HTMLInputElement>): void {
@@ -194,29 +202,33 @@ export class BrowserTable extends Component<Props, State> {
   }
 
   getBrowsePath(node: OpcUaBrowseResults): QualifiedName[] {
-    let bp = this.state.browsePath.map(a => copyQualifiedName(a.browseName)).slice();
+    let bp = this.state.browsePath.map((a) => copyQualifiedName(a.browseName)).slice();
     bp.push(copyQualifiedName(node.browseName));
     return bp;
-    }
-
-    forceFetchChildren() {
-        if (!this.state.fetchingChildren) {
-            this.setState({
-                fetchingChildren: true
-            }, () => {
-                let filter: BrowseFilter = { browseName: this.state.browseNameFilter, maxResults: this.state.maxResults };
-                    this.props.browse(this.state.currentNode.nodeId, filter).then(response => {
-                        this.setState({ children: response, fetchingChildren: false, fetchedChildren: true });
-                    }).catch(() => this.setState({ children: [], fetchingChildren: false, fetchedChildren: false }));
-            });
-        }
   }
 
-
+  forceFetchChildren() {
+    if (!this.state.fetchingChildren) {
+      this.setState(
+        {
+          fetchingChildren: true,
+        },
+        () => {
+          let filter: BrowseFilter = { browseName: this.state.browseNameFilter, maxResults: this.state.maxResults };
+          this.props
+            .browse(this.state.currentNode.nodeId, filter)
+            .then((response) => {
+              this.setState({ children: response, fetchingChildren: false, fetchedChildren: true });
+            })
+            .catch(() => this.setState({ children: [], fetchingChildren: false, fetchedChildren: false }));
+        }
+      );
+    }
+  }
 
   fetchChildren() {
-      if (!this.state.fetchedChildren && this.state.currentNode.nodeId.length > 0) {
-          this.forceFetchChildren();
+    if (!this.state.fetchedChildren && this.state.currentNode.nodeId.length > 0) {
+      this.forceFetchChildren();
     }
   }
 
@@ -225,7 +237,13 @@ export class BrowserTable extends Component<Props, State> {
       let currentNode = this.state.children[index];
       var bp = this.state.browsePath.slice();
       bp.push(currentNode);
-        this.setState({ currentNode: currentNode, fetchingChildren: false, fetchedChildren: false, children: [], browsePath: bp });
+      this.setState({
+        currentNode: currentNode,
+        fetchingChildren: false,
+        fetchedChildren: false,
+        children: [],
+        browsePath: bp,
+      });
     }
   }
 
@@ -233,11 +251,23 @@ export class BrowserTable extends Component<Props, State> {
     if (this.state.browsePath.length > 1) {
       var currentNode = this.state.browsePath[this.state.browsePath.length - 2];
       var bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
-        this.setState({ currentNode: currentNode, fetchingChildren: false, fetchedChildren: false, children: [], browsePath: bp });
+      this.setState({
+        currentNode: currentNode,
+        fetchingChildren: false,
+        fetchedChildren: false,
+        children: [],
+        browsePath: bp,
+      });
     } else if (this.state.browsePath.length === 1) {
       currentNode = this.props.rootNodeId;
       bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
-        this.setState({ currentNode: currentNode, fetchingChildren: false, fetchedChildren: false, children: [], browsePath: bp });
+      this.setState({
+        currentNode: currentNode,
+        fetchingChildren: false,
+        fetchedChildren: false,
+        children: [],
+        browsePath: bp,
+      });
     }
   }
 }

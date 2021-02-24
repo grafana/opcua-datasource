@@ -7,7 +7,7 @@ export interface ThemeGetterProps {
   onTheme(theme: GrafanaTheme): void;
 }
 
-export const ThemeGetter: React.FC<ThemeGetterProps> = props => {
+export const ThemeGetter: React.FC<ThemeGetterProps> = (props) => {
   const { onTheme } = props;
   const theme = useTheme();
   onTheme(theme);

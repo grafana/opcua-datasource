@@ -13,8 +13,8 @@ export enum NodeClass {
 }
 
 export interface NSNodeId {
-    namespaceUrl: string;
-    id: string;
+  namespaceUrl: string;
+  id: string;
 }
 
 export interface BrowseFilter {

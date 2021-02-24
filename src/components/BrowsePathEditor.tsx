@@ -18,21 +18,20 @@ type Props = {
   id: string;
 };
 
-type State = {
- 
-};
+type State = {};
 
 export class BrowsePathEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { };
- }
+    this.state = {};
+  }
 
   toggleBrowsePathBrowser = () => {
-    if (!this.props.isBrowserOpen(this.props.id))
-        this.props.openBrowser(this.props.id);
-    else
-        this.props.closeBrowser(this.props.id);
+    if (!this.props.isBrowserOpen(this.props.id)) {
+      this.props.openBrowser(this.props.id);
+    } else {
+      this.props.closeBrowser(this.props.id);
+    }
   };
 
   renderBrowsePathBrowser = (rootNodeId: OpcUaBrowseResults) => {
@@ -41,8 +40,8 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
         <div
           data-id="Treeview-MainDiv"
           style={{
-            border: "lightgrey 1px solid",
-            borderRadius: "1px",
+            border: 'lightgrey 1px solid',
+            borderRadius: '1px',
             cursor: 'pointer',
             padding: '2px',
             position: 'absolute',
@@ -51,12 +50,12 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
             zIndex: 10,
           }}
         >
-           <BrowserDialog
-               theme={this.props.theme}
-              closeBrowser={() => this.props.closeBrowser(this.props.id)}
+          <BrowserDialog
+            theme={this.props.theme}
+            closeBrowser={() => this.props.closeBrowser(this.props.id)}
             closeOnSelect={true}
-                  browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
-                  getNamespaceIndices={() => this.props.getNamespaceIndices()}
+            browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
+            getNamespaceIndices={() => this.props.getNamespaceIndices()}
             ignoreRootNode={true}
             rootNodeId={rootNodeId}
             onNodeSelectedChanged={(node, browsepath) => {
@@ -77,11 +76,18 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
       nodeClass: 0,
       nodeId: this.props.rootNodeId,
     };
-      return (
-      <div className="gf-form-inline" style={{ flexWrap: 'nowrap', margin:2 }} >
-        <BrowsePathTextEditor getNamespaceIndices={() => this.props.getNamespaceIndices()} browsePath={this.props.browsePath} onBrowsePathChanged={(bp) => this.props.onChangeBrowsePath(bp)} />
-        <div style={{ display: 'inline-block', marginLeft: 5, marginTop:5, marginRight:10, cursor: 'pointer' }} onClick={e => this.toggleBrowsePathBrowser()}>
-         <FaSearch fill="currentColor" size={20}></FaSearch>
+    return (
+      <div className="gf-form-inline" style={{ flexWrap: 'nowrap', margin: 2 }}>
+        <BrowsePathTextEditor
+          getNamespaceIndices={() => this.props.getNamespaceIndices()}
+          browsePath={this.props.browsePath}
+          onBrowsePathChanged={(bp) => this.props.onChangeBrowsePath(bp)}
+        />
+        <div
+          style={{ display: 'inline-block', marginLeft: 5, marginTop: 5, marginRight: 10, cursor: 'pointer' }}
+          onClick={(e) => this.toggleBrowsePathBrowser()}
+        >
+          <FaSearch fill="currentColor" size={20}></FaSearch>
         </div>
         <div style={{ position: 'relative' }}>{this.renderBrowsePathBrowser(rootNodeId)}</div>
       </div>

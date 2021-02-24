@@ -16,20 +16,20 @@ function serializeEventOperand(filterOperand: FilterOperand): FilterOperandSer {
 export function serializeEventFilter(eventFilter: EventFilter): EventFilterSer {
   return {
     oper: eventFilter.oper,
-    operands: eventFilter.operands.map(evf => serializeEventOperand(evf)),
+    operands: eventFilter.operands.map((evf) => serializeEventOperand(evf)),
   };
 }
 
 export function deserializeEventFilter(eventFilter: EventFilterSer): EventFilter {
   return {
     oper: eventFilter.oper,
-    operands: eventFilter.operands.map(evf => deserializeEventOperand(evf)),
+    operands: eventFilter.operands.map((evf) => deserializeEventOperand(evf)),
   };
 }
 
 export function deserializeEventFilters(eventFilters: EventFilterSer[]): EventFilter[] {
   if (typeof eventFilters !== 'undefined') {
-    return eventFilters.map(a => deserializeEventFilter(a));
+    return eventFilters.map((a) => deserializeEventFilter(a));
   }
   return [];
 }

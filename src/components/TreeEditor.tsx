@@ -52,12 +52,12 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TreeTransferProp
       targetKeys={targetKeys}
       dataSource={transferDataSource}
       className="tree-transfer"
-      render={item => item.title || 'Unknown Title'}
+      render={(item) => item.title || 'Unknown Title'}
       showSelectAll={false}
     >
       {({ direction, onItemSelect, selectedKeys }) => {
         if (direction === 'left') {
-          const checkedKeys = [...selectedKeys, ...targetKeys];
+          const checkedKeys = [...selectedKeys, ...(targetKeys || [])];
           return (
             <Tree
               blockNode

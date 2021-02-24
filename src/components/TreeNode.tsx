@@ -101,7 +101,7 @@ export default class TreeNode extends Component<Props, State> {
     }
 
     if (this.state.isOpen && !this.state.fetchedChildren) {
-      browse(this.props.node.nodeId).then(response => {
+      browse(this.props.node.nodeId).then((response) => {
         this.setState({ children: response, fetchedChildren: true });
       });
     }
@@ -128,8 +128,14 @@ export default class TreeNode extends Component<Props, State> {
           </span>
         </div>
 
-        {this.state.children.map(childNode => (
-          <TreeNode {...this.props} level={this.props.level + 1} node={childNode} parentNode={this} />
+        {this.state.children.map((childNode, idx) => (
+          <TreeNode
+            {...this.props}
+            key={`TreeNode-${idx}`}
+            level={this.props.level + 1}
+            node={childNode}
+            parentNode={this}
+          />
         ))}
       </>
     );

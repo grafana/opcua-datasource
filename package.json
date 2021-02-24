@@ -11,13 +11,12 @@
   "author": "srclosson@gmail.com",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "next",
-    "@grafana/runtime": "next",
-    "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
+    "@grafana/data": "^7.4.2",
+    "@grafana/runtime": "7.4.2",
+    "@grafana/toolkit": "7.4.2",
+    "@grafana/ui": "7.4.2",
     "@types/lodash": "^4.14.134",
-    "lodash": "^4.17.15",
-    "node-opcua": "^2.1.9"
+    "lodash": "^4.17.15"
   },
   "dependencies": {
     "@ant-design/dark-theme": "^1.0.3",

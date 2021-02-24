@@ -4,19 +4,20 @@ export function browsePathToString(qnames: QualifiedName[], nsTable: string[]): 
   let path = '';
   if (typeof qnames !== 'undefined') {
     for (let i = 0; i < qnames.length; i++) {
-        path += qualifiedNameToIndexString(qnames[i], nsTable);
+      path += qualifiedNameToIndexString(qnames[i], nsTable);
       if (i < qnames.length - 1) {
         path += '/';
       }
     }
   }
-  console.log("path: " + path);
+  console.log('path: ' + path);
   return path;
 }
 
 export function browsePathToShortString(qnames: QualifiedName[] | null): string {
-    if (qnames === null)
-        return '';
+  if (qnames === null) {
+    return '';
+  }
   let path = '';
   if (typeof qnames !== 'undefined') {
     for (let i = 0; i < qnames.length; i++) {
@@ -30,9 +31,8 @@ export function browsePathToShortString(qnames: QualifiedName[] | null): string 
 }
 
 function qualifiedNameToIndexString(qname: QualifiedName, nsTable: string[]): string {
-    return nsTable.indexOf(qname.namespaceUrl) + ':' + qname.name;
+  return nsTable.indexOf(qname.namespaceUrl) + ':' + qname.name;
 }
-
 
 export function qualifiedNameToString(qname: QualifiedName): string {
   return qname.namespaceUrl + ':' + qname.name;
@@ -44,22 +44,21 @@ export function stringToBrowsePath(path: string, nsTable: string[]): QualifiedNa
     return [];
   }
   var paths = path.split('/');
-    let browsepath: QualifiedName[] = paths.map((a: string) => toQualifiedNameFromIndex(a, nsTable));
+  let browsepath: QualifiedName[] = paths.map((a: string) => toQualifiedNameFromIndex(a, nsTable));
   return browsepath;
 }
 
-
 function toQualifiedNameFromIndex(path: string, nsTable: string[]): QualifiedName {
-    var ns = path.split(':');
-    if (ns.length > 1) {
-        let idx = parseInt(ns[0]);
-        let namespaceUrl = '';
-        if (!isNaN(idx) && idx >= 0 && idx < nsTable.length) {
-            namespaceUrl = nsTable[idx];
-        }
-        return { name: ns[1].trim(), namespaceUrl: namespaceUrl };
+  var ns = path.split(':');
+  if (ns.length > 1) {
+    let idx = parseInt(ns[0], 10);
+    let namespaceUrl = '';
+    if (!isNaN(idx) && idx >= 0 && idx < nsTable.length) {
+      namespaceUrl = nsTable[idx];
     }
-    return { name: ns[0].trim(), namespaceUrl: '' };
+    return { name: ns[1].trim(), namespaceUrl: namespaceUrl };
+  }
+  return { name: ns[0].trim(), namespaceUrl: '' };
 }
 
 export function toQualifiedName(path: string): QualifiedName {

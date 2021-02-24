@@ -8,8 +8,8 @@ type Props = {
   browse: (nodeId: string) => Promise<OpcUaBrowseResults[]>;
   rootNodeId: OpcUaBrowseResults;
   ignoreRootNode: boolean;
-    closeOnSelect: boolean;
-    theme: GrafanaTheme | null;
+  closeOnSelect: boolean;
+  theme: GrafanaTheme | null;
   onNodeSelectedChanged: (nodeId: OpcUaBrowseResults, browsePath: QualifiedName[]) => void;
   closeBrowser: () => void;
 };
@@ -76,16 +76,18 @@ export class BrowserTree extends Component<Props, State> {
       return this.renderNode(rootNodeId);
     } else {
       if (!this.state.fetchedChildren) {
-        this.props.browse(rootNodeId.nodeId).then(response => {
+        this.props
+          .browse(rootNodeId.nodeId)
+          .then((response) => {
             this.setState({ children: response, fetchedChildren: true });
-        }).catch(c => console.log(c));
+          })
+          .catch((c) => console.log(c));
         return <></>;
       } else {
-        return this.state.children.map(a => this.renderNode(a));
+        return this.state.children.map((a) => this.renderNode(a));
       }
     }
   };
-
 
   /**
    * Renders the component.
@@ -97,7 +99,7 @@ export class BrowserTree extends Component<Props, State> {
     }
     let bg = '';
     if (this.props.theme != null) {
-        bg = this.props.theme.colors.bg2;
+      bg = this.props.theme.colors.bg2;
     }
     return (
       <div

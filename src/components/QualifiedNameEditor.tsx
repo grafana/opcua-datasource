@@ -32,13 +32,20 @@ export class QualifiedNameEditor extends PureComponent<Props, State> {
     return (
       <div>
         <Input
+          css=""
           value={this.props.namespaceUrl}
           placeholder={'Namespace Url'}
-          onChange={e => this.onChangeNamespaceUrl(e)}
+          onChange={(e) => this.onChangeNamespaceUrl(e)}
           width={30}
         ></Input>
-        <button onClick={e => this.props.selectBrowseNamespace(this.props.id, this.props.namespaceUrl)}></button>
-        <Input value={this.props.name} placeholder={'Name'} onChange={e => this.onChangeName(e)} width={30}></Input>
+        <button onClick={(e) => this.props.selectBrowseNamespace(this.props.id, this.props.namespaceUrl)}></button>
+        <Input
+          css=""
+          value={this.props.name}
+          placeholder={'Name'}
+          onChange={(e) => this.onChangeName(e)}
+          width={30}
+        ></Input>
       </div>
     );
   }
