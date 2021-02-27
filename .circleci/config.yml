@@ -159,6 +159,7 @@ jobs:
 
 
             mv -v ci/jobs/build_backend/linux ci/jobs/build_backend/dist
+            ls -l ci/jobs/build_backend/dist
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/linux
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
@@ -167,6 +168,7 @@ jobs:
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
             
             mv -v ci/jobs/build_backend/windows ci/jobs/build_backend/dist
+            ls -l ci/jobs/build_backend/dist
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/windows
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
@@ -176,15 +178,15 @@ jobs:
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
 
             mv -v ci/jobs/build_backend/darwin ci/jobs/build_backend/dist
+            ls -l ci/jobs/build_backend/dist
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/darwin
-            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip.sha1
             
-            mv -fv ci/jobs/packages/* ci/packages
+            mv -fv ci/jobs/packages/* ci/packages/
             ls -l ci/packages
       - persist_to_workspace:
           root: .
