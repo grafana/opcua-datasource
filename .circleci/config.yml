@@ -163,27 +163,27 @@ jobs:
             cp -rv ci/jobs/build_backend/linux/* ci/dist/
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
-              ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
-            mv -v ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
-              ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
             
             /bin/rm -rf ci/dist/*
             cp -rv ci/jobs/build_frontend/dist/* ci/dist/
             cp -rv ci/jobs/build_backend/windows/* ci/dist/
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
-              ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
-            mv -v ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
-              ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
 
             /bin/rm -rf ci/dist/*
             cp -rv ci/jobs/build_frontend/dist/* ci/dist/
             cp -rv ci/jobs/build_backend/darwin/* ci/dist/    
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
-              ci/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
-            mv -v ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
-              ci/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip.sha1
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip.sha1
             
             mv -v ci/jobs/packages/* ci/packages
       - persist_to_workspace:
