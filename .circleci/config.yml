@@ -108,7 +108,7 @@ jobs:
           name: Build backend (OSX)
           command: |
             [ ! -d "ci/dist/darwin" ] && mkdir -pv ci/dist/darwin
-            dotnet publish ./backend/.osx.build.csproj -r osx-x64 -o ci/dist/osx --self-contained true
+            dotnet publish ./backend/.osx.build.csproj -r osx-x64 -o ci/dist/darwin --self-contained true
       - persist_to_workspace:
           root: .
           paths:
@@ -122,8 +122,8 @@ jobs:
       - run:
           name: Build backend (Windows)
           command: |
-            [ ! -d "ci/dist/win" ] && mkdir -pv ci/dist/win
-            dotnet publish ./backend/.win.build.csproj -r win-x64 -o ci/dist/win --self-contained true
+            [ ! -d "ci/dist/windows" ] && mkdir -pv ci/dist/windows
+            dotnet publish ./backend/.win.build.csproj -r win-x64 -o ci/dist/windows --self-contained true
       - persist_to_workspace:
           root: .
           paths:
@@ -157,8 +157,8 @@ jobs:
             mv ci/dist/darwin ci/jobs/build_backend
 
             /bin/rm -rf ci/dist/*
-            cp -rv ci/jobs/build_frontend/* ci/dist
-            cp -rv ci/jobs/build_backend/linux/* ci/dist      
+            cp -rv ci/jobs/build_frontend/dist/* ci/dist/
+            cp -rv ci/jobs/build_backend/linux/* ci/dist/
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
@@ -166,8 +166,8 @@ jobs:
               ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
             
             /bin/rm -rf ci/dist/*
-            cp -rv ci/jobs/build_frontend/* ci/dist
-            cp -rv ci/jobs/build_backend/windows/* ci/dist      
+            cp -rv ci/jobs/build_frontend/dist/* ci/dist/
+            cp -rv ci/jobs/build_backend/windows/* ci/dist/
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
@@ -175,8 +175,8 @@ jobs:
               ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
 
             /bin/rm -rf ci/dist/*
-            cp -rv ci/jobs/build_frontend/* ci/dist
-            cp -rv ci/jobs/build_backend/darwin/* ci/dist      
+            cp -rv ci/jobs/build_frontend/dist/* ci/dist/
+            cp -rv ci/jobs/build_backend/darwin/* ci/dist/    
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
