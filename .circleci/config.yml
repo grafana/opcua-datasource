@@ -20,13 +20,13 @@ workflows:
       - build
       - build_backend_linux
       - build_backend_windows
-      - build_backend_osx
+      - build_backend_darwin
       - package:
           requires:
             - build
             - build_backend_linux
             - build_backend_windows
-            - build_backend_osx
+            - build_backend_darwin
       # - report:
       #     requires:
       #       - package
@@ -100,14 +100,14 @@ jobs:
           paths:
           - ci/dist/linux
     
-  build_backend_osx:
+  build_backend_darwin:
     executor: dotnet_exec
     steps:
       - checkout
       - run:
           name: Build backend (OSX)
           command: |
-            [ ! -d "ci/dist/osx" ] && mkdir -pv ci/dist/osx
+            [ ! -d "ci/dist/darwin" ] && mkdir -pv ci/dist/darwin
             dotnet publish ./backend/.osx.build.csproj -r osx-x64 -o ci/dist/osx --self-contained true
       - persist_to_workspace:
           root: .
