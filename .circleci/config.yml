@@ -152,6 +152,8 @@ jobs:
           paths:
             - ci/packages
             - ci/dist
+      - store_artifacts:
+          path: ci/dist
 
   report:
     executor: default_exec
