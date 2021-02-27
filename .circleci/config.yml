@@ -27,13 +27,13 @@ workflows:
             - build_backend_linux
             - build_backend_windows
             - build_backend_osx
-      - report:
-          requires:
-            - package
+      # - report:
+      #     requires:
+      #       - package
       - approve_release:
           type: approval
           requires:
-            - report
+            - package
           filters: *filter-only-release
       - publish_github_release:
           requires:
