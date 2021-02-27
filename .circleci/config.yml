@@ -146,7 +146,7 @@ jobs:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Package distribution
-          command: ./node_modules/.bin/grafana-toolkit plugin:ci-package
+          command: ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
       - persist_to_workspace:
           root: .
           paths:
