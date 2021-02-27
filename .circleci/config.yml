@@ -158,27 +158,26 @@ jobs:
             mv ci/dist/darwin ci/jobs/build_backend
 
 
-            /bin/rm -rf ci/dist/*
-            cp -rv ci/jobs/build_frontend/dist/* ci/dist/
-            cp -rv ci/jobs/build_backend/linux/* ci/dist/
+            mv -v ci/jobs/build_backend/linux ci/jobs/build_backend/dist
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/linux
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
             
-            /bin/rm -rf ci/dist/*
-            cp -rv ci/jobs/build_frontend/dist/* ci/dist/
-            cp -rv ci/jobs/build_backend/windows/* ci/dist/
+            mv -v ci/jobs/build_backend/windows ci/jobs/build_backend/dist
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/windows
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
 
-            /bin/rm -rf ci/dist/*
-            cp -rv ci/jobs/build_frontend/dist/* ci/dist/
-            cp -rv ci/jobs/build_backend/darwin/* ci/dist/    
+            mv -v ci/jobs/build_backend/darwin ci/jobs/build_backend/dist
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/darwin
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
