@@ -144,32 +144,40 @@ jobs:
           name: Package distribution
           command: |
             set -e
+            mv ci/jobs/build ci/jobs/build_frontend
             EXEC_PREFIX=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.executable'| sed s/\"//g`
             PLUGIN_NAME=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.id'| sed s/\"//g`
             VERSION=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.info.version'| sed s/\"//g`
             echo "Plugin Name: ${PLUGIN_NAME}"
             echo "Plugin Version: ${VERSION}"
             echo "Plugin Exec Prefix: ${EXEC_PREFIX}"
-            mkdir -pv ci/jobs/build_backend/dist
-            mv ci/dist/linux/* ci/jobs/build_backend/dist/*       
+            mkdir -pv ci/jobs/build_backend
+            mv ci/dist/linux ci/jobs/build_backend
+            mv ci/dist/windows ci/jobs/build_backend
+            mv ci/dist/darwin ci/jobs/build_backend
+
+            /bin/rm -rf ci/dist/*
+            cp -rv ci/jobs/build_frontend/* ci/dist
+            cp -rv ci/jobs/build_backend/linux/* ci/dist      
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
-            mv ci/jobs/build_backend/dist/* ci/dist/linux/*
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
               ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
             
-            mv ci/dist/win/* ci/jobs/build_backend/dist/*       
+            /bin/rm -rf ci/dist/*
+            cp -rv ci/jobs/build_frontend/* ci/dist
+            cp -rv ci/jobs/build_backend/windows/* ci/dist      
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
-            mv ci/jobs/build_backend/dist/* ci/dist/win/*
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
               ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
 
-            mv ci/dist/darwin/* ci/jobs/build_backend/dist/*       
+            /bin/rm -rf ci/dist/*
+            cp -rv ci/jobs/build_frontend/* ci/dist
+            cp -rv ci/jobs/build_backend/darwin/* ci/dist      
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
-            mv ci/jobs/build_backend/dist/* ci/dist/darwin/*
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
               ci/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
             mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
