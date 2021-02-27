@@ -99,8 +99,6 @@ jobs:
           root: .
           paths:
           - ci/dist/linux
-      - store_artifacts:
-          path: ci
     
   build_backend_osx:
     executor: dotnet_exec
@@ -114,9 +112,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-          - ci/dist/osx
-      - store_artifacts:
-          path: ci
+          - ci/dist/darwin
+
 
   build_backend_windows:
     executor: dotnet_exec
@@ -131,8 +128,7 @@ jobs:
           root: .
           paths:
           - ci/dist/win
-      - store_artifacts:
-          path: ci
+
   
   package:
     executor: default_exec
@@ -146,7 +142,38 @@ jobs:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Package distribution
-          command: ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+          command: |
+            set -e
+            EXEC_PREFIX=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.executable'| sed s/\"//g`
+            PLUGIN_NAME=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.id'| sed s/\"//g`
+            VERSION=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            echo "Plugin Name: ${PLUGIN_NAME}"
+            echo "Plugin Version: ${VERSION}"
+            echo "Plugin Exec Prefix: ${EXEC_PREFIX}"
+            mkdir -pv ci/jobs/build_backend/dist
+            mv ci/dist/linux/* ci/jobs/build_backend/dist/*       
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv ci/jobs/build_backend/dist/* ci/dist/linux/*
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
+            
+            mv ci/dist/win/* ci/jobs/build_backend/dist/*       
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv ci/jobs/build_backend/dist/* ci/dist/win/*
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
+
+            mv ci/dist/darwin/* ci/jobs/build_backend/dist/*       
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv ci/jobs/build_backend/dist/* ci/dist/darwin/*
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip.sha1
       - persist_to_workspace:
           root: .
           paths:
