@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Reads data from OPC UA Servers",
   "scripts": {
-    "build": "grafana-toolkit plugin:build && make",
+    "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
-    "dev": "grafana-toolkit plugin:dev && make",
+    "dev": "grafana-toolkit plugin:dev",
     "watch": "$SHELL -c \"make watch &; grafana-toolkit plugin:dev --watch\""
   },
   "author": "srclosson@gmail.com",

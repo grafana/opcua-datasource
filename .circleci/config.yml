@@ -179,7 +179,6 @@ jobs:
             sed -i 's/zip/windows_amd64\.zip/g' ci/jobs/packages/info-windows.json
 
             mv -v ci/jobs/build_backend/darwin ci/jobs/build_backend/dist
-            ls -l ci/jobs/build_backend/dist
             ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
             mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/darwin
             mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
