@@ -250,8 +250,9 @@ namespace plugin_dotnet
 
             foreach (RecordBatch recordBatch in dataFrame.ToArrowRecordBatches())
             {                
-                ArrowStreamWriter writer = new ArrowStreamWriter(stream, recordBatch.Schema);
-                writer.WriteRecordBatchAsync(recordBatch).GetAwaiter().GetResult();
+                ArrowStreamWriter writer = new ArrowFileWriter(stream, recordBatch.Schema);
+                writer.WriteRecordBatch(recordBatch);
+                writer.WriteEnd();
             }
 
             stream.Position = 0;
