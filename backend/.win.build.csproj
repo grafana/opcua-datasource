@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <OutDir>../dist</OutDir>
   </PropertyGroup>
 

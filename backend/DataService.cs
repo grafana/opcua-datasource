@@ -203,7 +203,7 @@ namespace plugin_dotnet
                 for (int i = 0; i < indices.Count; i++)
                 {
                     var idx = indices[i];
-                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], relativePaths[idx]);
+                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], relativePaths[idx]);
                 }
             }
             return result;
@@ -270,7 +270,7 @@ namespace plugin_dotnet
                 {
                     var idx = indices[i];
                     var valuesResult = historyValues[i];
-                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(_log, historyValues[i], queries[idx], browsePaths[idx]);
+                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], browsePaths[idx]);
                 }
             }
             return result;

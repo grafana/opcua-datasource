@@ -37,12 +37,12 @@ namespace plugin_dotnet
         }
 
 
-        internal static Result<DataResponse> CreateHistoryDataResponse(ILogger log, Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath)
+        internal static Result<DataResponse> CreateHistoryDataResponse(Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath)
         {
             if (valuesResult.Success)
             {
                 var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(log, query.refId);
+                var dataFrame = new DataFrame(query.refId);
                 var timeField = dataFrame.AddField("Time", typeof(DateTime));
                 Field valueField = null;
                 foreach (DataValue entry in valuesResult.Value.DataValues)
@@ -84,7 +84,7 @@ namespace plugin_dotnet
                 if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
                 {
                     DataResponse dataResponse = new DataResponse();
-                    DataFrame dataFrame = new DataFrame(log, query.refId);
+                    DataFrame dataFrame = new DataFrame(query.refId);
 
                     var timeField = dataFrame.AddField("Time", typeof(DateTime));
                     var fieldName = GetFieldName(query, relativePath);

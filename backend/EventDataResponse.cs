@@ -204,7 +204,7 @@ namespace plugin_dotnet
         public Result<DataResponse> CreateEventSubscriptionDataResponse(ICollection<VariantCollection> events, OpcUAQuery query, INodeCache nodeCache)
         {
             var dataResponse = new DataResponse();
-            var dataFrame = new DataFrame(_logger, query.refId);
+            var dataFrame = new DataFrame(query.refId);
             var fields = AddEventFields(dataFrame, query);
             foreach (var ev in events)
             {
@@ -222,7 +222,7 @@ namespace plugin_dotnet
             {
                 var historyEvent = historyEventResult.Value;
                 var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(_logger, query.refId);
+                var dataFrame = new DataFrame(query.refId);
                 if (historyEvent.Events.Count > 0)
                 {
                     var fields = AddEventFields(dataFrame, query);

@@ -6,6 +6,7 @@
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <InvariantGlobalization>true</InvariantGlobalization>
     <OutDir>../dist</OutDir>
   </PropertyGroup>
 
@@ -29,7 +30,7 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
-    <PackageReference Include="Apache.Arrow" Version="2.0.0" />
+    <PackageReference Include="Apache.Arrow" Version="3.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.14.0" />
     <PackageReference Include="Grpc" Version="2.34.0" />
     <PackageReference Include="Grpc.Tools" Version="2.34.0" PrivateAssets="All" />
@@ -42,6 +43,8 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
+    <PackageReference Include="Prediktor.Log" Version="1.0.7" />
+    <PackageReference Include="Microsoft.ML" Version="1.5.5" />
   </ItemGroup>
   
   <ItemGroup>

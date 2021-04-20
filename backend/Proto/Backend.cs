@@ -29,73 +29,88 @@ namespace Pluginv2 {
             "RGF0YRgEIAMoCzI6LnBsdWdpbnYyLkFwcEluc3RhbmNlU2V0dGluZ3MuRGVj",
             "cnlwdGVkU2VjdXJlSnNvbkRhdGFFbnRyeRIVCg1sYXN0VXBkYXRlZE1TGAUg",
             "ASgDGj4KHERlY3J5cHRlZFNlY3VyZUpzb25EYXRhRW50cnkSCwoDa2V5GAEg",
-            "ASgJEg0KBXZhbHVlGAIgASgJOgI4ASLhAgoaRGF0YVNvdXJjZUluc3RhbmNl",
+            "ASgJEg0KBXZhbHVlGAIgASgJOgI4ASLuAgoaRGF0YVNvdXJjZUluc3RhbmNl",
             "U2V0dGluZ3MSCgoCaWQYASABKAMSDAoEbmFtZRgCIAEoCRILCgN1cmwYAyAB",
             "KAkSDAoEdXNlchgEIAEoCRIQCghkYXRhYmFzZRgFIAEoCRIYChBiYXNpY0F1",
             "dGhFbmFibGVkGAYgASgIEhUKDWJhc2ljQXV0aFVzZXIYByABKAkSEAoIanNv",
             "bkRhdGEYCCABKAwSYgoXZGVjcnlwdGVkU2VjdXJlSnNvbkRhdGEYCSADKAsy",
             "QS5wbHVnaW52Mi5EYXRhU291cmNlSW5zdGFuY2VTZXR0aW5ncy5EZWNyeXB0",
-            "ZWRTZWN1cmVKc29uRGF0YUVudHJ5EhUKDWxhc3RVcGRhdGVkTVMYCiABKAMa",
-            "PgocRGVjcnlwdGVkU2VjdXJlSnNvbkRhdGFFbnRyeRILCgNrZXkYASABKAkS",
-            "DQoFdmFsdWUYAiABKAk6AjgBIkAKBFVzZXISDQoFbG9naW4YASABKAkSDAoE",
-            "bmFtZRgCIAEoCRINCgVlbWFpbBgDIAEoCRIMCgRyb2xlGAQgASgJItQBCg1Q",
-            "bHVnaW5Db250ZXh0Eg0KBW9yZ0lkGAEgASgDEhAKCHBsdWdpbklkGAIgASgJ",
-            "EhwKBHVzZXIYAyABKAsyDi5wbHVnaW52Mi5Vc2VyEjoKE2FwcEluc3RhbmNl",
-            "U2V0dGluZ3MYBCABKAsyHS5wbHVnaW52Mi5BcHBJbnN0YW5jZVNldHRpbmdz",
-            "EkgKGmRhdGFTb3VyY2VJbnN0YW5jZVNldHRpbmdzGAUgASgLMiQucGx1Z2lu",
-            "djIuRGF0YVNvdXJjZUluc3RhbmNlU2V0dGluZ3MiHAoKU3RyaW5nTGlzdBIO",
-            "CgZ2YWx1ZXMYASADKAkigQIKE0NhbGxSZXNvdXJjZVJlcXVlc3QSLgoNcGx1",
-            "Z2luQ29udGV4dBgBIAEoCzIXLnBsdWdpbnYyLlBsdWdpbkNvbnRleHQSDAoE",
-            "cGF0aBgCIAEoCRIOCgZtZXRob2QYAyABKAkSCwoDdXJsGAQgASgJEjsKB2hl",
-            "YWRlcnMYBSADKAsyKi5wbHVnaW52Mi5DYWxsUmVzb3VyY2VSZXF1ZXN0Lkhl",
-            "YWRlcnNFbnRyeRIMCgRib2R5GAYgASgMGkQKDEhlYWRlcnNFbnRyeRILCgNr",
-            "ZXkYASABKAkSIwoFdmFsdWUYAiABKAsyFC5wbHVnaW52Mi5TdHJpbmdMaXN0",
-            "OgI4ASK2AQoUQ2FsbFJlc291cmNlUmVzcG9uc2USDAoEY29kZRgBIAEoBRI8",
-            "CgdoZWFkZXJzGAIgAygLMisucGx1Z2ludjIuQ2FsbFJlc291cmNlUmVzcG9u",
-            "c2UuSGVhZGVyc0VudHJ5EgwKBGJvZHkYAyABKAwaRAoMSGVhZGVyc0VudHJ5",
-            "EgsKA2tleRgBIAEoCRIjCgV2YWx1ZRgCIAEoCzIULnBsdWdpbnYyLlN0cmlu",
-            "Z0xpc3Q6AjgBIjMKCVRpbWVSYW5nZRITCgtmcm9tRXBvY2hNUxgBIAEoAxIR",
-            "Cgl0b0Vwb2NoTVMYAiABKAMijgEKCURhdGFRdWVyeRINCgVyZWZJZBgBIAEo",
-            "CRIVCg1tYXhEYXRhUG9pbnRzGAIgASgDEhIKCmludGVydmFsTVMYAyABKAMS",
-            "JgoJdGltZVJhbmdlGAQgASgLMhMucGx1Z2ludjIuVGltZVJhbmdlEgwKBGpz",
-            "b24YBSABKAwSEQoJcXVlcnlUeXBlGAYgASgJItIBChBRdWVyeURhdGFSZXF1",
-            "ZXN0Ei4KDXBsdWdpbkNvbnRleHQYASABKAsyFy5wbHVnaW52Mi5QbHVnaW5D",
-            "b250ZXh0EjgKB2hlYWRlcnMYAiADKAsyJy5wbHVnaW52Mi5RdWVyeURhdGFS",
-            "ZXF1ZXN0LkhlYWRlcnNFbnRyeRIkCgdxdWVyaWVzGAMgAygLMhMucGx1Z2lu",
-            "djIuRGF0YVF1ZXJ5Gi4KDEhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSDQoF",
-            "dmFsdWUYAiABKAk6AjgBIpwBChFRdWVyeURhdGFSZXNwb25zZRI9CglyZXNw",
-            "b25zZXMYASADKAsyKi5wbHVnaW52Mi5RdWVyeURhdGFSZXNwb25zZS5SZXNw",
-            "b25zZXNFbnRyeRpICg5SZXNwb25zZXNFbnRyeRILCgNrZXkYASABKAkSJQoF",
-            "dmFsdWUYAiABKAsyFi5wbHVnaW52Mi5EYXRhUmVzcG9uc2U6AjgBIj8KDERh",
-            "dGFSZXNwb25zZRIOCgZmcmFtZXMYASADKAwSDQoFZXJyb3IYAiABKAkSEAoI",
-            "anNvbk1ldGEYAyABKAwiRwoVQ29sbGVjdE1ldHJpY3NSZXF1ZXN0Ei4KDXBs",
-            "dWdpbkNvbnRleHQYASABKAsyFy5wbHVnaW52Mi5QbHVnaW5Db250ZXh0InIK",
-            "FkNvbGxlY3RNZXRyaWNzUmVzcG9uc2USOQoHbWV0cmljcxgBIAEoCzIoLnBs",
-            "dWdpbnYyLkNvbGxlY3RNZXRyaWNzUmVzcG9uc2UuUGF5bG9hZBodCgdQYXls",
-            "b2FkEhIKCnByb21ldGhldXMYASABKAwiRAoSQ2hlY2tIZWFsdGhSZXF1ZXN0",
-            "Ei4KDXBsdWdpbkNvbnRleHQYASABKAsyFy5wbHVnaW52Mi5QbHVnaW5Db250",
-            "ZXh0IqcBChNDaGVja0hlYWx0aFJlc3BvbnNlEjoKBnN0YXR1cxgBIAEoDjIq",
-            "LnBsdWdpbnYyLkNoZWNrSGVhbHRoUmVzcG9uc2UuSGVhbHRoU3RhdHVzEg8K",
-            "B21lc3NhZ2UYAiABKAkSEwoLanNvbkRldGFpbHMYAyABKAwiLgoMSGVhbHRo",
-            "U3RhdHVzEgsKB1VOS05PV04QABIGCgJPSxABEgkKBUVSUk9SEAIyWwoIUmVz",
-            "b3VyY2USTwoMQ2FsbFJlc291cmNlEh0ucGx1Z2ludjIuQ2FsbFJlc291cmNl",
-            "UmVxdWVzdBoeLnBsdWdpbnYyLkNhbGxSZXNvdXJjZVJlc3BvbnNlMAEyTAoE",
-            "RGF0YRJECglRdWVyeURhdGESGi5wbHVnaW52Mi5RdWVyeURhdGFSZXF1ZXN0",
-            "GhsucGx1Z2ludjIuUXVlcnlEYXRhUmVzcG9uc2UyrgEKC0RpYWdub3N0aWNz",
-            "EkoKC0NoZWNrSGVhbHRoEhwucGx1Z2ludjIuQ2hlY2tIZWFsdGhSZXF1ZXN0",
-            "Gh0ucGx1Z2ludjIuQ2hlY2tIZWFsdGhSZXNwb25zZRJTCg5Db2xsZWN0TWV0",
-            "cmljcxIfLnBsdWdpbnYyLkNvbGxlY3RNZXRyaWNzUmVxdWVzdBogLnBsdWdp",
-            "bnYyLkNvbGxlY3RNZXRyaWNzUmVzcG9uc2UyVQoJVHJhbnNmb3JtEkgKDVRy",
-            "YW5zZm9ybURhdGESGi5wbHVnaW52Mi5RdWVyeURhdGFSZXF1ZXN0GhsucGx1",
-            "Z2ludjIuUXVlcnlEYXRhUmVzcG9uc2UyXQoVVHJhbnNmb3JtRGF0YUNhbGxC",
-            "YWNrEkQKCVF1ZXJ5RGF0YRIaLnBsdWdpbnYyLlF1ZXJ5RGF0YVJlcXVlc3Qa",
-            "Gy5wbHVnaW52Mi5RdWVyeURhdGFSZXNwb25zZUIMWgouO3BsdWdpbnYyYgZw",
-            "cm90bzM="));
+            "ZWRTZWN1cmVKc29uRGF0YUVudHJ5EhUKDWxhc3RVcGRhdGVkTVMYCiABKAMS",
+            "CwoDdWlkGAsgASgJGj4KHERlY3J5cHRlZFNlY3VyZUpzb25EYXRhRW50cnkS",
+            "CwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASJACgRVc2VyEg0KBWxv",
+            "Z2luGAEgASgJEgwKBG5hbWUYAiABKAkSDQoFZW1haWwYAyABKAkSDAoEcm9s",
+            "ZRgEIAEoCSLUAQoNUGx1Z2luQ29udGV4dBINCgVvcmdJZBgBIAEoAxIQCghw",
+            "bHVnaW5JZBgCIAEoCRIcCgR1c2VyGAMgASgLMg4ucGx1Z2ludjIuVXNlchI6",
+            "ChNhcHBJbnN0YW5jZVNldHRpbmdzGAQgASgLMh0ucGx1Z2ludjIuQXBwSW5z",
+            "dGFuY2VTZXR0aW5ncxJIChpkYXRhU291cmNlSW5zdGFuY2VTZXR0aW5ncxgF",
+            "IAEoCzIkLnBsdWdpbnYyLkRhdGFTb3VyY2VJbnN0YW5jZVNldHRpbmdzIhwK",
+            "ClN0cmluZ0xpc3QSDgoGdmFsdWVzGAEgAygJIoECChNDYWxsUmVzb3VyY2VS",
+            "ZXF1ZXN0Ei4KDXBsdWdpbkNvbnRleHQYASABKAsyFy5wbHVnaW52Mi5QbHVn",
+            "aW5Db250ZXh0EgwKBHBhdGgYAiABKAkSDgoGbWV0aG9kGAMgASgJEgsKA3Vy",
+            "bBgEIAEoCRI7CgdoZWFkZXJzGAUgAygLMioucGx1Z2ludjIuQ2FsbFJlc291",
+            "cmNlUmVxdWVzdC5IZWFkZXJzRW50cnkSDAoEYm9keRgGIAEoDBpECgxIZWFk",
+            "ZXJzRW50cnkSCwoDa2V5GAEgASgJEiMKBXZhbHVlGAIgASgLMhQucGx1Z2lu",
+            "djIuU3RyaW5nTGlzdDoCOAEitgEKFENhbGxSZXNvdXJjZVJlc3BvbnNlEgwK",
+            "BGNvZGUYASABKAUSPAoHaGVhZGVycxgCIAMoCzIrLnBsdWdpbnYyLkNhbGxS",
+            "ZXNvdXJjZVJlc3BvbnNlLkhlYWRlcnNFbnRyeRIMCgRib2R5GAMgASgMGkQK",
+            "DEhlYWRlcnNFbnRyeRILCgNrZXkYASABKAkSIwoFdmFsdWUYAiABKAsyFC5w",
+            "bHVnaW52Mi5TdHJpbmdMaXN0OgI4ASIzCglUaW1lUmFuZ2USEwoLZnJvbUVw",
+            "b2NoTVMYASABKAMSEQoJdG9FcG9jaE1TGAIgASgDIo4BCglEYXRhUXVlcnkS",
+            "DQoFcmVmSWQYASABKAkSFQoNbWF4RGF0YVBvaW50cxgCIAEoAxISCgppbnRl",
+            "cnZhbE1TGAMgASgDEiYKCXRpbWVSYW5nZRgEIAEoCzITLnBsdWdpbnYyLlRp",
+            "bWVSYW5nZRIMCgRqc29uGAUgASgMEhEKCXF1ZXJ5VHlwZRgGIAEoCSLSAQoQ",
+            "UXVlcnlEYXRhUmVxdWVzdBIuCg1wbHVnaW5Db250ZXh0GAEgASgLMhcucGx1",
+            "Z2ludjIuUGx1Z2luQ29udGV4dBI4CgdoZWFkZXJzGAIgAygLMicucGx1Z2lu",
+            "djIuUXVlcnlEYXRhUmVxdWVzdC5IZWFkZXJzRW50cnkSJAoHcXVlcmllcxgD",
+            "IAMoCzITLnBsdWdpbnYyLkRhdGFRdWVyeRouCgxIZWFkZXJzRW50cnkSCwoD",
+            "a2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASKcAQoRUXVlcnlEYXRhUmVz",
+            "cG9uc2USPQoJcmVzcG9uc2VzGAEgAygLMioucGx1Z2ludjIuUXVlcnlEYXRh",
+            "UmVzcG9uc2UuUmVzcG9uc2VzRW50cnkaSAoOUmVzcG9uc2VzRW50cnkSCwoD",
+            "a2V5GAEgASgJEiUKBXZhbHVlGAIgASgLMhYucGx1Z2ludjIuRGF0YVJlc3Bv",
+            "bnNlOgI4ASI/CgxEYXRhUmVzcG9uc2USDgoGZnJhbWVzGAEgAygMEg0KBWVy",
+            "cm9yGAIgASgJEhAKCGpzb25NZXRhGAMgASgMIkcKFUNvbGxlY3RNZXRyaWNz",
+            "UmVxdWVzdBIuCg1wbHVnaW5Db250ZXh0GAEgASgLMhcucGx1Z2ludjIuUGx1",
+            "Z2luQ29udGV4dCJyChZDb2xsZWN0TWV0cmljc1Jlc3BvbnNlEjkKB21ldHJp",
+            "Y3MYASABKAsyKC5wbHVnaW52Mi5Db2xsZWN0TWV0cmljc1Jlc3BvbnNlLlBh",
+            "eWxvYWQaHQoHUGF5bG9hZBISCgpwcm9tZXRoZXVzGAEgASgMIkQKEkNoZWNr",
+            "SGVhbHRoUmVxdWVzdBIuCg1wbHVnaW5Db250ZXh0GAEgASgLMhcucGx1Z2lu",
+            "djIuUGx1Z2luQ29udGV4dCKnAQoTQ2hlY2tIZWFsdGhSZXNwb25zZRI6CgZz",
+            "dGF0dXMYASABKA4yKi5wbHVnaW52Mi5DaGVja0hlYWx0aFJlc3BvbnNlLkhl",
+            "YWx0aFN0YXR1cxIPCgdtZXNzYWdlGAIgASgJEhMKC2pzb25EZXRhaWxzGAMg",
+            "ASgMIi4KDEhlYWx0aFN0YXR1cxILCgdVTktOT1dOEAASBgoCT0sQARIJCgVF",
+            "UlJPUhACIlYKFlN1YnNjcmliZVN0cmVhbVJlcXVlc3QSLgoNcGx1Z2luQ29u",
+            "dGV4dBgBIAEoCzIXLnBsdWdpbnYyLlBsdWdpbkNvbnRleHQSDAoEcGF0aBgC",
+            "IAEoCSKxAQoXU3Vic2NyaWJlU3RyZWFtUmVzcG9uc2USOAoGc3RhdHVzGAEg",
+            "ASgOMigucGx1Z2ludjIuU3Vic2NyaWJlU3RyZWFtUmVzcG9uc2UuU3RhdHVz",
+            "EgwKBGRhdGEYAiABKAwSFgoOdXNlX3J1bl9zdHJlYW0YAyABKAgiNgoGU3Rh",
+            "dHVzEgYKAk9LEAASDQoJTk9UX0ZPVU5EEAESFQoRUEVSTUlTU0lPTl9ERU5J",
+            "RUQQAiJiChRQdWJsaXNoU3RyZWFtUmVxdWVzdBIuCg1wbHVnaW5Db250ZXh0",
+            "GAEgASgLMhcucGx1Z2ludjIuUGx1Z2luQ29udGV4dBIMCgRwYXRoGAIgASgJ",
+            "EgwKBGRhdGEYAyABKAwilQEKFVB1Ymxpc2hTdHJlYW1SZXNwb25zZRI2CgZz",
+            "dGF0dXMYASABKA4yJi5wbHVnaW52Mi5QdWJsaXNoU3RyZWFtUmVzcG9uc2Uu",
+            "U3RhdHVzEgwKBGRhdGEYAiABKAwiNgoGU3RhdHVzEgYKAk9LEAASDQoJTk9U",
+            "X0ZPVU5EEAESFQoRUEVSTUlTU0lPTl9ERU5JRUQQAiJQChBSdW5TdHJlYW1S",
+            "ZXF1ZXN0Ei4KDXBsdWdpbkNvbnRleHQYASABKAsyFy5wbHVnaW52Mi5QbHVn",
+            "aW5Db250ZXh0EgwKBHBhdGgYAiABKAkiHAoMU3RyZWFtUGFja2V0EgwKBGRh",
+            "dGEYASABKAwyWwoIUmVzb3VyY2USTwoMQ2FsbFJlc291cmNlEh0ucGx1Z2lu",
+            "djIuQ2FsbFJlc291cmNlUmVxdWVzdBoeLnBsdWdpbnYyLkNhbGxSZXNvdXJj",
+            "ZVJlc3BvbnNlMAEyTAoERGF0YRJECglRdWVyeURhdGESGi5wbHVnaW52Mi5R",
+            "dWVyeURhdGFSZXF1ZXN0GhsucGx1Z2ludjIuUXVlcnlEYXRhUmVzcG9uc2Uy",
+            "rgEKC0RpYWdub3N0aWNzEkoKC0NoZWNrSGVhbHRoEhwucGx1Z2ludjIuQ2hl",
+            "Y2tIZWFsdGhSZXF1ZXN0Gh0ucGx1Z2ludjIuQ2hlY2tIZWFsdGhSZXNwb25z",
+            "ZRJTCg5Db2xsZWN0TWV0cmljcxIfLnBsdWdpbnYyLkNvbGxlY3RNZXRyaWNz",
+            "UmVxdWVzdBogLnBsdWdpbnYyLkNvbGxlY3RNZXRyaWNzUmVzcG9uc2Uy9QEK",
+            "BlN0cmVhbRJWCg9TdWJzY3JpYmVTdHJlYW0SIC5wbHVnaW52Mi5TdWJzY3Jp",
+            "YmVTdHJlYW1SZXF1ZXN0GiEucGx1Z2ludjIuU3Vic2NyaWJlU3RyZWFtUmVz",
+            "cG9uc2USUAoNUHVibGlzaFN0cmVhbRIeLnBsdWdpbnYyLlB1Ymxpc2hTdHJl",
+            "YW1SZXF1ZXN0Gh8ucGx1Z2ludjIuUHVibGlzaFN0cmVhbVJlc3BvbnNlEkEK",
+            "CVJ1blN0cmVhbRIaLnBsdWdpbnYyLlJ1blN0cmVhbVJlcXVlc3QaFi5wbHVn",
+            "aW52Mi5TdHJlYW1QYWNrZXQwAUINWgsuLztwbHVnaW52MmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.AppInstanceSettings), global::Pluginv2.AppInstanceSettings.Parser, new[]{ "JsonData", "DecryptedSecureJsonData", "LastUpdatedMS" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.DataSourceInstanceSettings), global::Pluginv2.DataSourceInstanceSettings.Parser, new[]{ "Id", "Name", "Url", "User", "Database", "BasicAuthEnabled", "BasicAuthUser", "JsonData", "DecryptedSecureJsonData", "LastUpdatedMS" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.DataSourceInstanceSettings), global::Pluginv2.DataSourceInstanceSettings.Parser, new[]{ "Id", "Name", "Url", "User", "Database", "BasicAuthEnabled", "BasicAuthUser", "JsonData", "DecryptedSecureJsonData", "LastUpdatedMS", "Uid" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.User), global::Pluginv2.User.Parser, new[]{ "Login", "Name", "Email", "Role" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.PluginContext), global::Pluginv2.PluginContext.Parser, new[]{ "OrgId", "PluginId", "User", "AppInstanceSettings", "DataSourceInstanceSettings" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.StringList), global::Pluginv2.StringList.Parser, new[]{ "Values" }, null, null, null, null),
@@ -109,7 +124,13 @@ namespace Pluginv2 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CollectMetricsRequest), global::Pluginv2.CollectMetricsRequest.Parser, new[]{ "PluginContext" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CollectMetricsResponse), global::Pluginv2.CollectMetricsResponse.Parser, new[]{ "Metrics" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CollectMetricsResponse.Types.Payload), global::Pluginv2.CollectMetricsResponse.Types.Payload.Parser, new[]{ "Prometheus" }, null, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CheckHealthRequest), global::Pluginv2.CheckHealthRequest.Parser, new[]{ "PluginContext" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CheckHealthResponse), global::Pluginv2.CheckHealthResponse.Parser, new[]{ "Status", "Message", "JsonDetails" }, null, new[]{ typeof(global::Pluginv2.CheckHealthResponse.Types.HealthStatus) }, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CheckHealthResponse), global::Pluginv2.CheckHealthResponse.Parser, new[]{ "Status", "Message", "JsonDetails" }, null, new[]{ typeof(global::Pluginv2.CheckHealthResponse.Types.HealthStatus) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.SubscribeStreamRequest), global::Pluginv2.SubscribeStreamRequest.Parser, new[]{ "PluginContext", "Path" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.SubscribeStreamResponse), global::Pluginv2.SubscribeStreamResponse.Parser, new[]{ "Status", "Data", "UseRunStream" }, null, new[]{ typeof(global::Pluginv2.SubscribeStreamResponse.Types.Status) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.PublishStreamRequest), global::Pluginv2.PublishStreamRequest.Parser, new[]{ "PluginContext", "Path", "Data" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.PublishStreamResponse), global::Pluginv2.PublishStreamResponse.Parser, new[]{ "Status", "Data" }, null, new[]{ typeof(global::Pluginv2.PublishStreamResponse.Types.Status) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.RunStreamRequest), global::Pluginv2.RunStreamRequest.Parser, new[]{ "PluginContext", "Path" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.StreamPacket), global::Pluginv2.StreamPacket.Parser, new[]{ "Data" }, null, null, null, null)
           }));
     }
     #endregion
@@ -388,6 +409,7 @@ namespace Pluginv2 {
       jsonData_ = other.jsonData_;
       decryptedSecureJsonData_ = other.decryptedSecureJsonData_.Clone();
       lastUpdatedMS_ = other.lastUpdatedMS_;
+      uid_ = other.uid_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -505,6 +527,17 @@ namespace Pluginv2 {
       }
     }
 
+    /// <summary>Field number for the "uid" field.</summary>
+    public const int UidFieldNumber = 11;
+    private string uid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Uid {
+      get { return uid_; }
+      set {
+        uid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as DataSourceInstanceSettings);
@@ -528,6 +561,7 @@ namespace Pluginv2 {
       if (JsonData != other.JsonData) return false;
       if (!DecryptedSecureJsonData.Equals(other.DecryptedSecureJsonData)) return false;
       if (LastUpdatedMS != other.LastUpdatedMS) return false;
+      if (Uid != other.Uid) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -544,6 +578,7 @@ namespace Pluginv2 {
       if (JsonData.Length != 0) hash ^= JsonData.GetHashCode();
       hash ^= DecryptedSecureJsonData.GetHashCode();
       if (LastUpdatedMS != 0L) hash ^= LastUpdatedMS.GetHashCode();
+      if (Uid.Length != 0) hash ^= Uid.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -597,6 +632,10 @@ namespace Pluginv2 {
         output.WriteRawTag(80);
         output.WriteInt64(LastUpdatedMS);
       }
+      if (Uid.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Uid);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -643,6 +682,10 @@ namespace Pluginv2 {
         output.WriteRawTag(80);
         output.WriteInt64(LastUpdatedMS);
       }
+      if (Uid.Length != 0) {
+        output.WriteRawTag(90);
+        output.WriteString(Uid);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -679,6 +722,9 @@ namespace Pluginv2 {
       size += decryptedSecureJsonData_.CalculateSize(_map_decryptedSecureJsonData_codec);
       if (LastUpdatedMS != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(LastUpdatedMS);
+      }
+      if (Uid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Uid);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -718,6 +764,9 @@ namespace Pluginv2 {
       decryptedSecureJsonData_.Add(other.decryptedSecureJsonData_);
       if (other.LastUpdatedMS != 0L) {
         LastUpdatedMS = other.LastUpdatedMS;
+      }
+      if (other.Uid.Length != 0) {
+        Uid = other.Uid;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -773,6 +822,10 @@ namespace Pluginv2 {
             LastUpdatedMS = input.ReadInt64();
             break;
           }
+          case 90: {
+            Uid = input.ReadString();
+            break;
+          }
         }
       }
     #endif
@@ -825,6 +878,10 @@ namespace Pluginv2 {
           }
           case 80: {
             LastUpdatedMS = input.ReadInt64();
+            break;
+          }
+          case 90: {
+            Uid = input.ReadString();
             break;
           }
         }
@@ -4415,6 +4472,1381 @@ namespace Pluginv2 {
 
     }
     #endregion
+
+  }
+
+  public sealed partial class SubscribeStreamRequest : pb::IMessage<SubscribeStreamRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<SubscribeStreamRequest> _parser = new pb::MessageParser<SubscribeStreamRequest>(() => new SubscribeStreamRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SubscribeStreamRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Pluginv2.BackendReflection.Descriptor.MessageTypes[16]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SubscribeStreamRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SubscribeStreamRequest(SubscribeStreamRequest other) : this() {
+      pluginContext_ = other.pluginContext_ != null ? other.pluginContext_.Clone() : null;
+      path_ = other.path_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SubscribeStreamRequest Clone() {
+      return new SubscribeStreamRequest(this);
+    }
+
+    /// <summary>Field number for the "pluginContext" field.</summary>
+    public const int PluginContextFieldNumber = 1;
+    private global::Pluginv2.PluginContext pluginContext_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Pluginv2.PluginContext PluginContext {
+      get { return pluginContext_; }
+      set {
+        pluginContext_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "path" field.</summary>
+    public const int PathFieldNumber = 2;
+    private string path_ = "";
+    /// <summary>
+    /// path part of channel.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Path {
+      get { return path_; }
+      set {
+        path_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SubscribeStreamRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SubscribeStreamRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(PluginContext, other.PluginContext)) return false;
+      if (Path != other.Path) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (pluginContext_ != null) hash ^= PluginContext.GetHashCode();
+      if (Path.Length != 0) hash ^= Path.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (pluginContext_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(PluginContext);
+      }
+      if (Path.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Path);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (pluginContext_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(PluginContext);
+      }
+      if (Path.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Path);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (pluginContext_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PluginContext);
+      }
+      if (Path.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Path);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SubscribeStreamRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.pluginContext_ != null) {
+        if (pluginContext_ == null) {
+          PluginContext = new global::Pluginv2.PluginContext();
+        }
+        PluginContext.MergeFrom(other.PluginContext);
+      }
+      if (other.Path.Length != 0) {
+        Path = other.Path;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (pluginContext_ == null) {
+              PluginContext = new global::Pluginv2.PluginContext();
+            }
+            input.ReadMessage(PluginContext);
+            break;
+          }
+          case 18: {
+            Path = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (pluginContext_ == null) {
+              PluginContext = new global::Pluginv2.PluginContext();
+            }
+            input.ReadMessage(PluginContext);
+            break;
+          }
+          case 18: {
+            Path = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class SubscribeStreamResponse : pb::IMessage<SubscribeStreamResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<SubscribeStreamResponse> _parser = new pb::MessageParser<SubscribeStreamResponse>(() => new SubscribeStreamResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<SubscribeStreamResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Pluginv2.BackendReflection.Descriptor.MessageTypes[17]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SubscribeStreamResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SubscribeStreamResponse(SubscribeStreamResponse other) : this() {
+      status_ = other.status_;
+      data_ = other.data_;
+      useRunStream_ = other.useRunStream_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public SubscribeStreamResponse Clone() {
+      return new SubscribeStreamResponse(this);
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 1;
+    private global::Pluginv2.SubscribeStreamResponse.Types.Status status_ = global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok;
+    /// <summary>
+    /// status of subscribe response.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Pluginv2.SubscribeStreamResponse.Types.Status Status {
+      get { return status_; }
+      set {
+        status_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 2;
+    private pb::ByteString data_ = pb::ByteString.Empty;
+    /// <summary>
+    /// JSON-encoded data to return to a client in a successful
+    /// subscription result.
+    /// For data frame streams this can be a JSON-encoded frame schema.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString Data {
+      get { return data_; }
+      set {
+        data_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "use_run_stream" field.</summary>
+    public const int UseRunStreamFieldNumber = 3;
+    private bool useRunStream_;
+    /// <summary>
+    /// use_run_stream tells Grafana to use RunStream call to consume streaming
+    /// packets from a plugin. See comments for RunStream for details.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool UseRunStream {
+      get { return useRunStream_; }
+      set {
+        useRunStream_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as SubscribeStreamResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(SubscribeStreamResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Status != other.Status) return false;
+      if (Data != other.Data) return false;
+      if (UseRunStream != other.UseRunStream) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Status != global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok) hash ^= Status.GetHashCode();
+      if (Data.Length != 0) hash ^= Data.GetHashCode();
+      if (UseRunStream != false) hash ^= UseRunStream.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Status != global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Status);
+      }
+      if (Data.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(Data);
+      }
+      if (UseRunStream != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(UseRunStream);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Status != global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Status);
+      }
+      if (Data.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(Data);
+      }
+      if (UseRunStream != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(UseRunStream);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Status != global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
+      }
+      if (Data.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
+      }
+      if (UseRunStream != false) {
+        size += 1 + 1;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(SubscribeStreamResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Status != global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok) {
+        Status = other.Status;
+      }
+      if (other.Data.Length != 0) {
+        Data = other.Data;
+      }
+      if (other.UseRunStream != false) {
+        UseRunStream = other.UseRunStream;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Status = (global::Pluginv2.SubscribeStreamResponse.Types.Status) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Data = input.ReadBytes();
+            break;
+          }
+          case 24: {
+            UseRunStream = input.ReadBool();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Status = (global::Pluginv2.SubscribeStreamResponse.Types.Status) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Data = input.ReadBytes();
+            break;
+          }
+          case 24: {
+            UseRunStream = input.ReadBool();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the SubscribeStreamResponse message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static partial class Types {
+      public enum Status {
+        [pbr::OriginalName("OK")] Ok = 0,
+        [pbr::OriginalName("NOT_FOUND")] NotFound = 1,
+        [pbr::OriginalName("PERMISSION_DENIED")] PermissionDenied = 2,
+      }
+
+    }
+    #endregion
+
+  }
+
+  public sealed partial class PublishStreamRequest : pb::IMessage<PublishStreamRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PublishStreamRequest> _parser = new pb::MessageParser<PublishStreamRequest>(() => new PublishStreamRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PublishStreamRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Pluginv2.BackendReflection.Descriptor.MessageTypes[18]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PublishStreamRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PublishStreamRequest(PublishStreamRequest other) : this() {
+      pluginContext_ = other.pluginContext_ != null ? other.pluginContext_.Clone() : null;
+      path_ = other.path_;
+      data_ = other.data_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PublishStreamRequest Clone() {
+      return new PublishStreamRequest(this);
+    }
+
+    /// <summary>Field number for the "pluginContext" field.</summary>
+    public const int PluginContextFieldNumber = 1;
+    private global::Pluginv2.PluginContext pluginContext_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Pluginv2.PluginContext PluginContext {
+      get { return pluginContext_; }
+      set {
+        pluginContext_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "path" field.</summary>
+    public const int PathFieldNumber = 2;
+    private string path_ = "";
+    /// <summary>
+    /// path part of a channel.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Path {
+      get { return path_; }
+      set {
+        path_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 3;
+    private pb::ByteString data_ = pb::ByteString.Empty;
+    /// <summary>
+    /// data that user wants to publish into a stream
+    /// (only JSON-encoded at the moment).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString Data {
+      get { return data_; }
+      set {
+        data_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PublishStreamRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PublishStreamRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(PluginContext, other.PluginContext)) return false;
+      if (Path != other.Path) return false;
+      if (Data != other.Data) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (pluginContext_ != null) hash ^= PluginContext.GetHashCode();
+      if (Path.Length != 0) hash ^= Path.GetHashCode();
+      if (Data.Length != 0) hash ^= Data.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (pluginContext_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(PluginContext);
+      }
+      if (Path.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Path);
+      }
+      if (Data.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (pluginContext_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(PluginContext);
+      }
+      if (Path.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Path);
+      }
+      if (Data.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteBytes(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (pluginContext_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PluginContext);
+      }
+      if (Path.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Path);
+      }
+      if (Data.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PublishStreamRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.pluginContext_ != null) {
+        if (pluginContext_ == null) {
+          PluginContext = new global::Pluginv2.PluginContext();
+        }
+        PluginContext.MergeFrom(other.PluginContext);
+      }
+      if (other.Path.Length != 0) {
+        Path = other.Path;
+      }
+      if (other.Data.Length != 0) {
+        Data = other.Data;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (pluginContext_ == null) {
+              PluginContext = new global::Pluginv2.PluginContext();
+            }
+            input.ReadMessage(PluginContext);
+            break;
+          }
+          case 18: {
+            Path = input.ReadString();
+            break;
+          }
+          case 26: {
+            Data = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (pluginContext_ == null) {
+              PluginContext = new global::Pluginv2.PluginContext();
+            }
+            input.ReadMessage(PluginContext);
+            break;
+          }
+          case 18: {
+            Path = input.ReadString();
+            break;
+          }
+          case 26: {
+            Data = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class PublishStreamResponse : pb::IMessage<PublishStreamResponse>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<PublishStreamResponse> _parser = new pb::MessageParser<PublishStreamResponse>(() => new PublishStreamResponse());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<PublishStreamResponse> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Pluginv2.BackendReflection.Descriptor.MessageTypes[19]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PublishStreamResponse() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PublishStreamResponse(PublishStreamResponse other) : this() {
+      status_ = other.status_;
+      data_ = other.data_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public PublishStreamResponse Clone() {
+      return new PublishStreamResponse(this);
+    }
+
+    /// <summary>Field number for the "status" field.</summary>
+    public const int StatusFieldNumber = 1;
+    private global::Pluginv2.PublishStreamResponse.Types.Status status_ = global::Pluginv2.PublishStreamResponse.Types.Status.Ok;
+    /// <summary>
+    /// status of publish response.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Pluginv2.PublishStreamResponse.Types.Status Status {
+      get { return status_; }
+      set {
+        status_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 2;
+    private pb::ByteString data_ = pb::ByteString.Empty;
+    /// <summary>
+    /// JSON-encoded data to publish into a channel. This can be
+    /// unmodified data from a PublishRequest or any modified data.
+    /// If empty data returned here then Grafana won't publish data
+    /// to a channel itself but will return a successful result to a
+    /// client (supposing plugin published data to a channel itself).
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString Data {
+      get { return data_; }
+      set {
+        data_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as PublishStreamResponse);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(PublishStreamResponse other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Status != other.Status) return false;
+      if (Data != other.Data) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Status != global::Pluginv2.PublishStreamResponse.Types.Status.Ok) hash ^= Status.GetHashCode();
+      if (Data.Length != 0) hash ^= Data.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Status != global::Pluginv2.PublishStreamResponse.Types.Status.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Status);
+      }
+      if (Data.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Status != global::Pluginv2.PublishStreamResponse.Types.Status.Ok) {
+        output.WriteRawTag(8);
+        output.WriteEnum((int) Status);
+      }
+      if (Data.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Status != global::Pluginv2.PublishStreamResponse.Types.Status.Ok) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Status);
+      }
+      if (Data.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(PublishStreamResponse other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Status != global::Pluginv2.PublishStreamResponse.Types.Status.Ok) {
+        Status = other.Status;
+      }
+      if (other.Data.Length != 0) {
+        Data = other.Data;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Status = (global::Pluginv2.PublishStreamResponse.Types.Status) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Data = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Status = (global::Pluginv2.PublishStreamResponse.Types.Status) input.ReadEnum();
+            break;
+          }
+          case 18: {
+            Data = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+    #region Nested types
+    /// <summary>Container for nested types declared in the PublishStreamResponse message type.</summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static partial class Types {
+      public enum Status {
+        [pbr::OriginalName("OK")] Ok = 0,
+        [pbr::OriginalName("NOT_FOUND")] NotFound = 1,
+        [pbr::OriginalName("PERMISSION_DENIED")] PermissionDenied = 2,
+      }
+
+    }
+    #endregion
+
+  }
+
+  public sealed partial class RunStreamRequest : pb::IMessage<RunStreamRequest>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RunStreamRequest> _parser = new pb::MessageParser<RunStreamRequest>(() => new RunStreamRequest());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<RunStreamRequest> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Pluginv2.BackendReflection.Descriptor.MessageTypes[20]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RunStreamRequest() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RunStreamRequest(RunStreamRequest other) : this() {
+      pluginContext_ = other.pluginContext_ != null ? other.pluginContext_.Clone() : null;
+      path_ = other.path_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public RunStreamRequest Clone() {
+      return new RunStreamRequest(this);
+    }
+
+    /// <summary>Field number for the "pluginContext" field.</summary>
+    public const int PluginContextFieldNumber = 1;
+    private global::Pluginv2.PluginContext pluginContext_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Pluginv2.PluginContext PluginContext {
+      get { return pluginContext_; }
+      set {
+        pluginContext_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "path" field.</summary>
+    public const int PathFieldNumber = 2;
+    private string path_ = "";
+    /// <summary>
+    /// path part of a channel.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Path {
+      get { return path_; }
+      set {
+        path_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as RunStreamRequest);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(RunStreamRequest other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(PluginContext, other.PluginContext)) return false;
+      if (Path != other.Path) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (pluginContext_ != null) hash ^= PluginContext.GetHashCode();
+      if (Path.Length != 0) hash ^= Path.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (pluginContext_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(PluginContext);
+      }
+      if (Path.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Path);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (pluginContext_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(PluginContext);
+      }
+      if (Path.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Path);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (pluginContext_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PluginContext);
+      }
+      if (Path.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Path);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(RunStreamRequest other) {
+      if (other == null) {
+        return;
+      }
+      if (other.pluginContext_ != null) {
+        if (pluginContext_ == null) {
+          PluginContext = new global::Pluginv2.PluginContext();
+        }
+        PluginContext.MergeFrom(other.PluginContext);
+      }
+      if (other.Path.Length != 0) {
+        Path = other.Path;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (pluginContext_ == null) {
+              PluginContext = new global::Pluginv2.PluginContext();
+            }
+            input.ReadMessage(PluginContext);
+            break;
+          }
+          case 18: {
+            Path = input.ReadString();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (pluginContext_ == null) {
+              PluginContext = new global::Pluginv2.PluginContext();
+            }
+            input.ReadMessage(PluginContext);
+            break;
+          }
+          case 18: {
+            Path = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  public sealed partial class StreamPacket : pb::IMessage<StreamPacket>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<StreamPacket> _parser = new pb::MessageParser<StreamPacket>(() => new StreamPacket());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<StreamPacket> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Pluginv2.BackendReflection.Descriptor.MessageTypes[21]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public StreamPacket() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public StreamPacket(StreamPacket other) : this() {
+      data_ = other.data_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public StreamPacket Clone() {
+      return new StreamPacket(this);
+    }
+
+    /// <summary>Field number for the "data" field.</summary>
+    public const int DataFieldNumber = 1;
+    private pb::ByteString data_ = pb::ByteString.Empty;
+    /// <summary>
+    /// JSON-encoded data to publish into a channel.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pb::ByteString Data {
+      get { return data_; }
+      set {
+        data_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as StreamPacket);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(StreamPacket other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Data != other.Data) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Data.Length != 0) hash ^= Data.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Data.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteBytes(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Data.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteBytes(Data);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Data.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(StreamPacket other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Data.Length != 0) {
+        Data = other.Data;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Data = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            Data = input.ReadBytes();
+            break;
+          }
+        }
+      }
+    }
+    #endif
 
   }
 
