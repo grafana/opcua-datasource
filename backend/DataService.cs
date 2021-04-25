@@ -14,7 +14,6 @@ using Apache.Arrow;
 using Apache.Arrow.Ipc;
 using Apache.Arrow.Memory;
 using System.Linq;
-using Microsoft.Data.Analysis;
 using System.IO;
 using Prediktor.UA.Client;
 using Microsoft.Extensions.Logging;

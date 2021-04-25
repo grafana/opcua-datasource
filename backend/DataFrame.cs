@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Apache.Arrow;
 using Apache.Arrow.Ipc;
 using Google.Protobuf;
-using Microsoft.Data.Analysis;
 using Apache.Arrow.Types;
 using Grpc.Core.Logging;
 
@@ -233,12 +232,9 @@ namespace plugin_dotnet
             }
 
             else if (Type == typeof(DateTime)) {
-                var builder = new Apache.Arrow.TimestampArray.Builder();
-                var schema = new Schema.Builder()
-                    .Field(f => f.Name(Name).DataType(Time64Type.Default))
-                    .Build();
+                var builder = new NanoTimestampArrayBuiler();
                 foreach (DateTime dt in DataAs<DateTime>()) {
-                    DateTimeOffset offset = new DateTimeOffset(dt.Ticks, new TimeSpan());                    
+                    DateTimeOffset offset = new DateTimeOffset(dt);
                     builder.Append(offset);
                 }
                 return builder.Build();
@@ -256,7 +252,7 @@ namespace plugin_dotnet
             }
 
             else if (Type == typeof(DateTimeOffset)) {
-                var builder = new Apache.Arrow.TimestampArray.Builder();
+                var builder = new Apache.Arrow.TimestampArray.Builder(TimeUnit.Millisecond);
                 builder.AppendRange(DataAs<DateTimeOffset>());
                 return builder.Build();
             }
@@ -367,82 +363,6 @@ namespace plugin_dotnet
         public ByteString ToByteString()
         {
             return ByteString.CopyFrom(ToByteArray());
-        }
-    }
-
-
-    public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T : unmanaged
-    {
-        List<T?> _values;
-        IDictionary<string, string> _metadata = null;
-        public OpcUaDataFrameColumn(string name, List<T?> values, IDictionary<string, string> metadata = null) : base(name, values)
-        {
-            _values = values;
-            _metadata = metadata;
-        }
-
-        private IArrowType GetArrowType()
-        {
-            if (typeof(T) == typeof(bool))
-                return BooleanType.Default;
-            else if (typeof(T) == typeof(double))
-                return DoubleType.Default;
-            else if (typeof(T) == typeof(float))
-                return FloatType.Default;
-            else if (typeof(T) == typeof(sbyte))
-                return Int8Type.Default;
-            else if (typeof(T) == typeof(int))
-                return Int32Type.Default;
-            else if (typeof(T) == typeof(long))
-                return Int64Type.Default;
-            else if (typeof(T) == typeof(short))
-                return Int16Type.Default;
-            else if (typeof(T) == typeof(byte))
-                return UInt8Type.Default;
-            else if (typeof(T) == typeof(uint))
-                return UInt32Type.Default;
-            else if (typeof(T) == typeof(ulong))
-                return UInt64Type.Default;
-            else if (typeof(T) == typeof(ushort))
-                return UInt16Type.Default;
-            else if (typeof(T) == typeof(DateTime))
-                return TimestampType.Default;
-            else if (typeof(T) == typeof(string))
-                return StringType.Default;
-            else
-                throw new NotImplementedException(nameof(T));
-        }
-
-        //protected override Apache.Arrow.Field GetArrowField() => new Apache.Arrow.Field(Name, GetArrowType(), NullCount != 0, _metadata);
-
-        protected override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
-        {
-            try
-            {
-                return base.ToArrowArray(startIndex, numberOfRows);
-            }
-            catch(NotImplementedException ex)
-            {
-                if (DataType == typeof(DateTime))
-                {
-                    List<byte> raw = new List<byte>();
-                    for (int i = 0; i < _values.Count; i++) 
-                    {
-                        DateTime dateTime = Convert.ToDateTime(_values[i]);
-                        long unixTime = ((DateTimeOffset)dateTime).ToUnixTimeMilliseconds();
-                        raw.AddRange(BitConverter.GetBytes(unixTime));
-                    }
-
-                    //log.Debug("Start {0}, numRows {1}", startIndex, numberOfRows);
-                    //byte[] result = new byte[numberOfRows];
-                    //System.Array.Copy(raw.ToArray(), startIndex, result, 0, numberOfRows);
-                    ArrowBuffer valueBuffer = new ArrowBuffer(raw.ToArray());
-                    ArrowBuffer nullBitmapBuffer = new ArrowBuffer();
-                    return new TimestampArray(TimestampType.Default, valueBuffer, nullBitmapBuffer, _values.Count, 0, 0);
-                }
-
-                throw ex;
-            }
         }
     }
 }

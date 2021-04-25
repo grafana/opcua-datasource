@@ -1,19 +1,13 @@
-﻿using Apache.Arrow;
-using Microsoft.Data.Analysis;
-using Opc.Ua;
-using Pluginv2;
-using Prediktor.UA.Client;
+﻿using Opc.Ua;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 
 namespace plugin_dotnet
 {
 
-	public static class Converter
+    public static class Converter
 	{
         private static IDictionary<NodeId, Func<string, NamespaceTable, object>> _dataTypeConverter = new Dictionary<NodeId, Func<string, NamespaceTable, object>>();
         static Converter()
