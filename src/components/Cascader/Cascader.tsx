@@ -19,6 +19,7 @@ interface CascaderProps {
   width?: number;
   initialValue?: string;
   allowCustomValue?: boolean;
+  onSelectChange: boolean;
   /** A function for formatting the message for custom value creation. Only applies when allowCustomValue is set to true*/
   formatCreateLabel?: (val: string) => string;
 }
@@ -79,7 +80,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
       if (!option.items) {
         selectOptions.push({
           singleLabel: cpy[cpy.length - 1].label,
-          label: cpy.map(o => o.label).join(this.props.separator || ' / '),
+          label: cpy.map((o) => o.label).join(this.props.separator || ' / '),
           //value: cpy.map(o => o.value),
         });
       } else {
@@ -200,7 +201,7 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
             onChange={onChangeCascader(this.onChange)}
             options={this.props.options}
             loadData={onLoadDataCascader(loadData)}
-            changeOnSelect
+            changeOnSelect={true}
             //value={rcValue.value}
             fieldNames={{ label: 'label', value: 'value', children: 'items' }}
             expandIcon={null}
@@ -211,12 +212,13 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
           >
             <div className={disableDivFocus}>
               <Input
+                css=""
                 width={width}
                 placeholder={placeholder}
                 onBlur={this.onBlurCascade}
                 //value={activeLabel}
                 onKeyDown={this.onInputKeyDown}
-                onChange={() => {}}
+                onChange={this.onSelect}
                 suffix={
                   focusCascade ? (
                     <Icon name="angle-up" />

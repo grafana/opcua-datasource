@@ -2,16 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Grpc.Core.Logging;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text.Json;
 using Apache.Arrow;
 using Apache.Arrow.Ipc;
 using Google.Protobuf;
-using Microsoft.Data.Analysis;
-using System.Collections;
-using Microsoft.VisualBasic;
 using Apache.Arrow.Types;
+using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -138,7 +134,7 @@ namespace plugin_dotnet
     [Serializable]
     class Field
     {
-        private ILogger log;
+        private ILogger _log;
         public string Name { get; set; }
         public Dictionary<string, string> Labels { get; set; }
 
@@ -146,12 +142,16 @@ namespace plugin_dotnet
         public Type Type { get;  }
         public List<object> Data { get; set; }
 
-        public Field(string name, Type type)
+        private bool _allowNull;
+
+        public Field(string name, Type type, bool allowNull = true)
         {
-            log = new ConsoleLogger();
+            _log = new ConsoleLogger();
             Name = name;
             Type = type;
+            _allowNull = allowNull;
             Data = new List<object>();
+            Config = new FieldConfig();
         }
 
         public List<T> DataAs<T>()
@@ -159,24 +159,128 @@ namespace plugin_dotnet
             return Data.Cast<T>().ToList();
         }
 
-        //public void Append<T>(T value)
-        //{ 
-        //    Data.Add(value);
-        //}
+        public IArrowArray ToArrowArray() {
+            if (Type == typeof(bool)) {
+                var builder = new Apache.Arrow.BooleanArray.Builder();
+                builder.AppendRange(DataAs<bool>());
+                return builder.Build();
+            }
+            else if (Type == typeof(double)) {
+                var builder = new Apache.Arrow.DoubleArray.Builder();
+                builder.AppendRange(DataAs<double>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(float)) {
+                var builder = new Apache.Arrow.FloatArray.Builder();
+                builder.AppendRange(DataAs<float>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(sbyte)) {
+                var builder = new Apache.Arrow.BinaryArray.Builder();
+                builder.AppendRange(DataAs<byte>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(int)) {
+                var builder = new Apache.Arrow.Int32Array.Builder();
+                builder.AppendRange(DataAs<int>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(long)) {
+                var builder = new Apache.Arrow.Int64Array.Builder();
+                builder.AppendRange(DataAs<long>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(short)) {
+                var builder = new Apache.Arrow.Int16Array.Builder();
+                builder.AppendRange(DataAs<short>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(byte)) {
+                var builder = new Apache.Arrow.BinaryArray.Builder();
+                builder.AppendRange(DataAs<byte>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(uint)) {
+                var builder = new Apache.Arrow.Int32Array.Builder();
+                builder.AppendRange(DataAs<int>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(ulong)) {
+                var builder = new Apache.Arrow.Int64Array.Builder();
+                builder.AppendRange(DataAs<long>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(ushort)) {
+                var builder = new Apache.Arrow.Int16Array.Builder();
+                builder.AppendRange(DataAs<short>());
+                return builder.Build();
+            }
+                
+            else if (Type == typeof(string)) {
+                var builder = new Apache.Arrow.StringArray.Builder();
+                builder.AppendRange(DataAs<string>());
+                return builder.Build();
+            }
+
+            else if (Type == typeof(DateTime)) {
+                var builder = new NanoTimestampArrayBuiler();
+                foreach (DateTime dt in DataAs<DateTime>()) {
+                    DateTimeOffset offset = new DateTimeOffset(dt);
+                    builder.Append(offset);
+                }
+                return builder.Build();
+            }
+
+            else if (Type == typeof(DateTimeOffset)) {
+                var builder = new Apache.Arrow.TimestampArray.Builder(TimeUnit.Millisecond);
+                builder.AppendRange(DataAs<DateTimeOffset>());
+                return builder.Build();
+            }
+                
+            else
+                throw new NotImplementedException(String.Format("Cannot handle type {0}", Type.Name));
+        }
+
+
+
+        private static object GetDefault(Type type)
+        {
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type);
+            }
+            return null;
+        }
 
         public void Append(object value)
         {
             try
             {
-                if (value == null) {
-                    Data.Add(null);
-                } else {
+                if (value != null)
+                {
                     Data.Add(Convert.ChangeType(value, Type));
-                } 
+                }
+                else 
+                {
+                    if (_allowNull)
+                        Data.Add(null);
+                    else
+                        Data.Add(GetDefault(Type));
+                }
             }
             catch (Exception e)
             {
-                log.Error(e.ToString());
+                _log.Error(e.ToString() + " type: " + Type.FullName);
+                Data.Add(GetDefault(Type));
             }
         }
     }
@@ -184,7 +288,7 @@ namespace plugin_dotnet
     [Serializable]
     class DataFrame
     {
-        private ILogger log;
+        private ILogger _log;
         public string Name { get; set; }
 
         protected List<Field> fields;
@@ -197,7 +301,7 @@ namespace plugin_dotnet
 
         public DataFrame(string name)
         {
-            log = new ConsoleLogger();
+            _log = new ConsoleLogger();
             Name = name;
             fields = new List<Field>();
         }
@@ -227,102 +331,27 @@ namespace plugin_dotnet
 
         public ByteString ToGprcArrowFrame()
         {
-            var columns = fields.Select(field => DataFrameColumnFactory.Create(field));
-
-            log.Debug(string.Format("We have columns [{0}]", columns.ToArray().ToString()));
-            Microsoft.Data.Analysis.DataFrame dataFrame = new Microsoft.Data.Analysis.DataFrame(columns.ToArray());
-
             MemoryStream stream = new MemoryStream();
 
-            foreach (RecordBatch recordBatch in dataFrame.ToArrowRecordBatches())
+            var recordBatchBuilder = new RecordBatch.Builder();
+            foreach (Field field in fields)
             {                
-                ArrowStreamWriter writer = new ArrowStreamWriter(stream, recordBatch.Schema);
-                writer.WriteRecordBatchAsync(recordBatch).GetAwaiter().GetResult();
+                recordBatchBuilder.Append(field.Name, true, field.ToArrowArray());
             }
 
+            var recordBatch = recordBatchBuilder.Build();
+            var writer = new ArrowFileWriter(stream, recordBatch.Schema);
+            writer.WriteRecordBatch(recordBatch);
+            writer.WriteEnd();
+
             stream.Position = 0;
+            
             return ByteString.FromStream(stream);
         }
 
         public ByteString ToByteString()
         {
             return ByteString.CopyFrom(ToByteArray());
-        }
-    }
-
-    public class OpcUaDataFrameColumn<T> : PrimitiveDataFrameColumn<T> where T: unmanaged
-    {
-        ILogger log;
-        List<T> _values;
-        public OpcUaDataFrameColumn(string name, List<T> values) : base(name, values)
-        {
-            _values = values;
-            log = new ConsoleLogger();
-        }
-
-        private IArrowType GetArrowType()
-        {
-            if (typeof(T) == typeof(bool))
-                return BooleanType.Default;
-            else if (typeof(T) == typeof(double))
-                return DoubleType.Default;
-            else if (typeof(T) == typeof(float))
-                return FloatType.Default;
-            else if (typeof(T) == typeof(sbyte))
-                return Int8Type.Default;
-            else if (typeof(T) == typeof(int))
-                return Int32Type.Default;
-            else if (typeof(T) == typeof(long))
-                return Int64Type.Default;
-            else if (typeof(T) == typeof(short))
-                return Int16Type.Default;
-            else if (typeof(T) == typeof(byte))
-                return UInt8Type.Default;
-            else if (typeof(T) == typeof(uint))
-                return UInt32Type.Default;
-            else if (typeof(T) == typeof(ulong))
-                return UInt64Type.Default;
-            else if (typeof(T) == typeof(ushort))
-                return UInt16Type.Default;
-            else if (typeof(T) == typeof(DateTime))
-                return TimestampType.Default;
-            else if (typeof(T) == typeof(string))
-                return StringType.Default;
-            else
-                throw new NotImplementedException(nameof(T));
-        }
-
-        protected override Apache.Arrow.Field GetArrowField() => new Apache.Arrow.Field(Name, GetArrowType(), NullCount != 0);
-
-        protected override Apache.Arrow.Array ToArrowArray(long startIndex, int numberOfRows)
-        {
-            try
-            {
-                return base.ToArrowArray(startIndex, numberOfRows);
-            }
-            catch(NotImplementedException ex)
-            {
-                if (DataType == typeof(DateTime))
-                {
-                    List<byte> raw = new List<byte>();
-                    for (int i = 0; i < _values.Count; i++) 
-                    {
-                        
-                        DateTime dateTime = Convert.ToDateTime(_values[i]);
-                        long unixTime = ((DateTimeOffset)dateTime).ToUnixTimeMilliseconds();
-                        raw.AddRange(BitConverter.GetBytes(unixTime));
-                    }
-
-                    //log.Debug("Start {0}, numRows {1}", startIndex, numberOfRows);
-                    //byte[] result = new byte[numberOfRows];
-                    //System.Array.Copy(raw.ToArray(), startIndex, result, 0, numberOfRows);
-                    ArrowBuffer valueBuffer = new ArrowBuffer(raw.ToArray());
-                    ArrowBuffer nullBitmapBuffer = new ArrowBuffer();
-                    return new TimestampArray(TimestampType.Default, valueBuffer, nullBitmapBuffer, _values.Count, 0, 0);
-                }
-
-                throw ex;
-            }
         }
     }
 }

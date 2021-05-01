@@ -6,10 +6,11 @@
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
     <OutDir>../dist</OutDir>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <Target Name="Pre Build Event" BeforeTargets="BeforeBuild">
-    <Exec Command="(kill -s 2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
+    <Exec Command="(ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}' | kill -s 2 >/dev/null 2>&amp;1 || true)"/>
   </Target>
   
   <ItemGroup>
@@ -23,19 +24,24 @@
   </PropertyGroup>
 
   <Target Name="Post Build Event" AfterTargets="Build">
-    <Exec Command="(kill -s 2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
+    <Exec Command="(ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}' | kill -s 2 >/dev/null 2>&amp;1 || true)"/>
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.12.2" />
-    <PackageReference Include="Grpc" Version="2.29.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.29.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.4" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.361.39" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="Apache.Arrow" Version="2.0.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.14.0" />
+    <PackageReference Include="Grpc" Version="2.34.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.34.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.363.107" />
+    <PackageReference Include="Prediktor.UA.Client" Version="1.0.7" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
+    <PackageReference Include="Prediktor.Log" Version="1.0.7" />
   </ItemGroup>
   
   <ItemGroup>

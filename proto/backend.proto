@@ -1,7 +1,7 @@
 syntax = "proto3";
 package pluginv2;
 
-option go_package = ".;pluginv2";
+option go_package = "./;pluginv2";
 
 //-----------------------------------------------
 // Common
@@ -24,6 +24,7 @@ message DataSourceInstanceSettings {
   bytes jsonData = 8;
   map<string,string> decryptedSecureJsonData = 9;
   int64 lastUpdatedMS = 10;
+  string uid = 11;
 }
 
 message User {
@@ -170,14 +171,91 @@ message CheckHealthResponse {
   bytes jsonDetails = 3;
 }
 
-//-----------------------------------------------
-// Transform - Very experimental
-//-----------------------------------------------
+//-----------------------------------------------------------------
+// Stream -- EXPERIMENTAL and is subject to change until 8.0
+//-----------------------------------------------------------------
 
-service Transform {
-  rpc TransformData(QueryDataRequest) returns (QueryDataResponse);
+service Stream {
+  // SubscribeStream called when a user tries to subscribe to a plugin/datasource
+  // managed channel path – thus plugin can check subscribe permissions and communicate
+  // options with Grafana Core.
+  rpc SubscribeStream(SubscribeStreamRequest) returns (SubscribeStreamResponse);
+
+  // PublishStream called when a user tries to publish to a plugin/datasource
+  // managed channel path. Here plugin can check publish permissions and
+  // modify publication data if required.
+  rpc PublishStream(PublishStreamRequest) returns (PublishStreamResponse);
+
+  // RunStream will be initiated by Grafana to consume a stream where use_run_stream
+  // option set to true. In this case RunStream will only be called once for the
+  // first client successfully subscribed to a channel path. When Grafana detects
+  // that there are no longer any subscribers inside a channel, the call will be
+  // terminated until next active subscriber appears. Call termination can happen
+  // with a delay.
+  rpc RunStream(RunStreamRequest) returns (stream StreamPacket);
 }
 
-service TransformDataCallBack {
-  rpc QueryData(QueryDataRequest) returns (QueryDataResponse);
+message SubscribeStreamRequest {
+  PluginContext pluginContext = 1;
+
+  // path part of channel.
+  string path = 2;
+}
+
+message SubscribeStreamResponse {
+  enum Status {
+    OK = 0;
+    NOT_FOUND = 1;
+    PERMISSION_DENIED = 2;
+  }
+  // status of subscribe response.
+  Status status = 1;
+
+  // JSON-encoded data to return to a client in a successful
+  // subscription result.
+  // For data frame streams this can be a JSON-encoded frame schema.
+  bytes data = 2;
+
+  // use_run_stream tells Grafana to use RunStream call to consume streaming
+  // packets from a plugin. See comments for RunStream for details.
+  bool use_run_stream = 3;
+}
+
+message PublishStreamRequest {
+  PluginContext pluginContext = 1;
+
+  // path part of a channel.
+  string path = 2;
+  // data that user wants to publish into a stream
+  // (only JSON-encoded at the moment).
+  bytes data = 3;
+}
+
+message PublishStreamResponse {
+  enum Status {
+    OK = 0;
+    NOT_FOUND = 1;
+    PERMISSION_DENIED = 2;
+  }
+  // status of publish response.
+  Status status = 1;
+
+  // JSON-encoded data to publish into a channel. This can be
+  // unmodified data from a PublishRequest or any modified data.
+  // If empty data returned here then Grafana won't publish data
+  // to a channel itself but will return a successful result to a
+  // client (supposing plugin published data to a channel itself).
+  bytes data = 2;
+}
+
+message RunStreamRequest {
+  PluginContext pluginContext = 1;
+
+  // path part of a channel.
+  string path = 2;
+}
+
+message StreamPacket {
+  // JSON-encoded data to publish into a channel.
+  bytes data = 1;
 }

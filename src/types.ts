@@ -1,24 +1,63 @@
 import { DataQuery, DataSourceJsonData } from '@grafana/data';
 
+export enum NodeClass {
+  Unspecified = 0,
+  Object = 1,
+  Variable = 2,
+  Method = 4,
+  ObjectType = 8,
+  VariableType = 16,
+  ReferenceType = 32,
+  DataType = 64,
+  View = 128,
+}
+
+export interface NSNodeId {
+  namespaceUrl: string;
+  id: string;
+}
+
+export interface BrowseFilter {
+  maxResults: number;
+  browseName: string;
+}
+
 export interface OpcUaQuery extends DataQuery {
-  nodeId: string;
-  value: string[];
+  useTemplate: boolean;
+  templateVariable: string;
+  nodePath: NodePath;
+  relativePath: QualifiedName[];
+  alias: string;
   readType: string;
   aggregate: OpcUaNodeDefinition;
-  interval: string;
+  maxValuesPerNode: number;
+  resampleInterval: number;
   eventQuery: EventQuery;
+}
+
+export interface NodePath {
+  node: OpcUaNodeInfo;
+  browsePath: QualifiedName[];
 }
 
 export interface EventQuery {
   eventTypeNodeId: string;
-  eventTypes: string[];
   eventColumns: EventColumn[];
-  eventFilters: EventFilter[];
+  eventFilters: EventFilterSer[];
+}
+
+export interface QualifiedName {
+  namespaceUrl: string;
+  name: string;
 }
 
 export interface EventColumn {
-  browseName: string;
+  browsePath: QualifiedName[];
   alias: string;
+}
+
+export interface DashboardInfo {
+  name: string;
 }
 
 export interface OpcUaResultsEntry {
@@ -35,12 +74,15 @@ export interface OpcUaResponse {
   data: OpcUaResults;
 }
 
-export interface OpcUaBrowseResults {
+export interface OpcUaNodeInfo {
   displayName: string;
-  browseName: string;
+  browseName: QualifiedName;
   nodeId: string;
-  isForward: boolean;
   nodeClass: number;
+}
+
+export interface OpcUaBrowseResults extends OpcUaNodeInfo {
+  isForward: boolean;
 }
 
 export interface OpcUaNodeDefinition {
@@ -50,7 +92,48 @@ export interface OpcUaNodeDefinition {
 
 export interface EventFilter {
   oper: FilterOperator;
-  operands: string[];
+  operands: FilterOperand[];
+}
+
+export interface FilterOperand {
+  type: FilterOperandEnum;
+  value: object;
+}
+
+export interface EventFilterSer {
+  oper: FilterOperator;
+  operands: FilterOperandSer[];
+}
+
+export interface FilterOperandSer {
+  type: FilterOperandEnum;
+  value: string;
+}
+
+export enum FilterOperandEnum {
+  Literal = 1,
+  Element = 2,
+  Attribute = 3,
+  SimpleAttribute = 4,
+}
+
+export interface LiteralOp {
+  typeId: string;
+  value: string;
+}
+
+export interface ElementOp {
+  index: number;
+}
+
+export interface AttributeOp {
+  //TODO
+}
+
+export interface SimpleAttributeOp {
+  typeId: string;
+  browsePath: QualifiedName[];
+  attributeId: number;
 }
 
 export enum FilterOperator {
@@ -72,32 +155,6 @@ export enum FilterOperator {
   RelatedTo = 15,
   BitwiseAnd = 16,
   BitwiseOr = 17,
-}
-
-export class EventFilterOperatorUtil {
-  static operNames: string[] = [
-    '==',
-    'IsNull',
-    '>',
-    '<',
-    '>=',
-    '<=',
-    'Like',
-    'Not',
-    'Between',
-    'InList',
-    'And',
-    'Or',
-    'Cast',
-    'InView',
-    'OfType',
-    'RelatedTo',
-    'BitwiseAnd',
-    'BitwiseOr',
-  ];
-  static GetString(oper: FilterOperator): string {
-    return EventFilterOperatorUtil.operNames[oper];
-  }
 }
 
 export const separator = ' / ';

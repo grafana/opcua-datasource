@@ -20,20 +20,20 @@ workflows:
       - build
       - build_backend_linux
       - build_backend_windows
-      - build_backend_osx
+      - build_backend_darwin
       - package:
           requires:
             - build
             - build_backend_linux
             - build_backend_windows
-            - build_backend_osx
-      - report:
-          requires:
-            - package
+            - build_backend_darwin
+      # - report:
+      #     requires:
+      #       - package
       - approve_release:
           type: approval
           requires:
-            - report
+            - package
           filters: *filter-only-release
       - publish_github_release:
           requires:
@@ -99,24 +99,21 @@ jobs:
           root: .
           paths:
           - ci/dist/linux
-      - store_artifacts:
-          path: ci
     
-  build_backend_osx:
+  build_backend_darwin:
     executor: dotnet_exec
     steps:
       - checkout
       - run:
           name: Build backend (OSX)
           command: |
-            [ ! -d "ci/dist/osx" ] && mkdir -pv ci/dist/osx
-            dotnet publish ./backend/.osx.build.csproj -r osx-x64 -o ci/dist/osx --self-contained true
+            [ ! -d "ci/dist/darwin" ] && mkdir -pv ci/dist/darwin
+            dotnet publish ./backend/.osx.build.csproj -r osx-x64 -o ci/dist/darwin --self-contained true
       - persist_to_workspace:
           root: .
           paths:
-          - ci/dist/osx
-      - store_artifacts:
-          path: ci
+          - ci/dist/darwin
+
 
   build_backend_windows:
     executor: dotnet_exec
@@ -125,14 +122,13 @@ jobs:
       - run:
           name: Build backend (Windows)
           command: |
-            [ ! -d "ci/dist/win" ] && mkdir -pv ci/dist/win
-            dotnet publish ./backend/.win.build.csproj -r win-x64 -o ci/dist/win --self-contained true
+            [ ! -d "ci/dist/windows" ] && mkdir -pv ci/dist/windows
+            dotnet publish ./backend/.win.build.csproj -r win-x64 -o ci/dist/windows --self-contained true
       - persist_to_workspace:
           root: .
           paths:
-          - ci/dist/win
-      - store_artifacts:
-          path: ci
+          - ci/dist/windows
+
   
   package:
     executor: default_exec
@@ -146,12 +142,61 @@ jobs:
           - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Package distribution
-          command: ./node_modules/.bin/grafana-toolkit plugin:ci-package
+          command: |
+            set -e
+            mv ci/jobs/build ci/jobs/build_frontend
+            EXEC_PREFIX=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.executable'| sed s/\"//g`
+            PLUGIN_NAME=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.id'| sed s/\"//g`
+            VERSION=`cat ci/jobs/build_frontend/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            echo "Plugin Name: ${PLUGIN_NAME}"
+            echo "Plugin Version: ${VERSION}"
+            echo "Plugin Exec Prefix: ${EXEC_PREFIX}"
+            mkdir -pv ci/jobs/build_backend
+            mkdir -pv ci/jobs/packages
+            mv ci/dist/linux ci/jobs/build_backend
+            mv ci/dist/windows ci/jobs/build_backend
+            mv ci/dist/darwin ci/jobs/build_backend
+
+
+            mv -v ci/jobs/build_backend/linux ci/jobs/build_backend/dist
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/linux
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.linux_amd64.zip.sha1
+            mv -v ci/packages/info.json ci/jobs/packages/info-linux.json
+            sed -i 's/zip/linux_amd64\.zip/g' ci/jobs/packages/info-linux.json
+            
+            mv -v ci/jobs/build_backend/windows ci/jobs/build_backend/dist
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/windows
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip.sha1
+            mv -v ci/packages/info.json ci/jobs/packages/info-windows.json
+            sed -i 's/zip/windows_amd64\.zip/g' ci/jobs/packages/info-windows.json
+
+            mv -v ci/jobs/build_backend/darwin ci/jobs/build_backend/dist
+            ./node_modules/.bin/grafana-toolkit plugin:ci-package --signatureType private --rootUrls http://localhost:3000
+            mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/darwin
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip
+            mv -v ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/jobs/packages/${PLUGIN_NAME}-${VERSION}.darwin_amd64.zip.sha1
+            mv -v ci/packages/info.json ci/jobs/packages/info-darwin.json
+            sed -i 's/zip/darwin_amd64\.zip/g' ci/jobs/packages/info-darwin.json
+
+            mv -fv ci/jobs/packages/* ci/packages/
+            ls -l ci/packages
       - persist_to_workspace:
           root: .
           paths:
             - ci/packages
             - ci/dist
+      - store_artifacts:
+          path: ci/packages
 
   report:
     executor: default_exec

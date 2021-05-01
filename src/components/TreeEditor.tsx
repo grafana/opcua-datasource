@@ -3,7 +3,7 @@
 import React, { PureComponent } from 'react';
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from '../DataSource';
-import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults, separator } from '../types';
+import { OpcUaQuery, OpcUaDataSourceOptions, OpcUaBrowseResults } from '../types';
 import { Transfer, Tree } from 'antd';
 import { TransferProps, TransferItem } from 'antd/lib/transfer';
 import './TreeEditorDark.less';
@@ -52,12 +52,12 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }: TreeTransferProp
       targetKeys={targetKeys}
       dataSource={transferDataSource}
       className="tree-transfer"
-      render={item => item.title || 'Unknown Title'}
+      render={(item) => item.title || 'Unknown Title'}
       showSelectAll={false}
     >
       {({ direction, onItemSelect, selectedKeys }) => {
         if (direction === 'left') {
-          const checkedKeys = [...selectedKeys, ...targetKeys];
+          const checkedKeys = [...selectedKeys, ...(targetKeys || [])];
           return (
             <Tree
               blockNode
@@ -116,7 +116,7 @@ export class TreeEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const { query } = this.props;
+    //const { query } = this.props;
     this.state = {
       dataSource: [loadingItem],
       targetKeys: [],
@@ -126,7 +126,7 @@ export class TreeEditor extends PureComponent<Props, State> {
     this.getTreeData(rootNode).then((results: TransferItem[]) => {
       this.setState({
         dataSource: results,
-        targetKeys: query.value ? [query.value.join(separator)] : [],
+        //targetKeys: query.value ? [query.value.join(separator)] : [],
       });
     });
   }
@@ -187,7 +187,7 @@ export class TreeEditor extends PureComponent<Props, State> {
             key: item.nodeId,
             title: item.displayName,
             children: [loadingItem],
-            checkable: false,
+            checkable: true,
           };
         } else {
           console.log('item', item);
