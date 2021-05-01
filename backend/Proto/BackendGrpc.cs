@@ -407,9 +407,9 @@ namespace Pluginv2 {
     }
 
   }
-  public static partial class Transform
+  public static partial class Stream
   {
-    static readonly string __ServiceName = "pluginv2.Transform";
+    static readonly string __ServiceName = "pluginv2.Stream";
 
     static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
     {
@@ -441,15 +441,33 @@ namespace Pluginv2 {
       return parser.ParseFrom(context.PayloadAsNewBuffer());
     }
 
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataRequest.Parser));
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataResponse.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.SubscribeStreamRequest> __Marshaller_pluginv2_SubscribeStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.SubscribeStreamRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.SubscribeStreamResponse> __Marshaller_pluginv2_SubscribeStreamResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.SubscribeStreamResponse.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.PublishStreamRequest> __Marshaller_pluginv2_PublishStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.PublishStreamRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.PublishStreamResponse> __Marshaller_pluginv2_PublishStreamResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.PublishStreamResponse.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.RunStreamRequest> __Marshaller_pluginv2_RunStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.RunStreamRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.StreamPacket> __Marshaller_pluginv2_StreamPacket = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.StreamPacket.Parser));
 
-    static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_TransformData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
+    static readonly grpc::Method<global::Pluginv2.SubscribeStreamRequest, global::Pluginv2.SubscribeStreamResponse> __Method_SubscribeStream = new grpc::Method<global::Pluginv2.SubscribeStreamRequest, global::Pluginv2.SubscribeStreamResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "TransformData",
-        __Marshaller_pluginv2_QueryDataRequest,
-        __Marshaller_pluginv2_QueryDataResponse);
+        "SubscribeStream",
+        __Marshaller_pluginv2_SubscribeStreamRequest,
+        __Marshaller_pluginv2_SubscribeStreamResponse);
+
+    static readonly grpc::Method<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse> __Method_PublishStream = new grpc::Method<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "PublishStream",
+        __Marshaller_pluginv2_PublishStreamRequest,
+        __Marshaller_pluginv2_PublishStreamResponse);
+
+    static readonly grpc::Method<global::Pluginv2.RunStreamRequest, global::Pluginv2.StreamPacket> __Method_RunStream = new grpc::Method<global::Pluginv2.RunStreamRequest, global::Pluginv2.StreamPacket>(
+        grpc::MethodType.ServerStreaming,
+        __ServiceName,
+        "RunStream",
+        __Marshaller_pluginv2_RunStreamRequest,
+        __Marshaller_pluginv2_StreamPacket);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -457,203 +475,240 @@ namespace Pluginv2 {
       get { return global::Pluginv2.BackendReflection.Descriptor.Services[3]; }
     }
 
-    /// <summary>Base class for server-side implementations of Transform</summary>
-    [grpc::BindServiceMethod(typeof(Transform), "BindService")]
-    public abstract partial class TransformBase
+    /// <summary>Base class for server-side implementations of Stream</summary>
+    [grpc::BindServiceMethod(typeof(Stream), "BindService")]
+    public abstract partial class StreamBase
     {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.QueryDataResponse> TransformData(global::Pluginv2.QueryDataRequest request, grpc::ServerCallContext context)
+      /// <summary>
+      /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
+      /// managed channel path – thus plugin can check subscribe permissions and communicate
+      /// options with Grafana Core.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.SubscribeStreamResponse> SubscribeStream(global::Pluginv2.SubscribeStreamRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// PublishStream called when a user tries to publish to a plugin/datasource
+      /// managed channel path. Here plugin can check publish permissions and
+      /// modify publication data if required.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>The response to send back to the client (wrapped by a task).</returns>
+      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.PublishStreamResponse> PublishStream(global::Pluginv2.PublishStreamRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// RunStream will be initiated by Grafana to consume a stream where use_run_stream
+      /// option set to true. In this case RunStream will only be called once for the
+      /// first client successfully subscribed to a channel path. When Grafana detects
+      /// that there are no longer any subscribers inside a channel, the call will be
+      /// terminated until next active subscriber appears. Call termination can happen
+      /// with a delay.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task RunStream(global::Pluginv2.RunStreamRequest request, grpc::IServerStreamWriter<global::Pluginv2.StreamPacket> responseStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
 
     }
 
-    /// <summary>Client for Transform</summary>
-    public partial class TransformClient : grpc::ClientBase<TransformClient>
+    /// <summary>Client for Stream</summary>
+    public partial class StreamClient : grpc::ClientBase<StreamClient>
     {
-      /// <summary>Creates a new client for Transform</summary>
+      /// <summary>Creates a new client for Stream</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public TransformClient(grpc::ChannelBase channel) : base(channel)
+      public StreamClient(grpc::ChannelBase channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for Transform that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for Stream that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public TransformClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public StreamClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected TransformClient() : base()
+      protected StreamClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
-      protected TransformClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected StreamClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
-      public virtual global::Pluginv2.QueryDataResponse TransformData(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      /// <summary>
+      /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
+      /// managed channel path – thus plugin can check subscribe permissions and communicate
+      /// options with Grafana Core.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Pluginv2.SubscribeStreamResponse SubscribeStream(global::Pluginv2.SubscribeStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return TransformData(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return SubscribeStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::Pluginv2.QueryDataResponse TransformData(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
+      /// <summary>
+      /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
+      /// managed channel path – thus plugin can check subscribe permissions and communicate
+      /// options with Grafana Core.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Pluginv2.SubscribeStreamResponse SubscribeStream(global::Pluginv2.SubscribeStreamRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_TransformData, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_SubscribeStream, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> TransformDataAsync(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      /// <summary>
+      /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
+      /// managed channel path – thus plugin can check subscribe permissions and communicate
+      /// options with Grafana Core.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.SubscribeStreamResponse> SubscribeStreamAsync(global::Pluginv2.SubscribeStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return TransformDataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return SubscribeStreamAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> TransformDataAsync(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
+      /// <summary>
+      /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
+      /// managed channel path – thus plugin can check subscribe permissions and communicate
+      /// options with Grafana Core.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.SubscribeStreamResponse> SubscribeStreamAsync(global::Pluginv2.SubscribeStreamRequest request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_TransformData, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_SubscribeStream, null, options, request);
+      }
+      /// <summary>
+      /// PublishStream called when a user tries to publish to a plugin/datasource
+      /// managed channel path. Here plugin can check publish permissions and
+      /// modify publication data if required.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Pluginv2.PublishStreamResponse PublishStream(global::Pluginv2.PublishStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return PublishStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// PublishStream called when a user tries to publish to a plugin/datasource
+      /// managed channel path. Here plugin can check publish permissions and
+      /// modify publication data if required.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The response received from the server.</returns>
+      public virtual global::Pluginv2.PublishStreamResponse PublishStream(global::Pluginv2.PublishStreamRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_PublishStream, null, options, request);
+      }
+      /// <summary>
+      /// PublishStream called when a user tries to publish to a plugin/datasource
+      /// managed channel path. Here plugin can check publish permissions and
+      /// modify publication data if required.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.PublishStreamResponse> PublishStreamAsync(global::Pluginv2.PublishStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return PublishStreamAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// PublishStream called when a user tries to publish to a plugin/datasource
+      /// managed channel path. Here plugin can check publish permissions and
+      /// modify publication data if required.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncUnaryCall<global::Pluginv2.PublishStreamResponse> PublishStreamAsync(global::Pluginv2.PublishStreamRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_PublishStream, null, options, request);
+      }
+      /// <summary>
+      /// RunStream will be initiated by Grafana to consume a stream where use_run_stream
+      /// option set to true. In this case RunStream will only be called once for the
+      /// first client successfully subscribed to a channel path. When Grafana detects
+      /// that there are no longer any subscribers inside a channel, the call will be
+      /// terminated until next active subscriber appears. Call termination can happen
+      /// with a delay.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamPacket> RunStream(global::Pluginv2.RunStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return RunStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// RunStream will be initiated by Grafana to consume a stream where use_run_stream
+      /// option set to true. In this case RunStream will only be called once for the
+      /// first client successfully subscribed to a channel path. When Grafana detects
+      /// that there are no longer any subscribers inside a channel, the call will be
+      /// terminated until next active subscriber appears. Call termination can happen
+      /// with a delay.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamPacket> RunStream(global::Pluginv2.RunStreamRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncServerStreamingCall(__Method_RunStream, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override TransformClient NewInstance(ClientBaseConfiguration configuration)
+      protected override StreamClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new TransformClient(configuration);
+        return new StreamClient(configuration);
       }
     }
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(TransformBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(StreamBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_TransformData, serviceImpl.TransformData).Build();
+          .AddMethod(__Method_SubscribeStream, serviceImpl.SubscribeStream)
+          .AddMethod(__Method_PublishStream, serviceImpl.PublishStream)
+          .AddMethod(__Method_RunStream, serviceImpl.RunStream).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
     /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, TransformBase serviceImpl)
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, StreamBase serviceImpl)
     {
-      serviceBinder.AddMethod(__Method_TransformData, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(serviceImpl.TransformData));
-    }
-
-  }
-  public static partial class TransformDataCallBack
-  {
-    static readonly string __ServiceName = "pluginv2.TransformDataCallBack";
-
-    static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
-    {
-      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
-      if (message is global::Google.Protobuf.IBufferMessage)
-      {
-        context.SetPayloadLength(message.CalculateSize());
-        global::Google.Protobuf.MessageExtensions.WriteTo(message, context.GetBufferWriter());
-        context.Complete();
-        return;
-      }
-      #endif
-      context.Complete(global::Google.Protobuf.MessageExtensions.ToByteArray(message));
-    }
-
-    static class __Helper_MessageCache<T>
-    {
-      public static readonly bool IsBufferMessage = global::System.Reflection.IntrospectionExtensions.GetTypeInfo(typeof(global::Google.Protobuf.IBufferMessage)).IsAssignableFrom(typeof(T));
-    }
-
-    static T __Helper_DeserializeMessage<T>(grpc::DeserializationContext context, global::Google.Protobuf.MessageParser<T> parser) where T : global::Google.Protobuf.IMessage<T>
-    {
-      #if !GRPC_DISABLE_PROTOBUF_BUFFER_SERIALIZATION
-      if (__Helper_MessageCache<T>.IsBufferMessage)
-      {
-        return parser.ParseFrom(context.PayloadAsReadOnlySequence());
-      }
-      #endif
-      return parser.ParseFrom(context.PayloadAsNewBuffer());
-    }
-
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataRequest> __Marshaller_pluginv2_QueryDataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataRequest.Parser));
-    static readonly grpc::Marshaller<global::Pluginv2.QueryDataResponse> __Marshaller_pluginv2_QueryDataResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.QueryDataResponse.Parser));
-
-    static readonly grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse> __Method_QueryData = new grpc::Method<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "QueryData",
-        __Marshaller_pluginv2_QueryDataRequest,
-        __Marshaller_pluginv2_QueryDataResponse);
-
-    /// <summary>Service descriptor</summary>
-    public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
-    {
-      get { return global::Pluginv2.BackendReflection.Descriptor.Services[4]; }
-    }
-
-    /// <summary>Base class for server-side implementations of TransformDataCallBack</summary>
-    [grpc::BindServiceMethod(typeof(TransformDataCallBack), "BindService")]
-    public abstract partial class TransformDataCallBackBase
-    {
-      public virtual global::System.Threading.Tasks.Task<global::Pluginv2.QueryDataResponse> QueryData(global::Pluginv2.QueryDataRequest request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-    }
-
-    /// <summary>Client for TransformDataCallBack</summary>
-    public partial class TransformDataCallBackClient : grpc::ClientBase<TransformDataCallBackClient>
-    {
-      /// <summary>Creates a new client for TransformDataCallBack</summary>
-      /// <param name="channel">The channel to use to make remote calls.</param>
-      public TransformDataCallBackClient(grpc::ChannelBase channel) : base(channel)
-      {
-      }
-      /// <summary>Creates a new client for TransformDataCallBack that uses a custom <c>CallInvoker</c>.</summary>
-      /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public TransformDataCallBackClient(grpc::CallInvoker callInvoker) : base(callInvoker)
-      {
-      }
-      /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected TransformDataCallBackClient() : base()
-      {
-      }
-      /// <summary>Protected constructor to allow creation of configured clients.</summary>
-      /// <param name="configuration">The client configuration.</param>
-      protected TransformDataCallBackClient(ClientBaseConfiguration configuration) : base(configuration)
-      {
-      }
-
-      public virtual global::Pluginv2.QueryDataResponse QueryData(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return QueryData(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual global::Pluginv2.QueryDataResponse QueryData(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_QueryData, null, options, request);
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> QueryDataAsync(global::Pluginv2.QueryDataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return QueryDataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      public virtual grpc::AsyncUnaryCall<global::Pluginv2.QueryDataResponse> QueryDataAsync(global::Pluginv2.QueryDataRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_QueryData, null, options, request);
-      }
-      /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override TransformDataCallBackClient NewInstance(ClientBaseConfiguration configuration)
-      {
-        return new TransformDataCallBackClient(configuration);
-      }
-    }
-
-    /// <summary>Creates service definition that can be registered with a server</summary>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static grpc::ServerServiceDefinition BindService(TransformDataCallBackBase serviceImpl)
-    {
-      return grpc::ServerServiceDefinition.CreateBuilder()
-          .AddMethod(__Method_QueryData, serviceImpl.QueryData).Build();
-    }
-
-    /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
-    /// Note: this method is part of an experimental API that can change or be removed without any prior notice.</summary>
-    /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
-    /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, TransformDataCallBackBase serviceImpl)
-    {
-      serviceBinder.AddMethod(__Method_QueryData, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.QueryDataRequest, global::Pluginv2.QueryDataResponse>(serviceImpl.QueryData));
+      serviceBinder.AddMethod(__Method_SubscribeStream, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.SubscribeStreamRequest, global::Pluginv2.SubscribeStreamResponse>(serviceImpl.SubscribeStream));
+      serviceBinder.AddMethod(__Method_PublishStream, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse>(serviceImpl.PublishStream));
+      serviceBinder.AddMethod(__Method_RunStream, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Pluginv2.RunStreamRequest, global::Pluginv2.StreamPacket>(serviceImpl.RunStream));
     }
 
   }

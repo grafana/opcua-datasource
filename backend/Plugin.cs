@@ -112,7 +112,8 @@ namespace plugin_dotnet
                     Services = {
                     { Diagnostics.BindService(new DiagnosticsService(logger, connections)) },
                     { Resource.BindService(new ResourceService(logger, connections, dashboardResolver)) },
-                    { Data.BindService(new DataService(logger, connections, nodeCacheFactory)) }
+                    { Data.BindService(new DataService(logger, connections, nodeCacheFactory)) },
+                    { Pluginv2.Stream.BindService(new StreamService(logger, connections))},
                 }
                 };
 

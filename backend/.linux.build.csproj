@@ -6,10 +6,11 @@
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
     <OutDir>../dist</OutDir>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <Target Name="Pre Build Event" BeforeTargets="BeforeBuild">
-    <Exec Command="(kill -s 2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
+    <Exec Command="(ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}' | kill -s 2 >/dev/null 2>&amp;1 || true)"/>
   </Target>
   
   <ItemGroup>
@@ -23,7 +24,7 @@
   </PropertyGroup>
 
   <Target Name="Post Build Event" AfterTargets="Build">
-    <Exec Command="(kill -s 2 `ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}'`) || true"/>
+    <Exec Command="(ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}' | kill -s 2 >/dev/null 2>&amp;1 || true)"/>
   </Target>
 
   <ItemGroup>
@@ -40,6 +41,7 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
+    <PackageReference Include="Prediktor.Log" Version="1.0.7" />
   </ItemGroup>
   
   <ItemGroup>
