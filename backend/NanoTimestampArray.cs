@@ -12,9 +12,10 @@ namespace Apache.Arrow
 
         protected override long ConvertTo(DateTimeOffset value)
         {
-            TimeSpan timeSpan = value - s_epoch;
-            long ticks = timeSpan.Ticks;
-            return ticks * 100;
+            // TimeSpan timeSpan = value - s_epoch;
+            // long ticks = timeSpan.Ticks;
+            // return ticks * 100;
+            return base.ConvertTo(value);
         }
     }
        

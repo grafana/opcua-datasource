@@ -238,17 +238,6 @@ namespace plugin_dotnet
                     builder.Append(offset);
                 }
                 return builder.Build();
-                // List<byte> raw = new List<byte>();
-                // for (int i = 0; i < Data.Count; i++) 
-                // {
-                //     DateTime dateTime = Convert.ToDateTime(Data[i]);
-                //     long unixTime = ((DateTimeOffset)dateTime).ToUnixTimeMilliseconds();
-                //     raw.AddRange(BitConverter.GetBytes(unixTime));
-                // }
-
-                // ArrowBuffer valueBuffer = new ArrowBuffer(raw.ToArray());
-                // ArrowBuffer nullBitmapBuffer = new ArrowBuffer();
-                // return new TimestampArray(TimestampType.Default, valueBuffer, nullBitmapBuffer, Data.Count, 0, 0);
             }
 
             else if (Type == typeof(DateTimeOffset)) {
