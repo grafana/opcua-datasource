@@ -99,7 +99,6 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(namespaces);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from GetNamespaces => {0}", result);
 
             return response;
         }

@@ -40,6 +40,14 @@ Restart Grafana and you should have the datasource installed.
 # Contributing
 See the list of features above. Happy with any contributions including QA/testing
 
+![Prediktor](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/PrediktorLogo_thumb.png) is a proud contributor
+Open Software like this project and open standards like OPC UA fits perfectly with our quest to give our clients the freedom to operate. To know more about our offerings and get in touch, check out https://prediktor.com.
+
+* [Prediktor](https://prediktor.com) has a public test OPC UA Server running at opc.tcp://opcua.prediktor.com:4880.
+It provides a small information model with Realtime/Historic data and Alarms&Events. Feel free to use it
+
+* You can find complementary OPC UA Grafana panel plugins at https://github.com/PrediktorAS/grafana
+
 # Q&A
 Q: **Can it read OPC Classic DA/HDA/AE?**
 A: Yes, provided use use the OPC Foundations COMIOP wrapper, which you can find [here](https://github.com/OPCFoundation/UA-.NETStandard). You will need to configure IOP to wrap your OPC COM server. Tested against Matrikon OPC Desktop Historian and Matrikon OPC Simulation Server.

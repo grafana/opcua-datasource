@@ -44,3 +44,6 @@ pkg/dotnet/plugin-dotnet/.vs
 >>>>>>> prediktor-opc-ae
 /pkg/dotnet/plugin-dotnet/bin
 /pkg/dotnet/plugin-dotnet/obj
+/backend/Properties/PublishProfiles/FolderProfile.pubxml.user
+/backend/Properties/PublishProfiles/FolderProfile.pubxml
+/backend/plugin-dotnet.csproj.user

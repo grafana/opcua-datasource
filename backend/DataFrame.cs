@@ -208,20 +208,20 @@ namespace plugin_dotnet
             }
                 
             else if (Type == typeof(uint)) {
-                var builder = new Apache.Arrow.Int32Array.Builder();
-                builder.AppendRange(DataAs<int>());
+                var builder = new Apache.Arrow.UInt32Array.Builder();
+                builder.AppendRange(DataAs<uint>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(ulong)) {
-                var builder = new Apache.Arrow.Int64Array.Builder();
-                builder.AppendRange(DataAs<long>());
+                var builder = new Apache.Arrow.UInt64Array.Builder();
+                builder.AppendRange(DataAs<ulong>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(ushort)) {
-                var builder = new Apache.Arrow.Int16Array.Builder();
-                builder.AppendRange(DataAs<short>());
+                var builder = new Apache.Arrow.UInt16Array.Builder();
+                builder.AppendRange(DataAs<ushort>());
                 return builder.Build();
             }
                 

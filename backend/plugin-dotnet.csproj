@@ -31,6 +31,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.363.107" />
     <PackageReference Include="Prediktor.UA.Client" Version="1.0.7" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
@@ -44,6 +45,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
