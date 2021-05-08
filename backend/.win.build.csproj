@@ -5,8 +5,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <Configurations>Debug;Release;Setup_Release</Configurations>
     <OutDir>../dist</OutDir>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,7 @@
     <PackageReference Include="Google.Protobuf" Version="3.14.0" />
     <PackageReference Include="Grpc" Version="2.34.0" />
     <PackageReference Include="Grpc.Tools" Version="2.34.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
@@ -33,9 +35,31 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
+    <PackageReference Include="Prediktor.Log" Version="1.0.7" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Folder Include="Proto\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\..\dist\**\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="YarnInstall" BeforeTargets="PreBuild" Condition="'$(Configuration)' == 'Setup_Release'">
+    <Exec Command="yarn install" WorkingDirectory="..\..\..\" />
+  </Target>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Setup_Release'">
+    <Exec Command="yarn build" WorkingDirectory="..\..\..\" />
+  </Target>
 </Project>
