@@ -223,9 +223,9 @@ namespace plugin_dotnet
                 var historyEvent = historyEventResult.Value;
                 var dataResponse = new DataResponse();
                 var dataFrame = new DataFrame(query.refId);
+                var fields = AddEventFields(dataFrame, query);
                 if (historyEvent.Events.Count > 0)
                 {
-                    var fields = AddEventFields(dataFrame, query);
                     foreach (var e in historyEvent.Events)
                     {
                         FillEventDataFrame(fields, e.EventFields, query, nodeCache);

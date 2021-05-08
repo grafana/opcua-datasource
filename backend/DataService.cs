@@ -418,7 +418,7 @@ namespace plugin_dotnet
             {
                // Close out the client connection.
                _log.LogError("Error: {0}", ex);
-               connection.Close();
+               connection?.Close();
             }
 
             return await Task.FromResult(response);
