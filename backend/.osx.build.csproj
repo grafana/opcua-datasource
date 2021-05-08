@@ -5,9 +5,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
-    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
-    <InvariantGlobalization>true</InvariantGlobalization>
+    <Configurations>Debug;Release;Setup_Release</Configurations>
     <OutDir>../dist</OutDir>
+    <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
   <Target Name="Pre Build Event" BeforeTargets="BeforeBuild">
@@ -23,17 +23,20 @@
     <Protobuf_NoWarnMissingExpected>true</Protobuf_NoWarnMissingExpected>
     <AssemblyName>gpx_opcua_darwin_amd64</AssemblyName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Setup_Release|AnyCPU'">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
 
   <Target Name="Post Build Event" AfterTargets="Build">
     <Exec Command="pidof -k gpx_opcua || true"/>
   </Target>
 
   <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
-    <PackageReference Include="Apache.Arrow" Version="3.0.0" />
+    <PackageReference Include="Apache.Arrow" Version="2.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.14.0" />
     <PackageReference Include="Grpc" Version="2.34.0" />
     <PackageReference Include="Grpc.Tools" Version="2.34.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
@@ -44,14 +47,16 @@
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
     <PackageReference Include="Prediktor.Log" Version="1.0.7" />
-    <PackageReference Include="Microsoft.ML" Version="1.5.5" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Folder Include="Proto\" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -66,6 +71,6 @@
     <Exec Command="yarn install" WorkingDirectory="..\..\..\" />
   </Target>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Setup_Release'">
-        <Exec Command="yarn build" WorkingDirectory="..\..\..\" />
+    <Exec Command="yarn build" WorkingDirectory="..\..\..\" />
   </Target>
 </Project>
