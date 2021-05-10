@@ -54,14 +54,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\..\..\dist\**\*">
+    <Content Include="..\dist\**\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Target Name="YarnInstall" BeforeTargets="PreBuild" Condition="'$(Configuration)' == 'Setup_Release'">
-    <Exec Command="yarn install" WorkingDirectory="..\..\..\" />
+    <Exec Command="yarn install" WorkingDirectory="..\" />
   </Target>
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition="'$(Configuration)' == 'Setup_Release'">
-        <Exec Command="yarn build" WorkingDirectory="..\..\..\" />
+    <Exec Command="yarn build" WorkingDirectory="..\" />
   </Target>
 </Project>
