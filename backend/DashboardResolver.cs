@@ -76,70 +76,20 @@ namespace plugin_dotnet
 
 		public (string dashboard, string[] dashKeys) ResolveDashboard(Session uaConnection, string nodeId, string targetNodeIdJson, string perspective, NamespaceTable nsTable)
 		{
-			//Get for instance
-			string[] dashKeys = new[] { targetNodeIdJson };
-			if (_dashboardDb.QueryDashboard(dashKeys, perspective, out DashboardData dashboard))
-				return (dashboard.Name, new string[] { nodeId });
+			DashboardData dashboard;
+			string[] dashKeys;
+
+			(dashboard, dashKeys) = ResolveDashboardByInstance(targetNodeIdJson, perspective, nodeId);
+			if (dashboard != null)
+				return (dashboard.Name, dashKeys);
 
 			var nId = Converter.GetNodeId(nodeId, nsTable);
 
-			//Get interface(s)
-			List<ExpandedNodeId> interfaces = new List<ExpandedNodeId>();
-			if (IsNodePresent(uaConnection, UaConstants.HasInterface, nsTable))
-			{
-				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, UaConstants.HasInterface, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection intReferences);
-				if (intReferences.Count > 0)
-				{
-					for (int i = 0; i < intReferences.Count; i++)
-						interfaces.Add(intReferences[i].NodeId);
-				}
-			}
+			var typeNodeId = GetType(uaConnection, nId);
 
-			//Get ClassType(s)
-			List<ExpandedNodeId> classTypes = new List<ExpandedNodeId>();
-			if (IsNodePresent(uaConnection, UaConstants.DefinedByEquipmentClass, nsTable))
-			{
-				var definedByEquipmentClass = Converter.GetNodeId(UaConstants.DefinedByEquipmentClass, nsTable);
-				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, definedByEquipmentClass, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection classReferences);
-				if (classReferences.Count > 0)
-				{
-
-					for (int i = 0; i < classReferences.Count; i++)
-						classTypes.Add(classReferences[i].NodeId);
-				}
-			}
-
-			// Get type
-			ExpandedNodeId typeNodeId = null;
-			uaConnection.Browse(null, null, nId, 1, BrowseDirection.Forward, "i=40", true, (uint)(NodeClass.ObjectType | NodeClass.VariableType), out byte[] cont, out ReferenceDescriptionCollection typeReferences);
-			if (typeReferences.Count > 0)
-			{
-				typeNodeId = typeReferences[0].NodeId;
-			}
-
-			if(interfaces.Count > 0 || classTypes.Count > 0)
-			{
-				if(typeNodeId != null)
-				{
-					List<ExpandedNodeId> typeAndInterfaces = new List<ExpandedNodeId>(interfaces);
-					typeAndInterfaces.AddRange(classTypes);
-					typeAndInterfaces.Add(typeNodeId);
-
-					(dashboard, dashKeys) = ResolveDashboard(typeAndInterfaces.ToArray(), perspective, nsTable);
-
-					if (dashboard != null)
-						return (dashboard.Name, dashKeys);
-				}
-
-				List<ExpandedNodeId> allInterfaces = new List<ExpandedNodeId>(interfaces);
-				allInterfaces.AddRange(classTypes);
-
-				(dashboard, dashKeys) = ResolveDashboard(allInterfaces.ToArray(), perspective, nsTable);
-
-				if (dashboard != null)
-					return (dashboard.Name, dashKeys);
-			}
-
+			(dashboard, dashKeys) = ResolveDashboardByTypeIntClasstype(uaConnection, nId, typeNodeId, perspective, nsTable);
+			if (dashboard != null)
+				return (dashboard.Name, dashKeys);
 
 			// Get for type or subtype
 			if (typeNodeId != null)
@@ -164,6 +114,122 @@ namespace plugin_dotnet
 			}
 
 			return (string.Empty, Array.Empty<string>());
+		}
+
+		private (DashboardData dashboard, string[] dashKeys) ResolveDashboardByInstance(string targetNodeIdJson, string perspective, string nodeId)
+		{
+			string[] dashKeys = new[] { targetNodeIdJson };
+			if (_dashboardDb.QueryDashboard(dashKeys, perspective, out DashboardData dashboard))
+				return (dashboard, new string[] { nodeId });
+
+			return (null, null);
+		}
+
+		private (DashboardData dashboard, string[] dashKeys) ResolveDashboardByTypeIntClasstype(Session uaConnection, 
+			NodeId nId, ExpandedNodeId typeNodeId, string perspective, NamespaceTable nsTable)
+		{
+			var interfaces = GetInterfaces(uaConnection, nsTable, nId);
+
+			var classTypes = GetClassTypes(uaConnection, nsTable, nId);
+
+			if (interfaces.Count > 0 || classTypes.Count > 0)
+			{
+				DashboardData dashboard;
+				string[] dashKeys;
+
+				var interfacesAndClassTypes = new List<ExpandedNodeId>(interfaces);
+				interfacesAndClassTypes.AddRange(classTypes);
+
+				if (typeNodeId != null)
+				{
+					//Type and ALL interfaces/classtypes
+					var typeAndInterfaces = new List<ExpandedNodeId>(interfacesAndClassTypes)
+					{
+						typeNodeId
+					};
+
+					(dashboard, dashKeys) = ResolveDashboard(typeAndInterfaces.ToArray(), perspective, nsTable);
+
+					if (dashboard != null)
+						return (dashboard, dashKeys);
+
+					//Type and ANY interfaces/classtypes
+					foreach (var iFace in interfacesAndClassTypes)
+					{
+						(dashboard, dashKeys) = ResolveDashboard(new[] { typeNodeId, iFace }, perspective, nsTable);
+
+						if (dashboard != null)
+							return (dashboard, dashKeys);
+					}
+				}
+
+				//ALL interfaces/classtypes
+				(dashboard, dashKeys) = ResolveDashboard(interfacesAndClassTypes.ToArray(), perspective, nsTable);
+
+				if (dashboard != null)
+					return (dashboard, dashKeys);
+
+				//ANY interfaces/classtypes
+				foreach (var iFace in interfacesAndClassTypes)
+				{
+					(dashboard, dashKeys) = ResolveDashboard(new[] { iFace }, perspective, nsTable);
+
+					if (dashboard != null)
+						return (dashboard, dashKeys);
+				}
+
+			}
+
+			return (null, null);
+		}
+
+		private static ExpandedNodeId GetType(Session uaConnection, NodeId nId)
+		{
+			ExpandedNodeId typeNodeId = null;
+
+			uaConnection.Browse(null, null, nId, 1, BrowseDirection.Forward, "i=40", true, (uint)(NodeClass.ObjectType | NodeClass.VariableType), out byte[] cont, out ReferenceDescriptionCollection typeReferences);
+			if (typeReferences.Count > 0)
+			{
+				typeNodeId = typeReferences[0].NodeId;
+			}
+
+			return typeNodeId;
+		}
+
+		private IList<ExpandedNodeId> GetClassTypes(Session uaConnection, NamespaceTable nsTable, NodeId nId)
+		{
+			var classTypes = new List<ExpandedNodeId>();
+
+			if (IsNodePresent(uaConnection, UaConstants.DefinedByEquipmentClass, nsTable))
+			{
+				var definedByEquipmentClass = Converter.GetNodeId(UaConstants.DefinedByEquipmentClass, nsTable);
+				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, definedByEquipmentClass, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection classReferences);
+				if (classReferences.Count > 0)
+				{
+
+					for (int i = 0; i < classReferences.Count; i++)
+						classTypes.Add(classReferences[i].NodeId);
+				}
+			}
+
+			return classTypes;
+		}
+
+		private IList<ExpandedNodeId> GetInterfaces(Session uaConnection, NamespaceTable nsTable, NodeId nId)
+		{
+			var interfaces = new List<ExpandedNodeId>();
+
+			if (IsNodePresent(uaConnection, UaConstants.HasInterface, nsTable))
+			{
+				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, UaConstants.HasInterface, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection intReferences);
+				if (intReferences.Count > 0)
+				{
+					for (int i = 0; i < intReferences.Count; i++)
+						interfaces.Add(intReferences[i].NodeId);
+				}
+			}
+
+			return interfaces;
 		}
 
 		private bool IsNodePresent(Session uaConnection, string nodeId, NamespaceTable nsTable)
