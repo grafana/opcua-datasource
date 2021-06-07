@@ -6,6 +6,7 @@
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
+    "sign": "grafana-toolkit plugin:sign",
     "watch": "$SHELL -c \"make watch &; grafana-toolkit plugin:dev --watch\""
   },
   "author": "srclosson@gmail.com",
