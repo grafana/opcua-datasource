@@ -1,12 +1,13 @@
-# grafana-opcua-datasource
-An OPC UA datasource for reading from OPC UA servers (DA/HDA/AE) into Grafana directly
+# Grafana Datasource plugin for OPC UA
+Utilizing the datasource plugin framework, this projects allows you to access data from OPC UA servers (DA/HDA/AE) directly from Grafana.
 
+### TLDR;
 To build on any platform:
 * `yarn build`
 
 ![full dashboard](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/dashboard2.png)
 
-# Important
+# Status
 Currently used in production and under active maintenance
 
 ## What works
@@ -23,7 +24,7 @@ Currently used in production and under active maintenance
 * Two-way communication with the OPC UA server (currently read only)
 
 # Description and Architecture
-This plugin uses GRPC and a C# backend to communicate with the grafana backend directly. See `pkg/dotnet` directory for the backend component
+This plugin uses GRPC and a C# backend to communicate with Grafana directly. See `pkg/dotnet` directory for the backend component
 
 # Building
 * `yarn install` to install dependencies
@@ -33,7 +34,7 @@ This plugin uses GRPC and a C# backend to communicate with the grafana backend d
 Restart Grafana and you should have the datasource installed.
 
 # Contributing
-See the list of features above. Happy with any contributions including QA/testing
+Contributions that addresses the needs above or other feature you'd like to see are most welcome. Fork the project and commit a PR with your requests.
 
 ![Prediktor](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/PrediktorLogo_thumb.png) is a proud contributor
 Open Software like this project and open standards like OPC UA fits perfectly with our quest to give our clients the freedom to operate. To know more about our offerings and get in touch, check out https://prediktor.com.
