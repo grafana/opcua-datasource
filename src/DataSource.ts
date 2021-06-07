@@ -1,9 +1,8 @@
 import { DataQueryRequest, DataQueryResponse, DataSourceInstanceSettings } from '@grafana/data';
 
 import { OpcUaQuery, OpcUaDataSourceOptions } from './types';
-import { DataSourceWithBackend } from '@grafana/runtime';
+import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { Observable } from 'rxjs';
-import { getTemplateSrv } from '@grafana/runtime';
 
 export class DataSource extends DataSourceWithBackend<OpcUaQuery, OpcUaDataSourceOptions> {
   config: DataSourceInstanceSettings<OpcUaDataSourceOptions>;

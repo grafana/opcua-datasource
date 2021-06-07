@@ -1,11 +1,10 @@
 import React from 'react';
-import { Icon } from '@grafana/ui';
+import { Icon, stylesFactory, useTheme } from '@grafana/ui';
 import { css, cx } from 'emotion';
 
 // @ts-ignore
 import RCCascader from 'rc-cascader';
 import { CascaderOption } from 'rc-cascader/lib/Cascader';
-import { stylesFactory, useTheme } from '@grafana/ui';
 import { GrafanaTheme } from '@grafana/data';
 
 export interface ButtonCascaderProps {

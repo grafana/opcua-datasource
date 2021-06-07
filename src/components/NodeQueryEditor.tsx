@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { Input } from '@grafana/ui';
+import { Input, Checkbox } from '@grafana/ui';
 import {
   QualifiedName,
   OpcUaQuery,
@@ -15,7 +15,6 @@ import { DataSource } from '../DataSource';
 import { SegmentFrame } from './SegmentFrame';
 //import { BrowsePathEditor } from './BrowsePathEditor';
 import { BrowsePathEditor } from './BrowsePathEditor';
-import { Checkbox } from '@grafana/ui';
 import { NodeEditor } from './NodeEditor';
 import { renderOverlay } from '../utils/Overlay';
 
