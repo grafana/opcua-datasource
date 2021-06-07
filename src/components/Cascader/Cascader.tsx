@@ -1,8 +1,6 @@
 import React from 'react';
-import { Icon } from '@grafana/ui';
+import { Icon, Select, Input } from '@grafana/ui';
 import RCCascader from '../../../node_modules/rc-cascader/lib';
-import { Select } from '@grafana/ui';
-import { Input } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
 import { css } from 'emotion';
 import { onChangeCascader, onLoadDataCascader } from './optionMappings';
