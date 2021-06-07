@@ -1,34 +1,29 @@
 # grafana-opcua-datasource
 An OPC UA datasource for reading from OPC UA servers (DA/HDA/AE) into Grafana directly
 
-## Update 01-Jan-2021
-Happy new year! Good riddance to 2020 in so many ways!
-
-The focus recently was to simply migrate the layout of the project. Make is more sensible and intuitive, and provide a better build system that makes more sense.
 To build on any platform:
 * `yarn build`
 
 ![full dashboard](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/dashboard2.png)
 
 # Important
-Currently beta quality
+Currently used in production and under active maintenance
+
 ## What works
 * Browsing servers
 * Graphical query editor
 * HDA queries
 * Multiple servers/datasources
-* Authentication with certificates
-* No security connections (but probably not useful)
+* Authenticated connection with certificate or no security
+* Alarms & Events
 
 ## What needs to be implemented
 * OPCUA DA Subscriptions: These are the ones where you will not need to hit the refresh button. If you have subscribed to a datapoint at 500ms, you will get an unsolicited update every 500ms. 
-* OPCUA AE
 * Password authentication
-* Aliasing tag names for display in the legend
-* Curious about getting into being able to write values or call functions over the query editor UI.
+* Two-way communication with the OPC UA server (currently read only)
 
 # Description and Architecture
-This plugin uses GRPC and a C# backend to communicated to the grafana backend directly. See `pkg/dotnet` directory for the backend component
+This plugin uses GRPC and a C# backend to communicate with the grafana backend directly. See `pkg/dotnet` directory for the backend component
 
 # Building
 * `yarn install` to install dependencies
@@ -51,11 +46,6 @@ It provides a small information model with Realtime/Historic data and Alarms&Eve
 # Q&A
 Q: **Can it read OPC Classic DA/HDA/AE?**
 A: Yes, provided use use the OPC Foundations COMIOP wrapper, which you can find [here](https://github.com/OPCFoundation/UA-.NETStandard). You will need to configure IOP to wrap your OPC COM server. Tested against Matrikon OPC Desktop Historian and Matrikon OPC Simulation Server.
-
-# Needs/Wants:
-* I'd love it if someone could sponser the following. The benefit will be that compatibility to your OPC products will be guarenteed.
-  * Some OPC UA Historian
-  * Some sort of OPC UA AE product
 
 # Vision
 The OPC UA datasource should be
