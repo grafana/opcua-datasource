@@ -1,5 +1,5 @@
-# Grafana Datasource plugin for OPC UA
-Utilizing the datasource plugin framework, this projects allows you to access data from OPC UA servers (DA/HDA/AE) directly from Grafana.
+# OPC UA Datasource plugin for Grafana
+Utilizing the datasource plugin framework, this projects allows you to access data from OPC UA servers directly from Grafana.
 
 ### TLDR;
 To build on any platform:
@@ -11,12 +11,12 @@ To build on any platform:
 Currently used in production and under active maintenance
 
 ## What works
-* Browsing servers
-* Graphical query editor
-* HDA queries
-* Multiple servers/datasources
+* Browsing and adding multiple servers
 * Authenticated connection with certificate or no security
-* Alarms & Events
+* Graphical query editor
+* Data Access (DA)
+* Historical Access (HA / HDA)
+* Alarms & Conditions (AC / AE)
 
 ## What needs to be implemented
 * OPCUA DA Subscriptions: These are the ones where you will not need to hit the refresh button. If you have subscribed to a datapoint at 500ms, you will get an unsolicited update every 500ms. 
@@ -46,6 +46,7 @@ It provides a small information model with Realtime/Historic data and Alarms&Eve
 
 # Q&A
 Q: **Can it read OPC Classic DA/HDA/AE?**
+
 A: Yes, provided use use the OPC Foundations COMIOP wrapper, which you can find [here](https://github.com/OPCFoundation/UA-.NETStandard). You will need to configure IOP to wrap your OPC COM server. Tested against Matrikon OPC Desktop Historian and Matrikon OPC Simulation Server.
 
 # Vision

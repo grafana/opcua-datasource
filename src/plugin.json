@@ -1,18 +1,19 @@
 {
   "type": "datasource",
   "name": "OPC UA (Unified Architecture)",
-  "id": "grafana-opcua-datasource",
+  "id": "opcua-datasource",
   "metrics": true,
   "annotations": true,
   "backend": true,
   "executable": "gpx_opcua",
   "alerting": true,
   "streaming": true,
+  "category": "enterprise",
   "info": {
-    "description": "Reads data from OPC UA Servers",
+    "description": "A Grafana datasource that reads data from OPC UA Servers",
     "author": {
       "name": "srclosson@gmail.com",
-      "url": "https://grafana.com"
+      "url": "https://github.com/srclosson"
     },
     "keywords": [
       "opc",
@@ -29,11 +30,11 @@
     "links": [
       {
         "name": "Website",
-        "url": "https://github.com/grafana/simple-datasource"
+        "url": "https://github.com/srclosson/opcua-datasource"
       },
       {
         "name": "License",
-        "url": "https://github.com/grafana/simple-datasource/blob/master/LICENSE"
+        "url": "https://github.com/srclosson/opcua-datasource/blob/master/LICENSE"
       }
     ],
     "screenshots": [],
@@ -41,7 +42,7 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaVersion": "6.3.x",
+    "grafanaDependency": "6.3.x",
     "plugins": []
   }
 }
