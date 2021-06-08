@@ -1,6 +1,6 @@
 {
   "name": "grafana-opcua-datasource",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Reads data from OPC UA Servers",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
@@ -11,6 +11,13 @@
   },
   "author": "srclosson@gmail.com",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/srclosson/opcua-datasource",
+  "keywords": [
+    "opcua-plugin",
+    "opcua",
+    "opc"
+  ],
+  "bugs": "https://github.com/srclosson/opcua-datasource/issues",
   "devDependencies": {
     "@grafana/data": "^7.4.2",
     "@grafana/runtime": "7.4.2",
