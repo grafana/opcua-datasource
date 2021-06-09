@@ -36,14 +36,14 @@ pkg/dotnet/.vs/Greeter
 pkg/dotnet/plugin-dotnet/.vs
 /pkg/dotnet/plugin-dotnet/Properties/PublishProfiles/FolderProfile.pubxml.user
 /pkg/dotnet/plugin-dotnet/Properties/PublishProfiles/FolderProfile.pubxml
-<<<<<<< HEAD
-=======
+/backend/Properties/PublishProfiles/FolderProfile.pubxml.user
+/backend/Properties/PublishProfiles/FolderProfile.pubxml
 /pkg/go/cgoopc/out/build/x64-Debug (default)
 /pkg/dotnet/plugin-dotnet/published
 /pkg/dotnet/plugin-dotnet/plugin-dotnet.csproj.user
->>>>>>> prediktor-opc-ae
 /pkg/dotnet/plugin-dotnet/bin
 /pkg/dotnet/plugin-dotnet/obj
-/backend/Properties/PublishProfiles/FolderProfile.pubxml.user
-/backend/Properties/PublishProfiles/FolderProfile.pubxml
 /backend/plugin-dotnet.csproj.user
+
+# For macos
+.DS_Store
