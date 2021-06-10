@@ -11,3 +11,6 @@
 - Added Alarms and Events; historic and subscription
 - Config UI and persistence have been changed, not backwards compatible
 - Added support for dashboard mapping from instance/type. This is to support complementary Grafana panel plugins at https://github.com/PrediktorAS/grafana
+
+## [1.1.2] - 2021-06-10
+- Mostly fixes needed for Successfully registering in the Grafana Plugin Registry
