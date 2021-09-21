@@ -2,19 +2,16 @@
 
 set -e
 
-
-PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
-VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
-echo "Plugin Name: ${PLUGIN_NAME}"
-echo "Plugin Version: ${VERSION}"
-
 #
 # ci-package will create the zip file
 # move to the dist folder that package uses
 mv -v ci/jobs/build_backend/linux ci/jobs/build_backend/dist
 ./node_modules/.bin/grafana-toolkit plugin:ci-package
-# created during ci-package
-ls -lR ci/dist/${PLUGIN_NAME}
+PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+echo "Plugin Name: ${PLUGIN_NAME}"
+echo "Plugin Version: ${VERSION}"
+
 #
 # Building separate linux and windows zip files
 #
