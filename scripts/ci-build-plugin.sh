@@ -11,7 +11,7 @@ mv -v dist ci/jobs/build_backend/linux
 
 # Build Windows
 [ ! -d dist ] && mkdir -pv dist || echo "Windows build: dist already created"
-dotnet publish ./backend/.windows.build.csproj -r win-x64 --self-contained true
+dotnet publish ./backend/.win.build.csproj -r win-x64 --self-contained true
 mv -v dist ci/jobs/build_backend/windows
 
 # Build OSX
