@@ -24,7 +24,7 @@ steps:
       image: grafana/grafana-plugin-ci:1.2.1-alpine
       name: build-and-test-frontend
     - commands:
-        - make linux
+        - ./scripts/ci-build-plugin.sh
       depends_on:
         - initialize
       image: appsvc/dotnetcore:6.0_20210409.1
