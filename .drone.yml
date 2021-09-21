@@ -61,6 +61,7 @@ steps:
       name: package
     - commands:
         - apt-get update --allow-releaseinfo-change
+        - apt-get install -y jq
         - PLUGIN_NAME=`jq -r .id ci/dist/plugin.json`
         - VERSION=`jq -r .info.version ci/dist/plugin.json`
         - if [ -z "$GCP_KEY" ]; then echo "Missing GCS Publish Key"; exit -1; fi
@@ -81,7 +82,7 @@ steps:
       name: publish-gcs-artifacts
     - commands:
         - apt-get update --allow-releaseinfo-change
-        - apt-get install -y jq git-lfs
+        - apt-get install -y jq
         - GRAFANA_DEPENDENCY=`jq -r .dependencies.grafanaDependency src/plugin.json`
         - E2E_VERSION=`jq -r '.devDependencies."@grafana/e2e"' ./package.json`
         - npm install -g find-versions-cli
