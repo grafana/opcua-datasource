@@ -27,7 +27,7 @@ steps:
         - make linux
       depends_on:
         - initialize
-      image: grafana/grafana-plugin-ci-e2e:1.2.1
+      image: appsvc/dotnetcore:6.0_20210409.1
       name: build_backend
     - commands:
         - echo "Starting veracode scan..."
