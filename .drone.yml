@@ -24,7 +24,7 @@ steps:
       image: grafana/grafana-plugin-ci:1.2.1-alpine
       name: build-and-test-frontend
     - commands:
-        - ./scripts/ci-build-plugin.sh
+        - make linux
       depends_on:
         - initialize
       image: grafana/grafana-plugin-ci-e2e:1.2.1
