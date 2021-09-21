@@ -1,5 +1,4 @@
 # most of this is generated from https://github.com/grafana/grafana-drone-extension
-# with custom oracle steps added
 image_pull_secrets:
     - dockerconfigjson
 kind: pipeline
