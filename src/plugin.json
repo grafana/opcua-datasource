@@ -1,7 +1,7 @@
 {
   "type": "datasource",
   "name": "OPC UA (Unified Architecture)",
-  "id": "opcua-datasource",
+  "id": "grafana-opcua-datasource",
   "metrics": true,
   "annotations": true,
   "backend": true,
