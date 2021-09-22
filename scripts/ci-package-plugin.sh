@@ -2,6 +2,7 @@
 
 set -e
 
+mkdir -pv ci/dist/grafana-opcua-datasource || true
 cp -rfv ci/jobs/build-and-test-frontend/dist/* ci/dist/grafana-opcua-datasource/
 
 #
