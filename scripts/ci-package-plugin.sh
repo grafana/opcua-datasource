@@ -2,6 +2,8 @@
 
 set -e
 
+cp -rfv ci/jobs/build-and-test-frontend/dist/* ci/dist/grafana-opcua-datasource/
+
 #
 # ci-package will create the zip file
 # move to the dist folder that package uses
