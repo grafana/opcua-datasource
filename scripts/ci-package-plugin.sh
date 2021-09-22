@@ -6,6 +6,7 @@ set -e
 # ci-package will create the zip file
 # move to the dist folder that package uses
 mv -v ci/jobs/build_backend/linux ci/jobs/build_backend/dist
+cp -rv ci/jobs/build-and-test-frontend/dist/*
 ./node_modules/.bin/grafana-toolkit plugin:ci-package
 PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
 VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
@@ -39,19 +40,10 @@ mv -v ci/jobs/build_backend/dist ci/jobs/build_backend/linux
 # 1. remove dist
 #
 mv -v ci/jobs/build_backend/windows ci/jobs/build_backend/dist
+cp -rv ci/jobs/build-and-test-frontend/dist/*
 echo "Windows dist"
 ls -lR ci/jobs/build_backend/dist
-#
-# 2. extract instantclient for windows into dist
-#
-/bin/rm -rf ci/jobs/build_backend/dist/lib # Remove the original linux instantclient
-#
-# 3. re-run ci-package to create the windows-only zip
-#
 ./node_modules/.bin/grafana-toolkit plugin:ci-package
-#
-# 4. rename zip
-#
 mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
   ci/packages/${PLUGIN_NAME}-${VERSION}.windows_amd64.zip
 mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
