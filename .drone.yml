@@ -19,6 +19,8 @@ steps:
       name: initialize
     - commands:
         - ./node_modules/.bin/grafana-toolkit plugin:ci-build
+        - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+        - ls -alR ci
       depends_on:
         - initialize
       image: grafana/grafana-plugin-ci:1.2.1-alpine
