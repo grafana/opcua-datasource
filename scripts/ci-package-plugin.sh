@@ -15,6 +15,10 @@ VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
 echo "Plugin Name: ${PLUGIN_NAME}"
 echo "Plugin Version: ${VERSION}"
 
+# Used in the plugin publish. Need to be in meta.
+mkdir -pv ci/meta || true
+cp -v ci/dist/plugin.json ci/meta/
+
 #
 # Building separate linux and windows zip files
 #
