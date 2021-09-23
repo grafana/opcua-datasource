@@ -392,14 +392,14 @@ steps:
     - commands:
         - echo "start publish GCS release"
         - apt-get update 
-        - apt-get install -y jq git-lfs
+        - apt-get install -y jq
         - if [ -z "$GCP_KEY" ]; then echo "Missing GCS Publish Key"; exit -1; fi
         - printenv GCP_KEY > /tmp/gcpkey.json
         - gcloud auth activate-service-account --key-file=/tmp/gcpkey.json
-        - CI_BUCKET=gs://plugins-ci/drone/$${DRONE_REPO}/$${DRONE_BRANCH}/$${DRONE_BUILD_PARENT}
-        - mkdir ci
-        - gsutil cp -r "$CI_BUCKET/meta" ci
-        - gsutil cp -r "$CI_BUCKET/packages" ci
+        # - CI_BUCKET=gs://plugins-ci/drone/$${DRONE_REPO}/$${DRONE_BRANCH}/$${DRONE_BUILD_PARENT}
+        # - mkdir ci
+        # - gsutil cp -r "$CI_BUCKET/meta" ci
+        # - gsutil cp -r "$CI_BUCKET/packages" ci
         - PLUGIN_NAME=`jq -r .id ci/meta/plugin.json`
         - VERSION=`jq -r .info.version ci/meta/plugin.json`
         - echo "Copying artifacts to $PLUGIN_NAME/release/$VERSION"
@@ -414,7 +414,6 @@ steps:
       name: publish-gcs-release
     - commands:
         - echo "start publish github release"
-        - apk add git-lfs
         - mkdir -p artifacts
         - cp ci/packages/* artifacts
         - PLUGIN_NAME=`jq -r .id ci/meta/plugin.json`
