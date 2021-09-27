@@ -31,7 +31,7 @@ steps:
       depends_on:
         - initialize
       image: mcr.microsoft.com/dotnet/sdk:5.0-bullseye-slim
-      name: build_backend
+      name: build-backend
     - commands:
         - echo "Starting veracode scan..."
         - apk add curl
@@ -46,7 +46,7 @@ steps:
         - '# grep "High Risk" ci/jobs/security_scan/sourclear_scan.out && false || true'
       depends_on:
         - build-and-test-frontend
-        - build_backend
+        - build-backend
       environment:
         SRCCLR_API_TOKEN:
             from_secret: srcclr_api_token
@@ -56,7 +56,7 @@ steps:
         - ./scripts/ci-package-plugin.sh
       depends_on:
         - build-and-test-frontend
-        - build_backend
+        - build-backend
       environment:
         GRAFANA_API_KEY:
             from_secret: grafana_api_key
@@ -185,8 +185,8 @@ steps:
         - ./scripts/ci-build-plugin.sh
       depends_on:
         - initialize
-      image: grafana/grafana-plugin-ci-e2e:1.2.1
-      name: build_backend
+      image: mcr.microsoft.com/dotnet/sdk:5.0-bullseye-slim
+      name: build-backend
     - commands:
         - echo "Starting veracode scan..."
         - apk add curl
@@ -202,7 +202,7 @@ steps:
         - '# grep "High Risk" ci/jobs/security_scan/sourclear_scan.out && false || true'
       depends_on:
         - build-and-test-frontend
-        - build_backend
+        - build-backend
       environment:
         SRCCLR_API_TOKEN:
             from_secret: srcclr_api_token
@@ -212,7 +212,7 @@ steps:
         - ./scripts/ci-package-plugin.sh
       depends_on:
         - build-and-test-frontend
-        - build_backend
+        - build-backend
       environment:
         GRAFANA_API_KEY:
             from_secret: grafana_api_key
