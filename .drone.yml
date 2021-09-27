@@ -1,4 +1,5 @@
 # most of this is generated from https://github.com/grafana/grafana-drone-extension
+# Built for opcua-datasource
 image_pull_secrets:
     - dockerconfigjson
 kind: pipeline
