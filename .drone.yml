@@ -177,6 +177,7 @@ steps:
       name: initialize
     - commands:
         - ./node_modules/.bin/grafana-toolkit plugin:ci-build
+        - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
       depends_on:
         - initialize
       image: grafana/grafana-plugin-ci:1.2.1-alpine
@@ -193,7 +194,6 @@ steps:
         - '# Increase heap size or the scanner will die.'
         - export _JAVA_OPTIONS=-Xmx4g
         - mkdir -p ci/jobs/security_scan
-        - go mod vendor
         - curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --skip-compile --quick --allow-dirty
         - '##'
         - '# Not failing builds now if we detect items we deem a problem in the scan output, but the following'
