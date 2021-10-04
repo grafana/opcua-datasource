@@ -443,10 +443,10 @@ namespace Pluginv2 {
 
     static readonly grpc::Marshaller<global::Pluginv2.SubscribeStreamRequest> __Marshaller_pluginv2_SubscribeStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.SubscribeStreamRequest.Parser));
     static readonly grpc::Marshaller<global::Pluginv2.SubscribeStreamResponse> __Marshaller_pluginv2_SubscribeStreamResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.SubscribeStreamResponse.Parser));
-    static readonly grpc::Marshaller<global::Pluginv2.PublishStreamRequest> __Marshaller_pluginv2_PublishStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.PublishStreamRequest.Parser));
-    static readonly grpc::Marshaller<global::Pluginv2.PublishStreamResponse> __Marshaller_pluginv2_PublishStreamResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.PublishStreamResponse.Parser));
     static readonly grpc::Marshaller<global::Pluginv2.RunStreamRequest> __Marshaller_pluginv2_RunStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.RunStreamRequest.Parser));
     static readonly grpc::Marshaller<global::Pluginv2.StreamPacket> __Marshaller_pluginv2_StreamPacket = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.StreamPacket.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.PublishStreamRequest> __Marshaller_pluginv2_PublishStreamRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.PublishStreamRequest.Parser));
+    static readonly grpc::Marshaller<global::Pluginv2.PublishStreamResponse> __Marshaller_pluginv2_PublishStreamResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Pluginv2.PublishStreamResponse.Parser));
 
     static readonly grpc::Method<global::Pluginv2.SubscribeStreamRequest, global::Pluginv2.SubscribeStreamResponse> __Method_SubscribeStream = new grpc::Method<global::Pluginv2.SubscribeStreamRequest, global::Pluginv2.SubscribeStreamResponse>(
         grpc::MethodType.Unary,
@@ -455,19 +455,19 @@ namespace Pluginv2 {
         __Marshaller_pluginv2_SubscribeStreamRequest,
         __Marshaller_pluginv2_SubscribeStreamResponse);
 
-    static readonly grpc::Method<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse> __Method_PublishStream = new grpc::Method<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "PublishStream",
-        __Marshaller_pluginv2_PublishStreamRequest,
-        __Marshaller_pluginv2_PublishStreamResponse);
-
     static readonly grpc::Method<global::Pluginv2.RunStreamRequest, global::Pluginv2.StreamPacket> __Method_RunStream = new grpc::Method<global::Pluginv2.RunStreamRequest, global::Pluginv2.StreamPacket>(
         grpc::MethodType.ServerStreaming,
         __ServiceName,
         "RunStream",
         __Marshaller_pluginv2_RunStreamRequest,
         __Marshaller_pluginv2_StreamPacket);
+
+    static readonly grpc::Method<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse> __Method_PublishStream = new grpc::Method<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "PublishStream",
+        __Marshaller_pluginv2_PublishStreamRequest,
+        __Marshaller_pluginv2_PublishStreamResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -482,12 +482,29 @@ namespace Pluginv2 {
       /// <summary>
       /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
       /// managed channel path – thus plugin can check subscribe permissions and communicate
-      /// options with Grafana Core.
+      /// options with Grafana Core. When the first subscriber joins a channel, RunStream
+      /// will be called. 
       /// </summary>
       /// <param name="request">The request received from the client.</param>
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::Pluginv2.SubscribeStreamResponse> SubscribeStream(global::Pluginv2.SubscribeStreamRequest request, grpc::ServerCallContext context)
+      {
+        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
+      }
+
+      /// <summary>
+      /// RunStream will be initiated by Grafana to consume a stream. RunStream will be
+      /// called once for the first client successfully subscribed to a channel path.
+      /// When Grafana detects that there are no longer any subscribers inside a channel,
+      /// the call will be terminated until next active subscriber appears. Call termination
+      /// can happen with a delay.
+      /// </summary>
+      /// <param name="request">The request received from the client.</param>
+      /// <param name="responseStream">Used for sending responses back to the client.</param>
+      /// <param name="context">The context of the server-side call handler being invoked.</param>
+      /// <returns>A task indicating completion of the handler.</returns>
+      public virtual global::System.Threading.Tasks.Task RunStream(global::Pluginv2.RunStreamRequest request, grpc::IServerStreamWriter<global::Pluginv2.StreamPacket> responseStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -501,23 +518,6 @@ namespace Pluginv2 {
       /// <param name="context">The context of the server-side call handler being invoked.</param>
       /// <returns>The response to send back to the client (wrapped by a task).</returns>
       public virtual global::System.Threading.Tasks.Task<global::Pluginv2.PublishStreamResponse> PublishStream(global::Pluginv2.PublishStreamRequest request, grpc::ServerCallContext context)
-      {
-        throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
-      }
-
-      /// <summary>
-      /// RunStream will be initiated by Grafana to consume a stream where use_run_stream
-      /// option set to true. In this case RunStream will only be called once for the
-      /// first client successfully subscribed to a channel path. When Grafana detects
-      /// that there are no longer any subscribers inside a channel, the call will be
-      /// terminated until next active subscriber appears. Call termination can happen
-      /// with a delay.
-      /// </summary>
-      /// <param name="request">The request received from the client.</param>
-      /// <param name="responseStream">Used for sending responses back to the client.</param>
-      /// <param name="context">The context of the server-side call handler being invoked.</param>
-      /// <returns>A task indicating completion of the handler.</returns>
-      public virtual global::System.Threading.Tasks.Task RunStream(global::Pluginv2.RunStreamRequest request, grpc::IServerStreamWriter<global::Pluginv2.StreamPacket> responseStream, grpc::ServerCallContext context)
       {
         throw new grpc::RpcException(new grpc::Status(grpc::StatusCode.Unimplemented, ""));
       }
@@ -550,7 +550,8 @@ namespace Pluginv2 {
       /// <summary>
       /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
       /// managed channel path – thus plugin can check subscribe permissions and communicate
-      /// options with Grafana Core.
+      /// options with Grafana Core. When the first subscriber joins a channel, RunStream
+      /// will be called. 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -564,7 +565,8 @@ namespace Pluginv2 {
       /// <summary>
       /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
       /// managed channel path – thus plugin can check subscribe permissions and communicate
-      /// options with Grafana Core.
+      /// options with Grafana Core. When the first subscriber joins a channel, RunStream
+      /// will be called. 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -576,7 +578,8 @@ namespace Pluginv2 {
       /// <summary>
       /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
       /// managed channel path – thus plugin can check subscribe permissions and communicate
-      /// options with Grafana Core.
+      /// options with Grafana Core. When the first subscriber joins a channel, RunStream
+      /// will be called. 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -590,7 +593,8 @@ namespace Pluginv2 {
       /// <summary>
       /// SubscribeStream called when a user tries to subscribe to a plugin/datasource
       /// managed channel path – thus plugin can check subscribe permissions and communicate
-      /// options with Grafana Core.
+      /// options with Grafana Core. When the first subscriber joins a channel, RunStream
+      /// will be called. 
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -598,6 +602,36 @@ namespace Pluginv2 {
       public virtual grpc::AsyncUnaryCall<global::Pluginv2.SubscribeStreamResponse> SubscribeStreamAsync(global::Pluginv2.SubscribeStreamRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_SubscribeStream, null, options, request);
+      }
+      /// <summary>
+      /// RunStream will be initiated by Grafana to consume a stream. RunStream will be
+      /// called once for the first client successfully subscribed to a channel path.
+      /// When Grafana detects that there are no longer any subscribers inside a channel,
+      /// the call will be terminated until next active subscriber appears. Call termination
+      /// can happen with a delay.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
+      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
+      /// <param name="cancellationToken">An optional token for canceling the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamPacket> RunStream(global::Pluginv2.RunStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return RunStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      /// <summary>
+      /// RunStream will be initiated by Grafana to consume a stream. RunStream will be
+      /// called once for the first client successfully subscribed to a channel path.
+      /// When Grafana detects that there are no longer any subscribers inside a channel,
+      /// the call will be terminated until next active subscriber appears. Call termination
+      /// can happen with a delay.
+      /// </summary>
+      /// <param name="request">The request to send to the server.</param>
+      /// <param name="options">The options for the call.</param>
+      /// <returns>The call object.</returns>
+      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamPacket> RunStream(global::Pluginv2.RunStreamRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncServerStreamingCall(__Method_RunStream, null, options, request);
       }
       /// <summary>
       /// PublishStream called when a user tries to publish to a plugin/datasource
@@ -651,38 +685,6 @@ namespace Pluginv2 {
       {
         return CallInvoker.AsyncUnaryCall(__Method_PublishStream, null, options, request);
       }
-      /// <summary>
-      /// RunStream will be initiated by Grafana to consume a stream where use_run_stream
-      /// option set to true. In this case RunStream will only be called once for the
-      /// first client successfully subscribed to a channel path. When Grafana detects
-      /// that there are no longer any subscribers inside a channel, the call will be
-      /// terminated until next active subscriber appears. Call termination can happen
-      /// with a delay.
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
-      /// <param name="deadline">An optional deadline for the call. The call will be cancelled if deadline is hit.</param>
-      /// <param name="cancellationToken">An optional token for canceling the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamPacket> RunStream(global::Pluginv2.RunStreamRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return RunStream(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      /// <summary>
-      /// RunStream will be initiated by Grafana to consume a stream where use_run_stream
-      /// option set to true. In this case RunStream will only be called once for the
-      /// first client successfully subscribed to a channel path. When Grafana detects
-      /// that there are no longer any subscribers inside a channel, the call will be
-      /// terminated until next active subscriber appears. Call termination can happen
-      /// with a delay.
-      /// </summary>
-      /// <param name="request">The request to send to the server.</param>
-      /// <param name="options">The options for the call.</param>
-      /// <returns>The call object.</returns>
-      public virtual grpc::AsyncServerStreamingCall<global::Pluginv2.StreamPacket> RunStream(global::Pluginv2.RunStreamRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncServerStreamingCall(__Method_RunStream, null, options, request);
-      }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       protected override StreamClient NewInstance(ClientBaseConfiguration configuration)
       {
@@ -696,8 +698,8 @@ namespace Pluginv2 {
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_SubscribeStream, serviceImpl.SubscribeStream)
-          .AddMethod(__Method_PublishStream, serviceImpl.PublishStream)
-          .AddMethod(__Method_RunStream, serviceImpl.RunStream).Build();
+          .AddMethod(__Method_RunStream, serviceImpl.RunStream)
+          .AddMethod(__Method_PublishStream, serviceImpl.PublishStream).Build();
     }
 
     /// <summary>Register service method with a service binder with or without implementation. Useful when customizing the  service binding logic.
@@ -707,8 +709,8 @@ namespace Pluginv2 {
     public static void BindService(grpc::ServiceBinderBase serviceBinder, StreamBase serviceImpl)
     {
       serviceBinder.AddMethod(__Method_SubscribeStream, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.SubscribeStreamRequest, global::Pluginv2.SubscribeStreamResponse>(serviceImpl.SubscribeStream));
-      serviceBinder.AddMethod(__Method_PublishStream, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse>(serviceImpl.PublishStream));
       serviceBinder.AddMethod(__Method_RunStream, serviceImpl == null ? null : new grpc::ServerStreamingServerMethod<global::Pluginv2.RunStreamRequest, global::Pluginv2.StreamPacket>(serviceImpl.RunStream));
+      serviceBinder.AddMethod(__Method_PublishStream, serviceImpl == null ? null : new grpc::UnaryServerMethod<global::Pluginv2.PublishStreamRequest, global::Pluginv2.PublishStreamResponse>(serviceImpl.PublishStream));
     }
 
   }
