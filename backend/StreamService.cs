@@ -8,10 +8,21 @@ namespace plugin_dotnet
     public class StreamService : Stream.StreamBase
     {
         private Grpc.Core.Logging.ILogger log = new Grpc.Core.Logging.ConsoleLogger();
+
         private Connections connections;
         public StreamService(ILogger logger, Connections connections)
         {
             this.connections = connections;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public override Task<PublishStreamResponse> PublishStream(PublishStreamRequest request, ServerCallContext context)
@@ -32,5 +43,9 @@ namespace plugin_dotnet
             return base.SubscribeStream(request, context);
         }
 
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

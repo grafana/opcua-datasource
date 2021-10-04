@@ -80,32 +80,32 @@ namespace Pluginv2 {
             "ASgMIi4KDEhlYWx0aFN0YXR1cxILCgdVTktOT1dOEAASBgoCT0sQARIJCgVF",
             "UlJPUhACIlYKFlN1YnNjcmliZVN0cmVhbVJlcXVlc3QSLgoNcGx1Z2luQ29u",
             "dGV4dBgBIAEoCzIXLnBsdWdpbnYyLlBsdWdpbkNvbnRleHQSDAoEcGF0aBgC",
-            "IAEoCSKxAQoXU3Vic2NyaWJlU3RyZWFtUmVzcG9uc2USOAoGc3RhdHVzGAEg",
+            "IAEoCSKZAQoXU3Vic2NyaWJlU3RyZWFtUmVzcG9uc2USOAoGc3RhdHVzGAEg",
             "ASgOMigucGx1Z2ludjIuU3Vic2NyaWJlU3RyZWFtUmVzcG9uc2UuU3RhdHVz",
-            "EgwKBGRhdGEYAiABKAwSFgoOdXNlX3J1bl9zdHJlYW0YAyABKAgiNgoGU3Rh",
-            "dHVzEgYKAk9LEAASDQoJTk9UX0ZPVU5EEAESFQoRUEVSTUlTU0lPTl9ERU5J",
-            "RUQQAiJiChRQdWJsaXNoU3RyZWFtUmVxdWVzdBIuCg1wbHVnaW5Db250ZXh0",
-            "GAEgASgLMhcucGx1Z2ludjIuUGx1Z2luQ29udGV4dBIMCgRwYXRoGAIgASgJ",
-            "EgwKBGRhdGEYAyABKAwilQEKFVB1Ymxpc2hTdHJlYW1SZXNwb25zZRI2CgZz",
-            "dGF0dXMYASABKA4yJi5wbHVnaW52Mi5QdWJsaXNoU3RyZWFtUmVzcG9uc2Uu",
-            "U3RhdHVzEgwKBGRhdGEYAiABKAwiNgoGU3RhdHVzEgYKAk9LEAASDQoJTk9U",
-            "X0ZPVU5EEAESFQoRUEVSTUlTU0lPTl9ERU5JRUQQAiJQChBSdW5TdHJlYW1S",
-            "ZXF1ZXN0Ei4KDXBsdWdpbkNvbnRleHQYASABKAsyFy5wbHVnaW52Mi5QbHVn",
-            "aW5Db250ZXh0EgwKBHBhdGgYAiABKAkiHAoMU3RyZWFtUGFja2V0EgwKBGRh",
-            "dGEYASABKAwyWwoIUmVzb3VyY2USTwoMQ2FsbFJlc291cmNlEh0ucGx1Z2lu",
-            "djIuQ2FsbFJlc291cmNlUmVxdWVzdBoeLnBsdWdpbnYyLkNhbGxSZXNvdXJj",
-            "ZVJlc3BvbnNlMAEyTAoERGF0YRJECglRdWVyeURhdGESGi5wbHVnaW52Mi5R",
-            "dWVyeURhdGFSZXF1ZXN0GhsucGx1Z2ludjIuUXVlcnlEYXRhUmVzcG9uc2Uy",
-            "rgEKC0RpYWdub3N0aWNzEkoKC0NoZWNrSGVhbHRoEhwucGx1Z2ludjIuQ2hl",
-            "Y2tIZWFsdGhSZXF1ZXN0Gh0ucGx1Z2ludjIuQ2hlY2tIZWFsdGhSZXNwb25z",
-            "ZRJTCg5Db2xsZWN0TWV0cmljcxIfLnBsdWdpbnYyLkNvbGxlY3RNZXRyaWNz",
-            "UmVxdWVzdBogLnBsdWdpbnYyLkNvbGxlY3RNZXRyaWNzUmVzcG9uc2Uy9QEK",
-            "BlN0cmVhbRJWCg9TdWJzY3JpYmVTdHJlYW0SIC5wbHVnaW52Mi5TdWJzY3Jp",
-            "YmVTdHJlYW1SZXF1ZXN0GiEucGx1Z2ludjIuU3Vic2NyaWJlU3RyZWFtUmVz",
-            "cG9uc2USUAoNUHVibGlzaFN0cmVhbRIeLnBsdWdpbnYyLlB1Ymxpc2hTdHJl",
-            "YW1SZXF1ZXN0Gh8ucGx1Z2ludjIuUHVibGlzaFN0cmVhbVJlc3BvbnNlEkEK",
-            "CVJ1blN0cmVhbRIaLnBsdWdpbnYyLlJ1blN0cmVhbVJlcXVlc3QaFi5wbHVn",
-            "aW52Mi5TdHJlYW1QYWNrZXQwAUINWgsuLztwbHVnaW52MmIGcHJvdG8z"));
+            "EgwKBGRhdGEYAiABKAwiNgoGU3RhdHVzEgYKAk9LEAASDQoJTk9UX0ZPVU5E",
+            "EAESFQoRUEVSTUlTU0lPTl9ERU5JRUQQAiJiChRQdWJsaXNoU3RyZWFtUmVx",
+            "dWVzdBIuCg1wbHVnaW5Db250ZXh0GAEgASgLMhcucGx1Z2ludjIuUGx1Z2lu",
+            "Q29udGV4dBIMCgRwYXRoGAIgASgJEgwKBGRhdGEYAyABKAwilQEKFVB1Ymxp",
+            "c2hTdHJlYW1SZXNwb25zZRI2CgZzdGF0dXMYASABKA4yJi5wbHVnaW52Mi5Q",
+            "dWJsaXNoU3RyZWFtUmVzcG9uc2UuU3RhdHVzEgwKBGRhdGEYAiABKAwiNgoG",
+            "U3RhdHVzEgYKAk9LEAASDQoJTk9UX0ZPVU5EEAESFQoRUEVSTUlTU0lPTl9E",
+            "RU5JRUQQAiJQChBSdW5TdHJlYW1SZXF1ZXN0Ei4KDXBsdWdpbkNvbnRleHQY",
+            "ASABKAsyFy5wbHVnaW52Mi5QbHVnaW5Db250ZXh0EgwKBHBhdGgYAiABKAki",
+            "HAoMU3RyZWFtUGFja2V0EgwKBGRhdGEYASABKAwyWwoIUmVzb3VyY2USTwoM",
+            "Q2FsbFJlc291cmNlEh0ucGx1Z2ludjIuQ2FsbFJlc291cmNlUmVxdWVzdBoe",
+            "LnBsdWdpbnYyLkNhbGxSZXNvdXJjZVJlc3BvbnNlMAEyTAoERGF0YRJECglR",
+            "dWVyeURhdGESGi5wbHVnaW52Mi5RdWVyeURhdGFSZXF1ZXN0GhsucGx1Z2lu",
+            "djIuUXVlcnlEYXRhUmVzcG9uc2UyrgEKC0RpYWdub3N0aWNzEkoKC0NoZWNr",
+            "SGVhbHRoEhwucGx1Z2ludjIuQ2hlY2tIZWFsdGhSZXF1ZXN0Gh0ucGx1Z2lu",
+            "djIuQ2hlY2tIZWFsdGhSZXNwb25zZRJTCg5Db2xsZWN0TWV0cmljcxIfLnBs",
+            "dWdpbnYyLkNvbGxlY3RNZXRyaWNzUmVxdWVzdBogLnBsdWdpbnYyLkNvbGxl",
+            "Y3RNZXRyaWNzUmVzcG9uc2Uy9QEKBlN0cmVhbRJWCg9TdWJzY3JpYmVTdHJl",
+            "YW0SIC5wbHVnaW52Mi5TdWJzY3JpYmVTdHJlYW1SZXF1ZXN0GiEucGx1Z2lu",
+            "djIuU3Vic2NyaWJlU3RyZWFtUmVzcG9uc2USQQoJUnVuU3RyZWFtEhoucGx1",
+            "Z2ludjIuUnVuU3RyZWFtUmVxdWVzdBoWLnBsdWdpbnYyLlN0cmVhbVBhY2tl",
+            "dDABElAKDVB1Ymxpc2hTdHJlYW0SHi5wbHVnaW52Mi5QdWJsaXNoU3RyZWFt",
+            "UmVxdWVzdBofLnBsdWdpbnYyLlB1Ymxpc2hTdHJlYW1SZXNwb25zZUINWgsu",
+            "LztwbHVnaW52MmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -126,7 +126,7 @@ namespace Pluginv2 {
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CheckHealthRequest), global::Pluginv2.CheckHealthRequest.Parser, new[]{ "PluginContext" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.CheckHealthResponse), global::Pluginv2.CheckHealthResponse.Parser, new[]{ "Status", "Message", "JsonDetails" }, null, new[]{ typeof(global::Pluginv2.CheckHealthResponse.Types.HealthStatus) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.SubscribeStreamRequest), global::Pluginv2.SubscribeStreamRequest.Parser, new[]{ "PluginContext", "Path" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.SubscribeStreamResponse), global::Pluginv2.SubscribeStreamResponse.Parser, new[]{ "Status", "Data", "UseRunStream" }, null, new[]{ typeof(global::Pluginv2.SubscribeStreamResponse.Types.Status) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.SubscribeStreamResponse), global::Pluginv2.SubscribeStreamResponse.Parser, new[]{ "Status", "Data" }, null, new[]{ typeof(global::Pluginv2.SubscribeStreamResponse.Types.Status) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.PublishStreamRequest), global::Pluginv2.PublishStreamRequest.Parser, new[]{ "PluginContext", "Path", "Data" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.PublishStreamResponse), global::Pluginv2.PublishStreamResponse.Parser, new[]{ "Status", "Data" }, null, new[]{ typeof(global::Pluginv2.PublishStreamResponse.Types.Status) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pluginv2.RunStreamRequest), global::Pluginv2.RunStreamRequest.Parser, new[]{ "PluginContext", "Path" }, null, null, null, null),
@@ -4726,7 +4726,6 @@ namespace Pluginv2 {
     public SubscribeStreamResponse(SubscribeStreamResponse other) : this() {
       status_ = other.status_;
       data_ = other.data_;
-      useRunStream_ = other.useRunStream_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -4765,21 +4764,6 @@ namespace Pluginv2 {
       }
     }
 
-    /// <summary>Field number for the "use_run_stream" field.</summary>
-    public const int UseRunStreamFieldNumber = 3;
-    private bool useRunStream_;
-    /// <summary>
-    /// use_run_stream tells Grafana to use RunStream call to consume streaming
-    /// packets from a plugin. See comments for RunStream for details.
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool UseRunStream {
-      get { return useRunStream_; }
-      set {
-        useRunStream_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as SubscribeStreamResponse);
@@ -4795,7 +4779,6 @@ namespace Pluginv2 {
       }
       if (Status != other.Status) return false;
       if (Data != other.Data) return false;
-      if (UseRunStream != other.UseRunStream) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4804,7 +4787,6 @@ namespace Pluginv2 {
       int hash = 1;
       if (Status != global::Pluginv2.SubscribeStreamResponse.Types.Status.Ok) hash ^= Status.GetHashCode();
       if (Data.Length != 0) hash ^= Data.GetHashCode();
-      if (UseRunStream != false) hash ^= UseRunStream.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4829,10 +4811,6 @@ namespace Pluginv2 {
         output.WriteRawTag(18);
         output.WriteBytes(Data);
       }
-      if (UseRunStream != false) {
-        output.WriteRawTag(24);
-        output.WriteBool(UseRunStream);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -4850,10 +4828,6 @@ namespace Pluginv2 {
         output.WriteRawTag(18);
         output.WriteBytes(Data);
       }
-      if (UseRunStream != false) {
-        output.WriteRawTag(24);
-        output.WriteBool(UseRunStream);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -4868,9 +4842,6 @@ namespace Pluginv2 {
       }
       if (Data.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
-      }
-      if (UseRunStream != false) {
-        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4888,9 +4859,6 @@ namespace Pluginv2 {
       }
       if (other.Data.Length != 0) {
         Data = other.Data;
-      }
-      if (other.UseRunStream != false) {
-        UseRunStream = other.UseRunStream;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -4914,10 +4882,6 @@ namespace Pluginv2 {
             Data = input.ReadBytes();
             break;
           }
-          case 24: {
-            UseRunStream = input.ReadBool();
-            break;
-          }
         }
       }
     #endif
@@ -4938,10 +4902,6 @@ namespace Pluginv2 {
           }
           case 18: {
             Data = input.ReadBytes();
-            break;
-          }
-          case 24: {
-            UseRunStream = input.ReadBool();
             break;
           }
         }
