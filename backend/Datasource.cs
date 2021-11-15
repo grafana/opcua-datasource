@@ -149,6 +149,7 @@ namespace plugin_dotnet
         public Int64 maxDataPoints { get; set; }
         public Int64 intervalMs { get; set; }
         public Int64 datasourceId { get; set; }
+        public string datasourceUid { get; set; }
         public TimeRange timeRange { get; set; }
         public NodePath nodePath { get; set; }
         
@@ -171,7 +172,7 @@ namespace plugin_dotnet
 
         public OpcUAQuery() { }
 
-        public OpcUAQuery(DataQuery dataQuery)
+        public OpcUAQuery(DataQuery dataQuery, DataSourceInstanceSettings instanceSettings)
         {
             refId = dataQuery.RefId;
             maxDataPoints = dataQuery.MaxDataPoints;
@@ -180,6 +181,7 @@ namespace plugin_dotnet
             byte[] byDecoded = Convert.FromBase64String(dataQuery.Json.ToBase64());
             OpcUAQuery query = JsonSerializer.Deserialize<OpcUAQuery>(byDecoded);
             datasourceId = query.datasourceId;
+            datasourceUid = instanceSettings.Uid;
             nodePath = query.nodePath;
             templateVariable = query.templateVariable;
             useTemplate = query.useTemplate;
@@ -193,12 +195,13 @@ namespace plugin_dotnet
             relativePath = query.relativePath;
         }
 
-        public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string nodeId)
+        public OpcUAQuery(string refId, Int64 maxDataPoints, Int64 intervalMs, Int64 datasourceId, string datasourceUid, string nodeId)
         {
             this.refId = refId;
             this.maxDataPoints = maxDataPoints;
             this.intervalMs = intervalMs;
             this.datasourceId = datasourceId;
+            this.datasourceUid = datasourceUid;
             this.nodePath = nodePath;
         }
     }

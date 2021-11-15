@@ -8,7 +8,7 @@
   "executable": "gpx_opcua",
   "alerting": true,
   "streaming": true,
-  "category": "enterprise",
+  "live": true,
   "info": {
     "description": "A Grafana datasource that reads data from OPC UA Servers",
     "author": {

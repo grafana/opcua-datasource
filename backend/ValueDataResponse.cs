@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Google.Protobuf;
+using Microsoft.Extensions.Logging;
 using Opc.Ua;
 using Pluginv2;
 using Prediktor.UA.Client;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace plugin_dotnet
 {
@@ -14,12 +16,12 @@ namespace plugin_dotnet
         private static readonly DateTime _lowLimit = new DateTime(2, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly DateTime _highLimit = new DateTime(9998, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        internal static string GetFieldName(OpcUAQuery query, BrowsePath relativePath)
+        internal static string GetFieldName(string delimiter, OpcUAQuery query, BrowsePath relativePath)
         {
             string fieldName = query.alias;
             if (string.IsNullOrEmpty(fieldName))
             {
-                fieldName = String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray());
+                fieldName = String.Join(delimiter, query.nodePath.browsePath.Select(a => a.name).ToArray());
                 if (relativePath?.RelativePath?.Elements?.Count > 0)
                 {
                     StringBuilder sb = new StringBuilder();
@@ -49,7 +51,7 @@ namespace plugin_dotnet
                 {
                     if (valueField == null && entry.Value != null)
                     {
-                        var fieldName = GetFieldName(query, relativePath);
+                        var fieldName = GetFieldName(" / ", query, relativePath);
                         valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
                     }
 
@@ -77,7 +79,7 @@ namespace plugin_dotnet
             return dt;
         }
 
-        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
+        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, bool stream, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
         {
             try
             {
@@ -86,8 +88,13 @@ namespace plugin_dotnet
                     DataResponse dataResponse = new DataResponse();
                     DataFrame dataFrame = new DataFrame(query.refId);
 
+                    if (stream) {
+                        dataFrame.Meta.Channel = String.Format("ds/{0}/{1}", query.datasourceUid, GetFieldName("/", query, relativePath));
+                        log.LogDebug("Streaming: {0}", dataFrame.Meta.Channel);
+                    }
+
                     var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                    var fieldName = GetFieldName(query, relativePath);
+                    var fieldName = GetFieldName(" / ", query, relativePath);
                     Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
                     timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
                     valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");

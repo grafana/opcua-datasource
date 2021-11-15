@@ -135,7 +135,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     var dataValue = dvs[j];
-                    results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i], browsePaths[i]);
+                    results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, false, dataValue, nodeIds[j], queries[i], browsePaths[i]);
                     j++;
                 }
                 else
@@ -340,7 +340,7 @@ namespace plugin_dotnet
                 _log.LogDebug("got a request: {0}", request);
                 connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
 
-                var uaQueries = request.Queries.Select(q => new OpcUAQuery(q));
+                var uaQueries = request.Queries.Select(q => new OpcUAQuery(q, request.PluginContext.DataSourceInstanceSettings));
                 var invalidQueries = GetInvalidQueries(uaQueries);//uaQueries.Where(a => a.nodePath != null).ToLookup(a => a.refId);
 
                 var queryGroups = uaQueries.Where(a => !invalidQueries.ContainsKey(a.refId)).ToLookup(o => o.readType);
@@ -438,8 +438,11 @@ namespace plugin_dotnet
             {
                 if (nodeIdsResult[i].Success)
                 {
-                    if (dataValues[j].Success)
-                        results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
+                    if (dataValues[j].Success) {
+                        results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, true, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
+                        
+                        _log.LogDebug("Getting: {0} {1} {2} {3}", dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
+                    }
                     else
                         results[i] = new Result<DataResponse>(dataValues[j].StatusCode, dataValues[j].Error);
                     j++;

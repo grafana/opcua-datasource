@@ -8,6 +8,7 @@ using Apache.Arrow.Ipc;
 using Google.Protobuf;
 using Apache.Arrow.Types;
 using Grpc.Core.Logging;
+using System.Text.Json;
 
 namespace plugin_dotnet
 {
@@ -124,6 +125,8 @@ namespace plugin_dotnet
         // Stats is TODO
         public object Stats { get; set; }
 
+        public string Channel { get; set; }
+
         // Notices provide additional information about the data in the Frame that
         // Grafana can display to the user in the user interface.
         public Notice[] Notices { get; set; }
@@ -158,6 +161,10 @@ namespace plugin_dotnet
         {
             return Data.Cast<T>().ToList();
         }
+
+        // public Apache.Arrow.Field ToArrowField() {
+        //     ToArrowArray()
+        // }
 
         public IArrowArray ToArrowArray() {
             if (Type == typeof(bool)) {
@@ -303,6 +310,7 @@ namespace plugin_dotnet
         {
             _log = new ConsoleLogger();
             Name = name;
+            Meta = new FrameMeta();
             fields = new List<Field>();
         }
 
@@ -339,8 +347,22 @@ namespace plugin_dotnet
                 recordBatchBuilder.Append(field.Name, true, field.ToArrowArray());
             }
 
-            var recordBatch = recordBatchBuilder.Build();
-            var writer = new ArrowFileWriter(stream, recordBatch.Schema);
+            Schema.Builder schemaBuilder = new Schema.Builder();
+            string jsonMeta = JsonSerializer.Serialize(Meta);
+            Dictionary<string, string> meta = new Dictionary<string, string>();
+            meta["meta"] = jsonMeta;
+
+            RecordBatch recordBatch = recordBatchBuilder.Build();
+            foreach (KeyValuePair<string, Apache.Arrow.Field> kv in recordBatch.Schema.Fields) {
+                Apache.Arrow.Field field = kv.Value;
+                schemaBuilder.Field(new Apache.Arrow.Field(field.Name, field.DataType, field.IsNullable, meta));
+            }
+            
+
+            schemaBuilder = schemaBuilder.Metadata("hello", "doctor");
+            Schema schema = schemaBuilder.Build();
+            
+            var writer = new ArrowFileWriter(stream, schema);
             writer.WriteRecordBatch(recordBatch);
             writer.WriteEnd();
 

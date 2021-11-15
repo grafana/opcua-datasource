@@ -40,5 +40,16 @@ endif
 ifeq (${BUILD_OS},linux)
 	dotnet watch -p ./backend/.linux.build.csproj publish .linux.build.csproj -r linux-x64 --self-contained true
 endif
- 
+
+restart:
+ifeq (${BUILD_OS},windows)
+	type "not implemented yet"
+endif
+ifeq (${BUILD_OS},darwin)
+	pidof -k gpx_opcua
+endif
+ifeq (${BUILD_OS},linux)
+	ps -ef | grep gpx_opcua | grep -v grep | awk '{print $2}' | kill -s 2 >/dev/null 2>&1
+endif
+
 .PHONY: vendor
