@@ -11,36 +11,60 @@ namespace plugin_dotnet
     {
         public static IDashboardDb CreateDashboardDb(ILogger logger)
         {
-            string dbFile;
+            string dbFolder;
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                dbFile = Path.Combine(Environment.GetFolderPath(
-                    Environment.SpecialFolder.CommonApplicationData), "Grafana", "grafana-opcua-datasource", "dashboardmapping.db");
+                dbFolder = Path.Combine(Environment.GetFolderPath(
+                    Environment.SpecialFolder.CommonApplicationData), "Grafana", "grafana-opcua-datasource");
             }
             else
             {
-                dbFile = Path.Combine(Path.PathSeparator + "var", "lib", "grafana-opcua-datasource");
+                dbFolder = Path.Combine("/var", "lib", "grafana-opcua-datasource");
             }
 
-            var oldPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs", "dashboardmapping.db");
+            try
+            {                
+                if(!Directory.Exists(dbFolder))
+                    Directory.CreateDirectory(dbFolder);
+            }
+            catch(Exception e)
+            {
+                logger.LogError($"Creating directory '{dbFolder}' failed: '{e.Message}'", e);
+            }
+
+            var dbFile = Path.Combine(dbFolder, "dashboardmapping.db");
+
+            MoveOldFiles(dbFile, logger);
+
+            return new DashboardDb(logger, dbFile);
+        }
+
+        private static void MoveOldFiles(string dbFile, ILogger logger)
+        {
+            var oldFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs");
+            var oldPath = Path.Combine(oldFolder, "dashboardmapping.db");
 
             if (File.Exists(oldPath))
             {
                 try
                 {
-                    var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs");
-                    File.Move(oldPath, dbFile);
-                    if (Directory.Exists(directory) && Directory.GetFiles(directory).Length == 0)
-                        Directory.Delete(directory);
+                    if(!File.Exists(dbFile))
+                    {
+                        File.Move(oldPath, dbFile);
+                    }
+                    else
+                    {
+                        File.Delete(oldPath);
+                    }
+
+                    if (Directory.Exists(oldFolder) && Directory.GetFiles(oldFolder).Length == 0)
+                        Directory.Delete(oldFolder);
                 }
                 catch (Exception e)
                 {
                     logger.LogError($"Moving old dashboardmapping.db failed: '{e.Message}'", e);
                 }
             }
-
-            return new DashboardDb(logger, dbFile);
         }
-
     }
 }
