@@ -12,3 +12,8 @@ Broken into 3 services:
 Log files can be found at:
 - Linux/Macos:  '/var/log/grafana/grafana-opcua-datasource'
 - Windows: '${ProgramData}/Grafana/grafana-opcua-datasource/logs'
+
+# Dashboard Mapping
+The dashboardmappings.db file can be found at:
+- Linux/Macos:  '/var/lib/grafana-opcua-datasource'
+- Windows: '${CommonApplicationData}/Grafana/grafana-opcua-datasource'
