@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration.Json;
 using Pluginv2;
+using System.Runtime.InteropServices;
 
 namespace plugin_dotnet
 {
@@ -80,7 +81,11 @@ namespace plugin_dotnet
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging(configure => configure.AddLog4Net())
+            var logConfigFile = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "log4net.win.config" : "log4net.config";
+
+            var pathLogConfig = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logConfigFile);
+
+            services.AddLogging(configure => configure.AddLog4Net(pathLogConfig))
                 .AddTransient<Plugin>();
             services.Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Trace);
 
