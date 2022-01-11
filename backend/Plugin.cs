@@ -2,14 +2,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration.Json;
 using Pluginv2;
-using System.Runtime.InteropServices;
 
 namespace plugin_dotnet
 {
@@ -17,77 +14,9 @@ namespace plugin_dotnet
     {
         public const int AppProtoVersion = 1;
 
-        static Opc.Ua.ApplicationConfiguration CreateApplicationConfiguration()
-        {
-            var certificateValidator = new Opc.Ua.CertificateValidator();
-            certificateValidator.CertificateValidation += (sender, eventArgs) =>
-            {
-                if (Opc.Ua.ServiceResult.IsGood(eventArgs.Error))
-                    eventArgs.Accept = true;
-                else if (eventArgs.Error.StatusCode.Code == Opc.Ua.StatusCodes.BadCertificateUntrusted)
-                    eventArgs.Accept = true;
-                else
-                    throw new Exception(string.Format("Failed to validate certificate with error code {0}: {1}", eventArgs.Error.Code, eventArgs.Error.AdditionalInfo));
-            };
-
-            Opc.Ua.SecurityConfiguration securityConfigurationcv = new Opc.Ua.SecurityConfiguration
-            {
-                AutoAcceptUntrustedCertificates = true,
-                RejectSHA1SignedCertificates = false,
-                MinimumCertificateKeySize = 1024,
-            };
-            certificateValidator.Update(securityConfigurationcv);
-
-            return new Opc.Ua.ApplicationConfiguration
-            {
-                ApplicationName = "Grafana",
-                ApplicationType = Opc.Ua.ApplicationType.Client,
-                CertificateValidator = certificateValidator,
-                ServerConfiguration = new Opc.Ua.ServerConfiguration
-                {
-                    MaxSubscriptionCount = 100000,
-                    MaxMessageQueueSize = 1000000,
-                    MaxNotificationQueueSize = 1000000,
-                    MaxPublishRequestCount = 10000000,
-                },
-
-                SecurityConfiguration = new Opc.Ua.SecurityConfiguration
-                {
-                    AutoAcceptUntrustedCertificates = true,
-                    RejectSHA1SignedCertificates = false,
-                    MinimumCertificateKeySize = 1024,
-                },
-
-                TransportQuotas = new Opc.Ua.TransportQuotas
-                {
-                    OperationTimeout = 6000000,
-                    MaxStringLength = int.MaxValue,
-                    MaxByteStringLength = int.MaxValue,
-                    MaxArrayLength = 65535,
-                    MaxMessageSize = 419430400,
-                    MaxBufferSize = 65535,
-                    ChannelLifetime = -1,
-                    SecurityTokenLifetime = -1
-                },
-                ClientConfiguration = new Opc.Ua.ClientConfiguration
-                {
-                    DefaultSessionTimeout = -1,
-                    MinSubscriptionLifetime = -1,
-                },
-                DisableHiResClock = true
-            };
-        }
-
-
         private static void ConfigureServices(IServiceCollection services)
         {
-            var logConfigFile = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "log4net.win.config" : "log4net.config";
-
-            var pathLogConfig = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, logConfigFile);
-
-            services.AddLogging(configure => configure.AddLog4Net(pathLogConfig))
-                .AddTransient<Plugin>();
-            services.Configure<LoggerFilterOptions>(options => options.MinLevel = LogLevel.Trace);
+            services.ConfigureLogging();
 
             // Build configuration
             var configuration = new ConfigurationBuilder()
@@ -115,9 +44,10 @@ namespace plugin_dotnet
                 var traceLogConverter = new TraceLogConverter(logger);
                 Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
                 var nodeCacheFactory = new NodeCacheFactory(logger);
-                var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), nodeCacheFactory, CreateApplicationConfiguration);
+                var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), 
+                    nodeCacheFactory, ApplicationConfigurationFactory.CreateApplicationConfiguration);
 
-                IDashboardDb dashboardDb = new DashboardDb(logger, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs", "dashboardmapping.db"));
+                IDashboardDb dashboardDb = DashboardDbFactory.CreateDashboardDb(logger);
                 IDashboardResolver dashboardResolver = new DashboardResolver(dashboardDb);
 
                 // Build a server to host the plugin over gRPC
