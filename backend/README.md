@@ -7,3 +7,13 @@ Broken into 3 services:
 
 # Other important files:
 - DataFrame.cs: Handles all the conversion between the grafana dataframe standard, and an Apache Arrow Table.
+
+# Logging
+Log files can be found at:
+- Linux/Macos:  '/var/log/grafana/grafana-opcua-datasource'
+- Windows: '${ProgramData}/Grafana/grafana-opcua-datasource/logs'
+
+# Dashboard Mapping
+The dashboardmappings.db file can be found at:
+- Linux/Macos:  '/var/lib/grafana-opcua-datasource'
+- Windows: '${CommonApplicationData}/Grafana/grafana-opcua-datasource'
