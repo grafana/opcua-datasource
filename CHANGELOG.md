@@ -3,7 +3,7 @@
 ## [1.1.5] - 2022-01-24
 - Fixed issue with dynamic files in the MANIFEST.txt
 
-## [1.1.4] - 2021-12-01
+## [1.1.4] - 2021-11-14
 - Plugin published on grafana.com
 
 ## [1.1.2] - 2021-06-10
