@@ -416,9 +416,9 @@ namespace plugin_dotnet
             }
             catch (Exception ex)
             {
-               // Close out the client connection.
-               _log.LogError("Error: {0}", ex);
-               connection?.Close();
+                // Close out the client connection.
+                _log.LogError("Error: {0}", ex);
+                connection?.Close();
             }
 
             return await Task.FromResult(response);
