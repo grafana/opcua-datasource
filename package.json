@@ -1,6 +1,6 @@
 {
   "name": "grafana-opcua-datasource",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Reads data from OPC UA Servers",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
