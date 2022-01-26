@@ -3,6 +3,7 @@
 set -e
 
 [ ! -d ci/jobs/build_backend ] && mkdir -pv ci/jobs/build_backend || echo "build backend already created"
+[ ! -d ci/jobs/build-and-test-frontend ] && mkdir -pv ci/jobs/build-and-test-frontend || echo "build frontend already created"
 
 # Build Linux
 [ ! -d dist ] && mkdir -pv dist || echo "Linux build: dist already created"
