@@ -233,7 +233,7 @@ namespace plugin_dotnet
 
                 var appConfig = _applicationConfiguration();
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
-                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
+                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, false, appConfig);
                 CreateConnection(url, session);
             }
             catch (Exception ex)
@@ -247,7 +247,7 @@ namespace plugin_dotnet
             try
             {
                 _log.LogInformation("Creating anonymous session: {0}", url);
-                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
+                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, false, _applicationConfiguration());
                 CreateConnection(url, session);
             }
             catch (Exception ex)

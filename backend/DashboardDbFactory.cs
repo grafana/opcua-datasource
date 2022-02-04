@@ -19,7 +19,9 @@ namespace plugin_dotnet
             }
             else
             {
-                dbFolder = Path.Combine("/var", "lib", "grafana-opcua-datasource");
+                
+                dbFolder = Environment.GetEnvironmentVariable("GF_PLUGIN_LIB_PATH"); //Path.Combine("/var", "lib", "grafana-opcua-datasource");
+                logger.LogDebug($"Found path for db '{dbFolder}'");
             }
 
             try
