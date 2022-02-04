@@ -41,12 +41,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.0" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.363.107" />
-    <PackageReference Include="Prediktor.UA.Client" Version="1.0.7" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.367.42" />
+    <PackageReference Include="Prediktor.UA.Client" Version="1.0.11" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
-    <PackageReference Include="Prediktor.Log" Version="1.0.7" />
+    <PackageReference Include="Prediktor.Log" Version="1.0.8" />
   </ItemGroup>
 
   <ItemGroup>

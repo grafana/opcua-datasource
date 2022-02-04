@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Grpc.Core.Logging;
 using Opc.Ua;
 using Pluginv2;
 using Prediktor.UA.Client;

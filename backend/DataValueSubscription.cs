@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Grpc.Core.Logging;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Prediktor.UA.Client;
@@ -105,7 +105,7 @@ namespace plugin_dotnet
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error when detecting if monitored items shall be removed");
+                _logger.Error(e, "Error when detecting if monitored items shall be removed");
             }
 
             if (removedMonitoredItems.Count > 0)
@@ -116,7 +116,7 @@ namespace plugin_dotnet
                 }
                 catch (Exception e)
                 {
-                    _logger.LogError(e, "Error when removing monitored items.");
+                    _logger.Error(e, "Error when removing monitored items.");
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace plugin_dotnet
             {
                 // Force read of current value.
                 InitializeNodeValues(nodeIds);
-                _logger.LogInformation("Subscribing to {0} data values", monItems.Count);
+                _logger.Info("Subscribing to {0} data values", monItems.Count);
                 _subscription.AddItems(monItems);
                 _subscription.ApplyChanges();
             }
@@ -168,14 +168,14 @@ namespace plugin_dotnet
                         }
                         else
                         {
-                            _logger.LogWarning("Could not read node value for node: {0}. StatusCode: {1}", nodeIds[i], dataValues[i].StatusCode);
+                            _logger.Warning("Could not read node value for node: {0}. StatusCode: {1}", nodeIds[i], dataValues[i].StatusCode);
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error reading node values for initialization");
+                _logger.Error(e, "Error reading node values for initialization");
             }
         }
 
@@ -216,7 +216,7 @@ namespace plugin_dotnet
         public void Close()
         {
             _subscriptionReaper.OnTimer -= _subscriptionReaper_OnTimer;
-            _logger.LogInformation("Disposing DataValueSubscription");
+            _logger.Info("Disposing DataValueSubscription");
             _subscription.Dispose();
         }
     }

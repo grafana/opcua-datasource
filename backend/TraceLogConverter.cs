@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Grpc.Core.Logging;
 using Prediktor.Log;
 using System;
 using System.Collections.Generic;
@@ -25,32 +25,32 @@ namespace plugin_dotnet
 
 		public void Debug(object logEntry)
 		{
-			_log.LogDebug(logEntry?.ToString());
+			_log.Debug(logEntry?.ToString());
 		}
 
 		public void Debug(object logEntry, Exception e)
 		{
-			_log.LogDebug(e, logEntry?.ToString());
+			_log.Debug(logEntry?.ToString(), e);
 		}
 
 		public void DebugFormat(string formatString, params object[] args)
 		{
-			_log.LogDebug(formatString, args);
+			_log.Debug(formatString, args);
 		}
 
 		public void Error(object logEntry)
 		{
-			_log.LogError(logEntry?.ToString());
+			_log.Error(logEntry?.ToString());
 		}
 
 		public void Error(object logEntry, Exception e)
 		{
-			_log.LogError(e, logEntry?.ToString());
+			_log.Error(e, logEntry?.ToString());
 		}
 
 		public void ErrorFormat(string formatString, params object[] args)
 		{
-			_log.LogError(formatString, args);
+			_log.Error(formatString, args);
 		}
 
 		public void Fatal(object logEntry)
@@ -70,32 +70,32 @@ namespace plugin_dotnet
 
 		public void Info(object logEntry)
 		{
-			_log.LogInformation(logEntry?.ToString());
+			_log.Info(logEntry?.ToString());
 		}
 
 		public void Info(object logEntry, Exception e)
 		{
-			_log.LogInformation(e, logEntry?.ToString());
+			_log.Info(logEntry?.ToString(), e);
 		}
 
 		public void InfoFormat(string formatString, params object[] args)
 		{
-			_log.LogInformation(formatString, args);
+			_log.Info(formatString, args);
 		}
 
 		public void Warn(object logEntry)
 		{
-			_log.LogWarning(logEntry?.ToString());
+			_log.Warning(logEntry?.ToString());
 		}
 
 		public void Warn(object logEntry, Exception e)
 		{
-			_log.LogWarning(e, logEntry?.ToString());
+			_log.Warning(e, logEntry?.ToString());
 		}
 
 		public void WarnFormat(string formatString, params object[] args)
 		{
-			_log.LogWarning(formatString, args);
+			_log.Warning(formatString, args);
 		}
 	}
 }

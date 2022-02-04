@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Grpc.Core.Logging;
 using Opc.Ua;
 using Pluginv2;
 using Prediktor.UA.Client;
@@ -101,7 +101,7 @@ namespace plugin_dotnet
             }
             catch (Exception e)
             {
-                log.LogError(e.Message);
+                log.Error(e.Message);
                 return new Result<DataResponse>(dataValue.StatusCode, string.Format("Error reading node with id {0}: {1}", nodeId.ToString(), e.Message));
             }
 

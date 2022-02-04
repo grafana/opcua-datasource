@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
+using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -42,7 +42,7 @@ namespace plugin_dotnet
 		public DashboardDb(ILogger logger, string filename)
 		{
 			_logger = logger;
-			logger.LogDebug("DashboardDb starting");
+			logger.Debug("DashboardDb starting");
 
 			_filename = filename;
 
@@ -53,7 +53,7 @@ namespace plugin_dotnet
 		{
 			if (!File.Exists(filename))
 			{
-				_logger.LogDebug($"Create db starting: {filename}");
+				_logger.Debug($"Create db starting: {filename}");
 
 				using (var connection = Sqlite.CreateDatabase(filename, new[] { createPerspectivesDb })) { }
 				using (var connection = Sqlite.CreateDatabase(filename, new[] { createDashboardDb })) { }
@@ -73,12 +73,12 @@ namespace plugin_dotnet
 					}
 					catch (Exception e)
 					{
-						_logger.LogError(e, "Inserting default perspective failed");
+						_logger.Error(e, "Inserting default perspective failed");
 						return;
 					}
 
 				}
-				_logger.LogDebug("Create db success");
+				_logger.Debug("Create db success");
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace plugin_dotnet
 					}
 					catch (Exception e)
 					{
-						_logger.LogError(e, $"QueryDashboard query failed for nodeid(s): '{ToTabString(dashKeys)}' and perspective: '{perspective}'");
+						_logger.Error(e, $"QueryDashboard query failed for nodeid(s): '{ToTabString(dashKeys)}' and perspective: '{perspective}'");
 					}
 				}
 
@@ -111,7 +111,7 @@ namespace plugin_dotnet
 			else
 			{
 				var msg = "Dashboard query failed: at least one NodeId must be supplied";
-				_logger.LogError(msg);
+				_logger.Error(msg);
 				throw new ArgumentException(msg);
 			}
 		}
@@ -163,7 +163,7 @@ namespace plugin_dotnet
 			}
 			catch (Exception e)
 			{
-				_logger.LogError(e, $"GetDashRelationCount failed for DashboardId: '{id}'");
+				_logger.Error(e, $"GetDashRelationCount failed for DashboardId: '{id}'");
 			}
 
 			return -1;
@@ -184,14 +184,14 @@ namespace plugin_dotnet
 
 				for (int i = 0; i < nodeIds.Length; i++)
 				{
-					_logger.LogDebug($"AddDashboardMapping for nodeid: '{nodeIds[i]}' to dashboard '{dashboard}'");
+					_logger.Debug($"AddDashboardMapping for nodeid: '{nodeIds[i]}' to dashboard '{dashboard}'");
 
 					using (var connection = Sqlite.ConnectDatabase(_filename))
 					{
 						var sql = "INSERT INTO DashboardRelations (NodeId, DashboardId) "
 							+ "VALUES ($nodeId, " + dashboardId + ")";
 
-						_logger.LogDebug("AddDashboardMapping sql: " + sql);
+						_logger.Debug("AddDashboardMapping sql: " + sql);
 
 						try
 						{
@@ -206,7 +206,7 @@ namespace plugin_dotnet
 								if (numRowsAffected == 0)
 								{
 									var msg = $"AddDashboardMapping failed for nodeid = '{nodeIds[i]}', dashboard = '{dashboard}', perspective = '{perspective}'";
-									_logger.LogError(msg);
+									_logger.Error(msg);
 
 									return new UaResult() { success = false, error = msg };
 								}
@@ -215,7 +215,7 @@ namespace plugin_dotnet
 						catch (Exception e)
 						{
 							var msg = $"AddDashboardMapping failed for nodeid = '{nodeIds[i]}', dashboard = '{dashboard}', perspective = '{perspective}'";
-							_logger.LogError(e, msg);
+							_logger.Error(e, msg);
 						}
 					}
 				}
@@ -241,7 +241,7 @@ namespace plugin_dotnet
 				}
 				catch (Exception e)
 				{
-					_logger.LogError(e, $"RemoveIfExists query failed for nodeid: '{nodeId}' and perspective: '{perspective}'");
+					_logger.Error(e, $"RemoveIfExists query failed for nodeid: '{nodeId}' and perspective: '{perspective}'");
 				}
 			}
 		}
@@ -266,7 +266,7 @@ namespace plugin_dotnet
 					catch (Exception e)
 					{
 						var msg = $"RemoveMapping query failed for nodeid(s): '{ToTabString(nodeIds)}' and perspective: '{perspective}'";
-						_logger.LogError(e, msg);
+						_logger.Error(e, msg);
 						return new UaResult() { success = false, error = msg };
 					}
 				}
@@ -278,10 +278,10 @@ namespace plugin_dotnet
 		private void RemoveMappingForDashboard(int dashboardId, SQLiteConnection connection)
 		{
 			if (!DeleteFromDashboardRelations(dashboardId, connection))
-				_logger.LogError($"Unable to delete row(s) from DashboardRelations where DashboardId = '{dashboardId}'");
+				_logger.Error($"Unable to delete row(s) from DashboardRelations where DashboardId = '{dashboardId}'");
 
 			if (!DeleteFromDashboard(dashboardId, connection))
-				_logger.LogError($"Unable to delete row from Dashboards where DashboardId = '{dashboardId}'");
+				_logger.Error($"Unable to delete row from Dashboards where DashboardId = '{dashboardId}'");
 		}
 
 		private bool DeleteFromDashboardRelations(int dashboardId, SQLiteConnection connection)
@@ -325,7 +325,7 @@ namespace plugin_dotnet
 
 			for (int i = 0; i < nodeIds.Length; i++)
 			{
-				_logger.LogDebug($"GetDashboardId for nodeid: '{nodeIdsSql}' and perspective: '{perspective}'");
+				_logger.Debug($"GetDashboardId for nodeid: '{nodeIdsSql}' and perspective: '{perspective}'");
 
 				dashIds[i] = new List<int>();
 
@@ -420,7 +420,7 @@ namespace plugin_dotnet
 				catch (Exception e)
 				{
 					var msg = $"AddDashboard failed for dashboard = '{dashboard}' and perspective = '{perspective}': '{e.Message}'";
-					_logger.LogError(e, msg);
+					_logger.Error(e, msg);
 					return new UaResult<int>() { Value = 0, Success = false, Error = msg };
 				}
 			}

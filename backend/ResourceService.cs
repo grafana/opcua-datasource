@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 using System.Web;
 using Google.Protobuf;
 using Grpc.Core;
-//using MicrosoftOpcUa.Client.Core;
 using Prediktor.UA.Client;
 using Opc.Ua.Client;
 using Pluginv2;
-using Microsoft.Extensions.Logging;
 using Opc.Ua;
-using Org.BouncyCastle.Asn1.Crmf;
+using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -72,13 +70,13 @@ namespace plugin_dotnet
                 var result = JsonSerializer.Serialize(present);
                 response.Code = 200;
                 response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-                _log.LogDebug($"We got a result for '{nodeId}' from IsNodePresent => {0}", result);
+                _log.Debug($"We got a result for '{nodeId}' from IsNodePresent => {0}", result);
 
                 return response;
             }
             catch(Exception e)
 			{
-                _log.LogDebug($"IsNodePresent for '{nodeId}' is false: ", e.Message);
+                _log.Debug($"IsNodePresent for '{nodeId}' is false: ", e.Message);
                 var result = JsonSerializer.Serialize(false);
                 response.Code = 200;
                 response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
@@ -116,7 +114,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(targets.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from browse ref targets => {0}", result);
+            _log.Debug("We got a result from browse ref targets => {0}", result);
 
             return response;
         }
@@ -144,7 +142,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(r);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("Adding dashboard mapping => {0}", r.success);
+            _log.Debug("Adding dashboard mapping => {0}", r.success);
             return response;
         }
 
@@ -169,7 +167,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(r);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("Remove dashboard mapping => {0}", r.success);
+            _log.Debug("Remove dashboard mapping => {0}", r.success);
             return response;
         }
 
@@ -188,7 +186,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(r);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("Remove dashboard mapping => {0}", r.success);
+            _log.Debug("Remove dashboard mapping => {0}", r.success);
             return response;
         }
 
@@ -207,7 +205,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(dashboardInfo);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a dash => {0}", dashboard);
+            _log.Debug("We got a dash => {0}", dashboard);
 
             return response;
         }
@@ -222,7 +220,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(Converter.ConvertToBrowseResult(references[0], nsTable));
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from browse => {0}", result);
+            _log.Debug("We got a result from browse => {0}", result);
             return response;
         }
 
@@ -255,7 +253,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(ordered);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from browse => {0}", result);
+            _log.Debug("We got a result from browse => {0}", result);
             return response;
         }
 
@@ -288,7 +286,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from browse => {0}", result);
+            _log.Debug("We got a result from browse => {0}", result);
             return response;
         }
 
@@ -301,7 +299,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from browse => {0}", result);
+            _log.Debug("We got a result from browse => {0}", result);
             return response;
         }
 
@@ -341,7 +339,7 @@ namespace plugin_dotnet
             var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(refdesc => refdesc.displayName).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.LogDebug("We got a result from browse => {0}", result);
+            _log.Debug("We got a result from browse => {0}", result);
             return response;
         }
 
@@ -403,7 +401,7 @@ namespace plugin_dotnet
                         id = nodeId;
                         if (set.Contains(nodeId))
                         {
-                            _log.LogError("Loop detected");
+                            _log.Error("Loop detected");
                             throw new ArgumentException("Loop detected!");
                         }
                         set.Add(id);
@@ -530,7 +528,7 @@ namespace plugin_dotnet
 
         public override Task CallResource(CallResourceRequest request, IServerStreamWriter<CallResourceResponse> responseStream, ServerCallContext context)
         {
-            _log.LogDebug("Call Resource {0} | {1}", request, context);
+            _log.Debug("Call Resource {0} | {1}", request, context);
             try
             {
                 var resourceUrl = request.Url;
@@ -555,7 +553,7 @@ namespace plugin_dotnet
             }
             catch(Exception ex)
             {
-                _log.LogError("Got resource exception {0}", ex);
+                _log.Error("Got resource exception {0}", ex);
                 throw ex;
             }
         }

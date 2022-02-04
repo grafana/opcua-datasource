@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -21,7 +21,7 @@ namespace plugin_dotnet
             {
                 
                 dbFolder = Environment.GetEnvironmentVariable("GF_PLUGIN_LIB_PATH"); //Path.Combine("/var", "lib", "grafana-opcua-datasource");
-                logger.LogDebug($"Found path for db '{dbFolder}'");
+                logger.Debug($"Found path for db '{dbFolder}'");
             }
 
             try
@@ -31,7 +31,7 @@ namespace plugin_dotnet
             }
             catch(Exception e)
             {
-                logger.LogError($"Creating directory '{dbFolder}' failed: '{e.Message}'", e);
+                logger.Error($"Creating directory '{dbFolder}' failed: '{e.Message}'", e);
             }
 
             var dbFile = Path.Combine(dbFolder, "dashboardmapping.db");
@@ -64,7 +64,7 @@ namespace plugin_dotnet
                 }
                 catch (Exception e)
                 {
-                    logger.LogError($"Moving old dashboardmapping.db failed: '{e.Message}'", e);
+                    logger.Error($"Moving old dashboardmapping.db failed: '{e.Message}'", e);
                 }
             }
         }

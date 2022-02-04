@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Grpc.Core.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -35,13 +35,13 @@ namespace plugin_dotnet
 
 		public void Start()
 		{
-			_logger.LogDebug("Starting timer with interval [ms]: {0}", _timerInterval);
+			_logger.Debug("Starting timer with interval [ms]: {0}", _timerInterval);
 			_reaperTimer.Change(0, int.MaxValue);
 		}
 
 		public void Stop()
 		{
-			_logger.LogDebug("Stopping timer with interval [ms]: {0}", _timerInterval);
+			_logger.Debug("Stopping timer with interval [ms]: {0}", _timerInterval);
 			_reaperTimer.Change(int.MaxValue, int.MaxValue);
 		}
 
@@ -53,7 +53,7 @@ namespace plugin_dotnet
 			}
 			catch (Exception e)
 			{
-				_logger.LogError(e, "Error in timer invoke");
+				_logger.Error(e, "Error in timer invoke");
 			}
 			_reaperTimer.Change(_timerInterval, int.MaxValue);
 		}

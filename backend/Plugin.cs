@@ -1,11 +1,11 @@
-
+﻿
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Grpc.Core.Logging;
 using Pluginv2;
 
 namespace plugin_dotnet
@@ -16,8 +16,6 @@ namespace plugin_dotnet
 
         private static void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureLogging();
-
             // Build configuration
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
@@ -28,17 +26,17 @@ namespace plugin_dotnet
 
         static async Task Main(string[] args)
         {
+            ILogger logger = new ConsoleLogger();
 
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            ILogger logger = serviceProvider.GetService<ILogger<Plugin>>();
-            logger.LogDebug("Ua plugin starting");
+            logger.Debug("Ua plugin starting");
             var configuration = serviceProvider.GetService<IConfiguration>();
             var servicePort = configuration.GetValue("ServicePort", 6061);
             var serviceHost = configuration.GetValue("ServiceHost", "localhost");
-            logger.LogDebug("Port: " + servicePort);
+            logger.Debug("Port: " + servicePort);
             try
             {
                 var traceLogConverter = new TraceLogConverter(logger);
@@ -76,7 +74,7 @@ namespace plugin_dotnet
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Ua Plugin stopped unexpectedly");
+                logger.Error(e, "Ua Plugin stopped unexpectedly");
             }
         }
     }
