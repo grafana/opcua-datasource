@@ -19,20 +19,32 @@ namespace plugin_dotnet
             }
             else
             {
-                
-                dbFolder = Environment.GetEnvironmentVariable("GF_PLUGIN_LIB_PATH"); //Path.Combine("/var", "lib", "grafana-opcua-datasource");
+                dbFolder = Environment.GetEnvironmentVariable("GF_PLUGIN_DATA_DIR");
+                if (dbFolder.Length == 0)
+                {
+                    dbFolder = Path.Combine("/var", "lib", "grafana-opcua-datasource");
+                    try
+                    {
+                        if (!Directory.Exists(dbFolder))
+                        {
+                            dbFolder = Path.Combine("/tmp", "grafana_opcua_datasource");
+                            if (!Directory.Exists(dbFolder))
+                            {
+                                Directory.CreateDirectory(dbFolder);
+                            }
+                            // After every other reasonable effort, default to a path in the working directoy
+                            dbFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "dbs");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        logger.Error($"Creating directory '{dbFolder}' failed: '{e.Message}'", e);
+                    }
+                }
                 logger.Debug($"Found path for db '{dbFolder}'");
             }
 
-            try
-            {                
-                if(!Directory.Exists(dbFolder))
-                    Directory.CreateDirectory(dbFolder);
-            }
-            catch(Exception e)
-            {
-                logger.Error($"Creating directory '{dbFolder}' failed: '{e.Message}'", e);
-            }
+            
 
             var dbFile = Path.Combine(dbFolder, "dashboardmapping.db");
 
