@@ -92,16 +92,30 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
   browse = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
     var filter = JSON.stringify(browseFilter);
-    return this.props.datasource.getResource('browse', { nodeId: nodeId, browseFilter: filter });
+      let res: Promise<OpcUaBrowseResults[]> = this.props.datasource.getResource('browse', { nodeId: nodeId, browseFilter: filter });
+      return res.then((children) => this.removeDuplicates(children));
   };
+
+  removeDuplicates(brRes: OpcUaBrowseResults[]): OpcUaBrowseResults[] {
+    var encounteredSet = new Set();
+    const uniqueBrs = brRes.filter((val) => {
+      if (encounteredSet.has(val.nodeId))
+        return false;
+
+      encounteredSet.add(val.nodeId);
+        return true;
+    });
+    return uniqueBrs;
+  }
 
   browseTypes = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
     var filter = JSON.stringify(browseFilter);
-    return this.props.datasource.getResource('browse', {
-      nodeId: nodeId,
-      nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType,
-      browseFilter: filter,
-    });
+      let res: Promise<OpcUaBrowseResults[]> = this.props.datasource.getResource('browse', {
+        nodeId: nodeId,
+        nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType,
+        browseFilter: filter,
+      });
+      return res.then((children) => this.removeDuplicates(children));
   };
 
   getNodePath(nodeId: string, rootId: string): Promise<NodePath> {
