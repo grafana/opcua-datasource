@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
     <Configurations>Debug;Release;Setup_Release</Configurations>
