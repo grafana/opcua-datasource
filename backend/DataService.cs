@@ -16,7 +16,7 @@ using Apache.Arrow.Memory;
 using System.Linq;
 using System.IO;
 using Prediktor.UA.Client;
-using Microsoft.Extensions.Logging;
+using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -39,7 +39,7 @@ namespace plugin_dotnet
             _nodeCacheFactory = nodeCacheFactory;
             _connections = connections;
             _log = log;
-            _log.LogInformation("Data Service created");
+            _log.Info("Data Service created");
             alias = new Alias();
         }
 
@@ -84,14 +84,14 @@ namespace plugin_dotnet
                         else
                         {
                             var msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'";
-                            _log.LogError(msg);
+                            _log.Error(msg);
                             results[i] = new Result<NodeId>(Opc.Ua.StatusCodes.BadBrowseNameInvalid, msg);
                         }
                     }
                     else
                     {
                         var msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'. StatusCode: '{bpr[j].StatusCode}'";
-                        _log.LogError(msg);
+                        _log.Error(msg);
                         results[i] = new Result<NodeId>(bpr[j].StatusCode, msg);
                     }
                     j++;
@@ -234,12 +234,12 @@ namespace plugin_dotnet
                 }
                 catch (Exception e)
                 {
-                    _log.LogError(e, "Error getting aggregate. ");
+                    _log.Error(e, "Error getting aggregate. ");
                 }
 
                 if (aggregate?.nodeId == null)
                 {
-                    _log.LogError("Aggregate is not set");
+                    _log.Error("Aggregate is not set");
                     result[i] = new Result<DataResponse>(StatusCodes.BadNodeIdInvalid, "Aggregate is not set");
                 }
                 else if (nodeIdResult.Success)
@@ -337,7 +337,7 @@ namespace plugin_dotnet
 
             try
             {
-                _log.LogDebug("got a request: {0}", request);
+                _log.Debug("got a request: {0}", request);
                 connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
 
                 var uaQueries = request.Queries.Select(q => new OpcUAQuery(q));
@@ -387,7 +387,7 @@ namespace plugin_dotnet
                                 {
                                     var dr = new DataResponse();
                                     dr.Error = string.Format("{0} {1}", dataResponse.StatusCode.ToString(),  dataResponse.Error);
-                                    _log.LogError(dr.Error);
+                                    _log.Error(dr.Error);
                                     response.Responses[queries[i++].refId] = dr;
                                 }
                             }
@@ -401,7 +401,7 @@ namespace plugin_dotnet
                             dr.Error = e.ToString();
                             response.Responses[q.refId] = dr; 
                         }
-                        _log.LogError(e.ToString());
+                        _log.Error(e.ToString());
                     }
                 }
                 foreach (var invalidQuery in invalidQueries)
@@ -411,13 +411,13 @@ namespace plugin_dotnet
                     var dr = new DataResponse();
                     dr.Error = message;
                     response.Responses[refId] = dr;
-                    _log.LogError(message);
+                    _log.Error(message);
                 }
             }
             catch (Exception ex)
             {
                // Close out the client connection.
-               _log.LogError("Error: {0}", ex);
+               _log.Error("Error: {0}", ex);
                connection?.Close();
             }
 

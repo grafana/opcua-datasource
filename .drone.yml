@@ -30,7 +30,7 @@ steps:
         - ./scripts/ci-build-plugin.sh
       depends_on:
         - initialize
-      image: mcr.microsoft.com/dotnet/sdk:5.0-bullseye-slim
+      image: mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim
       name: build-backend
     - commands:
         - echo "Starting veracode scan..."

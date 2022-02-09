@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Grpc.Core.Logging;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Pluginv2;
@@ -129,7 +129,7 @@ namespace plugin_dotnet
             }
             catch (Exception e)
             {
-                _log.LogError(e, "Error when detecting if monitored items shall be removed");
+                _log.Error(e, "Error when detecting if monitored items shall be removed");
             }
 
             if (removedMonitoredItems.Count > 0)
@@ -140,7 +140,7 @@ namespace plugin_dotnet
                 }
                 catch (Exception e)
                 {
-                    _log.LogError(e, "Error when removing monitored items.");
+                    _log.Error(e, "Error when removing monitored items.");
                 }
             }
         }
@@ -237,7 +237,7 @@ namespace plugin_dotnet
             }
             catch (Exception exception)
             {
-                _log.LogError(exception, "Error in monitor notification");
+                _log.Error(exception, "Error in monitor notification");
             }
         }
 

@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>plugin_dotnet</RootNamespace>
     <LangVersion>LATEST</LangVersion>
     <Configurations>Setup_Release;Debug;Release</Configurations>
@@ -27,21 +27,22 @@
 
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
-    <PackageReference Include="Apache.Arrow" Version="3.0.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.15.8" />
-    <PackageReference Include="Grpc" Version="2.37.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.37.0" PrivateAssets="All" />
+    <PackageReference Include="Apache.Arrow" Version="2.0.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.14.0" />
+    <PackageReference Include="Grpc" Version="2.34.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.34.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.365.10" />
-    <PackageReference Include="Prediktor.UA.Client" Version="1.0.7" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.367.42" />
+    <PackageReference Include="Prediktor.UA.Client" Version="1.0.11" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
-    <PackageReference Include="Prediktor.Log" Version="1.0.7" />
-    <PackageReference Include="Microsoft.ML" Version="1.5.5" />
+    <PackageReference Include="Microsoft.Data.Analysis" Version="0.4.0" />
+    <PackageReference Include="Prediktor.Log" Version="1.0.8" />
   </ItemGroup>
   
   <ItemGroup>

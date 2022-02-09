@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -9,7 +9,7 @@ using Opc.Ua;
 using Opc.Ua.Client;
 using Pluginv2;
 using Prediktor.UA.Client;
-using Microsoft.Extensions.Logging;
+using Grpc.Core.Logging;
 
 namespace plugin_dotnet
 {
@@ -121,7 +121,7 @@ namespace plugin_dotnet
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error reading node: " + nodeId);
+                _logger.Error(e, "Error reading node: " + nodeId);
             }
             return defaultValue;
         }
@@ -222,7 +222,7 @@ namespace plugin_dotnet
         {
             try
             {
-                _log.LogInformation("Creating session: {0}", url);
+                _log.Info("Creating session: {0}", url);
                 //connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
                 X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(clientCert));
                 X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(clientKey));
@@ -233,12 +233,12 @@ namespace plugin_dotnet
 
                 var appConfig = _applicationConfiguration();
                 appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
-                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, appConfig);
+                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, false, appConfig);
                 CreateConnection(url, session);
             }
             catch (Exception ex)
             {
-                _log.LogError("Error while adding endpoint {0}: {1}", url, ex);
+                _log.Error("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
@@ -246,13 +246,13 @@ namespace plugin_dotnet
         {
             try
             {
-                _log.LogInformation("Creating anonymous session: {0}", url);
-                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, _applicationConfiguration());
+                _log.Info("Creating anonymous session: {0}", url);
+                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, false, _applicationConfiguration());
                 CreateConnection(url, session);
             }
             catch (Exception ex)
             {
-                _log.LogError("Error while adding endpoint {0}: {1}", url, ex);
+                _log.Error("Error while adding endpoint {0}: {1}", url, ex);
             }
         }
 
@@ -284,15 +284,15 @@ namespace plugin_dotnet
                     {
                         try
                         {
-                            _log.LogInformation("Closing old session due to stale connection. Was connected {0}. KeepAliveStopped {1}", 
+                            _log.Info("Closing old session due to stale connection. Was connected {0}. KeepAliveStopped {1}", 
                                 value.Session.Connected, value.Session.KeepAliveStopped);
                             value.Close();
                             connections.Remove(settings.Url);
-                            _log.LogInformation("Old session closed successfully");
+                            _log.Info("Old session closed successfully");
                         }
                         catch (Exception e)
                         {
-                            _log.LogWarning(e, "Error when closing connection.");
+                            _log.Warning(e, "Error when closing connection.");
                         }
                         connect = true;
                     }
