@@ -3,6 +3,7 @@
 ## [1.1.5] - 2022-01-24
 - Fixed issue with dynamic files in the MANIFEST.txt
 - Removed log4net; all logging goes through grafana logs
+- The dashboard mapping database, dashboardmapping.db, is moved out of the plugins directory. If the file already exists in the old location, it will be moved
 
 ## [1.1.4] - 2021-11-14
 - Plugin published on grafana.com

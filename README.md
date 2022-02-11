@@ -34,7 +34,9 @@ This plugin uses GRPC and a C# backend to communicate with Grafana directly. See
 Restart Grafana and you should have the datasource installed.
 
 # Configuration
-You will need to add a plugin specific configuration section to your configuration file (`grafana.conf`)
+You will need to add a plugin specific configuration section to your configuration file (`grafana.conf`) (Linux)
+
+Windows will default to '${CommonApplicationData}/Grafana/grafana-opcua-datasource'
 
 ```
 [plugin.grafana-opcua-datasource]
