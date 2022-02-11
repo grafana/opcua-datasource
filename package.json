@@ -25,7 +25,9 @@
     "@grafana/toolkit": "7.4.2",
     "@grafana/ui": "7.4.2",
     "@types/lodash": "^4.14.134",
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "postcss": "^8.4.6",
+    "is-svg": "^4.3.2"
   },
   "dependencies": {
     "@ant-design/dark-theme": "^1.0.3",
