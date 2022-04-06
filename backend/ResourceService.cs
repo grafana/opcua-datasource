@@ -20,15 +20,13 @@ namespace plugin_dotnet
     {
         private readonly IConnections _connections;
         private readonly ILogger _log;
-        private readonly IDashboardResolver _dashboardResolver;
         private IDictionary<string, Func<CallResourceRequest, Session, NameValueCollection, NamespaceTable, CallResourceResponse>> _resourceHandlers 
             = new Dictionary<string, Func<CallResourceRequest, Session, NameValueCollection, NamespaceTable, CallResourceResponse>>();
 
-        public ResourceService(ILogger log, IConnections connections, IDashboardResolver dashboardResolver)
+        public ResourceService(ILogger log, IConnections connections)
         {
             _connections = connections;
             _log = log;
-            _dashboardResolver = dashboardResolver;
             InitResourceHandlers();
         }
 
@@ -43,10 +41,6 @@ namespace plugin_dotnet
             _resourceHandlers.Add("translateBrowsePathToNode", TranslateBrowsePathToNode);
             _resourceHandlers.Add("getNamespaceIndices", GetNamespaceIndices);
             _resourceHandlers.Add("gettypedefinition", GetTypeDefinition);
-            _resourceHandlers.Add("getdashboard", GetDashboard);
-            _resourceHandlers.Add("adddashboardmapping", AddDashboardmapping);
-            _resourceHandlers.Add("removedashboardmapping", RemoveDashboardmapping);
-            _resourceHandlers.Add("removedashboardmappingbykeys", RemoveDashboardmappingByKeys);            
             _resourceHandlers.Add("browsereferencetargets", BrowseReferenceTargets);
             _resourceHandlers.Add("getnamespaces", GetNamespaces);
             _resourceHandlers.Add("isnodepresent", IsNodePresent);
@@ -118,98 +112,6 @@ namespace plugin_dotnet
 
             return response;
         }
-
-        private CallResourceResponse AddDashboardmapping(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
-        {
-            CallResourceResponse response = new CallResourceResponse();
-            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            string typeNodeId = HttpUtility.UrlDecode(queryParams["typeNodeId"]);
-            bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
-            string[] interfaces = JsonSerializer.Deserialize<string[]>(HttpUtility.UrlDecode(queryParams["interfaces"]));
-            string dashboard = HttpUtility.UrlDecode(queryParams["dashboard"]);
-            string existingDashboard = HttpUtility.UrlDecode(queryParams["existingDashboard"]);
-            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
-
-            var nodeIdJson = ConvertNodeIdToJson(nodeId, nsTable);
-            var typeNodeIdJson = ConvertNodeIdToJson(typeNodeId, nsTable);
-
-            var interfacesIds = Array.Empty<string>();
-            if (interfaces != null)
-                interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
-
-            var dashboardMappingData = new DashboardMappingData(connection, nodeId, nodeIdJson, typeNodeIdJson, useType, interfacesIds, dashboard, existingDashboard, perspective, nsTable);
-            var r = _dashboardResolver.AddDashboardMapping(dashboardMappingData);
-            var result = JsonSerializer.Serialize(r);
-            response.Code = 200;
-            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.Debug("Adding dashboard mapping => {0}", r.success);
-            return response;
-        }
-
-        private CallResourceResponse RemoveDashboardmapping(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
-        {
-            CallResourceResponse response = new CallResourceResponse();
-            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            string typeNodeId = HttpUtility.UrlDecode(queryParams["typeNodeId"]);
-            bool useType = bool.Parse(HttpUtility.UrlDecode(queryParams["useType"]));
-            string[] interfaces = JsonSerializer.Deserialize<string[]>(HttpUtility.UrlDecode(queryParams["interfaces"]));
-            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
-
-            var nodeIdJson = ConvertNodeIdToJson(nodeId, nsTable);
-            var typeNodeIdJson = ConvertNodeIdToJson(typeNodeId, nsTable);
-
-            var interfacesIds = Array.Empty<string>();
-            if (interfaces != null)
-                interfacesIds = interfaces.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
-
-            var dashboardMappingData = new DashboardMappingData(connection, nodeId, nodeIdJson, typeNodeIdJson, useType, interfacesIds, null, null, perspective, nsTable);
-            var r = _dashboardResolver.RemoveDashboardMapping(dashboardMappingData);
-            var result = JsonSerializer.Serialize(r);
-            response.Code = 200;
-            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.Debug("Remove dashboard mapping => {0}", r.success);
-            return response;
-        }
-
-        private CallResourceResponse RemoveDashboardmappingByKeys(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
-        {
-            CallResourceResponse response = new CallResourceResponse();
-            string[] dashKeys = JsonSerializer.Deserialize<string[]>(HttpUtility.UrlDecode(queryParams["dashKeys"]));
-            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
-
-            var dashKeysIds = Array.Empty<string>();
-            if (dashKeys != null)
-                dashKeysIds = dashKeys.Select(a => ConvertNodeIdToJson(a, nsTable)).ToArray();
-
-            var dashboardMappingData = new DashboardMappingData(connection, null, null, null, false, dashKeysIds, null, null, perspective, nsTable);
-            var r = _dashboardResolver.RemoveDashboardMapping(dashboardMappingData);
-            var result = JsonSerializer.Serialize(r);
-            response.Code = 200;
-            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.Debug("Remove dashboard mapping => {0}", r.success);
-            return response;
-        }
-
-
-
-        private CallResourceResponse GetDashboard(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
-		{
-            CallResourceResponse response = new CallResourceResponse();
-            string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            string perspective = HttpUtility.UrlDecode(queryParams["perspective"]);
-
-            var targetNodeIdJson = ConvertNodeIdToJson(nodeId, nsTable);
-
-            (string dashboard, string[] dashKeys) = _dashboardResolver.ResolveDashboard(connection, nodeId, targetNodeIdJson, perspective, nsTable);
-            var dashboardInfo = new DashboardInfo() { name = dashboard, dashKeys = dashKeys };
-            var result = JsonSerializer.Serialize(dashboardInfo);
-            response.Code = 200;
-            response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
-            _log.Debug("We got a dash => {0}", dashboard);
-
-            return response;
-        }
-
 
         private CallResourceResponse GetTypeDefinition(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
         {
@@ -554,7 +456,7 @@ namespace plugin_dotnet
             catch(Exception ex)
             {
                 _log.Error("Got resource exception {0}", ex);
-                throw ex;
+                throw;
             }
         }
 

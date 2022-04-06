@@ -33,23 +33,6 @@ This plugin uses GRPC and a C# backend to communicate with Grafana directly. See
 
 Restart Grafana and you should have the datasource installed.
 
-# Configuration
-You will need to add a plugin specific configuration section to your configuration file (`grafana.conf`) (Linux)
-
-Windows will default to '${CommonApplicationData}/Grafana/grafana-opcua-datasource'
-
-```
-[plugin.grafana-opcua-datasource]
-data_dir = "/some/path/to/config/grafana-opcua-datasource"
-```
-
-An example of this using common linux default paths would be
-
-```
-[plugin.grafana-opcua-datasource]
-data_dir = "/var/lib/grafana-opcua-datasource"
-```
-
 # Contributing
 Contributions that addresses the needs above or other feature you'd like to see are most welcome. Fork the project and commit a PR with your requests.
 
@@ -57,9 +40,7 @@ Contributions that addresses the needs above or other feature you'd like to see 
 Open Software like this project and open standards like OPC UA fits perfectly with our quest to give our clients the freedom to operate. To know more about our offerings and get in touch, check out https://prediktor.com.
 
 * [Prediktor](https://prediktor.com) has a public test OPC UA Server running at opc.tcp://opcua.prediktor.com:4880.
-It provides a small information model with Realtime/Historic data and Alarms&Events. Feel free to use it
-
-* You can find complementary OPC UA Grafana panel plugins at https://github.com/PrediktorAS/grafana
+It provides a small information model with Realtime/Historic data and Alarms&Conditions. Feel free to use it.
 
 # Q&A
 Q: **Can it read OPC Classic DA/HDA/AE?**
