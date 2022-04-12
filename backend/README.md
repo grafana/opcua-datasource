@@ -10,8 +10,3 @@ Broken into 3 services:
 
 # Logging
 - Logging goes through grafana logs
-
-# Dashboard Mapping
-The dashboardmappings.db file can be found at:
-- Linux/Macos: See the 'Configuration' section of the main README.
-- Windows: '${CommonApplicationData}/Grafana/grafana-opcua-datasource'

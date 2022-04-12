@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { DataSourceHttpSettings, Alert } from '@grafana/ui';
+import { DataSourceHttpSettings } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { OpcUaDataSourceOptions } from './types';
 
@@ -14,30 +14,6 @@ export const ConfigEditor: FC<Props> = (props: Props) => {
         dataSourceConfig={options}
         onChange={onOptionsChange}
       />
-      <Alert title="Additional Configuration" severity="info">
-        <p>In the grafana.conf, pleasure ensure you have the following configuration specified:</p>
-        <pre>
-          <code>
-            {/* prettier-ignore */}
-            [plugin.grafana-opcua-datasource]
-            <br />
-            {/* prettier-ignore */}
-            data_dir = &quot;/some/path/to/config/grafana-opcua-datasource&quot;
-            <br />
-          </code>
-        </pre>
-        <p>Example:</p>
-        <pre>
-          <code>
-            {/* prettier-ignore */}
-            [plugin.grafana-opcua-datasource]
-            <br />
-            {/* prettier-ignore */}
-            data_dir = &quot;/var/lib/grafana-opcua-datasource&quot;
-            <br />
-          </code>
-        </pre>
-      </Alert>
     </div>
   );
 };

@@ -8,6 +8,7 @@ using Apache.Arrow.Ipc;
 using Google.Protobuf;
 using Apache.Arrow.Types;
 using Grpc.Core.Logging;
+using System.ComponentModel;
 
 namespace plugin_dotnet
 {
@@ -321,11 +322,15 @@ namespace plugin_dotnet
 
         public byte[] ToByteArray()
         {
-            BinaryFormatter bf = new BinaryFormatter();
             using (var ms = new MemoryStream())
             {
-                bf.Serialize(ms, this);
-                return ms.ToArray();
+                using (var bw = new BinaryWriter(ms))
+                {
+                    TypeConverter objConverter = TypeDescriptor.GetConverter(GetType());
+                    byte[] data = (byte[])objConverter.ConvertTo(this, typeof(byte[]));
+                    bw.Write(data);
+                    return ms.ToArray();
+                }
             }
         }
 

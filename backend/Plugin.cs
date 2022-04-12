@@ -45,16 +45,13 @@ namespace plugin_dotnet
                 var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), 
                     nodeCacheFactory, ApplicationConfigurationFactory.CreateApplicationConfiguration);
 
-                IDashboardDb dashboardDb = DashboardDbFactory.CreateDashboardDb(logger);
-                IDashboardResolver dashboardResolver = new DashboardResolver(dashboardDb);
-
                 // Build a server to host the plugin over gRPC
                 Server server = new Server
                 {
                     Ports = { { serviceHost, servicePort, ServerCredentials.Insecure } },
                     Services = {
                     { Diagnostics.BindService(new DiagnosticsService(logger, connections)) },
-                    { Resource.BindService(new ResourceService(logger, connections, dashboardResolver)) },
+                    { Resource.BindService(new ResourceService(logger, connections)) },
                     { Data.BindService(new DataService(logger, connections, nodeCacheFactory)) },
                     { Pluginv2.Stream.BindService(new StreamService(logger, connections))},
                 }

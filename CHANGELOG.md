@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.6] - 2022-04-05
+- Removed all references to Dashboard Mapping (dashboard.db)
+- Exchanged BinaryFormatter for BinaryWriter due to security issues with BinaryFormatter
+
 ## [1.1.5] - 2022-01-24
 - Fixed issue with dynamic files in the MANIFEST.txt
 - Removed log4net; all logging goes through grafana logs
