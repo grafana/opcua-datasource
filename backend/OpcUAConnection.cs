@@ -225,7 +225,7 @@ namespace plugin_dotnet
             }
         }
 
-        public async void Add(Settings settings)
+        public void Add(Settings settings)
         {
             try
             {
