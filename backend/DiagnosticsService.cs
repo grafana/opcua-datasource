@@ -30,6 +30,8 @@ namespace plugin_dotnet
 
             Settings settings = RawSettingsParser.Parse(request.PluginContext.DataSourceInstanceSettings);
             var connection = _connections.Get(settings);
+            log.Debug("Check Health Request Connection {0}", connection);
+
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse
             {
                 Status = connection.Session.Connected ? CheckHealthResponse.Types.HealthStatus.Ok : CheckHealthResponse.Types.HealthStatus.Error,

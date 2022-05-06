@@ -220,7 +220,7 @@ namespace plugin_dotnet
             lock (connections)
             {
                 var conn = new Connection(session, settings, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
-                connections[key: settings.URL] = conn;
+                connections[key: settings.ID] = conn;
                 subscriptionReaper.Start();
             }
         }
@@ -259,6 +259,8 @@ namespace plugin_dotnet
 
         public IConnection Get(Settings settings)
         {
+            _log.Debug("We have a connection request with settings {0}", settings);
+
             lock (connections)
             {
 
@@ -289,7 +291,7 @@ namespace plugin_dotnet
                     Add(settings);
                 }
 
-                return connections[settings.URL];
+                return connections[settings.ID];
             }
         }
 
@@ -297,7 +299,7 @@ namespace plugin_dotnet
         {
             lock (connections)
             {
-                connections.Remove(settings.URL);
+                connections.Remove(settings.ID);
             }
         }
     }
