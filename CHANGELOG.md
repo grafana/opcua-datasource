@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.2.0-beta.1] - 2022-05-06
+- Added the ability to select timestamps from either the OPC server, or OPC client/device/source
+
 ## [1.1.6] - 2022-04-05
 - Removed all references to Dashboard Mapping (dashboard.db)
 - Exchanged BinaryFormatter for BinaryWriter due to security issues with BinaryFormatter

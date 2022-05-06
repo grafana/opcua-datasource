@@ -440,7 +440,8 @@ namespace plugin_dotnet
                 string fullUrl = HttpUtility.UrlDecode(request.PluginContext.DataSourceInstanceSettings.Url + resourceUrl);
                 Uri uri = new Uri(fullUrl);
                 NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
-                var connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings).Session;
+                Settings settings = RawSettingsParser.Parse(request.PluginContext.DataSourceInstanceSettings);
+                var connection = _connections.Get(settings).Session;
 
                 connection.FetchNamespaceTables();
                 var nsTable = connection.NamespaceUris;

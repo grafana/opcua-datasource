@@ -77,7 +77,7 @@ namespace plugin_dotnet
             return dt;
         }
 
-        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
+        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, Settings settings, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
         {
             try
             {
@@ -89,7 +89,17 @@ namespace plugin_dotnet
                     var timeField = dataFrame.AddField("Time", typeof(DateTime));
                     var fieldName = GetFieldName(query, relativePath);
                     Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
-                    timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
+                    switch (settings.TimestampSource) {
+                        case OPCTimestamp.Server:
+                            timeField.Append(LimitDateTime(dataValue.ServerTimestamp));
+                            break;
+                        case OPCTimestamp.Source:
+                            timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
+                            break;
+                        default:
+                            timeField.Append(LimitDateTime(dataValue.ServerTimestamp));
+                            break;
+                    }
                     valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
                     dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
                     return new Result<DataResponse>(dataResponse);
