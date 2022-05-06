@@ -15,9 +15,16 @@ namespace plugin_dotnet
 {
     // TODO: move things into separate files...
 
+    public enum OPCTimestamp {
+        Server,
+        Source,
+    }
+
     public interface IConnection
     {
         Session Session { get; }
+
+        OPCTimestamp TimestampSource { get; }
 
         IEventSubscription EventSubscription { get; }
         IDataValueSubscription DataValueSubscription { get; }
@@ -138,13 +145,14 @@ namespace plugin_dotnet
     {
         private bool _closed = false;
         private ISubscriptionReaper _subscriptionReaper;
-        public Connection(Session session, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper, IEventDataResponse eventDataResponse)
+        public Connection(Session session, Settings settings, IEventSubscription eventSubscription, IDataValueSubscription dataValueSubscription, ISubscriptionReaper subscriptionReaper, IEventDataResponse eventDataResponse)
         {
             _subscriptionReaper = subscriptionReaper;
             Session = session;
             EventSubscription = eventSubscription;
             DataValueSubscription = dataValueSubscription;
             EventDataResponse = eventDataResponse;
+            TimestampSource = settings.TimestampSource;
         }
 
         public Session Session { get; }
@@ -156,6 +164,8 @@ namespace plugin_dotnet
         public IEventDataResponse EventDataResponse { get; }
 
         public INodeCache NodeCache { get; }
+
+        public OPCTimestamp TimestampSource { get; }
 
         public void Close()
         {
@@ -178,12 +188,9 @@ namespace plugin_dotnet
 
     public interface IConnections
     {
-        void Add(string url, string clientCert, string clientKey);
-        void Add(string url);
-        IConnection Get(DataSourceInstanceSettings settings);
-        IConnection Get(string url);
-
-        void Remove(string url);
+        void Add(Settings settings);
+        IConnection Get(Settings settings);
+        void Remove(Settings settings);
     }
 
     public class Connections : IConnections
@@ -202,7 +209,7 @@ namespace plugin_dotnet
         }
 
 
-        private void CreateConnection(string url, Session session)
+        private void CreateConnection(Settings settings, Session session)
         {
             var subscriptionReaper = new SubscriptionReaper(_log, 60000);
 
@@ -212,72 +219,53 @@ namespace plugin_dotnet
 
             lock (connections)
             {
-                var conn = new Connection(session, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
-                connections[key: url] = conn;
+                var conn = new Connection(session, settings, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
+                connections[key: settings.ID] = conn;
                 subscriptionReaper.Start();
             }
         }
 
-        public void Add(string url, string clientCert, string clientKey)
+        public void Add(Settings settings)
         {
             try
             {
-                _log.Info("Creating session: {0}", url);
-                //connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
-                X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(clientCert));
-                X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(clientKey));
-                CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
+                Session session;
+                if (settings.TLSClientCert != null && settings.TLSClientKey != null) {
+                    _log.Info("Creating session: {0}", settings.URL);
+                    //connections[key: url] = new OpcUAConnection(url, clientCert, clientKey);
+                    X509Certificate2 certificate = new X509Certificate2(Encoding.ASCII.GetBytes(settings.TLSClientCert));
+                    X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(settings.TLSClientKey));
+                    CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
 
-                var userIdentity = new UserIdentity(certWithKey);
-
-
-                var appConfig = _applicationConfiguration();
-                appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
-                var session = _sessionFactory.CreateSession(url, "Grafana Session", userIdentity, true, false, appConfig);
-                CreateConnection(url, session);
-            }
-            catch (Exception ex)
-            {
-                _log.Error("Error while adding endpoint {0}: {1}", url, ex);
-            }
-        }
-
-        public void Add(string url)
-        {
-            try
-            {
-                _log.Info("Creating anonymous session: {0}", url);
-                var session = _sessionFactory.CreateAnonymously(url, "Grafana Anonymous Session", false, false, _applicationConfiguration());
-                CreateConnection(url, session);
-            }
-            catch (Exception ex)
-            {
-                _log.Error("Error while adding endpoint {0}: {1}", url, ex);
-            }
-        }
+                    var userIdentity = new UserIdentity(certWithKey);
 
 
-        public IConnection Get(string url)
-        {
-            lock (connections)
-            {
-
-                if (!connections.ContainsKey(url) || !connections[url].Session.Connected)
-                {
-                    Add(url);
+                    var appConfig = _applicationConfiguration();
+                    appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
+                    session = _sessionFactory.CreateSession(settings.URL, "Grafana Session", userIdentity, true, false, appConfig);
+                    CreateConnection(settings, session);
+                    return;
                 }
 
-                return connections[url];
+                _log.Info("Creating anonymous session: {0}", settings.URL);
+                session = _sessionFactory.CreateAnonymously(settings.URL, "Grafana Anonymous Session", false, false, _applicationConfiguration());
+                CreateConnection(settings, session); 
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error while adding endpoint {0}: {1}", settings.URL, ex);
             }
         }
 
-        public IConnection Get(DataSourceInstanceSettings settings)
+        public IConnection Get(Settings settings)
         {
+            _log.Debug("We have a connection request with settings {0}", settings);
+
             lock (connections)
             {
 
                 bool connect = true;
-                if (connections.TryGetValue(settings.Url, out IConnection value))
+                if (connections.TryGetValue(settings.URL, out IConnection value))
                 {
                     connect = false;
                     if (!value.Session.Connected || value.Session.KeepAliveStopped)
@@ -287,7 +275,7 @@ namespace plugin_dotnet
                             _log.Info("Closing old session due to stale connection. Was connected {0}. KeepAliveStopped {1}", 
                                 value.Session.Connected, value.Session.KeepAliveStopped);
                             value.Close();
-                            connections.Remove(settings.Url);
+                            connections.Remove(settings.URL);
                             _log.Info("Old session closed successfully");
                         }
                         catch (Exception e)
@@ -300,25 +288,18 @@ namespace plugin_dotnet
 
                 if (connect)
                 {
-                    if (settings.DecryptedSecureJsonData.ContainsKey("tlsClientCert") && settings.DecryptedSecureJsonData.ContainsKey("tlsClientKey"))
-                    {
-                        Add(settings.Url, settings.DecryptedSecureJsonData["tlsClientCert"], settings.DecryptedSecureJsonData["tlsClientKey"]);
-                    }
-                    else
-                    {
-                        Add(settings.Url);
-                    }
+                    Add(settings);
                 }
 
-                return connections[settings.Url];
+                return connections[settings.ID];
             }
         }
 
-        public void Remove(string url)
+        public void Remove(Settings settings)
         {
             lock (connections)
             {
-                connections.Remove(url);
+                connections.Remove(settings.ID);
             }
         }
     }

@@ -122,7 +122,7 @@ namespace plugin_dotnet
             return string.Empty;
 		}
 
-		private Result<DataResponse>[] ReadNodes(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
+		private Result<DataResponse>[] ReadNodes(Session session, Settings settings, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
             var results = new Result<DataResponse>[queries.Length];
             var browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
@@ -135,7 +135,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     var dataValue = dvs[j];
-                    results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, dataValue, nodeIds[j], queries[i], browsePaths[i]);
+                    results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, settings, dataValue, nodeIds[j], queries[i], browsePaths[i]);
                     j++;
                 }
                 else
@@ -338,7 +338,8 @@ namespace plugin_dotnet
             try
             {
                 _log.Debug("got a request: {0}", request);
-                connection = _connections.Get(request.PluginContext.DataSourceInstanceSettings);
+                Settings settings = RawSettingsParser.Parse(request.PluginContext.DataSourceInstanceSettings);
+                connection = _connections.Get(settings);
 
                 var uaQueries = request.Queries.Select(q => new OpcUAQuery(q));
                 var invalidQueries = GetInvalidQueries(uaQueries);//uaQueries.Where(a => a.nodePath != null).ToLookup(a => a.refId);
@@ -354,10 +355,10 @@ namespace plugin_dotnet
                         switch (queryGroup.Key)
                         {
                             case "ReadNode":
-                                responses = ReadNodes(connection.Session, queries, nsTable);
+                                responses = ReadNodes(connection.Session, settings, queries, nsTable);
                                 break;
                             case "Subscribe":
-                                responses = SubscribeDataValues(connection.Session, connection.DataValueSubscription, queries, nsTable);
+                                responses = SubscribeDataValues(connection.Session, settings, connection.DataValueSubscription, queries, nsTable);
                                 break;
                             case "ReadDataRaw":
                                 responses = ReadHistoryRaw(connection.Session, queries, nsTable);
@@ -424,7 +425,7 @@ namespace plugin_dotnet
             return await Task.FromResult(response);
         }
 
-        private Result<DataResponse>[] SubscribeDataValues(Session session, IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
+        private Result<DataResponse>[] SubscribeDataValues(Session session, Settings settings, IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
             var responses = new Result<DataResponse>[queries.Length];
             var browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
@@ -439,7 +440,7 @@ namespace plugin_dotnet
                 if (nodeIdsResult[i].Success)
                 {
                     if (dataValues[j].Success)
-                        results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
+                        results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, settings, dataValues[j].Value, nodeIds[j], queries[i], browsePaths[i]);
                     else
                         results[i] = new Result<DataResponse>(dataValues[j].StatusCode, dataValues[j].Error);
                     j++;

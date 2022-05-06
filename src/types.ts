@@ -159,7 +159,14 @@ export enum FilterOperator {
 
 export const separator = ' / ';
 
+export enum OPCTimestamp {
+  Server = 'server',
+  Source = 'source',
+}
+
 /**
  * These are options configured for each DataSource instance
  */
-export interface OpcUaDataSourceOptions extends DataSourceJsonData {}
+export interface OpcUaDataSourceOptions extends DataSourceJsonData {
+  timestamp: OPCTimestamp;
+}
