@@ -44,9 +44,9 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
             borderRadius: '1px',
             cursor: 'pointer',
             padding: '2px',
-            position: 'absolute',
+            position: 'fixed',
             left: 30,
-            top: 10,
+            bottom: 10,
             zIndex: 10,
           }}
         >
