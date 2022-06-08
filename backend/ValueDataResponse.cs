@@ -3,7 +3,6 @@ using Opc.Ua;
 using Pluginv2;
 using Prediktor.UA.Client;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -19,7 +18,7 @@ namespace plugin_dotnet
             string fieldName = query.alias;
             if (string.IsNullOrEmpty(fieldName))
             {
-                fieldName = String.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray());
+                fieldName = string.Join(" / ", query.nodePath.browsePath.Select(a => a.name).ToArray());
                 if (relativePath?.RelativePath?.Elements?.Count > 0)
                 {
                     StringBuilder sb = new StringBuilder();
@@ -27,7 +26,7 @@ namespace plugin_dotnet
                     var pelemt = relativePath.RelativePath.Elements;
                     for (int i = 0; i < pelemt.Count; i++)
                     {
-                        sb.Append(" / ");
+                        _ = sb.Append(" / ");
                         sb.Append(pelemt[i].TargetName.Name);
                     }
                     fieldName = sb.ToString();
@@ -37,7 +36,7 @@ namespace plugin_dotnet
         }
 
 
-        internal static Result<DataResponse> CreateHistoryDataResponse(Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath)
+        internal static Result<DataResponse> CreateHistoryDataResponse(Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath, Settings settings)
         {
             if (valuesResult.Success)
             {
@@ -56,7 +55,18 @@ namespace plugin_dotnet
                     if (valueField != null)
                     {
                         valueField.Append(entry.Value);
-                        timeField.Append(entry.SourceTimestamp);
+                        switch (settings.TimestampSource)
+                        {
+                            case OPCTimestamp.Server:
+                                timeField.Append(LimitDateTime(entry.ServerTimestamp));
+                                break;
+                            case OPCTimestamp.Source:
+                                timeField.Append(LimitDateTime(entry.SourceTimestamp));
+                                break;
+                            default:
+                                timeField.Append(LimitDateTime(entry.ServerTimestamp));
+                                break;
+                        }
                     }
                 }
                 dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
