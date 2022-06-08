@@ -3,18 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Pluginv2;
 using Grpc.Core;
-using Google.Protobuf;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
 using System.Text.Json;
-using System.Security.Cryptography.X509Certificates;
-using System.Globalization;
-using Apache.Arrow;
-using Apache.Arrow.Ipc;
-using Apache.Arrow.Memory;
 using System.Linq;
-using System.IO;
 using Prediktor.UA.Client;
 using Grpc.Core.Logging;
 
@@ -162,7 +155,7 @@ namespace plugin_dotnet
             }
         }
 
-        private Result<DataResponse>[] ReadHistoryRaw(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
+        private Result<DataResponse>[] ReadHistoryRaw(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable, Settings settings)
         {
             var indexMap = new Dictionary<ReadRawKey, List<int>>();
             var queryMap = new Dictionary<ReadRawKey, List<NodeId>>();
@@ -202,7 +195,7 @@ namespace plugin_dotnet
                 for (int i = 0; i < indices.Count; i++)
                 {
                     var idx = indices[i];
-                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], relativePaths[idx]);
+                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], relativePaths[idx], settings);
                 }
             }
             return result;
@@ -213,7 +206,7 @@ namespace plugin_dotnet
 			
 		//}
 
-		private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable)
+		private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable, Settings settings)
         {
             var indexMap = new Dictionary<ReadProcessedKey, List<int>>();
             var queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
@@ -269,7 +262,7 @@ namespace plugin_dotnet
                 {
                     var idx = indices[i];
                     var valuesResult = historyValues[i];
-                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], browsePaths[idx]);
+                    result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], browsePaths[idx], settings);
                 }
             }
             return result;
@@ -361,10 +354,10 @@ namespace plugin_dotnet
                                 responses = SubscribeDataValues(connection.Session, settings, connection.DataValueSubscription, queries, nsTable);
                                 break;
                             case "ReadDataRaw":
-                                responses = ReadHistoryRaw(connection.Session, queries, nsTable);
+                                responses = ReadHistoryRaw(connection.Session, queries, nsTable, settings);
                                 break;
                             case "ReadDataProcessed":
-                                responses = ReadHistoryProcessed(connection.Session, queries, nsTable);
+                                responses = ReadHistoryProcessed(connection.Session, queries, nsTable, settings);
                                 break;
                             case "ReadEvents":
                                 responses = ReadEvents(connection.Session, connection.EventDataResponse, queries, nsTable);
