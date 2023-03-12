@@ -39,9 +39,6 @@ Contributions that addresses the needs above or other feature you'd like to see 
 ![Prediktor](https://raw.githubusercontent.com/srclosson/grafana-opcua-datasource/master/src/img/PrediktorLogo_thumb.png) is a proud contributor
 Open Software like this project and open standards like OPC UA fits perfectly with our quest to give our clients the freedom to operate. To know more about our offerings and get in touch, check out https://prediktor.com.
 
-* [Prediktor](https://prediktor.com) has a public test OPC UA Server running at opc.tcp://opcua.prediktor.com:4880.
-It provides a small information model with Realtime/Historic data and Alarms&Conditions. Feel free to use it.
-
 # Q&A
 Q: **Can it read OPC Classic DA/HDA/AE?**
 

@@ -196,11 +196,11 @@ namespace plugin_dotnet
     public class Connections : IConnections
     {
         private ILogger _log;
-        private ISessionFactory _sessionFactory;
+        private Prediktor.UA.Client.ISessionFactory _sessionFactory;
         private INodeCacheFactory _nodeCacheFactory;
         private Func<ApplicationConfiguration> _applicationConfiguration;
         private Dictionary<string, IConnection> connections = new Dictionary<string, IConnection>();
-        public Connections(ILogger log, ISessionFactory sessionFactory, INodeCacheFactory nodeCacheFactory, Func<ApplicationConfiguration> applicationConfiguration)
+        public Connections(ILogger log, Prediktor.UA.Client.ISessionFactory sessionFactory, INodeCacheFactory nodeCacheFactory, Func<ApplicationConfiguration> applicationConfiguration)
         {
             _log = log;
             _sessionFactory = sessionFactory;
