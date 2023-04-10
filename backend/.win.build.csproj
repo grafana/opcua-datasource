@@ -17,7 +17,7 @@
   <PropertyGroup>
     <!-- https://github.com/grpc/grpc/blob/master/src/csharp/BUILD-INTEGRATION.md#i-am-getting-a-warning-about-a-missing-expected-file -->
     <Protobuf_NoWarnMissingExpected>true</Protobuf_NoWarnMissingExpected>
-    <AssemblyName>gpx_opcua_windows_amd64</AssemblyName>
+    <AssemblyName>opcua_windows_amd64</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

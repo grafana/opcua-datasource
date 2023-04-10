@@ -1,6 +1,6 @@
 ﻿using Grpc.Core.Logging;
 using Opc.Ua;
-using Pluginv2;
+using Opcv1;
 using Prediktor.UA.Client;
 using System;
 using System.Linq;
@@ -35,41 +35,63 @@ namespace plugin_dotnet
             return fieldName;
         }
 
+        internal static Opcv1.DataValue ParseOpcUaDataValue(Opc.Ua.DataValue entry) {
+            Opcv1.DataValue responseEntry = new Opcv1.DataValue();
+            responseEntry.ServerMillisecondEpoch = (uint)new DateTimeOffset(entry.ServerTimestamp).ToUnixTimeMilliseconds();
+            responseEntry.SourceMillisecondEpoch =  (uint)new DateTimeOffset(entry.SourceTimestamp).ToUnixTimeMilliseconds();
+            responseEntry.StatusCode = entry.StatusCode.Code;
+            switch (Type.GetTypeCode(responseEntry.GetType())) {
+                case TypeCode.Boolean:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Bool;
+                    break;
+                case TypeCode.Byte:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Byte;
+                    break;
+                case TypeCode.Int16:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Int16;
+                    break;
+                case TypeCode.UInt16:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Uint16;
+                    break;
+                case TypeCode.Int32:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Int32;
+                    break;
+                case TypeCode.UInt32:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Uint32;
+                    break;
+                case TypeCode.Int64:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Int64;
+                    break;
+                case TypeCode.UInt64:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Uint64;
+                    break;
+                case TypeCode.Single:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Float;
+                    break;
+                case TypeCode.Double:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.Double;
+                    break;
+                case TypeCode.String:
+                    responseEntry.Type = Opcv1.DataValue.Types.ValueType.String;
+                    break;
+            }
+            responseEntry.Value = Google.Protobuf.ByteString.CopyFrom(entry.GetValue<byte[]>(null));
+
+            return responseEntry;
+        }
+
 
         internal static Result<DataResponse> CreateHistoryDataResponse(Result<HistoryData> valuesResult, OpcUAQuery query, BrowsePath relativePath, Settings settings)
         {
             if (valuesResult.Success)
             {
                 var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(query.refId);
-                var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                Field valueField = null;
-                foreach (DataValue entry in valuesResult.Value.DataValues)
-                {
-                    if (valueField == null && entry.Value != null)
-                    {
-                        var fieldName = GetFieldName(query, relativePath);
-                        valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
-                    }
 
-                    if (valueField != null)
-                    {
-                        valueField.Append(entry.Value);
-                        switch (settings.TimestampSource)
-                        {
-                            case OPCTimestamp.Server:
-                                timeField.Append(LimitDateTime(entry.ServerTimestamp));
-                                break;
-                            case OPCTimestamp.Source:
-                                timeField.Append(LimitDateTime(entry.SourceTimestamp));
-                                break;
-                            default:
-                                timeField.Append(LimitDateTime(entry.ServerTimestamp));
-                                break;
-                        }
-                    }
+                foreach (Opc.Ua.DataValue entry in valuesResult.Value.DataValues)
+                {
+                    Opcv1.DataValue responseEntry = ParseOpcUaDataValue(entry);
+                    dataResponse.DataValues.Add(responseEntry);
                 }
-                dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
                 return new Result<DataResponse>(dataResponse);
             }
             else
@@ -87,31 +109,15 @@ namespace plugin_dotnet
             return dt;
         }
 
-        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, Settings settings, DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
+        internal static Result<DataResponse> GetDataResponseForDataValue(ILogger log, Settings settings, Opc.Ua.DataValue dataValue, NodeId nodeId, OpcUAQuery query, BrowsePath relativePath)
         {
             try
             {
                 if (Opc.Ua.StatusCode.IsGood(dataValue.StatusCode))
                 {
                     DataResponse dataResponse = new DataResponse();
-                    DataFrame dataFrame = new DataFrame(query.refId);
-
-                    var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                    var fieldName = GetFieldName(query, relativePath);
-                    Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
-                    switch (settings.TimestampSource) {
-                        case OPCTimestamp.Server:
-                            timeField.Append(LimitDateTime(dataValue.ServerTimestamp));
-                            break;
-                        case OPCTimestamp.Source:
-                            timeField.Append(LimitDateTime(dataValue.SourceTimestamp));
-                            break;
-                        default:
-                            timeField.Append(LimitDateTime(dataValue.ServerTimestamp));
-                            break;
-                    }
-                    valueField.Append(dataValue?.Value != null ? dataValue?.Value : "");
-                    dataResponse.Frames.Add(dataFrame.ToGprcArrowFrame());
+                    Opcv1.DataValue responseEntry = ParseOpcUaDataValue(dataValue);
+                    dataResponse.DataValues.Add(responseEntry);
                     return new Result<DataResponse>(dataResponse);
                 }
                 else

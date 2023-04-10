@@ -7,7 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
-using Pluginv2;
+using Opcv1;
 using Prediktor.UA.Client;
 using Grpc.Core.Logging;
 

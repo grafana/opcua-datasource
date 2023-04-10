@@ -5,7 +5,8 @@
 
 set -eu
 
-DST_DIR=../backend/Proto
+DST_DIR_CSHARP=../backend/Proto
+DST_DIR_GOLANG=../pkg/proto
 
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
@@ -13,4 +14,4 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd "$DIR"
 
-protoc -I ./ backend.proto --csharp_out=${DST_DIR}
+protoc -I. ./backend.proto --csharp_out=${DST_DIR_CSHARP} --go_out=${DST_DIR_GOLANG} 

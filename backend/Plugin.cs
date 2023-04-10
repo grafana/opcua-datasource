@@ -53,7 +53,6 @@ namespace plugin_dotnet
                     { Diagnostics.BindService(new DiagnosticsService(logger, connections)) },
                     { Resource.BindService(new ResourceService(logger, connections)) },
                     { Data.BindService(new DataService(logger, connections, nodeCacheFactory)) },
-                    { Pluginv2.Stream.BindService(new StreamService(logger, connections))},
                 }
                 };
 
@@ -61,7 +60,7 @@ namespace plugin_dotnet
 
                 // Part of the go-plugin handshake:
                 //  https://github.com/hashicorp/go-plugin/blob/master/docs/guide-plugin-write-non-go.md#4-output-handshake-information
-                await Console.Out.WriteAsync($"1|2|tcp|{serviceHost}:{servicePort}|grpc\n");
+                await Console.Out.WriteAsync($"1|1|tcp|{serviceHost}:{servicePort}|grpc\n");
                 await Console.Out.FlushAsync();
 
                 while (Console.Read() == -1)

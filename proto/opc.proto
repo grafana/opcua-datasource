@@ -1,0 +1,4209 @@
+syntax = "proto2";
+
+message UnspecifiedType
+{
+	required string baseObjectType = 1;
+	required bytes object = 2;
+}
+
+message AggregateConfiguration
+{
+	optional uint32 PercentDataBad = 1;
+	optional uint32 PercentDataGood = 2;
+	optional bool TreatUncertainAsBad = 3;
+	optional bool UseServerCapabilitiesDefaults = 4;
+	optional bool UseSlopedExtrapolation = 5;
+}
+
+message AggregateFilterResult
+{
+	optional AggregateConfiguration RevisedAggregateConfiguration = 1;
+	optional double RevisedProcessingInterval = 2;
+	optional int64 RevisedStartTime = 3;
+}
+
+message Annotation
+{
+	optional int64 AnnotationTime = 1;
+	optional string Message = 2;
+	optional string UserName = 3;
+}
+
+message AnonymousIdentityToken
+{
+	optional string PolicyId = 1;
+}
+
+message BodyType
+{
+}
+
+message BrokerConnectionTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional string ResourceUri = 2;
+}
+
+message BrokerDataSetReaderTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional string MetaDataQueueName = 2;
+	optional string QueueName = 3;
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	optional BrokerTransportQualityOfService RequestedDeliveryGuarantee = 4;
+	optional string ResourceUri = 5;
+}
+
+message BrokerDataSetWriterTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional string MetaDataQueueName = 2;
+	optional double MetaDataUpdateTime = 3;
+	optional string QueueName = 4;
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	optional BrokerTransportQualityOfService RequestedDeliveryGuarantee = 5;
+	optional string ResourceUri = 6;
+}
+
+message BrokerWriterGroupTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional string QueueName = 2;
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	optional BrokerTransportQualityOfService RequestedDeliveryGuarantee = 3;
+	optional string ResourceUri = 4;
+}
+
+message BuildInfo
+{
+	optional int64 BuildDate = 1;
+	optional string BuildNumber = 2;
+	optional string ManufacturerName = 3;
+	optional string ProductName = 4;
+	optional string ProductUri = 5;
+	optional string SoftwareVersion = 6;
+}
+
+message CartesianCoordinates
+{
+	optional double X = 1;
+	optional double Y = 2;
+	optional double Z = 3;
+}
+
+message ChannelSecurityToken
+{
+	optional uint32 ChannelId = 1;
+	optional int64 CreatedAt = 2;
+	optional uint32 RevisedLifetime = 3;
+	optional uint32 TokenId = 4;
+}
+
+message ComplexNumberType
+{
+	optional float Imaginary = 1;
+	optional float Real = 2;
+}
+
+message ConfigurationVersionDataType
+{
+	optional uint32 MajorVersion = 1;
+	optional uint32 MinorVersion = 2;
+}
+
+message DataChangeFilter
+{
+	optional uint32 DeadbandType = 1;
+	optional double DeadbandValue = 2;
+	enum DataChangeTrigger
+	{
+		DataChangeTrigger_StatusValueTimestamp_2 = 1;
+		DataChangeTrigger_StatusValue_1 = 2;
+		DataChangeTrigger_Status_0 = 3;
+	}
+	optional DataChangeTrigger Trigger = 3;
+}
+
+message DataSetReaderTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional string MetaDataQueueName = 2;
+	optional string QueueName = 3;
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	optional BrokerTransportQualityOfService RequestedDeliveryGuarantee = 4;
+	optional string ResourceUri = 5;
+}
+
+message DataSetWriterMessageDataType
+{
+	optional uint32 ConfiguredSize = 1;
+	optional uint32 DataSetMessageContentMask = 2;
+	optional uint32 DataSetOffset = 3;
+	optional uint32 NetworkMessageNumber = 4;
+}
+
+message DataSetWriterTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional string MetaDataQueueName = 2;
+	optional double MetaDataUpdateTime = 3;
+	optional string QueueName = 4;
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	optional BrokerTransportQualityOfService RequestedDeliveryGuarantee = 5;
+	optional string ResourceUri = 6;
+}
+
+message DatagramWriterGroupTransportDataType
+{
+	optional uint32 MessageRepeatCount = 1;
+	optional double MessageRepeatDelay = 2;
+}
+
+message DecimalDataType
+{
+	optional int32 Scale = 1;
+	optional bytes Value = 2;
+}
+
+message DoubleComplexNumberType
+{
+	optional double Imaginary = 1;
+	optional double Real = 2;
+}
+
+message ElementOperand
+{
+	optional uint32 Index = 1;
+}
+
+message EndpointConfiguration
+{
+	optional int32 ChannelLifetime = 1;
+	optional int32 MaxArrayLength = 2;
+	optional int32 MaxBufferSize = 3;
+	optional int32 MaxByteStringLength = 4;
+	optional int32 MaxMessageSize = 5;
+	optional int32 MaxStringLength = 6;
+	optional int32 OperationTimeout = 7;
+	optional int32 SecurityTokenLifetime = 8;
+	optional bool UseBinaryEncoding = 9;
+}
+
+message EndpointType
+{
+	optional string EndpointUrl = 1;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 2;
+	optional string SecurityPolicyUri = 3;
+	optional string TransportProfileUri = 4;
+}
+
+message EphemeralKeyType
+{
+	optional bytes PublicKey = 1;
+	optional bytes Signature = 2;
+}
+
+message ExpandedNodeId
+{
+	optional string Identifier = 1;
+}
+
+message Guid
+{
+	optional string String = 1;
+}
+
+message IdentityMappingRuleType
+{
+	optional string Criteria = 1;
+	enum IdentityCriteriaType
+	{
+		IdentityCriteriaType_Anonymous_5 = 1;
+		IdentityCriteriaType_Application_7 = 2;
+		IdentityCriteriaType_AuthenticatedUser_6 = 3;
+		IdentityCriteriaType_GroupId_4 = 4;
+		IdentityCriteriaType_Role_3 = 5;
+		IdentityCriteriaType_Thumbprint_2 = 6;
+		IdentityCriteriaType_UserName_1 = 7;
+	}
+	optional IdentityCriteriaType CriteriaType = 2;
+}
+
+message IssuedIdentityToken
+{
+	optional string EncryptionAlgorithm = 1;
+	optional string PolicyId = 2;
+	optional bytes TokenData = 3;
+}
+
+message JsonDataSetReaderMessageDataType
+{
+	optional uint32 DataSetMessageContentMask = 1;
+	optional uint32 NetworkMessageContentMask = 2;
+}
+
+message JsonDataSetWriterMessageDataType
+{
+	optional uint32 DataSetMessageContentMask = 1;
+}
+
+message JsonWriterGroupMessageDataType
+{
+	optional uint32 NetworkMessageContentMask = 1;
+}
+
+message ListOfBoolean
+{
+	repeated bool Boolean = 1;
+}
+
+message ListOfBrokerConnectionTransportDataType
+{
+	repeated BrokerConnectionTransportDataType _BrokerConnectionTransportDataType = 1;
+}
+
+message ListOfBrokerDataSetReaderTransportDataType
+{
+	repeated BrokerDataSetReaderTransportDataType _BrokerDataSetReaderTransportDataType = 1;
+}
+
+message ListOfBrokerDataSetWriterTransportDataType
+{
+	repeated BrokerDataSetWriterTransportDataType _BrokerDataSetWriterTransportDataType = 1;
+}
+
+message ListOfBrokerTransportQualityOfService
+{
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	repeated BrokerTransportQualityOfService _BrokerTransportQualityOfService = 1;
+}
+
+message ListOfBrokerWriterGroupTransportDataType
+{
+	repeated BrokerWriterGroupTransportDataType _BrokerWriterGroupTransportDataType = 1;
+}
+
+message ListOfByte
+{
+	repeated uint32 Byte = 1;
+}
+
+message ListOfByteString
+{
+	repeated bytes ByteString = 1;
+}
+
+message ListOfCartesianCoordinates
+{
+	repeated CartesianCoordinates _CartesianCoordinates = 1;
+}
+
+message ListOfConfigurationVersionDataType
+{
+	repeated ConfigurationVersionDataType _ConfigurationVersionDataType = 1;
+}
+
+message ListOfDataSetFieldContentMask
+{
+	repeated uint32 DataSetFieldContentMask = 1;
+}
+
+message ListOfDataSetOrderingType
+{
+	enum DataSetOrderingType
+	{
+		DataSetOrderingType_AscendingWriterIdSingle_2 = 1;
+		DataSetOrderingType_AscendingWriterId_1 = 2;
+		DataSetOrderingType_Undefined_0 = 3;
+	}
+	repeated DataSetOrderingType _DataSetOrderingType = 1;
+}
+
+message ListOfDataSetReaderTransportDataType
+{
+	repeated DataSetReaderTransportDataType _DataSetReaderTransportDataType = 1;
+}
+
+message ListOfDataSetWriterMessageDataType
+{
+	repeated DataSetWriterMessageDataType _DataSetWriterMessageDataType = 1;
+}
+
+message ListOfDataSetWriterTransportDataType
+{
+	repeated DataSetWriterTransportDataType _DataSetWriterTransportDataType = 1;
+}
+
+message ListOfDatagramWriterGroupTransportDataType
+{
+	repeated DatagramWriterGroupTransportDataType _DatagramWriterGroupTransportDataType = 1;
+}
+
+message ListOfDateTime
+{
+	repeated int64 DateTime = 1;
+}
+
+message ListOfDiagnosticsLevel
+{
+	enum DiagnosticsLevel
+	{
+		DiagnosticsLevel_Advanced_1 = 1;
+		DiagnosticsLevel_Basic_0 = 2;
+		DiagnosticsLevel_Debug_4 = 3;
+		DiagnosticsLevel_Info_2 = 4;
+		DiagnosticsLevel_Log_3 = 5;
+	}
+	repeated DiagnosticsLevel _DiagnosticsLevel = 1;
+}
+
+message ListOfDouble
+{
+	repeated double Double = 1;
+}
+
+message ListOfDuplex
+{
+	enum Duplex
+	{
+		Duplex_Full_0 = 1;
+		Duplex_Half_1 = 2;
+		Duplex_Unknown_2 = 3;
+	}
+	repeated Duplex _Duplex = 1;
+}
+
+message ListOfEndpointConfiguration
+{
+	repeated EndpointConfiguration _EndpointConfiguration = 1;
+}
+
+message ListOfEndpointType
+{
+	repeated EndpointType _EndpointType = 1;
+}
+
+message ListOfExpandedNodeId
+{
+	repeated ExpandedNodeId _ExpandedNodeId = 1;
+}
+
+message ListOfFloat
+{
+	repeated float Float = 1;
+}
+
+message ListOfGuid
+{
+	repeated Guid _Guid = 1;
+}
+
+message ListOfIdType
+{
+	enum IdType
+	{
+		IdType_Guid_2 = 1;
+		IdType_Numeric_0 = 2;
+		IdType_Opaque_3 = 3;
+		IdType_String_1 = 4;
+	}
+	repeated IdType _IdType = 1;
+}
+
+message ListOfIdentityCriteriaType
+{
+	enum IdentityCriteriaType
+	{
+		IdentityCriteriaType_Anonymous_5 = 1;
+		IdentityCriteriaType_Application_7 = 2;
+		IdentityCriteriaType_AuthenticatedUser_6 = 3;
+		IdentityCriteriaType_GroupId_4 = 4;
+		IdentityCriteriaType_Role_3 = 5;
+		IdentityCriteriaType_Thumbprint_2 = 6;
+		IdentityCriteriaType_UserName_1 = 7;
+	}
+	repeated IdentityCriteriaType _IdentityCriteriaType = 1;
+}
+
+message ListOfIdentityMappingRuleType
+{
+	repeated IdentityMappingRuleType _IdentityMappingRuleType = 1;
+}
+
+message ListOfInt16
+{
+	repeated int32 Int16 = 1;
+}
+
+message ListOfInt32
+{
+	repeated int32 Int32 = 1;
+}
+
+message ListOfInt64
+{
+	repeated int64 Int64 = 1;
+}
+
+message ListOfInterfaceAdminStatus
+{
+	enum InterfaceAdminStatus
+	{
+		InterfaceAdminStatus_Down_1 = 1;
+		InterfaceAdminStatus_Testing_2 = 2;
+		InterfaceAdminStatus_Up_0 = 3;
+	}
+	repeated InterfaceAdminStatus _InterfaceAdminStatus = 1;
+}
+
+message ListOfInterfaceOperStatus
+{
+	enum InterfaceOperStatus
+	{
+		InterfaceOperStatus_Dormant_4 = 1;
+		InterfaceOperStatus_Down_1 = 2;
+		InterfaceOperStatus_LowerLayerDown_6 = 3;
+		InterfaceOperStatus_NotPresent_5 = 4;
+		InterfaceOperStatus_Testing_2 = 5;
+		InterfaceOperStatus_Unknown_3 = 6;
+		InterfaceOperStatus_Up_0 = 7;
+	}
+	repeated InterfaceOperStatus _InterfaceOperStatus = 1;
+}
+
+message ListOfJsonDataSetMessageContentMask
+{
+	repeated uint32 JsonDataSetMessageContentMask = 1;
+}
+
+message ListOfJsonDataSetReaderMessageDataType
+{
+	repeated JsonDataSetReaderMessageDataType _JsonDataSetReaderMessageDataType = 1;
+}
+
+message ListOfJsonDataSetWriterMessageDataType
+{
+	repeated JsonDataSetWriterMessageDataType _JsonDataSetWriterMessageDataType = 1;
+}
+
+message ListOfJsonNetworkMessageContentMask
+{
+	repeated uint32 JsonNetworkMessageContentMask = 1;
+}
+
+message ListOfJsonWriterGroupMessageDataType
+{
+	repeated JsonWriterGroupMessageDataType _JsonWriterGroupMessageDataType = 1;
+}
+
+message ListOfNegotiationStatus
+{
+	enum NegotiationStatus
+	{
+		NegotiationStatus_Complete_1 = 1;
+		NegotiationStatus_Failed_2 = 2;
+		NegotiationStatus_InProgress_0 = 3;
+		NegotiationStatus_NoNegotiation_4 = 4;
+		NegotiationStatus_Unknown_3 = 5;
+	}
+	repeated NegotiationStatus _NegotiationStatus = 1;
+}
+
+message ListOfOpenFileMode
+{
+	enum OpenFileMode
+	{
+		OpenFileMode_Append_8 = 1;
+		OpenFileMode_EraseExisting_4 = 2;
+		OpenFileMode_Read_1 = 3;
+		OpenFileMode_Write_2 = 4;
+	}
+	repeated OpenFileMode _OpenFileMode = 1;
+}
+
+message ListOfOverrideValueHandling
+{
+	enum OverrideValueHandling
+	{
+		OverrideValueHandling_Disabled_0 = 1;
+		OverrideValueHandling_LastUsableValue_1 = 2;
+		OverrideValueHandling_OverrideValue_2 = 3;
+	}
+	repeated OverrideValueHandling _OverrideValueHandling = 1;
+}
+
+message ListOfPubSubDiagnosticsCounterClassification
+{
+	enum PubSubDiagnosticsCounterClassification
+	{
+		PubSubDiagnosticsCounterClassification_Error_1 = 1;
+		PubSubDiagnosticsCounterClassification_Information_0 = 2;
+	}
+	repeated PubSubDiagnosticsCounterClassification _PubSubDiagnosticsCounterClassification = 1;
+}
+
+message ListOfPubSubState
+{
+	enum PubSubState
+	{
+		PubSubState_Disabled_0 = 1;
+		PubSubState_Error_3 = 2;
+		PubSubState_Operational_2 = 3;
+		PubSubState_Paused_1 = 4;
+		PubSubState_PreOperational_4 = 5;
+	}
+	repeated PubSubState _PubSubState = 1;
+}
+
+message ListOfSByte
+{
+	repeated bytes SByte = 1;
+}
+
+message ListOfString
+{
+	repeated string String = 1;
+}
+
+message ListOfTsnFailureCode
+{
+	enum TsnFailureCode
+	{
+		TsnFailureCode_BridgeDoesNotProvideNetworkId_22 = 1;
+		TsnFailureCode_CannotStoreDestinationAddress_12 = 2;
+		TsnFailureCode_EgressPortNotAvbCapable_8 = 3;
+		TsnFailureCode_FeatureNotPropagated_20 = 4;
+		TsnFailureCode_FeatureNotSupported_25 = 5;
+		TsnFailureCode_FirstValueChangedForStreamId_16 = 6;
+		TsnFailureCode_InsufficientBandwidth_1 = 7;
+		TsnFailureCode_InsufficientResources_2 = 8;
+		TsnFailureCode_InsufficientTrafficClassBandwidth_3 = 9;
+		TsnFailureCode_LatencyHasChanged_7 = 10;
+		TsnFailureCode_MaxFanInPortsLimitReached_15 = 11;
+		TsnFailureCode_MaxFrameSizeTooLarge_14 = 12;
+		TsnFailureCode_MaxLatencyExceeded_21 = 13;
+		TsnFailureCode_NoFailure_0 = 14;
+		TsnFailureCode_OutOfMmrpResources_11 = 15;
+		TsnFailureCode_OutOfMsrpResources_10 = 16;
+		TsnFailureCode_PriorityIsNotAnSrcClass_13 = 17;
+		TsnFailureCode_SrClassPriorityMismatch_19 = 18;
+		TsnFailureCode_StreamDestinationAddressInUse_5 = 19;
+		TsnFailureCode_StreamIdInUse_4 = 20;
+		TsnFailureCode_StreamIdTypeNotSupported_24 = 21;
+		TsnFailureCode_StreamPreemptedByHigherRank_6 = 22;
+		TsnFailureCode_StreamTransformNotSupported_23 = 23;
+		TsnFailureCode_UseDifferentDestinationAddress_9 = 24;
+		TsnFailureCode_VlanBlockedOnEgress_17 = 25;
+		TsnFailureCode_VlanTaggingDisabledOnEgress_18 = 26;
+	}
+	repeated TsnFailureCode _TsnFailureCode = 1;
+}
+
+message ListOfTsnListenerStatus
+{
+	enum TsnListenerStatus
+	{
+		TsnListenerStatus_Failed_3 = 1;
+		TsnListenerStatus_None_0 = 2;
+		TsnListenerStatus_PartialFailed_2 = 3;
+		TsnListenerStatus_Ready_1 = 4;
+	}
+	repeated TsnListenerStatus _TsnListenerStatus = 1;
+}
+
+message ListOfTsnStreamState
+{
+	enum TsnStreamState
+	{
+		TsnStreamState_Configuring_1 = 1;
+		TsnStreamState_Disabled_0 = 2;
+		TsnStreamState_Error_4 = 3;
+		TsnStreamState_Operational_3 = 4;
+		TsnStreamState_Ready_2 = 5;
+	}
+	repeated TsnStreamState _TsnStreamState = 1;
+}
+
+message ListOfTsnTalkerStatus
+{
+	enum TsnTalkerStatus
+	{
+		TsnTalkerStatus_Failed_2 = 1;
+		TsnTalkerStatus_None_0 = 2;
+		TsnTalkerStatus_Ready_1 = 3;
+	}
+	repeated TsnTalkerStatus _TsnTalkerStatus = 1;
+}
+
+message ListOfUInt16
+{
+	repeated uint32 UInt16 = 1;
+}
+
+message ListOfUInt32
+{
+	repeated uint32 UInt32 = 1;
+}
+
+message ListOfUInt64
+{
+	repeated uint64 UInt64 = 1;
+}
+
+message ListOfUadpDataSetMessageContentMask
+{
+	repeated uint32 UadpDataSetMessageContentMask = 1;
+}
+
+message ListOfUadpNetworkMessageContentMask
+{
+	repeated uint32 UadpNetworkMessageContentMask = 1;
+}
+
+message LocalizedText
+{
+	optional string Locale = 1;
+	optional string Text = 2;
+}
+
+message MdnsDiscoveryConfiguration
+{
+	optional string MdnsServerName = 1;
+	optional ListOfString ServerCapabilities = 2;
+}
+
+message MethodAttributes
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional bool Executable = 3;
+	optional uint32 SpecifiedAttributes = 4;
+	optional bool UserExecutable = 5;
+	optional uint32 UserWriteMask = 6;
+	optional uint32 WriteMask = 7;
+}
+
+message ModificationInfo
+{
+	optional int64 ModificationTime = 1;
+	enum HistoryUpdateType
+	{
+		HistoryUpdateType_Delete_4 = 1;
+		HistoryUpdateType_Insert_1 = 2;
+		HistoryUpdateType_Replace_2 = 3;
+		HistoryUpdateType_Update_3 = 4;
+	}
+	optional HistoryUpdateType UpdateType = 2;
+	optional string UserName = 3;
+}
+
+message NetworkAddressDataType
+{
+	optional string NetworkInterface = 1;
+	optional string Url = 2;
+}
+
+message NetworkAddressUrlDataType
+{
+	optional string NetworkInterface = 1;
+	optional string Url = 2;
+}
+
+message NodeId
+{
+	optional string Identifier = 1;
+}
+
+message ObjectAttributes
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional uint32 EventNotifier = 3;
+	optional uint32 SpecifiedAttributes = 4;
+	optional uint32 UserWriteMask = 5;
+	optional uint32 WriteMask = 6;
+}
+
+message ObjectTypeAttributes
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional bool IsAbstract = 3;
+	optional uint32 SpecifiedAttributes = 4;
+	optional uint32 UserWriteMask = 5;
+	optional uint32 WriteMask = 6;
+}
+
+message OptionSet
+{
+	optional bytes ValidBits = 1;
+	optional bytes Value = 2;
+}
+
+message Orientation
+{
+	optional double A = 1;
+	optional double B = 2;
+	optional double C = 3;
+}
+
+message QualifiedName
+{
+	optional string Name = 1;
+	optional uint32 NamespaceIndex = 2;
+}
+
+message Range
+{
+	optional double High = 1;
+	optional double Low = 2;
+}
+
+message RationalNumber
+{
+	optional uint32 Denominator = 1;
+	optional int32 Numerator = 2;
+}
+
+message ReadAnnotationDataDetails
+{
+	optional ListOfDateTime ReqTimes = 1;
+}
+
+message ReadAtTimeDetails
+{
+	optional ListOfDateTime ReqTimes = 1;
+	optional bool UseSimpleBounds = 2;
+}
+
+message ReadRawModifiedDetails
+{
+	optional int64 EndTime = 1;
+	optional bool IsReadModified = 2;
+	optional uint32 NumValuesPerNode = 3;
+	optional bool ReturnBounds = 4;
+	optional int64 StartTime = 5;
+}
+
+message ReadValueId
+{
+	optional uint32 AttributeId = 1;
+	optional QualifiedName DataEncoding = 2;
+	optional string IndexRange = 3;
+	optional NodeId _NodeId = 4;
+}
+
+message ReaderGroupMessageDataType
+{
+}
+
+message ReaderGroupTransportDataType
+{
+}
+
+message RedundantServerDataType
+{
+	optional string ServerId = 1;
+	enum ServerState
+	{
+		ServerState_CommunicationFault_6 = 1;
+		ServerState_Failed_1 = 2;
+		ServerState_NoConfiguration_2 = 3;
+		ServerState_Running_0 = 4;
+		ServerState_Shutdown_4 = 5;
+		ServerState_Suspended_3 = 6;
+		ServerState_Test_5 = 7;
+		ServerState_Unknown_7 = 8;
+	}
+	optional ServerState _ServerState = 2;
+	optional uint32 ServiceLevel = 3;
+}
+
+message ReferenceDescription
+{
+	optional QualifiedName BrowseName = 1;
+	optional LocalizedText DisplayName = 2;
+	optional bool IsForward = 3;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 4;
+	optional ExpandedNodeId NodeId = 5;
+	optional NodeId ReferenceTypeId = 6;
+	optional ExpandedNodeId TypeDefinition = 7;
+}
+
+message ReferenceNode
+{
+	optional bool IsInverse = 1;
+	optional NodeId ReferenceTypeId = 2;
+	optional ExpandedNodeId TargetId = 3;
+}
+
+message ReferenceTypeAttributes
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional LocalizedText InverseName = 3;
+	optional bool IsAbstract = 4;
+	optional uint32 SpecifiedAttributes = 5;
+	optional bool Symmetric = 6;
+	optional uint32 UserWriteMask = 7;
+	optional uint32 WriteMask = 8;
+}
+
+message RelativePathElement
+{
+	optional bool IncludeSubtypes = 1;
+	optional bool IsInverse = 2;
+	optional NodeId ReferenceTypeId = 3;
+	optional QualifiedName TargetName = 4;
+}
+
+message RolePermissionType
+{
+	optional uint32 Permissions = 1;
+	optional NodeId RoleId = 2;
+}
+
+message SamplingIntervalDiagnosticsDataType
+{
+	optional uint32 DisabledMonitoredItemCount = 1;
+	optional uint32 MaxMonitoredItemCount = 2;
+	optional uint32 MonitoredItemCount = 3;
+	optional double SamplingInterval = 4;
+}
+
+message SemanticChangeStructureDataType
+{
+	optional NodeId Affected = 1;
+	optional NodeId AffectedType = 2;
+}
+
+message ServerDiagnosticsSummaryDataType
+{
+	optional uint32 CumulatedSessionCount = 1;
+	optional uint32 CumulatedSubscriptionCount = 2;
+	optional uint32 CurrentSessionCount = 3;
+	optional uint32 CurrentSubscriptionCount = 4;
+	optional uint32 PublishingIntervalCount = 5;
+	optional uint32 RejectedRequestsCount = 6;
+	optional uint32 RejectedSessionCount = 7;
+	optional uint32 SecurityRejectedRequestsCount = 8;
+	optional uint32 SecurityRejectedSessionCount = 9;
+	optional uint32 ServerViewCount = 10;
+	optional uint32 SessionAbortCount = 11;
+	optional uint32 SessionTimeoutCount = 12;
+}
+
+message ServerOnNetwork
+{
+	optional string DiscoveryUrl = 1;
+	optional uint32 RecordId = 2;
+	optional ListOfString ServerCapabilities = 3;
+	optional string ServerName = 4;
+}
+
+message ServerStatusDataType
+{
+	optional BuildInfo _BuildInfo = 1;
+	optional int64 CurrentTime = 2;
+	optional uint32 SecondsTillShutdown = 3;
+	optional LocalizedText ShutdownReason = 4;
+	optional int64 StartTime = 5;
+	enum ServerState
+	{
+		ServerState_CommunicationFault_6 = 1;
+		ServerState_Failed_1 = 2;
+		ServerState_NoConfiguration_2 = 3;
+		ServerState_Running_0 = 4;
+		ServerState_Shutdown_4 = 5;
+		ServerState_Suspended_3 = 6;
+		ServerState_Test_5 = 7;
+		ServerState_Unknown_7 = 8;
+	}
+	optional ServerState State = 6;
+}
+
+message ServiceCounterDataType
+{
+	optional uint32 ErrorCount = 1;
+	optional uint32 TotalCount = 2;
+}
+
+message SessionSecurityDiagnosticsDataType
+{
+	optional string AuthenticationMechanism = 1;
+	optional bytes ClientCertificate = 2;
+	optional ListOfString ClientUserIdHistory = 3;
+	optional string ClientUserIdOfSession = 4;
+	optional string Encoding = 5;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 6;
+	optional string SecurityPolicyUri = 7;
+	optional NodeId SessionId = 8;
+	optional string TransportProtocol = 9;
+}
+
+message SessionlessInvokeRequestType
+{
+	optional ListOfString LocaleIds = 1;
+	optional ListOfString NamespaceUris = 2;
+	optional ListOfString ServerUris = 3;
+	optional uint32 ServiceId = 4;
+	optional uint32 UrisVersion = 5;
+}
+
+message SessionlessInvokeResponseType
+{
+	optional ListOfString NamespaceUris = 1;
+	optional ListOfString ServerUris = 2;
+	optional uint32 ServiceId = 3;
+}
+
+message SignatureData
+{
+	optional string Algorithm = 1;
+	optional bytes Signature = 2;
+}
+
+message SignedSoftwareCertificate
+{
+	optional bytes CertificateData = 1;
+	optional bytes Signature = 2;
+}
+
+message SimpleTypeDescription
+{
+	optional NodeId BaseDataType = 1;
+	optional uint32 BuiltInType = 2;
+	optional NodeId DataTypeId = 3;
+	optional QualifiedName Name = 4;
+}
+
+message StatusCode
+{
+	optional uint32 Code = 1;
+}
+
+message StructureField
+{
+	optional ListOfUInt32 ArrayDimensions = 1;
+	optional NodeId DataType = 2;
+	optional LocalizedText Description = 3;
+	optional bool IsOptional = 4;
+	optional uint32 MaxStringLength = 5;
+	optional string Name = 6;
+	optional int32 ValueRank = 7;
+}
+
+message SubscriptionAcknowledgement
+{
+	optional uint32 SequenceNumber = 1;
+	optional uint32 SubscriptionId = 2;
+}
+
+message SubscriptionDiagnosticsDataType
+{
+	optional uint32 CurrentKeepAliveCount = 1;
+	optional uint32 CurrentLifetimeCount = 2;
+	optional uint32 DataChangeNotificationsCount = 3;
+	optional uint32 DisableCount = 4;
+	optional uint32 DisabledMonitoredItemCount = 5;
+	optional uint32 DiscardedMessageCount = 6;
+	optional uint32 EnableCount = 7;
+	optional uint32 EventNotificationsCount = 8;
+	optional uint32 EventQueueOverFlowCount = 9;
+	optional uint32 LatePublishRequestCount = 10;
+	optional uint32 MaxKeepAliveCount = 11;
+	optional uint32 MaxLifetimeCount = 12;
+	optional uint32 MaxNotificationsPerPublish = 13;
+	optional uint32 ModifyCount = 14;
+	optional uint32 MonitoredItemCount = 15;
+	optional uint32 MonitoringQueueOverflowCount = 16;
+	optional uint32 NextSequenceNumber = 17;
+	optional uint32 NotificationsCount = 18;
+	optional uint32 Priority = 19;
+	optional uint32 PublishRequestCount = 20;
+	optional bool PublishingEnabled = 21;
+	optional double PublishingInterval = 22;
+	optional uint32 RepublishMessageCount = 23;
+	optional uint32 RepublishMessageRequestCount = 24;
+	optional uint32 RepublishRequestCount = 25;
+	optional NodeId SessionId = 26;
+	optional uint32 SubscriptionId = 27;
+	optional uint32 TransferRequestCount = 28;
+	optional uint32 TransferredToAltClientCount = 29;
+	optional uint32 TransferredToSameClientCount = 30;
+	optional uint32 UnacknowledgedMessageCount = 31;
+}
+
+message ThreeDCartesianCoordinates
+{
+	optional double X = 1;
+	optional double Y = 2;
+	optional double Z = 3;
+}
+
+message ThreeDOrientation
+{
+	optional double A = 1;
+	optional double B = 2;
+	optional double C = 3;
+}
+
+message ThreeDVector
+{
+	optional double X = 1;
+	optional double Y = 2;
+	optional double Z = 3;
+}
+
+message TimeZoneDataType
+{
+	optional bool DaylightSavingInOffset = 1;
+	optional int32 Offset = 2;
+}
+
+message TransferResult
+{
+	optional ListOfUInt32 AvailableSequenceNumbers = 1;
+	optional StatusCode _StatusCode = 2;
+}
+
+message TrustListDataType
+{
+	optional ListOfByteString IssuerCertificates = 1;
+	optional ListOfByteString IssuerCrls = 2;
+	optional uint32 SpecifiedLists = 3;
+	optional ListOfByteString TrustedCertificates = 4;
+	optional ListOfByteString TrustedCrls = 5;
+}
+
+message UadpDataSetReaderMessageDataType
+{
+	optional Guid DataSetClassId = 1;
+	optional uint32 DataSetMessageContentMask = 2;
+	optional uint32 DataSetOffset = 3;
+	optional uint32 GroupVersion = 4;
+	optional uint32 NetworkMessageContentMask = 5;
+	optional uint32 NetworkMessageNumber = 6;
+	optional double ProcessingOffset = 7;
+	optional double PublishingInterval = 8;
+	optional double ReceiveOffset = 9;
+}
+
+message UadpDataSetWriterMessageDataType
+{
+	optional uint32 ConfiguredSize = 1;
+	optional uint32 DataSetMessageContentMask = 2;
+	optional uint32 DataSetOffset = 3;
+	optional uint32 NetworkMessageNumber = 4;
+}
+
+message UadpWriterGroupMessageDataType
+{
+	enum DataSetOrderingType
+	{
+		DataSetOrderingType_AscendingWriterIdSingle_2 = 1;
+		DataSetOrderingType_AscendingWriterId_1 = 2;
+		DataSetOrderingType_Undefined_0 = 3;
+	}
+	optional DataSetOrderingType DataSetOrdering = 1;
+	optional uint32 GroupVersion = 2;
+	optional uint32 NetworkMessageContentMask = 3;
+	optional ListOfDouble PublishingOffset = 4;
+	optional double SamplingOffset = 5;
+}
+
+message Union
+{
+}
+
+message UnsignedRationalNumber
+{
+	optional uint32 Denominator = 1;
+	optional uint32 Numerator = 2;
+}
+
+message UserIdentityToken
+{
+	optional bytes CertificateData = 1;
+	optional string EncryptionAlgorithm = 2;
+	optional bytes Password = 3;
+	optional string PolicyId = 4;
+	optional bytes TokenData = 5;
+	optional string UserName = 6;
+}
+
+message UserNameIdentityToken
+{
+	optional string EncryptionAlgorithm = 1;
+	optional bytes Password = 2;
+	optional string PolicyId = 3;
+	optional string UserName = 4;
+}
+
+message UserTokenPolicy
+{
+	optional string IssuedTokenType = 1;
+	optional string IssuerEndpointUrl = 2;
+	optional string PolicyId = 3;
+	optional string SecurityPolicyUri = 4;
+	enum UserTokenType
+	{
+		UserTokenType_Anonymous_0 = 1;
+		UserTokenType_Certificate_2 = 2;
+		UserTokenType_IssuedToken_3 = 3;
+		UserTokenType_UserName_1 = 4;
+	}
+	optional UserTokenType TokenType = 5;
+}
+
+message ValueType
+{
+}
+
+message Variant
+{
+	optional ValueType Value = 1;
+}
+
+message Vector
+{
+	optional double X = 1;
+	optional double Y = 2;
+	optional double Z = 3;
+}
+
+message ViewAttributes
+{
+	optional bool ContainsNoLoops = 1;
+	optional LocalizedText Description = 2;
+	optional LocalizedText DisplayName = 3;
+	optional uint32 EventNotifier = 4;
+	optional uint32 SpecifiedAttributes = 5;
+	optional uint32 UserWriteMask = 6;
+	optional uint32 WriteMask = 7;
+}
+
+message ViewDescription
+{
+	optional int64 Timestamp = 1;
+	optional NodeId ViewId = 2;
+	optional uint32 ViewVersion = 3;
+}
+
+message WriterGroupMessageDataType
+{
+	enum DataSetOrderingType
+	{
+		DataSetOrderingType_AscendingWriterIdSingle_2 = 1;
+		DataSetOrderingType_AscendingWriterId_1 = 2;
+		DataSetOrderingType_Undefined_0 = 3;
+	}
+	optional DataSetOrderingType DataSetOrdering = 1;
+	optional uint32 GroupVersion = 2;
+	optional uint32 NetworkMessageContentMask = 3;
+	optional ListOfDouble PublishingOffset = 4;
+	optional double SamplingOffset = 5;
+}
+
+message WriterGroupTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional uint32 MessageRepeatCount = 2;
+	optional double MessageRepeatDelay = 3;
+	optional string QueueName = 4;
+	enum BrokerTransportQualityOfService
+	{
+		BrokerTransportQualityOfService_AtLeastOnce_2 = 1;
+		BrokerTransportQualityOfService_AtMostOnce_3 = 2;
+		BrokerTransportQualityOfService_BestEffort_1 = 3;
+		BrokerTransportQualityOfService_ExactlyOnce_4 = 4;
+		BrokerTransportQualityOfService_NotSpecified_0 = 5;
+	}
+	optional BrokerTransportQualityOfService RequestedDeliveryGuarantee = 5;
+	optional string ResourceUri = 6;
+}
+
+message X509IdentityToken
+{
+	optional bytes CertificateData = 1;
+	optional string PolicyId = 2;
+}
+
+message XVType
+{
+	optional float Value = 1;
+	optional double X = 2;
+}
+
+message XmlElementType
+{
+}
+
+message AddNodesResult
+{
+	optional NodeId AddedNodeId = 1;
+	optional StatusCode _StatusCode = 2;
+}
+
+message AddReferencesItem
+{
+	optional bool IsForward = 1;
+	optional NodeId ReferenceTypeId = 2;
+	optional NodeId SourceNodeId = 3;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass TargetNodeClass = 4;
+	optional ExpandedNodeId TargetNodeId = 5;
+	optional string TargetServerUri = 6;
+}
+
+message AggregateFilter
+{
+	optional AggregateConfiguration _AggregateConfiguration = 1;
+	optional NodeId AggregateType = 2;
+	optional double ProcessingInterval = 3;
+	optional int64 StartTime = 4;
+}
+
+message AliasNameDataType
+{
+	optional QualifiedName AliasName = 1;
+	optional ListOfExpandedNodeId ReferencedNodes = 2;
+}
+
+message ApplicationDescription
+{
+	optional LocalizedText ApplicationName = 1;
+	enum ApplicationType
+	{
+		ApplicationType_ClientAndServer_2 = 1;
+		ApplicationType_Client_1 = 2;
+		ApplicationType_DiscoveryServer_3 = 3;
+		ApplicationType_Server_0 = 4;
+	}
+	optional ApplicationType _ApplicationType = 2;
+	optional string ApplicationUri = 3;
+	optional string DiscoveryProfileUri = 4;
+	optional ListOfString DiscoveryUrls = 5;
+	optional string GatewayServerUri = 6;
+	optional string ProductUri = 7;
+}
+
+message Argument
+{
+	optional ListOfUInt32 ArrayDimensions = 1;
+	optional NodeId DataType = 2;
+	optional LocalizedText Description = 3;
+	optional string Name = 4;
+	optional int32 ValueRank = 5;
+}
+
+message BrowseDescription
+{
+	enum BrowseDirection
+	{
+		BrowseDirection_Both_2 = 1;
+		BrowseDirection_Forward_0 = 2;
+		BrowseDirection_Invalid_3 = 3;
+		BrowseDirection_Inverse_1 = 4;
+	}
+	optional BrowseDirection _BrowseDirection = 1;
+	optional bool IncludeSubtypes = 2;
+	optional uint32 NodeClassMask = 3;
+	optional NodeId _NodeId = 4;
+	optional NodeId ReferenceTypeId = 5;
+	optional uint32 ResultMask = 6;
+}
+
+message BrowsePathTarget
+{
+	optional uint32 RemainingPathIndex = 1;
+	optional ExpandedNodeId TargetId = 2;
+}
+
+message CurrencyUnitType
+{
+	optional string AlphabeticCode = 1;
+	optional LocalizedText Currency = 2;
+	optional bytes Exponent = 3;
+	optional int32 NumericCode = 4;
+}
+
+message DataSetReaderMessageDataType
+{
+	optional Guid DataSetClassId = 1;
+	optional uint32 DataSetMessageContentMask = 2;
+	optional uint32 DataSetOffset = 3;
+	optional uint32 GroupVersion = 4;
+	optional uint32 NetworkMessageContentMask = 5;
+	optional uint32 NetworkMessageNumber = 6;
+	optional double ProcessingOffset = 7;
+	optional double PublishingInterval = 8;
+	optional double ReceiveOffset = 9;
+}
+
+message DataTypeAttributes
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional bool IsAbstract = 3;
+	optional uint32 SpecifiedAttributes = 4;
+	optional uint32 UserWriteMask = 5;
+	optional uint32 WriteMask = 6;
+}
+
+message DataValue
+{
+	optional uint32 ServerPicoseconds = 1;
+	optional int64 ServerTimestamp = 2;
+	optional uint32 SourcePicoseconds = 3;
+	optional int64 SourceTimestamp = 4;
+	optional StatusCode _StatusCode = 5;
+	optional Variant Value = 6;
+}
+
+message DeleteAtTimeDetails
+{
+	optional NodeId _NodeId = 1;
+	optional ListOfDateTime ReqTimes = 2;
+}
+
+message DeleteEventDetails
+{
+	optional ListOfByteString EventIds = 1;
+	optional NodeId _NodeId = 2;
+}
+
+message DeleteNodesItem
+{
+	optional bool DeleteTargetReferences = 1;
+	optional NodeId _NodeId = 2;
+}
+
+message DeleteRawModifiedDetails
+{
+	optional int64 EndTime = 1;
+	optional bool IsDeleteModified = 2;
+	optional NodeId _NodeId = 3;
+	optional int64 StartTime = 4;
+}
+
+message DeleteReferencesItem
+{
+	optional bool DeleteBidirectional = 1;
+	optional bool IsForward = 2;
+	optional NodeId ReferenceTypeId = 3;
+	optional NodeId SourceNodeId = 4;
+	optional ExpandedNodeId TargetNodeId = 5;
+}
+
+message DiagnosticInfo
+{
+	optional string AdditionalInfo = 1;
+	optional bytes InnerDiagnosticInfo = 2;
+	optional StatusCode InnerStatusCode = 3;
+	optional int32 Locale = 4;
+	optional int32 LocalizedText = 5;
+	optional int32 NamespaceUri = 6;
+	optional int32 SymbolicId = 7;
+}
+
+message DiscoveryConfiguration
+{
+	optional string MdnsServerName = 1;
+	optional ListOfString ServerCapabilities = 2;
+}
+
+message EUInformation
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional string NamespaceUri = 3;
+	optional int32 UnitId = 4;
+}
+
+message EndpointUrlListDataType
+{
+	optional ListOfString EndpointUrlList = 1;
+}
+
+message EnumField
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional string Name = 3;
+	optional int64 Value = 4;
+}
+
+message EnumValueType
+{
+	optional LocalizedText Description = 1;
+	optional LocalizedText DisplayName = 2;
+	optional string Name = 3;
+	optional int64 Value = 4;
+}
+
+message ExtensionObject
+{
+	optional BodyType Body = 1;
+	optional NodeId TypeId = 2;
+}
+
+message FieldTargetDataType
+{
+	optional uint32 AttributeId = 1;
+	optional Guid DataSetFieldId = 2;
+	optional Variant OverrideValue = 3;
+	enum OverrideValueHandling
+	{
+		OverrideValueHandling_Disabled_0 = 1;
+		OverrideValueHandling_LastUsableValue_1 = 2;
+		OverrideValueHandling_OverrideValue_2 = 3;
+	}
+	optional OverrideValueHandling _OverrideValueHandling = 4;
+	optional string ReceiverIndexRange = 5;
+	optional NodeId TargetNodeId = 6;
+	optional string WriteIndexRange = 7;
+}
+
+message Frame
+{
+	optional ThreeDCartesianCoordinates CartesianCoordinates = 1;
+	optional ThreeDOrientation Orientation = 2;
+}
+
+message GenericAttributeValue
+{
+	optional uint32 AttributeId = 1;
+	optional Variant Value = 2;
+}
+
+message HistoryReadResult
+{
+	optional bytes ContinuationPoint = 1;
+	optional ExtensionObject HistoryData = 2;
+	optional StatusCode _StatusCode = 3;
+}
+
+message HistoryReadValueId
+{
+	optional bytes ContinuationPoint = 1;
+	optional QualifiedName DataEncoding = 2;
+	optional string IndexRange = 3;
+	optional NodeId _NodeId = 4;
+}
+
+message KeyValuePair
+{
+	optional QualifiedName Key = 1;
+	optional Variant Value = 2;
+}
+
+message ListOfAddNodesResult
+{
+	repeated AddNodesResult _AddNodesResult = 1;
+}
+
+message ListOfAddReferencesItem
+{
+	repeated AddReferencesItem _AddReferencesItem = 1;
+}
+
+message ListOfAliasNameDataType
+{
+	repeated AliasNameDataType _AliasNameDataType = 1;
+}
+
+message ListOfApplicationDescription
+{
+	repeated ApplicationDescription _ApplicationDescription = 1;
+}
+
+message ListOfArgument
+{
+	repeated Argument _Argument = 1;
+}
+
+message ListOfBrowseDescription
+{
+	repeated BrowseDescription _BrowseDescription = 1;
+}
+
+message ListOfBrowsePathTarget
+{
+	repeated BrowsePathTarget _BrowsePathTarget = 1;
+}
+
+message ListOfCurrencyUnitType
+{
+	repeated CurrencyUnitType _CurrencyUnitType = 1;
+}
+
+message ListOfDataSetReaderMessageDataType
+{
+	repeated DataSetReaderMessageDataType _DataSetReaderMessageDataType = 1;
+}
+
+message ListOfDataValue
+{
+	repeated DataValue _DataValue = 1;
+}
+
+message ListOfDeleteNodesItem
+{
+	repeated DeleteNodesItem _DeleteNodesItem = 1;
+}
+
+message ListOfDeleteReferencesItem
+{
+	repeated DeleteReferencesItem _DeleteReferencesItem = 1;
+}
+
+message ListOfDiagnosticInfo
+{
+	repeated DiagnosticInfo _DiagnosticInfo = 1;
+}
+
+message ListOfEndpointUrlListDataType
+{
+	repeated EndpointUrlListDataType _EndpointUrlListDataType = 1;
+}
+
+message ListOfEnumField
+{
+	repeated EnumField _EnumField = 1;
+}
+
+message ListOfEnumValueType
+{
+	repeated EnumValueType _EnumValueType = 1;
+}
+
+message ListOfExtensionObject
+{
+	repeated ExtensionObject _ExtensionObject = 1;
+}
+
+message ListOfFieldTargetDataType
+{
+	repeated FieldTargetDataType _FieldTargetDataType = 1;
+}
+
+message ListOfFrame
+{
+	repeated Frame _Frame = 1;
+}
+
+message ListOfGenericAttributeValue
+{
+	repeated GenericAttributeValue _GenericAttributeValue = 1;
+}
+
+message ListOfHistoryReadResult
+{
+	repeated HistoryReadResult _HistoryReadResult = 1;
+}
+
+message ListOfHistoryReadValueId
+{
+	repeated HistoryReadValueId _HistoryReadValueId = 1;
+}
+
+message ListOfKeyValuePair
+{
+	repeated KeyValuePair _KeyValuePair = 1;
+}
+
+message ListOfLocalizedText
+{
+	repeated LocalizedText _LocalizedText = 1;
+}
+
+message ListOfModificationInfo
+{
+	repeated ModificationInfo _ModificationInfo = 1;
+}
+
+message ListOfNetworkAddressDataType
+{
+	repeated NetworkAddressDataType _NetworkAddressDataType = 1;
+}
+
+message ListOfNetworkAddressUrlDataType
+{
+	repeated NetworkAddressUrlDataType _NetworkAddressUrlDataType = 1;
+}
+
+message ListOfNodeId
+{
+	repeated NodeId _NodeId = 1;
+}
+
+message ListOfOptionSet
+{
+	repeated OptionSet _OptionSet = 1;
+}
+
+message ListOfOrientation
+{
+	repeated Orientation _Orientation = 1;
+}
+
+message ListOfQualifiedName
+{
+	repeated QualifiedName _QualifiedName = 1;
+}
+
+message ListOfRationalNumber
+{
+	repeated RationalNumber _RationalNumber = 1;
+}
+
+message ListOfReadValueId
+{
+	repeated ReadValueId _ReadValueId = 1;
+}
+
+message ListOfReaderGroupMessageDataType
+{
+	repeated ReaderGroupMessageDataType _ReaderGroupMessageDataType = 1;
+}
+
+message ListOfReaderGroupTransportDataType
+{
+	repeated ReaderGroupTransportDataType _ReaderGroupTransportDataType = 1;
+}
+
+message ListOfRedundantServerDataType
+{
+	repeated RedundantServerDataType _RedundantServerDataType = 1;
+}
+
+message ListOfReferenceDescription
+{
+	repeated ReferenceDescription _ReferenceDescription = 1;
+}
+
+message ListOfReferenceNode
+{
+	repeated ReferenceNode _ReferenceNode = 1;
+}
+
+message ListOfRelativePathElement
+{
+	repeated RelativePathElement _RelativePathElement = 1;
+}
+
+message ListOfRolePermissionType
+{
+	repeated RolePermissionType _RolePermissionType = 1;
+}
+
+message ListOfSamplingIntervalDiagnosticsDataType
+{
+	repeated SamplingIntervalDiagnosticsDataType _SamplingIntervalDiagnosticsDataType = 1;
+}
+
+message ListOfSemanticChangeStructureDataType
+{
+	repeated SemanticChangeStructureDataType _SemanticChangeStructureDataType = 1;
+}
+
+message ListOfServerOnNetwork
+{
+	repeated ServerOnNetwork _ServerOnNetwork = 1;
+}
+
+message ListOfSessionSecurityDiagnosticsDataType
+{
+	repeated SessionSecurityDiagnosticsDataType _SessionSecurityDiagnosticsDataType = 1;
+}
+
+message ListOfSignedSoftwareCertificate
+{
+	repeated SignedSoftwareCertificate _SignedSoftwareCertificate = 1;
+}
+
+message ListOfSimpleTypeDescription
+{
+	repeated SimpleTypeDescription _SimpleTypeDescription = 1;
+}
+
+message ListOfStatusCode
+{
+	repeated StatusCode _StatusCode = 1;
+}
+
+message ListOfStructureField
+{
+	repeated StructureField _StructureField = 1;
+}
+
+message ListOfSubscriptionAcknowledgement
+{
+	repeated SubscriptionAcknowledgement _SubscriptionAcknowledgement = 1;
+}
+
+message ListOfSubscriptionDiagnosticsDataType
+{
+	repeated SubscriptionDiagnosticsDataType _SubscriptionDiagnosticsDataType = 1;
+}
+
+message ListOfThreeDCartesianCoordinates
+{
+	repeated ThreeDCartesianCoordinates _ThreeDCartesianCoordinates = 1;
+}
+
+message ListOfThreeDOrientation
+{
+	repeated ThreeDOrientation _ThreeDOrientation = 1;
+}
+
+message ListOfThreeDVector
+{
+	repeated ThreeDVector _ThreeDVector = 1;
+}
+
+message ListOfTimeZoneDataType
+{
+	repeated TimeZoneDataType _TimeZoneDataType = 1;
+}
+
+message ListOfTransferResult
+{
+	repeated TransferResult _TransferResult = 1;
+}
+
+message ListOfTrustListDataType
+{
+	repeated TrustListDataType _TrustListDataType = 1;
+}
+
+message ListOfUadpDataSetReaderMessageDataType
+{
+	repeated UadpDataSetReaderMessageDataType _UadpDataSetReaderMessageDataType = 1;
+}
+
+message ListOfUadpDataSetWriterMessageDataType
+{
+	repeated UadpDataSetWriterMessageDataType _UadpDataSetWriterMessageDataType = 1;
+}
+
+message ListOfUadpWriterGroupMessageDataType
+{
+	repeated UadpWriterGroupMessageDataType _UadpWriterGroupMessageDataType = 1;
+}
+
+message ListOfUnion
+{
+	repeated Union _Union = 1;
+}
+
+message ListOfUnsignedRationalNumber
+{
+	repeated UnsignedRationalNumber _UnsignedRationalNumber = 1;
+}
+
+message ListOfUserTokenPolicy
+{
+	repeated UserTokenPolicy _UserTokenPolicy = 1;
+}
+
+message ListOfVariant
+{
+	repeated Variant _Variant = 1;
+}
+
+message ListOfVector
+{
+	repeated Vector _Vector = 1;
+}
+
+message ListOfWriterGroupMessageDataType
+{
+	repeated WriterGroupMessageDataType _WriterGroupMessageDataType = 1;
+}
+
+message ListOfWriterGroupTransportDataType
+{
+	repeated WriterGroupTransportDataType _WriterGroupTransportDataType = 1;
+}
+
+message ListOfXmlElement
+{
+	repeated XmlElementType XmlElement = 1;
+}
+
+message LiteralOperand
+{
+	optional Variant Value = 1;
+}
+
+message MethodNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional QualifiedName BrowseName = 2;
+	optional LocalizedText Description = 3;
+	optional LocalizedText DisplayName = 4;
+	optional bool Executable = 5;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 6;
+	optional NodeId _NodeId = 7;
+	optional ListOfReferenceNode References = 8;
+	optional ListOfRolePermissionType RolePermissions = 9;
+	optional bool UserExecutable = 10;
+	optional ListOfRolePermissionType UserRolePermissions = 11;
+	optional uint32 UserWriteMask = 12;
+	optional uint32 WriteMask = 13;
+}
+
+message ModelChangeStructureDataType
+{
+	optional NodeId Affected = 1;
+	optional NodeId AffectedType = 2;
+	optional uint32 Verb = 3;
+}
+
+message MonitoredItemCreateResult
+{
+	optional ExtensionObject FilterResult = 1;
+	optional uint32 MonitoredItemId = 2;
+	optional uint32 RevisedQueueSize = 3;
+	optional double RevisedSamplingInterval = 4;
+	optional StatusCode _StatusCode = 5;
+}
+
+message MonitoredItemModifyResult
+{
+	optional ExtensionObject FilterResult = 1;
+	optional uint32 RevisedQueueSize = 2;
+	optional double RevisedSamplingInterval = 3;
+	optional StatusCode _StatusCode = 4;
+}
+
+message MonitoredItemNotification
+{
+	optional uint32 ClientHandle = 1;
+	optional DataValue Value = 2;
+}
+
+message MonitoringParameters
+{
+	optional uint32 ClientHandle = 1;
+	optional bool DiscardOldest = 2;
+	optional ExtensionObject Filter = 3;
+	optional uint32 QueueSize = 4;
+	optional double SamplingInterval = 5;
+}
+
+message NetworkGroupDataType
+{
+	optional ListOfEndpointUrlListDataType NetworkPaths = 1;
+	optional string ServerUri = 2;
+}
+
+message Node
+{
+	optional uint32 AccessLevel = 1;
+	optional uint32 AccessLevelEx = 2;
+	optional uint32 AccessRestrictions = 3;
+	optional ListOfUInt32 ArrayDimensions = 4;
+	optional QualifiedName BrowseName = 5;
+	optional bool ContainsNoLoops = 6;
+	optional NodeId DataType = 7;
+	optional ExtensionObject DataTypeDefinition = 8;
+	optional LocalizedText Description = 9;
+	optional LocalizedText DisplayName = 10;
+	optional uint32 EventNotifier = 11;
+	optional bool Executable = 12;
+	optional bool Historizing = 13;
+	optional LocalizedText InverseName = 14;
+	optional bool IsAbstract = 15;
+	optional double MinimumSamplingInterval = 16;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 17;
+	optional NodeId _NodeId = 18;
+	optional ListOfReferenceNode References = 19;
+	optional ListOfRolePermissionType RolePermissions = 20;
+	optional bool Symmetric = 21;
+	optional uint32 UserAccessLevel = 22;
+	optional bool UserExecutable = 23;
+	optional ListOfRolePermissionType UserRolePermissions = 24;
+	optional uint32 UserWriteMask = 25;
+	optional Variant Value = 26;
+	optional int32 ValueRank = 27;
+	optional uint32 WriteMask = 28;
+}
+
+message NodeAttributes
+{
+	optional uint32 AccessLevel = 1;
+	optional ListOfUInt32 ArrayDimensions = 2;
+	optional ListOfGenericAttributeValue AttributeValues = 3;
+	optional bool ContainsNoLoops = 4;
+	optional NodeId DataType = 5;
+	optional LocalizedText Description = 6;
+	optional LocalizedText DisplayName = 7;
+	optional uint32 EventNotifier = 8;
+	optional bool Executable = 9;
+	optional bool Historizing = 10;
+	optional LocalizedText InverseName = 11;
+	optional bool IsAbstract = 12;
+	optional double MinimumSamplingInterval = 13;
+	optional uint32 SpecifiedAttributes = 14;
+	optional bool Symmetric = 15;
+	optional uint32 UserAccessLevel = 16;
+	optional bool UserExecutable = 17;
+	optional uint32 UserWriteMask = 18;
+	optional Variant Value = 19;
+	optional int32 ValueRank = 20;
+	optional uint32 WriteMask = 21;
+}
+
+message NodeReference
+{
+	optional bool IsForward = 1;
+	optional NodeId _NodeId = 2;
+	optional NodeId ReferenceTypeId = 3;
+	optional ListOfNodeId ReferencedNodeIds = 4;
+}
+
+message NotificationMessage
+{
+	optional ListOfExtensionObject NotificationData = 1;
+	optional int64 PublishTime = 2;
+	optional uint32 SequenceNumber = 3;
+}
+
+message ObjectNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional QualifiedName BrowseName = 2;
+	optional LocalizedText Description = 3;
+	optional LocalizedText DisplayName = 4;
+	optional uint32 EventNotifier = 5;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 6;
+	optional NodeId _NodeId = 7;
+	optional ListOfReferenceNode References = 8;
+	optional ListOfRolePermissionType RolePermissions = 9;
+	optional ListOfRolePermissionType UserRolePermissions = 10;
+	optional uint32 UserWriteMask = 11;
+	optional uint32 WriteMask = 12;
+}
+
+message ObjectTypeNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional QualifiedName BrowseName = 2;
+	optional LocalizedText Description = 3;
+	optional LocalizedText DisplayName = 4;
+	optional bool IsAbstract = 5;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 6;
+	optional NodeId _NodeId = 7;
+	optional ListOfReferenceNode References = 8;
+	optional ListOfRolePermissionType RolePermissions = 9;
+	optional ListOfRolePermissionType UserRolePermissions = 10;
+	optional uint32 UserWriteMask = 11;
+	optional uint32 WriteMask = 12;
+}
+
+message ParsingResult
+{
+	optional ListOfDiagnosticInfo DataDiagnosticInfos = 1;
+	optional ListOfStatusCode DataStatusCodes = 2;
+	optional StatusCode _StatusCode = 3;
+}
+
+message ProgramDiagnostic2DataType
+{
+	optional string CreateClientName = 1;
+	optional NodeId CreateSessionId = 2;
+	optional int64 InvocationCreationTime = 3;
+	optional string LastMethodCall = 4;
+	optional int64 LastMethodCallTime = 5;
+	optional ListOfArgument LastMethodInputArguments = 6;
+	optional ListOfVariant LastMethodInputValues = 7;
+	optional ListOfArgument LastMethodOutputArguments = 8;
+	optional ListOfVariant LastMethodOutputValues = 9;
+	optional StatusCode LastMethodReturnStatus = 10;
+	optional NodeId LastMethodSessionId = 11;
+	optional int64 LastTransitionTime = 12;
+}
+
+message PublishedVariableDataType
+{
+	optional uint32 AttributeId = 1;
+	optional uint32 DeadbandType = 2;
+	optional double DeadbandValue = 3;
+	optional string IndexRange = 4;
+	optional ListOfQualifiedName MetaDataProperties = 5;
+	optional NodeId PublishedVariable = 6;
+	optional double SamplingIntervalHint = 7;
+	optional Variant SubstituteValue = 8;
+}
+
+message QueryDataSet
+{
+	optional ExpandedNodeId NodeId = 1;
+	optional ExpandedNodeId TypeDefinitionNode = 2;
+	optional ListOfVariant Values = 3;
+}
+
+message ReadProcessedDetails
+{
+	optional AggregateConfiguration _AggregateConfiguration = 1;
+	optional ListOfNodeId AggregateType = 2;
+	optional int64 EndTime = 3;
+	optional double ProcessingInterval = 4;
+	optional int64 StartTime = 5;
+}
+
+message ReferenceTypeNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional QualifiedName BrowseName = 2;
+	optional LocalizedText Description = 3;
+	optional LocalizedText DisplayName = 4;
+	optional LocalizedText InverseName = 5;
+	optional bool IsAbstract = 6;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 7;
+	optional NodeId _NodeId = 8;
+	optional ListOfReferenceNode References = 9;
+	optional ListOfRolePermissionType RolePermissions = 10;
+	optional bool Symmetric = 11;
+	optional ListOfRolePermissionType UserRolePermissions = 12;
+	optional uint32 UserWriteMask = 13;
+	optional uint32 WriteMask = 14;
+}
+
+message RegisteredServer
+{
+	optional ListOfString DiscoveryUrls = 1;
+	optional string GatewayServerUri = 2;
+	optional bool IsOnline = 3;
+	optional string ProductUri = 4;
+	optional string SemaphoreFilePath = 5;
+	optional ListOfLocalizedText ServerNames = 6;
+	enum ApplicationType
+	{
+		ApplicationType_ClientAndServer_2 = 1;
+		ApplicationType_Client_1 = 2;
+		ApplicationType_DiscoveryServer_3 = 3;
+		ApplicationType_Server_0 = 4;
+	}
+	optional ApplicationType ServerType = 7;
+	optional string ServerUri = 8;
+}
+
+message RelativePath
+{
+	optional ListOfRelativePathElement Elements = 1;
+}
+
+message RequestHeader
+{
+	optional ExtensionObject AdditionalHeader = 1;
+	optional string AuditEntryId = 2;
+	optional NodeId AuthenticationToken = 3;
+	optional uint32 RequestHandle = 4;
+	optional uint32 ReturnDiagnostics = 5;
+	optional uint32 TimeoutHint = 6;
+	optional int64 Timestamp = 7;
+}
+
+message ResponseHeader
+{
+	optional ExtensionObject AdditionalHeader = 1;
+	optional uint32 RequestHandle = 2;
+	optional DiagnosticInfo ServiceDiagnostics = 3;
+	optional StatusCode ServiceResult = 4;
+	optional ListOfString StringTable = 5;
+	optional int64 Timestamp = 6;
+}
+
+message ServiceFault
+{
+	optional ResponseHeader _ResponseHeader = 1;
+}
+
+message SessionDiagnosticsDataType
+{
+	optional double ActualSessionTimeout = 1;
+	optional ServiceCounterDataType AddNodesCount = 2;
+	optional ServiceCounterDataType AddReferencesCount = 3;
+	optional ServiceCounterDataType BrowseCount = 4;
+	optional ServiceCounterDataType BrowseNextCount = 5;
+	optional ServiceCounterDataType CallCount = 6;
+	optional int64 ClientConnectionTime = 7;
+	optional ApplicationDescription ClientDescription = 8;
+	optional int64 ClientLastContactTime = 9;
+	optional ServiceCounterDataType CreateMonitoredItemsCount = 10;
+	optional ServiceCounterDataType CreateSubscriptionCount = 11;
+	optional uint32 CurrentMonitoredItemsCount = 12;
+	optional uint32 CurrentPublishRequestsInQueue = 13;
+	optional uint32 CurrentSubscriptionsCount = 14;
+	optional ServiceCounterDataType DeleteMonitoredItemsCount = 15;
+	optional ServiceCounterDataType DeleteNodesCount = 16;
+	optional ServiceCounterDataType DeleteReferencesCount = 17;
+	optional ServiceCounterDataType DeleteSubscriptionsCount = 18;
+	optional string EndpointUrl = 19;
+	optional ServiceCounterDataType HistoryReadCount = 20;
+	optional ServiceCounterDataType HistoryUpdateCount = 21;
+	optional ListOfString LocaleIds = 22;
+	optional uint32 MaxResponseMessageSize = 23;
+	optional ServiceCounterDataType ModifyMonitoredItemsCount = 24;
+	optional ServiceCounterDataType ModifySubscriptionCount = 25;
+	optional ServiceCounterDataType PublishCount = 26;
+	optional ServiceCounterDataType QueryFirstCount = 27;
+	optional ServiceCounterDataType QueryNextCount = 28;
+	optional ServiceCounterDataType ReadCount = 29;
+	optional ServiceCounterDataType RegisterNodesCount = 30;
+	optional ServiceCounterDataType RepublishCount = 31;
+	optional string ServerUri = 32;
+	optional NodeId SessionId = 33;
+	optional string SessionName = 34;
+	optional ServiceCounterDataType SetMonitoringModeCount = 35;
+	optional ServiceCounterDataType SetPublishingModeCount = 36;
+	optional ServiceCounterDataType SetTriggeringCount = 37;
+	optional ServiceCounterDataType TotalRequestCount = 38;
+	optional ServiceCounterDataType TransferSubscriptionsCount = 39;
+	optional ServiceCounterDataType TranslateBrowsePathsToNodeIdsCount = 40;
+	optional uint32 UnauthorizedRequestCount = 41;
+	optional ServiceCounterDataType UnregisterNodesCount = 42;
+	optional ServiceCounterDataType WriteCount = 43;
+}
+
+message SetMonitoringModeRequest
+{
+	optional ListOfUInt32 MonitoredItemIds = 1;
+	enum MonitoringMode
+	{
+		MonitoringMode_Disabled_0 = 1;
+		MonitoringMode_Reporting_2 = 2;
+		MonitoringMode_Sampling_1 = 3;
+	}
+	optional MonitoringMode _MonitoringMode = 2;
+	optional RequestHeader _RequestHeader = 3;
+	optional uint32 SubscriptionId = 4;
+}
+
+message SetMonitoringModeResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message SetPublishingModeRequest
+{
+	optional bool PublishingEnabled = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional ListOfUInt32 SubscriptionIds = 3;
+}
+
+message SetPublishingModeResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message SetTriggeringRequest
+{
+	optional ListOfUInt32 LinksToAdd = 1;
+	optional ListOfUInt32 LinksToRemove = 2;
+	optional RequestHeader _RequestHeader = 3;
+	optional uint32 SubscriptionId = 4;
+	optional uint32 TriggeringItemId = 5;
+}
+
+message SetTriggeringResponse
+{
+	optional ListOfDiagnosticInfo AddDiagnosticInfos = 1;
+	optional ListOfStatusCode AddResults = 2;
+	optional ListOfDiagnosticInfo RemoveDiagnosticInfos = 3;
+	optional ListOfStatusCode RemoveResults = 4;
+	optional ResponseHeader _ResponseHeader = 5;
+}
+
+message SimpleAttributeOperand
+{
+	optional uint32 AttributeId = 1;
+	optional ListOfQualifiedName BrowsePath = 2;
+	optional string IndexRange = 3;
+	optional NodeId TypeDefinitionId = 4;
+}
+
+message StatusChangeNotification
+{
+	optional DiagnosticInfo _DiagnosticInfo = 1;
+	optional StatusCode Status = 2;
+}
+
+message StatusResult
+{
+	optional DiagnosticInfo _DiagnosticInfo = 1;
+	optional StatusCode _StatusCode = 2;
+}
+
+message StructureDefinition
+{
+	optional NodeId BaseDataType = 1;
+	optional NodeId DefaultEncodingId = 2;
+	optional ListOfStructureField Fields = 3;
+	enum StructureType
+	{
+		StructureType_StructureWithOptionalFields_1 = 1;
+		StructureType_StructureWithSubtypedValues_3 = 2;
+		StructureType_Structure_0 = 3;
+		StructureType_UnionWithSubtypedValues_4 = 4;
+		StructureType_Union_2 = 5;
+	}
+	optional StructureType _StructureType = 4;
+}
+
+message StructureDescription
+{
+	optional NodeId DataTypeId = 1;
+	optional QualifiedName Name = 2;
+	optional StructureDefinition _StructureDefinition = 3;
+}
+
+message SubscribedDataSetDataType
+{
+	optional string ParentNodeName = 1;
+	optional ListOfRolePermissionType RolePermissions = 2;
+	optional ListOfFieldTargetDataType TargetVariables = 3;
+}
+
+message SubscribedDataSetMirrorDataType
+{
+	optional string ParentNodeName = 1;
+	optional ListOfRolePermissionType RolePermissions = 2;
+}
+
+message TargetVariablesDataType
+{
+	optional ListOfFieldTargetDataType TargetVariables = 1;
+}
+
+message ThreeDFrame
+{
+	optional ThreeDCartesianCoordinates CartesianCoordinates = 1;
+	optional ThreeDOrientation Orientation = 2;
+}
+
+message TransferSubscriptionsRequest
+{
+	optional RequestHeader _RequestHeader = 1;
+	optional bool SendInitialValues = 2;
+	optional ListOfUInt32 SubscriptionIds = 3;
+}
+
+message TransferSubscriptionsResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfTransferResult Results = 3;
+}
+
+message TypeNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional ListOfUInt32 ArrayDimensions = 2;
+	optional QualifiedName BrowseName = 3;
+	optional NodeId DataType = 4;
+	optional ExtensionObject DataTypeDefinition = 5;
+	optional LocalizedText Description = 6;
+	optional LocalizedText DisplayName = 7;
+	optional LocalizedText InverseName = 8;
+	optional bool IsAbstract = 9;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 10;
+	optional NodeId _NodeId = 11;
+	optional ListOfReferenceNode References = 12;
+	optional ListOfRolePermissionType RolePermissions = 13;
+	optional bool Symmetric = 14;
+	optional ListOfRolePermissionType UserRolePermissions = 15;
+	optional uint32 UserWriteMask = 16;
+	optional Variant Value = 17;
+	optional int32 ValueRank = 18;
+	optional uint32 WriteMask = 19;
+}
+
+message UnregisterNodesRequest
+{
+	optional ListOfNodeId NodesToUnregister = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message UnregisterNodesResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+}
+
+message UpdateDataDetails
+{
+	optional NodeId _NodeId = 1;
+	enum PerformUpdateType
+	{
+		PerformUpdateType_Insert_1 = 1;
+		PerformUpdateType_Remove_4 = 2;
+		PerformUpdateType_Replace_2 = 3;
+		PerformUpdateType_Update_3 = 4;
+	}
+	optional PerformUpdateType PerformInsertReplace = 2;
+	optional ListOfDataValue UpdateValues = 3;
+}
+
+message UpdateStructureDataDetails
+{
+	optional NodeId _NodeId = 1;
+	enum PerformUpdateType
+	{
+		PerformUpdateType_Insert_1 = 1;
+		PerformUpdateType_Remove_4 = 2;
+		PerformUpdateType_Replace_2 = 3;
+		PerformUpdateType_Update_3 = 4;
+	}
+	optional PerformUpdateType PerformInsertReplace = 2;
+	optional ListOfDataValue UpdateValues = 3;
+}
+
+message VariableAttributes
+{
+	optional uint32 AccessLevel = 1;
+	optional ListOfUInt32 ArrayDimensions = 2;
+	optional NodeId DataType = 3;
+	optional LocalizedText Description = 4;
+	optional LocalizedText DisplayName = 5;
+	optional bool Historizing = 6;
+	optional double MinimumSamplingInterval = 7;
+	optional uint32 SpecifiedAttributes = 8;
+	optional uint32 UserAccessLevel = 9;
+	optional uint32 UserWriteMask = 10;
+	optional Variant Value = 11;
+	optional int32 ValueRank = 12;
+	optional uint32 WriteMask = 13;
+}
+
+message VariableNode
+{
+	optional uint32 AccessLevel = 1;
+	optional uint32 AccessLevelEx = 2;
+	optional uint32 AccessRestrictions = 3;
+	optional ListOfUInt32 ArrayDimensions = 4;
+	optional QualifiedName BrowseName = 5;
+	optional NodeId DataType = 6;
+	optional LocalizedText Description = 7;
+	optional LocalizedText DisplayName = 8;
+	optional bool Historizing = 9;
+	optional double MinimumSamplingInterval = 10;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 11;
+	optional NodeId _NodeId = 12;
+	optional ListOfReferenceNode References = 13;
+	optional ListOfRolePermissionType RolePermissions = 14;
+	optional uint32 UserAccessLevel = 15;
+	optional ListOfRolePermissionType UserRolePermissions = 16;
+	optional uint32 UserWriteMask = 17;
+	optional Variant Value = 18;
+	optional int32 ValueRank = 19;
+	optional uint32 WriteMask = 20;
+}
+
+message VariableTypeAttributes
+{
+	optional ListOfUInt32 ArrayDimensions = 1;
+	optional NodeId DataType = 2;
+	optional LocalizedText Description = 3;
+	optional LocalizedText DisplayName = 4;
+	optional bool IsAbstract = 5;
+	optional uint32 SpecifiedAttributes = 6;
+	optional uint32 UserWriteMask = 7;
+	optional Variant Value = 8;
+	optional int32 ValueRank = 9;
+	optional uint32 WriteMask = 10;
+}
+
+message VariableTypeNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional ListOfUInt32 ArrayDimensions = 2;
+	optional QualifiedName BrowseName = 3;
+	optional NodeId DataType = 4;
+	optional LocalizedText Description = 5;
+	optional LocalizedText DisplayName = 6;
+	optional bool IsAbstract = 7;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 8;
+	optional NodeId _NodeId = 9;
+	optional ListOfReferenceNode References = 10;
+	optional ListOfRolePermissionType RolePermissions = 11;
+	optional ListOfRolePermissionType UserRolePermissions = 12;
+	optional uint32 UserWriteMask = 13;
+	optional Variant Value = 14;
+	optional int32 ValueRank = 15;
+	optional uint32 WriteMask = 16;
+}
+
+message ViewNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional QualifiedName BrowseName = 2;
+	optional bool ContainsNoLoops = 3;
+	optional LocalizedText Description = 4;
+	optional LocalizedText DisplayName = 5;
+	optional uint32 EventNotifier = 6;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 7;
+	optional NodeId _NodeId = 8;
+	optional ListOfReferenceNode References = 9;
+	optional ListOfRolePermissionType RolePermissions = 10;
+	optional ListOfRolePermissionType UserRolePermissions = 11;
+	optional uint32 UserWriteMask = 12;
+	optional uint32 WriteMask = 13;
+}
+
+message WriteResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message WriteValue
+{
+	optional uint32 AttributeId = 1;
+	optional string IndexRange = 2;
+	optional NodeId _NodeId = 3;
+	optional DataValue Value = 4;
+}
+
+message ActivateSessionRequest
+{
+	optional SignatureData ClientSignature = 1;
+	optional ListOfSignedSoftwareCertificate ClientSoftwareCertificates = 2;
+	optional ListOfString LocaleIds = 3;
+	optional RequestHeader _RequestHeader = 4;
+	optional ExtensionObject UserIdentityToken = 5;
+	optional SignatureData UserTokenSignature = 6;
+}
+
+message ActivateSessionResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+	optional bytes ServerNonce = 4;
+}
+
+message AddNodesItem
+{
+	optional QualifiedName BrowseName = 1;
+	optional ExtensionObject NodeAttributes = 2;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 3;
+	optional ExpandedNodeId ParentNodeId = 4;
+	optional NodeId ReferenceTypeId = 5;
+	optional ExpandedNodeId RequestedNewNodeId = 6;
+	optional ExpandedNodeId TypeDefinition = 7;
+}
+
+message AddNodesResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfAddNodesResult Results = 3;
+}
+
+message AddReferencesRequest
+{
+	optional ListOfAddReferencesItem ReferencesToAdd = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message AddReferencesResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message AdditionalParametersType
+{
+	optional ListOfKeyValuePair Parameters = 1;
+}
+
+message AttributeOperand
+{
+	optional string Alias = 1;
+	optional uint32 AttributeId = 2;
+	optional RelativePath BrowsePath = 3;
+	optional string IndexRange = 4;
+	optional NodeId _NodeId = 5;
+}
+
+message AxisInformation
+{
+	enum AxisScaleEnumeration
+	{
+		AxisScaleEnumeration_Linear_0 = 1;
+		AxisScaleEnumeration_Ln_2 = 2;
+		AxisScaleEnumeration_Log_1 = 3;
+	}
+	optional AxisScaleEnumeration AxisScaleType = 1;
+	optional ListOfDouble AxisSteps = 2;
+	optional Range EURange = 3;
+	optional EUInformation EngineeringUnits = 4;
+	optional LocalizedText Title = 5;
+}
+
+message BrowseNextRequest
+{
+	optional ListOfByteString ContinuationPoints = 1;
+	optional bool ReleaseContinuationPoints = 2;
+	optional RequestHeader _RequestHeader = 3;
+}
+
+message BrowsePath
+{
+	optional RelativePath _RelativePath = 1;
+	optional NodeId StartingNode = 2;
+}
+
+message BrowsePathResult
+{
+	optional StatusCode _StatusCode = 1;
+	optional ListOfBrowsePathTarget Targets = 2;
+}
+
+message BrowseRequest
+{
+	optional ListOfBrowseDescription NodesToBrowse = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional uint32 RequestedMaxReferencesPerNode = 3;
+	optional ViewDescription View = 4;
+}
+
+message BrowseResult
+{
+	optional bytes ContinuationPoint = 1;
+	optional ListOfReferenceDescription References = 2;
+	optional StatusCode _StatusCode = 3;
+}
+
+message CallMethodRequest
+{
+	optional ListOfVariant InputArguments = 1;
+	optional NodeId MethodId = 2;
+	optional NodeId ObjectId = 3;
+}
+
+message CallMethodResult
+{
+	optional ListOfDiagnosticInfo InputArgumentDiagnosticInfos = 1;
+	optional ListOfStatusCode InputArgumentResults = 2;
+	optional ListOfVariant OutputArguments = 3;
+	optional StatusCode _StatusCode = 4;
+}
+
+message CancelRequest
+{
+	optional uint32 RequestHandle = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message CancelResponse
+{
+	optional uint32 CancelCount = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+}
+
+message CloseSecureChannelRequest
+{
+	optional RequestHeader _RequestHeader = 1;
+}
+
+message CloseSecureChannelResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+}
+
+message CloseSessionRequest
+{
+	optional bool DeleteSubscriptions = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message CloseSessionResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+}
+
+message ConnectionTransportDataType
+{
+	optional string AuthenticationProfileUri = 1;
+	optional ExtensionObject DiscoveryAddress = 2;
+	optional string ResourceUri = 3;
+}
+
+message ContentFilterElement
+{
+	optional ListOfExtensionObject FilterOperands = 1;
+	enum FilterOperator
+	{
+		FilterOperator_And_10 = 1;
+		FilterOperator_Between_8 = 2;
+		FilterOperator_BitwiseAnd_16 = 3;
+		FilterOperator_BitwiseOr_17 = 4;
+		FilterOperator_Cast_12 = 5;
+		FilterOperator_Equals_0 = 6;
+		FilterOperator_GreaterThanOrEqual_4 = 7;
+		FilterOperator_GreaterThan_2 = 8;
+		FilterOperator_InList_9 = 9;
+		FilterOperator_InView_13 = 10;
+		FilterOperator_IsNull_1 = 11;
+		FilterOperator_LessThanOrEqual_5 = 12;
+		FilterOperator_LessThan_3 = 13;
+		FilterOperator_Like_6 = 14;
+		FilterOperator_Not_7 = 15;
+		FilterOperator_OfType_14 = 16;
+		FilterOperator_Or_11 = 17;
+		FilterOperator_RelatedTo_15 = 18;
+	}
+	optional FilterOperator _FilterOperator = 2;
+}
+
+message ContentFilterElementResult
+{
+	optional ListOfDiagnosticInfo OperandDiagnosticInfos = 1;
+	optional ListOfStatusCode OperandStatusCodes = 2;
+	optional StatusCode _StatusCode = 3;
+}
+
+message CreateSessionRequest
+{
+	optional bytes ClientCertificate = 1;
+	optional ApplicationDescription ClientDescription = 2;
+	optional bytes ClientNonce = 3;
+	optional string EndpointUrl = 4;
+	optional uint32 MaxResponseMessageSize = 5;
+	optional RequestHeader _RequestHeader = 6;
+	optional double RequestedSessionTimeout = 7;
+	optional string ServerUri = 8;
+	optional string SessionName = 9;
+}
+
+message CreateSubscriptionRequest
+{
+	optional uint32 MaxNotificationsPerPublish = 1;
+	optional uint32 Priority = 2;
+	optional bool PublishingEnabled = 3;
+	optional RequestHeader _RequestHeader = 4;
+	optional uint32 RequestedLifetimeCount = 5;
+	optional uint32 RequestedMaxKeepAliveCount = 6;
+	optional double RequestedPublishingInterval = 7;
+}
+
+message CreateSubscriptionResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+	optional uint32 RevisedLifetimeCount = 2;
+	optional uint32 RevisedMaxKeepAliveCount = 3;
+	optional double RevisedPublishingInterval = 4;
+	optional uint32 SubscriptionId = 5;
+}
+
+message DataSetWriterDataType
+{
+	optional uint32 DataSetFieldContentMask = 1;
+	optional string DataSetName = 2;
+	optional uint32 DataSetWriterId = 3;
+	optional ListOfKeyValuePair DataSetWriterProperties = 4;
+	optional bool Enabled = 5;
+	optional uint32 KeyFrameCount = 6;
+	optional ExtensionObject MessageSettings = 7;
+	optional string Name = 8;
+	optional ExtensionObject TransportSettings = 9;
+}
+
+message DataTypeDefinition
+{
+	optional NodeId BaseDataType = 1;
+	optional NodeId DefaultEncodingId = 2;
+	optional ListOfStructureField Fields = 3;
+	enum StructureType
+	{
+		StructureType_StructureWithOptionalFields_1 = 1;
+		StructureType_StructureWithSubtypedValues_3 = 2;
+		StructureType_Structure_0 = 3;
+		StructureType_UnionWithSubtypedValues_4 = 4;
+		StructureType_Union_2 = 5;
+	}
+	optional StructureType _StructureType = 4;
+}
+
+message DataTypeNode
+{
+	optional uint32 AccessRestrictions = 1;
+	optional QualifiedName BrowseName = 2;
+	optional ExtensionObject DataTypeDefinition = 3;
+	optional LocalizedText Description = 4;
+	optional LocalizedText DisplayName = 5;
+	optional bool IsAbstract = 6;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 7;
+	optional NodeId _NodeId = 8;
+	optional ListOfReferenceNode References = 9;
+	optional ListOfRolePermissionType RolePermissions = 10;
+	optional ListOfRolePermissionType UserRolePermissions = 11;
+	optional uint32 UserWriteMask = 12;
+	optional uint32 WriteMask = 13;
+}
+
+message DatagramConnectionTransportDataType
+{
+	optional ExtensionObject DiscoveryAddress = 1;
+}
+
+message DeleteMonitoredItemsRequest
+{
+	optional ListOfUInt32 MonitoredItemIds = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional uint32 SubscriptionId = 3;
+}
+
+message DeleteMonitoredItemsResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message DeleteNodesRequest
+{
+	optional ListOfDeleteNodesItem NodesToDelete = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message DeleteNodesResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message DeleteReferencesRequest
+{
+	optional ListOfDeleteReferencesItem ReferencesToDelete = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message DeleteReferencesResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message DeleteSubscriptionsRequest
+{
+	optional RequestHeader _RequestHeader = 1;
+	optional ListOfUInt32 SubscriptionIds = 2;
+}
+
+message DeleteSubscriptionsResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfStatusCode Results = 3;
+}
+
+message EndpointDescription
+{
+	optional string EndpointUrl = 1;
+	optional uint32 SecurityLevel = 2;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 3;
+	optional string SecurityPolicyUri = 4;
+	optional ApplicationDescription Server = 5;
+	optional bytes ServerCertificate = 6;
+	optional string TransportProfileUri = 7;
+	optional ListOfUserTokenPolicy UserIdentityTokens = 8;
+}
+
+message EnumDefinition
+{
+	optional ListOfEnumField Fields = 1;
+}
+
+message EnumDescription
+{
+	optional uint32 BuiltInType = 1;
+	optional NodeId DataTypeId = 2;
+	optional EnumDefinition _EnumDefinition = 3;
+	optional QualifiedName Name = 4;
+}
+
+message EventFieldList
+{
+	optional uint32 ClientHandle = 1;
+	optional ListOfVariant EventFields = 2;
+}
+
+message FieldMetaData
+{
+	optional ListOfUInt32 ArrayDimensions = 1;
+	optional uint32 BuiltInType = 2;
+	optional Guid DataSetFieldId = 3;
+	optional NodeId DataType = 4;
+	optional LocalizedText Description = 5;
+	optional uint32 FieldFlags = 6;
+	optional uint32 MaxStringLength = 7;
+	optional string Name = 8;
+	optional ListOfKeyValuePair Properties = 9;
+	optional int32 ValueRank = 10;
+}
+
+message FilterOperand
+{
+	optional string Alias = 1;
+	optional uint32 AttributeId = 2;
+	optional RelativePath BrowsePath = 3;
+	optional uint32 Index = 4;
+	optional string IndexRange = 5;
+	optional NodeId _NodeId = 6;
+	optional NodeId TypeDefinitionId = 7;
+	optional Variant Value = 8;
+}
+
+message FindServersOnNetworkRequest
+{
+	optional uint32 MaxRecordsToReturn = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional ListOfString ServerCapabilityFilter = 3;
+	optional uint32 StartingRecordId = 4;
+}
+
+message FindServersOnNetworkResponse
+{
+	optional int64 LastCounterResetTime = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfServerOnNetwork Servers = 3;
+}
+
+message FindServersRequest
+{
+	optional string EndpointUrl = 1;
+	optional ListOfString LocaleIds = 2;
+	optional RequestHeader _RequestHeader = 3;
+	optional ListOfString ServerUris = 4;
+}
+
+message FindServersResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+	optional ListOfApplicationDescription Servers = 2;
+}
+
+message GenericAttributes
+{
+	optional ListOfGenericAttributeValue AttributeValues = 1;
+	optional LocalizedText Description = 2;
+	optional LocalizedText DisplayName = 3;
+	optional uint32 SpecifiedAttributes = 4;
+	optional uint32 UserWriteMask = 5;
+	optional uint32 WriteMask = 6;
+}
+
+message GetEndpointsRequest
+{
+	optional string EndpointUrl = 1;
+	optional ListOfString LocaleIds = 2;
+	optional ListOfString ProfileUris = 3;
+	optional RequestHeader _RequestHeader = 4;
+}
+
+message HistoryData
+{
+	optional ListOfDataValue DataValues = 1;
+	optional ListOfModificationInfo ModificationInfos = 2;
+}
+
+message HistoryEventFieldList
+{
+	optional ListOfVariant EventFields = 1;
+}
+
+message HistoryModifiedData
+{
+	optional ListOfDataValue DataValues = 1;
+	optional ListOfModificationInfo ModificationInfos = 2;
+}
+
+message HistoryReadRequest
+{
+	optional ExtensionObject HistoryReadDetails = 1;
+	optional ListOfHistoryReadValueId NodesToRead = 2;
+	optional bool ReleaseContinuationPoints = 3;
+	optional RequestHeader _RequestHeader = 4;
+	enum TimestampsToReturn
+	{
+		TimestampsToReturn_Both_2 = 1;
+		TimestampsToReturn_Invalid_4 = 2;
+		TimestampsToReturn_Neither_3 = 3;
+		TimestampsToReturn_Server_1 = 4;
+		TimestampsToReturn_Source_0 = 5;
+	}
+	optional TimestampsToReturn _TimestampsToReturn = 5;
+}
+
+message HistoryReadResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfHistoryReadResult Results = 3;
+}
+
+message HistoryUpdateRequest
+{
+	optional ListOfExtensionObject HistoryUpdateDetails = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message HistoryUpdateResult
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ListOfStatusCode OperationResults = 2;
+	optional StatusCode _StatusCode = 3;
+}
+
+message InstanceNode
+{
+	optional uint32 AccessLevel = 1;
+	optional uint32 AccessLevelEx = 2;
+	optional uint32 AccessRestrictions = 3;
+	optional ListOfUInt32 ArrayDimensions = 4;
+	optional QualifiedName BrowseName = 5;
+	optional bool ContainsNoLoops = 6;
+	optional NodeId DataType = 7;
+	optional LocalizedText Description = 8;
+	optional LocalizedText DisplayName = 9;
+	optional uint32 EventNotifier = 10;
+	optional bool Executable = 11;
+	optional bool Historizing = 12;
+	optional double MinimumSamplingInterval = 13;
+	enum NodeClass
+	{
+		NodeClass_DataType_64 = 1;
+		NodeClass_Method_4 = 2;
+		NodeClass_ObjectType_8 = 3;
+		NodeClass_Object_1 = 4;
+		NodeClass_ReferenceType_32 = 5;
+		NodeClass_Unspecified_0 = 6;
+		NodeClass_VariableType_16 = 7;
+		NodeClass_Variable_2 = 8;
+		NodeClass_View_128 = 9;
+	}
+	optional NodeClass _NodeClass = 14;
+	optional NodeId _NodeId = 15;
+	optional ListOfReferenceNode References = 16;
+	optional ListOfRolePermissionType RolePermissions = 17;
+	optional uint32 UserAccessLevel = 18;
+	optional bool UserExecutable = 19;
+	optional ListOfRolePermissionType UserRolePermissions = 20;
+	optional uint32 UserWriteMask = 21;
+	optional Variant Value = 22;
+	optional int32 ValueRank = 23;
+	optional uint32 WriteMask = 24;
+}
+
+message ListOfAddNodesItem
+{
+	repeated AddNodesItem _AddNodesItem = 1;
+}
+
+message ListOfBrowsePath
+{
+	repeated BrowsePath _BrowsePath = 1;
+}
+
+message ListOfBrowsePathResult
+{
+	repeated BrowsePathResult _BrowsePathResult = 1;
+}
+
+message ListOfBrowseResult
+{
+	repeated BrowseResult _BrowseResult = 1;
+}
+
+message ListOfCallMethodRequest
+{
+	repeated CallMethodRequest _CallMethodRequest = 1;
+}
+
+message ListOfCallMethodResult
+{
+	repeated CallMethodResult _CallMethodResult = 1;
+}
+
+message ListOfConnectionTransportDataType
+{
+	repeated ConnectionTransportDataType _ConnectionTransportDataType = 1;
+}
+
+message ListOfContentFilterElement
+{
+	repeated ContentFilterElement _ContentFilterElement = 1;
+}
+
+message ListOfContentFilterElementResult
+{
+	repeated ContentFilterElementResult _ContentFilterElementResult = 1;
+}
+
+message ListOfDataSetWriterDataType
+{
+	repeated DataSetWriterDataType _DataSetWriterDataType = 1;
+}
+
+message ListOfDataTypeDefinition
+{
+	repeated DataTypeDefinition _DataTypeDefinition = 1;
+}
+
+message ListOfDatagramConnectionTransportDataType
+{
+	repeated DatagramConnectionTransportDataType _DatagramConnectionTransportDataType = 1;
+}
+
+message ListOfEndpointDescription
+{
+	repeated EndpointDescription _EndpointDescription = 1;
+}
+
+message ListOfEnumDefinition
+{
+	repeated EnumDefinition _EnumDefinition = 1;
+}
+
+message ListOfEnumDescription
+{
+	repeated EnumDescription _EnumDescription = 1;
+}
+
+message ListOfEventFieldList
+{
+	repeated EventFieldList _EventFieldList = 1;
+}
+
+message ListOfFieldMetaData
+{
+	repeated FieldMetaData _FieldMetaData = 1;
+}
+
+message ListOfHistoryEventFieldList
+{
+	repeated HistoryEventFieldList _HistoryEventFieldList = 1;
+}
+
+message ListOfHistoryUpdateResult
+{
+	repeated HistoryUpdateResult _HistoryUpdateResult = 1;
+}
+
+message ListOfModelChangeStructureDataType
+{
+	repeated ModelChangeStructureDataType _ModelChangeStructureDataType = 1;
+}
+
+message ListOfMonitoredItemCreateResult
+{
+	repeated MonitoredItemCreateResult _MonitoredItemCreateResult = 1;
+}
+
+message ListOfMonitoredItemModifyResult
+{
+	repeated MonitoredItemModifyResult _MonitoredItemModifyResult = 1;
+}
+
+message ListOfMonitoredItemNotification
+{
+	repeated MonitoredItemNotification _MonitoredItemNotification = 1;
+}
+
+message ListOfNetworkGroupDataType
+{
+	repeated NetworkGroupDataType _NetworkGroupDataType = 1;
+}
+
+message ListOfNode
+{
+	repeated Node _Node = 1;
+}
+
+message ListOfNodeReference
+{
+	repeated NodeReference _NodeReference = 1;
+}
+
+message ListOfParsingResult
+{
+	repeated ParsingResult _ParsingResult = 1;
+}
+
+message ListOfPublishedVariableDataType
+{
+	repeated PublishedVariableDataType _PublishedVariableDataType = 1;
+}
+
+message ListOfQueryDataSet
+{
+	repeated QueryDataSet _QueryDataSet = 1;
+}
+
+message ListOfRegisteredServer
+{
+	repeated RegisteredServer _RegisteredServer = 1;
+}
+
+message ListOfSessionDiagnosticsDataType
+{
+	repeated SessionDiagnosticsDataType _SessionDiagnosticsDataType = 1;
+}
+
+message ListOfSimpleAttributeOperand
+{
+	repeated SimpleAttributeOperand _SimpleAttributeOperand = 1;
+}
+
+message ListOfStatusResult
+{
+	repeated StatusResult _StatusResult = 1;
+}
+
+message ListOfStructureDefinition
+{
+	repeated StructureDefinition _StructureDefinition = 1;
+}
+
+message ListOfStructureDescription
+{
+	repeated StructureDescription _StructureDescription = 1;
+}
+
+message ListOfSubscribedDataSetDataType
+{
+	repeated SubscribedDataSetDataType _SubscribedDataSetDataType = 1;
+}
+
+message ListOfSubscribedDataSetMirrorDataType
+{
+	repeated SubscribedDataSetMirrorDataType _SubscribedDataSetMirrorDataType = 1;
+}
+
+message ListOfTargetVariablesDataType
+{
+	repeated TargetVariablesDataType _TargetVariablesDataType = 1;
+}
+
+message ListOfThreeDFrame
+{
+	repeated ThreeDFrame _ThreeDFrame = 1;
+}
+
+message ListOfWriteValue
+{
+	repeated WriteValue _WriteValue = 1;
+}
+
+message ModifyMonitoredItemsResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfMonitoredItemModifyResult Results = 3;
+}
+
+message ModifySubscriptionRequest
+{
+	optional uint32 MaxNotificationsPerPublish = 1;
+	optional uint32 Priority = 2;
+	optional RequestHeader _RequestHeader = 3;
+	optional uint32 RequestedLifetimeCount = 4;
+	optional uint32 RequestedMaxKeepAliveCount = 5;
+	optional double RequestedPublishingInterval = 6;
+	optional uint32 SubscriptionId = 7;
+}
+
+message ModifySubscriptionResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+	optional uint32 RevisedLifetimeCount = 2;
+	optional uint32 RevisedMaxKeepAliveCount = 3;
+	optional double RevisedPublishingInterval = 4;
+}
+
+message MonitoredItemCreateRequest
+{
+	optional ReadValueId ItemToMonitor = 1;
+	enum MonitoringMode
+	{
+		MonitoringMode_Disabled_0 = 1;
+		MonitoringMode_Reporting_2 = 2;
+		MonitoringMode_Sampling_1 = 3;
+	}
+	optional MonitoringMode _MonitoringMode = 2;
+	optional MonitoringParameters RequestedParameters = 3;
+}
+
+message MonitoredItemModifyRequest
+{
+	optional uint32 MonitoredItemId = 1;
+	optional MonitoringParameters RequestedParameters = 2;
+}
+
+message NotificationData
+{
+	optional DiagnosticInfo _DiagnosticInfo = 1;
+	optional ListOfDiagnosticInfo DiagnosticInfos = 2;
+	optional ListOfEventFieldList Events = 3;
+	optional ListOfMonitoredItemNotification MonitoredItems = 4;
+	optional StatusCode Status = 5;
+}
+
+message OpenSecureChannelRequest
+{
+	optional bytes ClientNonce = 1;
+	optional uint32 ClientProtocolVersion = 2;
+	optional RequestHeader _RequestHeader = 3;
+	enum SecurityTokenRequestType
+	{
+		SecurityTokenRequestType_Issue_0 = 1;
+		SecurityTokenRequestType_Renew_1 = 2;
+	}
+	optional SecurityTokenRequestType RequestType = 4;
+	optional uint32 RequestedLifetime = 5;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 6;
+}
+
+message OpenSecureChannelResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+	optional ChannelSecurityToken SecurityToken = 2;
+	optional bytes ServerNonce = 3;
+	optional uint32 ServerProtocolVersion = 4;
+}
+
+message ProgramDiagnosticDataType
+{
+	optional string CreateClientName = 1;
+	optional NodeId CreateSessionId = 2;
+	optional int64 InvocationCreationTime = 3;
+	optional string LastMethodCall = 4;
+	optional int64 LastMethodCallTime = 5;
+	optional ListOfArgument LastMethodInputArguments = 6;
+	optional ListOfArgument LastMethodOutputArguments = 7;
+	optional StatusResult LastMethodReturnStatus = 8;
+	optional NodeId LastMethodSessionId = 9;
+	optional int64 LastTransitionTime = 10;
+}
+
+message PublishRequest
+{
+	optional RequestHeader _RequestHeader = 1;
+	optional ListOfSubscriptionAcknowledgement SubscriptionAcknowledgements = 2;
+}
+
+message PublishResponse
+{
+	optional ListOfUInt32 AvailableSequenceNumbers = 1;
+	optional ListOfDiagnosticInfo DiagnosticInfos = 2;
+	optional bool MoreNotifications = 3;
+	optional NotificationMessage _NotificationMessage = 4;
+	optional ResponseHeader _ResponseHeader = 5;
+	optional ListOfStatusCode Results = 6;
+	optional uint32 SubscriptionId = 7;
+}
+
+message PublishedDataItemsDataType
+{
+	optional ListOfPublishedVariableDataType PublishedData = 1;
+}
+
+message QueryDataDescription
+{
+	optional uint32 AttributeId = 1;
+	optional string IndexRange = 2;
+	optional RelativePath _RelativePath = 3;
+}
+
+message QueryNextRequest
+{
+	optional bytes ContinuationPoint = 1;
+	optional bool ReleaseContinuationPoint = 2;
+	optional RequestHeader _RequestHeader = 3;
+}
+
+message QueryNextResponse
+{
+	optional ListOfQueryDataSet QueryDataSets = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional bytes RevisedContinuationPoint = 3;
+}
+
+message ReadRequest
+{
+	optional double MaxAge = 1;
+	optional ListOfReadValueId NodesToRead = 2;
+	optional RequestHeader _RequestHeader = 3;
+	enum TimestampsToReturn
+	{
+		TimestampsToReturn_Both_2 = 1;
+		TimestampsToReturn_Invalid_4 = 2;
+		TimestampsToReturn_Neither_3 = 3;
+		TimestampsToReturn_Server_1 = 4;
+		TimestampsToReturn_Source_0 = 5;
+	}
+	optional TimestampsToReturn _TimestampsToReturn = 4;
+}
+
+message ReadResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfDataValue Results = 3;
+}
+
+message RegisterNodesRequest
+{
+	optional ListOfNodeId NodesToRegister = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message RegisterNodesResponse
+{
+	optional ListOfNodeId RegisteredNodeIds = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+}
+
+message RegisterServer2Request
+{
+	optional ListOfExtensionObject DiscoveryConfiguration = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional RegisteredServer Server = 3;
+}
+
+message RegisterServer2Response
+{
+	optional ListOfStatusCode ConfigurationResults = 1;
+	optional ListOfDiagnosticInfo DiagnosticInfos = 2;
+	optional ResponseHeader _ResponseHeader = 3;
+}
+
+message RegisterServerRequest
+{
+	optional RequestHeader _RequestHeader = 1;
+	optional RegisteredServer Server = 2;
+}
+
+message RegisterServerResponse
+{
+	optional ResponseHeader _ResponseHeader = 1;
+}
+
+message RepublishRequest
+{
+	optional RequestHeader _RequestHeader = 1;
+	optional uint32 RetransmitSequenceNumber = 2;
+	optional uint32 SubscriptionId = 3;
+}
+
+message RepublishResponse
+{
+	optional NotificationMessage _NotificationMessage = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+}
+
+message TranslateBrowsePathsToNodeIdsRequest
+{
+	optional ListOfBrowsePath BrowsePaths = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message TranslateBrowsePathsToNodeIdsResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfBrowsePathResult Results = 3;
+}
+
+message UABinaryFileDataType
+{
+	optional Variant Body = 1;
+	optional ListOfEnumDescription EnumDataTypes = 2;
+	optional ListOfKeyValuePair FileHeader = 3;
+	optional ListOfString Namespaces = 4;
+	optional string SchemaLocation = 5;
+	optional ListOfSimpleTypeDescription SimpleDataTypes = 6;
+	optional ListOfStructureDescription StructureDataTypes = 7;
+}
+
+message WriteRequest
+{
+	optional ListOfWriteValue NodesToWrite = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message WriterGroupDataType
+{
+	optional ListOfDataSetWriterDataType DataSetWriters = 1;
+	optional bool Enabled = 2;
+	optional ListOfKeyValuePair GroupProperties = 3;
+	optional string HeaderLayoutUri = 4;
+	optional double KeepAliveTime = 5;
+	optional ListOfString LocaleIds = 6;
+	optional uint32 MaxNetworkMessageSize = 7;
+	optional ExtensionObject MessageSettings = 8;
+	optional string Name = 9;
+	optional uint32 Priority = 10;
+	optional double PublishingInterval = 11;
+	optional string SecurityGroupId = 12;
+	optional ListOfEndpointDescription SecurityKeyServices = 13;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 14;
+	optional ExtensionObject TransportSettings = 15;
+	optional uint32 WriterGroupId = 16;
+}
+
+message AddNodesRequest
+{
+	optional ListOfAddNodesItem NodesToAdd = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message BrowseNextResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfBrowseResult Results = 3;
+}
+
+message BrowseResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfBrowseResult Results = 3;
+}
+
+message CallRequest
+{
+	optional ListOfCallMethodRequest MethodsToCall = 1;
+	optional RequestHeader _RequestHeader = 2;
+}
+
+message CallResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfCallMethodResult Results = 3;
+}
+
+message ContentFilter
+{
+	optional ListOfContentFilterElement Elements = 1;
+}
+
+message ContentFilterResult
+{
+	optional ListOfDiagnosticInfo ElementDiagnosticInfos = 1;
+	optional ListOfContentFilterElementResult ElementResults = 2;
+}
+
+message CreateMonitoredItemsResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfMonitoredItemCreateResult Results = 3;
+}
+
+message CreateSessionResponse
+{
+	optional NodeId AuthenticationToken = 1;
+	optional uint32 MaxRequestMessageSize = 2;
+	optional ResponseHeader _ResponseHeader = 3;
+	optional double RevisedSessionTimeout = 4;
+	optional bytes ServerCertificate = 5;
+	optional ListOfEndpointDescription ServerEndpoints = 6;
+	optional bytes ServerNonce = 7;
+	optional SignatureData ServerSignature = 8;
+	optional ListOfSignedSoftwareCertificate ServerSoftwareCertificates = 9;
+	optional NodeId SessionId = 10;
+}
+
+message DataChangeNotification
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ListOfMonitoredItemNotification MonitoredItems = 2;
+}
+
+message DataSetMetaDataType
+{
+	optional ConfigurationVersionDataType ConfigurationVersion = 1;
+	optional Guid DataSetClassId = 2;
+	optional LocalizedText Description = 3;
+	optional ListOfEnumDescription EnumDataTypes = 4;
+	optional ListOfFieldMetaData Fields = 5;
+	optional string Name = 6;
+	optional ListOfString Namespaces = 7;
+	optional ListOfSimpleTypeDescription SimpleDataTypes = 8;
+	optional ListOfStructureDescription StructureDataTypes = 9;
+}
+
+message DataSetReaderDataType
+{
+	optional uint32 DataSetFieldContentMask = 1;
+	optional DataSetMetaDataType DataSetMetaData = 2;
+	optional ListOfKeyValuePair DataSetReaderProperties = 3;
+	optional uint32 DataSetWriterId = 4;
+	optional bool Enabled = 5;
+	optional string HeaderLayoutUri = 6;
+	optional uint32 KeyFrameCount = 7;
+	optional double MessageReceiveTimeout = 8;
+	optional ExtensionObject MessageSettings = 9;
+	optional string Name = 10;
+	optional Variant PublisherId = 11;
+	optional string SecurityGroupId = 12;
+	optional ListOfEndpointDescription SecurityKeyServices = 13;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 14;
+	optional ExtensionObject SubscribedDataSet = 15;
+	optional ExtensionObject TransportSettings = 16;
+	optional uint32 WriterGroupId = 17;
+}
+
+message DataTypeDescription
+{
+	optional NodeId BaseDataType = 1;
+	optional uint32 BuiltInType = 2;
+	optional NodeId DataTypeId = 3;
+	optional EnumDefinition _EnumDefinition = 4;
+	optional QualifiedName Name = 5;
+	optional StructureDefinition _StructureDefinition = 6;
+}
+
+message DataTypeSchemaHeader
+{
+	optional Variant Body = 1;
+	optional ConfigurationVersionDataType ConfigurationVersion = 2;
+	optional Guid DataSetClassId = 3;
+	optional LocalizedText Description = 4;
+	optional ListOfEnumDescription EnumDataTypes = 5;
+	optional ListOfFieldMetaData Fields = 6;
+	optional ListOfKeyValuePair FileHeader = 7;
+	optional string Name = 8;
+	optional ListOfString Namespaces = 9;
+	optional string SchemaLocation = 10;
+	optional ListOfSimpleTypeDescription SimpleDataTypes = 11;
+	optional ListOfStructureDescription StructureDataTypes = 12;
+}
+
+message EventFilter
+{
+	optional ListOfSimpleAttributeOperand SelectClauses = 1;
+	optional ContentFilter WhereClause = 2;
+}
+
+message EventFilterResult
+{
+	optional ListOfDiagnosticInfo SelectClauseDiagnosticInfos = 1;
+	optional ListOfStatusCode SelectClauseResults = 2;
+	optional ContentFilterResult WhereClauseResult = 3;
+}
+
+message EventNotificationList
+{
+	optional ListOfEventFieldList Events = 1;
+}
+
+message GetEndpointsResponse
+{
+	optional ListOfEndpointDescription Endpoints = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+}
+
+message HistoryEvent
+{
+	optional ListOfHistoryEventFieldList Events = 1;
+}
+
+message HistoryReadDetails
+{
+	optional AggregateConfiguration _AggregateConfiguration = 1;
+	optional ListOfNodeId AggregateType = 2;
+	optional int64 EndTime = 3;
+	optional EventFilter Filter = 4;
+	optional bool IsReadModified = 5;
+	optional uint32 NumValuesPerNode = 6;
+	optional double ProcessingInterval = 7;
+	optional ListOfDateTime ReqTimes = 8;
+	optional bool ReturnBounds = 9;
+	optional int64 StartTime = 10;
+	optional bool UseSimpleBounds = 11;
+}
+
+message HistoryUpdateDetails
+{
+	optional int64 EndTime = 1;
+	optional ListOfHistoryEventFieldList EventData = 2;
+	optional ListOfByteString EventIds = 3;
+	optional EventFilter Filter = 4;
+	optional bool IsDeleteModified = 5;
+	optional NodeId _NodeId = 6;
+	enum PerformUpdateType
+	{
+		PerformUpdateType_Insert_1 = 1;
+		PerformUpdateType_Remove_4 = 2;
+		PerformUpdateType_Replace_2 = 3;
+		PerformUpdateType_Update_3 = 4;
+	}
+	optional PerformUpdateType PerformInsertReplace = 7;
+	optional ListOfDateTime ReqTimes = 8;
+	optional int64 StartTime = 9;
+	optional ListOfDataValue UpdateValues = 10;
+}
+
+message HistoryUpdateResponse
+{
+	optional ListOfDiagnosticInfo DiagnosticInfos = 1;
+	optional ResponseHeader _ResponseHeader = 2;
+	optional ListOfHistoryUpdateResult Results = 3;
+}
+
+message ListOfContentFilter
+{
+	repeated ContentFilter _ContentFilter = 1;
+}
+
+message ListOfDataSetMetaDataType
+{
+	repeated DataSetMetaDataType _DataSetMetaDataType = 1;
+}
+
+message ListOfDataSetReaderDataType
+{
+	repeated DataSetReaderDataType _DataSetReaderDataType = 1;
+}
+
+message ListOfDataTypeDescription
+{
+	repeated DataTypeDescription _DataTypeDescription = 1;
+}
+
+message ListOfDataTypeSchemaHeader
+{
+	repeated DataTypeSchemaHeader _DataTypeSchemaHeader = 1;
+}
+
+message ListOfMonitoredItemCreateRequest
+{
+	repeated MonitoredItemCreateRequest _MonitoredItemCreateRequest = 1;
+}
+
+message ListOfMonitoredItemModifyRequest
+{
+	repeated MonitoredItemModifyRequest _MonitoredItemModifyRequest = 1;
+}
+
+message ListOfPublishedDataItemsDataType
+{
+	repeated PublishedDataItemsDataType _PublishedDataItemsDataType = 1;
+}
+
+message ListOfQueryDataDescription
+{
+	repeated QueryDataDescription _QueryDataDescription = 1;
+}
+
+message ListOfUABinaryFileDataType
+{
+	repeated UABinaryFileDataType _UABinaryFileDataType = 1;
+}
+
+message ListOfWriterGroupDataType
+{
+	repeated WriterGroupDataType _WriterGroupDataType = 1;
+}
+
+message ModifyMonitoredItemsRequest
+{
+	optional ListOfMonitoredItemModifyRequest ItemsToModify = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional uint32 SubscriptionId = 3;
+	enum TimestampsToReturn
+	{
+		TimestampsToReturn_Both_2 = 1;
+		TimestampsToReturn_Invalid_4 = 2;
+		TimestampsToReturn_Neither_3 = 3;
+		TimestampsToReturn_Server_1 = 4;
+		TimestampsToReturn_Source_0 = 5;
+	}
+	optional TimestampsToReturn _TimestampsToReturn = 4;
+}
+
+message MonitoringFilter
+{
+	optional AggregateConfiguration _AggregateConfiguration = 1;
+	optional NodeId AggregateType = 2;
+	optional uint32 DeadbandType = 3;
+	optional double DeadbandValue = 4;
+	optional double ProcessingInterval = 5;
+	optional ListOfSimpleAttributeOperand SelectClauses = 6;
+	optional int64 StartTime = 7;
+	enum DataChangeTrigger
+	{
+		DataChangeTrigger_StatusValueTimestamp_2 = 1;
+		DataChangeTrigger_StatusValue_1 = 2;
+		DataChangeTrigger_Status_0 = 3;
+	}
+	optional DataChangeTrigger Trigger = 8;
+	optional ContentFilter WhereClause = 9;
+}
+
+message MonitoringFilterResult
+{
+	optional AggregateConfiguration RevisedAggregateConfiguration = 1;
+	optional double RevisedProcessingInterval = 2;
+	optional int64 RevisedStartTime = 3;
+	optional ListOfDiagnosticInfo SelectClauseDiagnosticInfos = 4;
+	optional ListOfStatusCode SelectClauseResults = 5;
+	optional ContentFilterResult WhereClauseResult = 6;
+}
+
+message NodeTypeDescription
+{
+	optional ListOfQueryDataDescription DataToReturn = 1;
+	optional bool IncludeSubTypes = 2;
+	optional ExpandedNodeId TypeDefinitionNode = 3;
+}
+
+message PubSubGroupDataType
+{
+	optional ListOfDataSetReaderDataType DataSetReaders = 1;
+	optional ListOfDataSetWriterDataType DataSetWriters = 2;
+	optional bool Enabled = 3;
+	optional ListOfKeyValuePair GroupProperties = 4;
+	optional string HeaderLayoutUri = 5;
+	optional double KeepAliveTime = 6;
+	optional ListOfString LocaleIds = 7;
+	optional uint32 MaxNetworkMessageSize = 8;
+	optional ExtensionObject MessageSettings = 9;
+	optional string Name = 10;
+	optional uint32 Priority = 11;
+	optional double PublishingInterval = 12;
+	optional string SecurityGroupId = 13;
+	optional ListOfEndpointDescription SecurityKeyServices = 14;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 15;
+	optional ExtensionObject TransportSettings = 16;
+	optional uint32 WriterGroupId = 17;
+}
+
+message PublishedDataSetDataType
+{
+	optional ListOfString DataSetFolder = 1;
+	optional DataSetMetaDataType DataSetMetaData = 2;
+	optional ExtensionObject DataSetSource = 3;
+	optional ListOfKeyValuePair ExtensionFields = 4;
+	optional string Name = 5;
+}
+
+message PublishedDataSetSourceDataType
+{
+	optional NodeId EventNotifier = 1;
+	optional ContentFilter Filter = 2;
+	optional ListOfPublishedVariableDataType PublishedData = 3;
+	optional ListOfSimpleAttributeOperand SelectedFields = 4;
+}
+
+message PublishedEventsDataType
+{
+	optional NodeId EventNotifier = 1;
+	optional ContentFilter Filter = 2;
+	optional ListOfSimpleAttributeOperand SelectedFields = 3;
+}
+
+message QueryFirstResponse
+{
+	optional bytes ContinuationPoint = 1;
+	optional ListOfDiagnosticInfo DiagnosticInfos = 2;
+	optional ContentFilterResult FilterResult = 3;
+	optional ListOfParsingResult ParsingResults = 4;
+	optional ListOfQueryDataSet QueryDataSets = 5;
+	optional ResponseHeader _ResponseHeader = 6;
+}
+
+message ReadEventDetails
+{
+	optional int64 EndTime = 1;
+	optional EventFilter Filter = 2;
+	optional uint32 NumValuesPerNode = 3;
+	optional int64 StartTime = 4;
+}
+
+message ReaderGroupDataType
+{
+	optional ListOfDataSetReaderDataType DataSetReaders = 1;
+	optional bool Enabled = 2;
+	optional ListOfKeyValuePair GroupProperties = 3;
+	optional uint32 MaxNetworkMessageSize = 4;
+	optional ExtensionObject MessageSettings = 5;
+	optional string Name = 6;
+	optional string SecurityGroupId = 7;
+	optional ListOfEndpointDescription SecurityKeyServices = 8;
+	enum MessageSecurityMode
+	{
+		MessageSecurityMode_Invalid_0 = 1;
+		MessageSecurityMode_None_1 = 2;
+		MessageSecurityMode_SignAndEncrypt_3 = 3;
+		MessageSecurityMode_Sign_2 = 4;
+	}
+	optional MessageSecurityMode SecurityMode = 9;
+	optional ExtensionObject TransportSettings = 10;
+}
+
+message UpdateEventDetails
+{
+	optional ListOfHistoryEventFieldList EventData = 1;
+	optional EventFilter Filter = 2;
+	optional NodeId _NodeId = 3;
+	enum PerformUpdateType
+	{
+		PerformUpdateType_Insert_1 = 1;
+		PerformUpdateType_Remove_4 = 2;
+		PerformUpdateType_Replace_2 = 3;
+		PerformUpdateType_Update_3 = 4;
+	}
+	optional PerformUpdateType PerformInsertReplace = 4;
+}
+
+message CreateMonitoredItemsRequest
+{
+	optional ListOfMonitoredItemCreateRequest ItemsToCreate = 1;
+	optional RequestHeader _RequestHeader = 2;
+	optional uint32 SubscriptionId = 3;
+	enum TimestampsToReturn
+	{
+		TimestampsToReturn_Both_2 = 1;
+		TimestampsToReturn_Invalid_4 = 2;
+		TimestampsToReturn_Neither_3 = 3;
+		TimestampsToReturn_Server_1 = 4;
+		TimestampsToReturn_Source_0 = 5;
+	}
+	optional TimestampsToReturn _TimestampsToReturn = 4;
+}
+
+message ListOfNodeTypeDescription
+{
+	repeated NodeTypeDescription _NodeTypeDescription = 1;
+}
+
+message ListOfPubSubGroupDataType
+{
+	repeated PubSubGroupDataType _PubSubGroupDataType = 1;
+}
+
+message ListOfPublishedDataSetDataType
+{
+	repeated PublishedDataSetDataType _PublishedDataSetDataType = 1;
+}
+
+message ListOfPublishedDataSetSourceDataType
+{
+	repeated PublishedDataSetSourceDataType _PublishedDataSetSourceDataType = 1;
+}
+
+message ListOfPublishedEventsDataType
+{
+	repeated PublishedEventsDataType _PublishedEventsDataType = 1;
+}
+
+message ListOfReaderGroupDataType
+{
+	repeated ReaderGroupDataType _ReaderGroupDataType = 1;
+}
+
+message PubSubConnectionDataType
+{
+	optional ExtensionObject Address = 1;
+	optional ListOfKeyValuePair ConnectionProperties = 2;
+	optional bool Enabled = 3;
+	optional string Name = 4;
+	optional Variant PublisherId = 5;
+	optional ListOfReaderGroupDataType ReaderGroups = 6;
+	optional string TransportProfileUri = 7;
+	optional ExtensionObject TransportSettings = 8;
+	optional ListOfWriterGroupDataType WriterGroups = 9;
+}
+
+message QueryFirstRequest
+{
+	optional ContentFilter Filter = 1;
+	optional uint32 MaxDataSetsToReturn = 2;
+	optional uint32 MaxReferencesToReturn = 3;
+	optional ListOfNodeTypeDescription NodeTypes = 4;
+	optional RequestHeader _RequestHeader = 5;
+	optional ViewDescription View = 6;
+}
+
+message ListOfPubSubConnectionDataType
+{
+	repeated PubSubConnectionDataType _PubSubConnectionDataType = 1;
+}
+
+message PubSubConfigurationDataType
+{
+	optional ListOfPubSubConnectionDataType Connections = 1;
+	optional bool Enabled = 2;
+	optional ListOfPublishedDataSetDataType PublishedDataSets = 3;
+}
+
+message ListOfPubSubConfigurationDataType
+{
+	repeated PubSubConfigurationDataType _PubSubConfigurationDataType = 1;
+}
+
