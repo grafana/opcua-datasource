@@ -14,4 +14,7 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd "$DIR"
 
-protoc -I. ./backend.proto --csharp_out=${DST_DIR_CSHARP} --go_out=${DST_DIR_GOLANG} 
+protoc -I ./ ./backend.proto --csharp_out=${DST_DIR_CSHARP} --grpc_out=${DST_DIR_CSHARP} --plugin=protoc-gen-grpc=/usr/bin/grpc_csharp_plugin
+protoc -I ./ ./backend.proto --go_out=${DST_DIR_GOLANG} --plugin=protoc-gen-grpc=/usr/local/bin/protoc-gen-go
+
+

@@ -1,7 +1,7 @@
 syntax = "proto3";
-package opcv1;
+package pluginv2;
 
-option go_package = "./;opcv1";
+option go_package = "./;pluginv2";
 
 //-----------------------------------------------
 // Common
@@ -123,35 +123,15 @@ message QueryDataRequest {
 
 message QueryDataResponse {
   // Map of refId to response
-   map<string,DataResponse> responses = 1;
-} 
-
-message DataValue
-{
-  enum ValueType {
-    BOOL = 0;
-    BYTE = 1;
-    UINT16 = 2;
-    INT16 = 3;
-    UINT32 = 4;
-    INT32 = 5;
-    UINT64 = 6;
-    INT64 = 7;
-    FLOAT = 8;
-    DOUBLE = 9;
-    STRING = 10;
-  }
-	optional uint32 ServerMillisecondEpoch = 1;
-	optional uint32 SourceMillisecondEpoch = 2;
-	optional uint32 StatusCode = 3;
-  optional ValueType Type = 4;
-	optional bytes Value = 5;
+  map<string,DataResponse> responses = 1;
 }
 
 message DataResponse {
-
-  repeated DataValue DataValues = 1;
+  // Arrow encoded DataFrames
+  // Frame has its own meta, warnings, and repeats refId
+  repeated bytes frames = 1;
   string error = 2;
+  bytes jsonMeta = 3; // Warning: Current ignored by frontend. Would be for metadata about the query.
 }
 
 //-----------------------------------------------

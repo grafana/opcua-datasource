@@ -10,7 +10,7 @@ using Google.Protobuf;
 using Grpc.Core;
 using Prediktor.UA.Client;
 using Opc.Ua.Client;
-using Opcv1;
+using Pluginv2;
 using Opc.Ua;
 using Grpc.Core.Logging;
 
