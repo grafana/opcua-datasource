@@ -32,16 +32,16 @@
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
     <PackageReference Include="Apache.Arrow" Version="11.0.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.22.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.22.3" />
     <PackageReference Include="Grpc" Version="2.46.6" />
-    <PackageReference Include="Grpc.Tools" Version="2.52.0" PrivateAssets="All" />
+    <PackageReference Include="Grpc.Tools" Version="2.54.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="6.1.0" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.60" />
-    <PackageReference Include="Prediktor.UA.Client" Version="1.0.16" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.86" />
+    <PackageReference Include="Prediktor.UA.Client" Version="1.0.17" />
     <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
