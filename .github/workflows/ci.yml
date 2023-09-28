@@ -56,7 +56,7 @@ jobs:
 
       - name: Build backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: bitnami/dotnet-sdk:7.0.401-debian-11-r14
+        runs-on: bitnami/dotnet-sdk:7.0.401-debian-11-r14
         run: |
           make linux
           make windows
