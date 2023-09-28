@@ -16,7 +16,7 @@ export const ConfigEditor: FC<Props> = (props: Props) => {
       <DataSourceHttpSettings
         defaultUrl={'opc.tcp://nodename.host.net:62550/Path/OpcUAServer'}
         dataSourceConfig={options}
-        onChange={(o) => onOptionsChange({ ...o, ...options })}
+        onChange={(o) => onOptionsChange(o)}
       />
       <Label description={description}>OPC Timestamp Source</Label>
       <RadioButtonGroup
