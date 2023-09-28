@@ -56,14 +56,14 @@ export default class TreeNode extends Component<Props, State> {
   };
 
   onToggle = () => {
-    var isOpen = this.state.isOpen;
+    let isOpen = this.state.isOpen;
     this.setState({ isOpen: !isOpen });
   };
 
   getBrowsePath = (): QualifiedName[] => {
-    var browsePaths: QualifiedName[] = [];
+    let browsePaths: QualifiedName[] = [];
     browsePaths.push(this.props.node.browseName);
-    var parentNode = this.props.parentNode;
+    let parentNode = this.props.parentNode;
     while (parentNode != null && typeof parentNode !== 'undefined') {
       browsePaths.push(parentNode.props.node.browseName);
       parentNode = parentNode.props.parentNode;
@@ -110,7 +110,7 @@ export default class TreeNode extends Component<Props, State> {
       this.setState({ children: [], fetchedChildren: false });
     }
 
-    var divStyle = this.getDivStyle() as React.CSSProperties;
+    let divStyle = this.getDivStyle() as React.CSSProperties;
 
     return (
       <>

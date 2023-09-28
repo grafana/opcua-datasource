@@ -120,7 +120,6 @@ export class BrowserTable extends Component<Props, State> {
         <div>
           <div style={{ display: 'inline-block' }}>
             <Input
-              css=""
               label={'Maximum Results'}
               value={this.state.maxResults}
               placeholder={'Maximum Results'}
@@ -130,7 +129,6 @@ export class BrowserTable extends Component<Props, State> {
           </div>
           <div style={{ display: 'inline-block' }}>
             <Input
-              css=""
               label={'Browse Name Filter'}
               value={this.state.browseNameFilter}
               placeholder={'Browse Name Filter'}
@@ -193,7 +191,7 @@ export class BrowserTable extends Component<Props, State> {
 
   onNodeChanged(index: number): void {
     if (index < this.state.children.length) {
-      var n = this.state.children[index];
+      let n = this.state.children[index];
       this.props.onNodeSelectedChanged(n, this.getBrowsePath(n));
       if (this.props.closeOnSelect) {
         this.props.closeBrowser();
@@ -235,7 +233,7 @@ export class BrowserTable extends Component<Props, State> {
   navigate(index: number): void {
     if (this.state.children.length > index) {
       let currentNode = this.state.children[index];
-      var bp = this.state.browsePath.slice();
+      let bp = this.state.browsePath.slice();
       bp.push(currentNode);
       this.setState({
         currentNode: currentNode,
@@ -248,9 +246,9 @@ export class BrowserTable extends Component<Props, State> {
   }
 
   navigateBack(): void {
+    let bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
     if (this.state.browsePath.length > 1) {
-      var currentNode = this.state.browsePath[this.state.browsePath.length - 2];
-      var bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
+      let currentNode = this.state.browsePath[this.state.browsePath.length - 2];
       this.setState({
         currentNode: currentNode,
         fetchingChildren: false,
@@ -259,8 +257,7 @@ export class BrowserTable extends Component<Props, State> {
         browsePath: bp,
       });
     } else if (this.state.browsePath.length === 1) {
-      currentNode = this.props.rootNodeId;
-      bp = this.state.browsePath.slice(0, this.state.browsePath.length - 1);
+      let currentNode = this.props.rootNodeId;
       this.setState({
         currentNode: currentNode,
         fetchingChildren: false,

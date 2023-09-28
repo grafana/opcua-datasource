@@ -162,78 +162,78 @@ namespace plugin_dotnet
 
         public IArrowArray ToArrowArray() {
             if (Type == typeof(bool)) {
-                var builder = new Apache.Arrow.BooleanArray.Builder();
+                Apache.Arrow.BooleanArray.Builder builder = new Apache.Arrow.BooleanArray.Builder();
                 builder.AppendRange(DataAs<bool>());
                 return builder.Build();
             }
             else if (Type == typeof(double)) {
-                var builder = new Apache.Arrow.DoubleArray.Builder();
+                Apache.Arrow.DoubleArray.Builder builder = new Apache.Arrow.DoubleArray.Builder();
                 builder.AppendRange(DataAs<double>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(float)) {
-                var builder = new Apache.Arrow.FloatArray.Builder();
+                Apache.Arrow.FloatArray.Builder builder = new Apache.Arrow.FloatArray.Builder();
                 builder.AppendRange(DataAs<float>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(sbyte)) {
-                var builder = new Apache.Arrow.BinaryArray.Builder();
+                Apache.Arrow.BinaryArray.Builder builder = new Apache.Arrow.BinaryArray.Builder();
                 builder.AppendRange(DataAs<byte>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(int)) {
-                var builder = new Apache.Arrow.Int32Array.Builder();
+                Apache.Arrow.Int32Array.Builder builder = new Apache.Arrow.Int32Array.Builder();
                 builder.AppendRange(DataAs<int>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(long)) {
-                var builder = new Apache.Arrow.Int64Array.Builder();
+                Apache.Arrow.Int64Array.Builder builder = new Apache.Arrow.Int64Array.Builder();
                 builder.AppendRange(DataAs<long>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(short)) {
-                var builder = new Apache.Arrow.Int16Array.Builder();
+                Apache.Arrow.Int16Array.Builder builder = new Apache.Arrow.Int16Array.Builder();
                 builder.AppendRange(DataAs<short>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(byte)) {
-                var builder = new Apache.Arrow.BinaryArray.Builder();
+                Apache.Arrow.BinaryArray.Builder builder = new Apache.Arrow.BinaryArray.Builder();
                 builder.AppendRange(DataAs<byte>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(uint)) {
-                var builder = new Apache.Arrow.UInt32Array.Builder();
+                Apache.Arrow.UInt32Array.Builder builder = new Apache.Arrow.UInt32Array.Builder();
                 builder.AppendRange(DataAs<uint>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(ulong)) {
-                var builder = new Apache.Arrow.UInt64Array.Builder();
+                Apache.Arrow.UInt64Array.Builder builder = new Apache.Arrow.UInt64Array.Builder();
                 builder.AppendRange(DataAs<ulong>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(ushort)) {
-                var builder = new Apache.Arrow.UInt16Array.Builder();
+                Apache.Arrow.UInt16Array.Builder builder = new Apache.Arrow.UInt16Array.Builder();
                 builder.AppendRange(DataAs<ushort>());
                 return builder.Build();
             }
                 
             else if (Type == typeof(string)) {
-                var builder = new Apache.Arrow.StringArray.Builder();
+                Apache.Arrow.StringArray.Builder builder = new Apache.Arrow.StringArray.Builder();
                 builder.AppendRange(DataAs<string>());
                 return builder.Build();
             }
 
             else if (Type == typeof(DateTime)) {
-                var builder = new NanoTimestampArrayBuiler();
+                NanoTimestampArrayBuiler builder = new NanoTimestampArrayBuiler();
                 foreach (DateTime dt in DataAs<DateTime>()) {
                     DateTimeOffset offset = new DateTimeOffset(dt);
                     builder.Append(offset);
@@ -242,7 +242,7 @@ namespace plugin_dotnet
             }
 
             else if (Type == typeof(DateTimeOffset)) {
-                var builder = new Apache.Arrow.TimestampArray.Builder(TimeUnit.Millisecond);
+                Apache.Arrow.TimestampArray.Builder builder = new Apache.Arrow.TimestampArray.Builder(TimeUnit.Millisecond);
                 builder.AppendRange(DataAs<DateTimeOffset>());
                 return builder.Build();
             }
@@ -322,9 +322,9 @@ namespace plugin_dotnet
 
         public byte[] ToByteArray()
         {
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (var bw = new BinaryWriter(ms))
+                using (BinaryWriter bw = new BinaryWriter(ms))
                 {
                     TypeConverter objConverter = TypeDescriptor.GetConverter(GetType());
                     byte[] data = (byte[])objConverter.ConvertTo(this, typeof(byte[]));
@@ -338,14 +338,14 @@ namespace plugin_dotnet
         {
             MemoryStream stream = new MemoryStream();
 
-            var recordBatchBuilder = new RecordBatch.Builder();
+            RecordBatch.Builder recordBatchBuilder = new RecordBatch.Builder();
             foreach (Field field in fields)
             {                
                 recordBatchBuilder.Append(field.Name, true, field.ToArrowArray());
             }
 
-            var recordBatch = recordBatchBuilder.Build();
-            var writer = new ArrowFileWriter(stream, recordBatch.Schema);
+            RecordBatch recordBatch = recordBatchBuilder.Build();
+            ArrowFileWriter writer = new ArrowFileWriter(stream, recordBatch.Schema);
             writer.WriteRecordBatch(recordBatch);
             writer.WriteEnd();
 

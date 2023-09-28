@@ -14,7 +14,7 @@ namespace plugin_dotnet
 
 		public static SQLiteConnection ConnectDatabase(string connectionStringTemplate, string filename, string requireExisting)
 		{
-			var connectionString = string.Format(connectionStringTemplate, filename) + requireExisting;
+			string connectionString = string.Format(connectionStringTemplate, filename) + requireExisting;
 			return new SQLiteConnection(connectionString, true).OpenAndReturn();
 		}
 
@@ -29,7 +29,7 @@ namespace plugin_dotnet
 			{
 				cmd.CommandText = commandText;
 				cmd.CommandType = CommandType.Text;
-				var numRowsAffected = cmd.ExecuteNonQuery();
+				int numRowsAffected = cmd.ExecuteNonQuery();
 				return numRowsAffected;
 			}
 		}
@@ -38,12 +38,12 @@ namespace plugin_dotnet
 		{
 			if (EnsurePath(filename))
 			{
-				var connectionString = string.Format(_connectionStringTemplate, filename);
+				string connectionString = string.Format(_connectionStringTemplate, filename);
 
-				var connection = new SQLiteConnection(connectionString, true);
+				SQLiteConnection connection = new SQLiteConnection(connectionString, true);
 
 				connection.Open();
-				foreach (var create_table_statement in tableCreates)
+				foreach (string create_table_statement in tableCreates)
 				{
 					ExecuteVoidCommand(connection, create_table_statement);
 				}
@@ -60,7 +60,7 @@ namespace plugin_dotnet
 			int pathEnd = fileName.LastIndexOf(Path.DirectorySeparatorChar);
 			string path = fileName.Substring(0, pathEnd);
 
-			var info = Directory.CreateDirectory(path);
+			DirectoryInfo info = Directory.CreateDirectory(path);
 			return info.Exists;
 		}
 

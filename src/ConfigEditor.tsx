@@ -1,8 +1,7 @@
 import React, { FC } from 'react';
-import { DataSourceHttpSettings, Label } from '@grafana/ui';
+import { DataSourceHttpSettings, Label, RadioButtonGroup } from '@grafana/ui';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { OPCTimestamp, OpcUaDataSourceOptions } from './types';
-import { RadioButtonGroup } from '@grafana/ui';
 
 interface Props extends DataSourcePluginOptionsEditorProps<OpcUaDataSourceOptions> {}
 

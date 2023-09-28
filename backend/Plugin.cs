@@ -17,7 +17,7 @@ namespace plugin_dotnet
         private static void ConfigureServices(IServiceCollection services)
         {
             // Build configuration
-            var configuration = new ConfigurationBuilder()
+            IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
                 .AddJsonFile("appsettings.json", false)
                 .Build();
@@ -28,21 +28,21 @@ namespace plugin_dotnet
         {
             ILogger logger = new ConsoleLogger();
 
-            var serviceCollection = new ServiceCollection();
+            ServiceCollection serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            ServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
             logger.Debug("Ua plugin starting");
             var configuration = serviceProvider.GetService<IConfiguration>();
-            var servicePort = configuration.GetValue("ServicePort", 6061);
-            var serviceHost = configuration.GetValue("ServiceHost", "localhost");
+            int servicePort = configuration.GetValue("ServicePort", 6061);
+            string serviceHost = configuration.GetValue("ServiceHost", "localhost");
             logger.Debug("Port: " + servicePort);
             try
             {
-                var traceLogConverter = new TraceLogConverter(logger);
+                TraceLogConverter traceLogConverter = new TraceLogConverter(logger);
                 Prediktor.Log.LogManager.TraceLogFactory = (name => traceLogConverter);
-                var nodeCacheFactory = new NodeCacheFactory(logger);
-                var connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), 
+                NodeCacheFactory nodeCacheFactory = new NodeCacheFactory(logger);
+                Connections connections = new Connections(logger, new Prediktor.UA.Client.SessionFactory(c => true), 
                     nodeCacheFactory, ApplicationConfigurationFactory.CreateApplicationConfiguration);
 
                 // Build a server to host the plugin over gRPC

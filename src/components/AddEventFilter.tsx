@@ -76,7 +76,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
         { type: FilterOperandEnum.SimpleAttribute, value: attr },
         { type: FilterOperandEnum.Literal, value: literal },
       ];
-      var evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
+      let evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
       this.props.add(evFilter);
     }
   }

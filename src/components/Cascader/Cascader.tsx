@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Select, Input } from '@grafana/ui';
 import RCCascader from '../../../node_modules/rc-cascader/lib';
 import { SelectableValue } from '@grafana/data';
-import { css } from 'emotion';
+import { css } from '@emotion/css';
 import { onChangeCascader, onLoadDataCascader } from './optionMappings';
 
 interface CascaderProps {
@@ -210,7 +210,6 @@ export class Cascader extends React.PureComponent<CascaderProps, CascaderState> 
           >
             <div className={disableDivFocus}>
               <Input
-                css=""
                 width={width}
                 placeholder={placeholder}
                 onBlur={this.onBlurCascade}

@@ -23,7 +23,7 @@ namespace plugin_dotnet
                 {
                     StringBuilder sb = new StringBuilder();
                     sb.Append(fieldName);
-                    var pelemt = relativePath.RelativePath.Elements;
+                    RelativePathElementCollection pelemt = relativePath.RelativePath.Elements;
                     for (int i = 0; i < pelemt.Count; i++)
                     {
                         _ = sb.Append(" / ");
@@ -40,15 +40,15 @@ namespace plugin_dotnet
         {
             if (valuesResult.Success)
             {
-                var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(query.refId);
-                var timeField = dataFrame.AddField("Time", typeof(DateTime));
+                DataResponse dataResponse = new DataResponse();
+                DataFrame dataFrame = new DataFrame(query.refId);
+                Field timeField = dataFrame.AddField("Time", typeof(DateTime));
                 Field valueField = null;
                 foreach (DataValue entry in valuesResult.Value.DataValues)
                 {
                     if (valueField == null && entry.Value != null)
                     {
-                        var fieldName = GetFieldName(query, relativePath);
+                        string fieldName = GetFieldName(query, relativePath);
                         valueField = dataFrame.AddField(fieldName, entry.Value.GetType());
                     }
 
@@ -96,8 +96,8 @@ namespace plugin_dotnet
                     DataResponse dataResponse = new DataResponse();
                     DataFrame dataFrame = new DataFrame(query.refId);
 
-                    var timeField = dataFrame.AddField("Time", typeof(DateTime));
-                    var fieldName = GetFieldName(query, relativePath);
+                    Field timeField = dataFrame.AddField("Time", typeof(DateTime));
+                    string fieldName = GetFieldName(query, relativePath);
                     Field valueField = dataFrame.AddField(fieldName, dataValue?.Value != null ? dataValue.Value.GetType() : typeof(string));
                     switch (settings.TimestampSource) {
                         case OPCTimestamp.Server:

@@ -79,7 +79,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
   onChangeAlias = (event: React.FormEvent<HTMLInputElement>) => {
     const { query, onChange, onRunQuery } = this.props;
-    var s = event?.currentTarget.value;
+    let s = event?.currentTarget.value;
     this.setState({ alias: s }, () => {
       let alias = s;
       onChange({
@@ -91,7 +91,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
   };
 
   browse = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
-    var filter = JSON.stringify(browseFilter);
+    let filter = JSON.stringify(browseFilter);
     let res: Promise<OpcUaBrowseResults[]> = this.props.datasource.getResource('browse', {
       nodeId: nodeId,
       browseFilter: filter,
@@ -100,7 +100,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
   };
 
   removeDuplicates(brRes: OpcUaBrowseResults[]): OpcUaBrowseResults[] {
-    var encounteredSet = new Set();
+    let encounteredSet = new Set();
     const uniqueBrs = brRes.filter((val) => {
       if (encounteredSet.has(val.nodeId)) {
         return false;
@@ -113,7 +113,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
   }
 
   browseTypes = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
-    var filter = JSON.stringify(browseFilter);
+    let filter = JSON.stringify(browseFilter);
     let res: Promise<OpcUaBrowseResults[]> = this.props.datasource.getResource('browse', {
       nodeId: nodeId,
       nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType,
@@ -200,7 +200,6 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       return (
         <SegmentFrame label="Template variable">
           <Input
-            css=""
             value={templateVariable}
             placeholder="Template variable"
             onChange={(e) => this.onChangeTemplateVariable(e)}
@@ -216,7 +215,6 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     return (
       <SegmentFrame label="Alias">
         <Input
-          css=""
           value={this.state.alias}
           placeholder={'alias'}
           onChange={(e) => this.onChangeAlias(e)}
@@ -269,7 +267,6 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         )}
         <span style={{ marginRight: 10 }}>
           <Checkbox
-            css=""
             label="Instance"
             checked={!this.state.useTemplate}
             onChange={(e) => this.changeUseTemplate(!e.currentTarget.checked)}
@@ -277,7 +274,6 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
         </span>
         <span style={{ marginRight: 10 }}>
           <Checkbox
-            css=""
             label="Type"
             checked={this.state.useTemplate}
             onChange={(e) => this.changeUseTemplate(e.currentTarget.checked)}

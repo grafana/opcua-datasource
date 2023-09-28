@@ -39,13 +39,13 @@ namespace plugin_dotnet
 
         private BrowsePath ResolveRelativePath(OpcUAQuery query, NamespaceTable namespaceTable)
         {
-            var path = new BrowsePath();
+            BrowsePath path = new BrowsePath();
 
-            var nodeId = Converter.GetNodeId(query.nodePath.node.nodeId, namespaceTable);
+            NodeId nodeId = Converter.GetNodeId(query.nodePath.node.nodeId, namespaceTable);
             path.StartingNode = nodeId;
             if (query.useTemplate && query.relativePath != null && query.relativePath.Length > 0)
             {
-                var r = new RelativePath();
+                RelativePath r = new RelativePath();
                 path.RelativePath = r;
                 for (int i = 0; i < query.relativePath.Length; i++)
                 {
@@ -57,8 +57,8 @@ namespace plugin_dotnet
 
         private Result<NodeId>[] GetNodeIds(Session session, BrowsePath[] browsePaths, NamespaceTable namespaceTable)
         {
-            var results = new Result<NodeId>[browsePaths.Length];
-            var bps = browsePaths.Where(bp => bp.RelativePath.Elements.Count > 0).ToArray();
+            Result<NodeId>[] results = new Result<NodeId>[browsePaths.Length];
+            BrowsePath[] bps = browsePaths.Where(bp => bp.RelativePath.Elements.Count > 0).ToArray();
             if (bps.Length == 0)
                 return browsePaths.Select(a => new Result<NodeId>(a.StartingNode)).ToArray();
 
@@ -71,19 +71,19 @@ namespace plugin_dotnet
                     {
                         if (bpr[j].Targets.Count > 0)
                         {
-                            var expandedNodeId = bpr[j].Targets[0].TargetId;
+                            ExpandedNodeId expandedNodeId = bpr[j].Targets[0].TargetId;
                             results[i] = new Result<NodeId>(ExpandedNodeId.ToNodeId(expandedNodeId, namespaceTable));
                         }
                         else
                         {
-                            var msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'";
+                            string msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'";
                             _log.Error(msg);
                             results[i] = new Result<NodeId>(Opc.Ua.StatusCodes.BadBrowseNameInvalid, msg);
                         }
                     }
                     else
                     {
-                        var msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'. StatusCode: '{bpr[j].StatusCode}'";
+                        string msg = $"Could not find node id for start node: '{browsePaths[i].StartingNode}' with browsepath '{PathElementsToString(browsePaths[i].RelativePath.Elements)}'. StatusCode: '{bpr[j].StatusCode}'";
                         _log.Error(msg);
                         results[i] = new Result<NodeId>(bpr[j].StatusCode, msg);
                     }
@@ -103,7 +103,7 @@ namespace plugin_dotnet
 			{
                 StringBuilder sb = new StringBuilder();
 
-                foreach(var elem in elements)
+                foreach(RelativePathElement elem in elements)
 				{
                     sb.Append(elem.TargetName.ToString());
                     sb.Append("/");
@@ -117,17 +117,17 @@ namespace plugin_dotnet
 
 		private Result<DataResponse>[] ReadNodes(Session session, Settings settings, OpcUAQuery[] queries, NamespaceTable namespaceTable)
         {
-            var results = new Result<DataResponse>[queries.Length];
-            var browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
+            Result<DataResponse>[] results = new Result<DataResponse>[queries.Length];
+            BrowsePath[] browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
-            var nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
-            var dvs = session.ReadNodeValues(nodeIds);
+            NodeId[] nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
+            DataValue[] dvs = session.ReadNodeValues(nodeIds);
 
             for (int i = 0, j = 0; i < browsePaths.Length; i++)
             {
                 if (nodeIdsResult[i].Success)
                 {
-                    var dataValue = dvs[j];
+                    DataValue dataValue = dvs[j];
                     results[i] = ValueDataResponse.GetDataResponseForDataValue(_log, settings, dataValue, nodeIds[j], queries[i], browsePaths[i]);
                     j++;
                 }
@@ -157,26 +157,26 @@ namespace plugin_dotnet
 
         private Result<DataResponse>[] ReadHistoryRaw(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable, Settings settings)
         {
-            var indexMap = new Dictionary<ReadRawKey, List<int>>();
-            var queryMap = new Dictionary<ReadRawKey, List<NodeId>>();
+            Dictionary<ReadRawKey, List<int>> indexMap = new Dictionary<ReadRawKey, List<int>>();
+            Dictionary<ReadRawKey, List<NodeId>> queryMap = new Dictionary<ReadRawKey, List<NodeId>>();
 
-            var relativePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
+            BrowsePath[] relativePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, relativePaths, namespaceTable);
             //Result<UaMetaData>[] metaData = GetMetaData(session, nodeIdsResult, namespaceTable);
 
 
-            var result = new Result<DataResponse>[queries.Length];
+            Result<DataResponse>[] result = new Result<DataResponse>[queries.Length];
             for (int i = 0; i < queries.Length; i++)
             {
-                var nodeIdResult = nodeIdsResult[i];
+                Result<NodeId> nodeIdResult = nodeIdsResult[i];
                 if (nodeIdResult.Success)
                 {
-                    var query = queries[i];
-                    var maxValues = query.maxValuesPerNode > 0 ? query.maxValuesPerNode : 0;
-                    var tr = query.timeRange;
+                    OpcUAQuery query = queries[i];
+                    int maxValues = query.maxValuesPerNode > 0 ? query.maxValuesPerNode : 0;
+                    TimeRange tr = query.timeRange;
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                    var key = new ReadRawKey(fromTime, toTime, Convert.ToInt32(maxValues));
+                    ReadRawKey key = new ReadRawKey(fromTime, toTime, Convert.ToInt32(maxValues));
                     AddDict(indexMap, key, i);
                     AddDict(queryMap, key, nodeIdResult.Value);
                 }
@@ -186,15 +186,15 @@ namespace plugin_dotnet
                 }
             }
 
-            foreach (var querygroup in queryMap)
+            foreach (KeyValuePair<ReadRawKey, List<NodeId>> querygroup in queryMap)
             {
-                var key = querygroup.Key;
-                var nodes = querygroup.Value.ToArray();
-                var historyValues = session.ReadHistoryRaw(key.StartTime, key.EndTime, key.MaxValues, nodes);
-                var indices = indexMap[key];
+                ReadRawKey key = querygroup.Key;
+                NodeId[] nodes = querygroup.Value.ToArray();
+                Result<HistoryData>[] historyValues = session.ReadHistoryRaw(key.StartTime, key.EndTime, key.MaxValues, nodes);
+                List<int> indices = indexMap[key];
                 for (int i = 0; i < indices.Count; i++)
                 {
-                    var idx = indices[i];
+                    int idx = indices[i];
                     result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], relativePaths[idx], settings);
                 }
             }
@@ -208,19 +208,19 @@ namespace plugin_dotnet
 
 		private Result<DataResponse>[] ReadHistoryProcessed(Session session, OpcUAQuery[] queries, NamespaceTable namespaceTable, Settings settings)
         {
-            var indexMap = new Dictionary<ReadProcessedKey, List<int>>();
-            var queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
+            Dictionary<ReadProcessedKey, List<int>> indexMap = new Dictionary<ReadProcessedKey, List<int>>();
+            Dictionary<ReadProcessedKey, List<NodeId>> queryMap = new Dictionary<ReadProcessedKey, List<NodeId>>();
 
-            var browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
+            BrowsePath[] browsePaths = queries.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
-            var result = new Result<DataResponse>[queries.Length];
+            Result<DataResponse>[] result = new Result<DataResponse>[queries.Length];
 
             
             for (int i = 0; i < queries.Length; i++)
             {
-                var query = queries[i];
+                OpcUAQuery query = queries[i];
                 OpcUaNodeDefinition aggregate = null;
-                var nodeIdResult = nodeIdsResult[i];
+                Result<NodeId> nodeIdResult = nodeIdsResult[i];
                 try
                 {
                     aggregate = JsonSerializer.Deserialize<OpcUaNodeDefinition>(query.aggregate.ToString());
@@ -237,12 +237,12 @@ namespace plugin_dotnet
                 }
                 else if (nodeIdResult.Success)
                 {
-                    var resampleInterval = query.resampleInterval > 0 ? (double)(query.resampleInterval * 1000.0) : (double)query.intervalMs;
-                    var tr = query.timeRange;
-                    var aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
+                    double resampleInterval = query.resampleInterval > 0 ? (double)(query.resampleInterval * 1000.0) : (double)query.intervalMs;
+                    TimeRange tr = query.timeRange;
+                    NodeId aggregateNodeId = Converter.GetNodeId(aggregate.nodeId, namespaceTable);
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                    var key = new ReadProcessedKey(fromTime, toTime, aggregateNodeId, resampleInterval);
+                    ReadProcessedKey key = new ReadProcessedKey(fromTime, toTime, aggregateNodeId, resampleInterval);
                     AddDict(indexMap, key, i);
                     AddDict(queryMap, key, nodeIdResult.Value);
                 }
@@ -252,16 +252,16 @@ namespace plugin_dotnet
                 }
             }
             
-            foreach (var querygroup in queryMap)
+            foreach (KeyValuePair<ReadProcessedKey, List<NodeId>> querygroup in queryMap)
             {
-                var key = querygroup.Key;
-                var nodes = querygroup.Value.ToArray();
-                var historyValues = session.ReadHistoryProcessed(key.StartTime, key.EndTime, key.Aggregate, key.ResampleInterval, nodes);
-                var indices = indexMap[key];
+                ReadProcessedKey key = querygroup.Key;
+                NodeId[] nodes = querygroup.Value.ToArray();
+                Result<HistoryData>[] historyValues = session.ReadHistoryProcessed(key.StartTime, key.EndTime, key.Aggregate, key.ResampleInterval, nodes);
+                List<int> indices = indexMap[key];
                 for (int i = 0; i < indices.Count; i++)
                 {
-                    var idx = indices[i];
-                    var valuesResult = historyValues[i];
+                    int idx = indices[i];
+                    Result<HistoryData> valuesResult = historyValues[i];
                     result[idx] = ValueDataResponse.CreateHistoryDataResponse(historyValues[i], queries[idx], browsePaths[idx], settings);
                 }
             }
@@ -273,24 +273,24 @@ namespace plugin_dotnet
 
         private Result<DataResponse>[] ReadEvents(Session session, IEventDataResponse eventDataResponse, OpcUAQuery[] opcUAQuery, NamespaceTable namespaceTable)
         {
-            var nodeCache = _nodeCacheFactory.Create(session);
-            var browsePaths = opcUAQuery.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
+            INodeCache nodeCache = _nodeCacheFactory.Create(session);
+            BrowsePath[] browsePaths = opcUAQuery.Select(a => ResolveRelativePath(a, namespaceTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, namespaceTable);
 
-            var results = new Result<DataResponse>[opcUAQuery.Length];
+            Result<DataResponse>[] results = new Result<DataResponse>[opcUAQuery.Length];
             // Do one by one for now. unsure of use-case with multiple node ids for same filter.
             for (int i = 0; i < opcUAQuery.Length; i++)
             {
-                var nodeIdResult = nodeIdsResult[i];
+                Result<NodeId> nodeIdResult = nodeIdsResult[i];
                 if (nodeIdResult.Success)
                 {
-                    var query = opcUAQuery[i];
-                    var tr = query.timeRange;
-                    //var nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
+                    OpcUAQuery query = opcUAQuery[i];
+                    TimeRange tr = query.timeRange;
+                    //let nodeId = Converter.GetNodeId(query.nodeId, namespaceTable);
                     DateTime fromTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.FromEpochMS).UtcDateTime;
                     DateTime toTime = DateTimeOffset.FromUnixTimeMilliseconds(tr.ToEpochMS).UtcDateTime;
-                    var eventFilter = Converter.GetEventFilter(query, namespaceTable);
-                    var response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeIdResult.Value });
+                    Opc.Ua.EventFilter eventFilter = Converter.GetEventFilter(query, namespaceTable);
+                    Result<HistoryEvent>[] response = session.ReadEvents(fromTime, toTime, uint.MaxValue, eventFilter, new[] { nodeIdResult.Value });
                     results[i] = eventDataResponse.CreateEventDataResponse(response[0], query, nodeCache);
                 }
                 else 
@@ -304,13 +304,13 @@ namespace plugin_dotnet
 
         private static IDictionary<string, string> GetInvalidQueries(IEnumerable<OpcUAQuery> queries)
 		{
-            var error = new Dictionary<string, string>();
-            foreach (var q in queries)
+            Dictionary<string, string> error = new Dictionary<string, string>();
+            foreach (OpcUAQuery q in queries)
 			{
-                var errors = new StringBuilder();
+                StringBuilder errors = new StringBuilder();
                 if (q.nodePath == null && (q.readType != "Resource" || string.IsNullOrEmpty(q.readType)))
                 {
-                    var instanceOrType = q.useTemplate ? "Type" : "Instance";
+                    string instanceOrType = q.useTemplate ? "Type" : "Instance";
                     errors.Append(instanceOrType + " is not specified for query: " + q.refId);
                 }
                 // TODO: Add more error checks.
@@ -334,14 +334,14 @@ namespace plugin_dotnet
                 Settings settings = RawSettingsParser.Parse(request.PluginContext.DataSourceInstanceSettings);
                 connection = _connections.Get(settings);
 
-                var uaQueries = request.Queries.Select(q => new OpcUAQuery(q));
-                var invalidQueries = GetInvalidQueries(uaQueries);//uaQueries.Where(a => a.nodePath != null).ToLookup(a => a.refId);
+                IEnumerable<OpcUAQuery> uaQueries = request.Queries.Select(q => new OpcUAQuery(q));
+                IDictionary<string, string> invalidQueries = GetInvalidQueries(uaQueries);//uaQueries.Where(a => a.nodePath != null).ToLookup(a => a.refId);
 
-                var queryGroups = uaQueries.Where(a => !invalidQueries.ContainsKey(a.refId)).ToLookup(o => o.readType);
-                var nsTable = connection.Session.NamespaceUris;
-                foreach (var queryGroup in queryGroups)
+                ILookup<string, OpcUAQuery> queryGroups = uaQueries.Where(a => !invalidQueries.ContainsKey(a.refId)).ToLookup(o => o.readType);
+                NamespaceTable nsTable = connection.Session.NamespaceUris;
+                foreach (IGrouping<string, OpcUAQuery> queryGroup in queryGroups)
                 {
-                    var queries = queryGroup.ToArray();
+                    OpcUAQuery[] queries = queryGroup.ToArray();
                     try
                     {
                         Result<DataResponse>[] responses = null;
@@ -373,13 +373,13 @@ namespace plugin_dotnet
                         if (responses != null)
                         {
                             int i = 0;
-                            foreach (var dataResponse in responses)
+                            foreach (Result<DataResponse> dataResponse in responses)
                             {
                                 if (dataResponse.Success)
                                     response.Responses[queries[i++].refId] = dataResponse.Value;
                                 else
                                 {
-                                    var dr = new DataResponse();
+                                    DataResponse dr = new DataResponse();
                                     dr.Error = string.Format("{0} {1}", dataResponse.StatusCode.ToString(),  dataResponse.Error);
                                     _log.Error(dr.Error);
                                     response.Responses[queries[i++].refId] = dr;
@@ -389,20 +389,20 @@ namespace plugin_dotnet
                     }
                     catch (Exception e)
                     {
-                        foreach (var q in queries)
+                        foreach (OpcUAQuery q in queries)
                         {
-                            var dr = new DataResponse();
+                            DataResponse dr = new DataResponse();
                             dr.Error = e.ToString();
                             response.Responses[q.refId] = dr; 
                         }
                         _log.Error(e.ToString());
                     }
                 }
-                foreach (var invalidQuery in invalidQueries)
+                foreach (KeyValuePair<string, string> invalidQuery in invalidQueries)
                 {
-                    var refId = invalidQuery.Key;
-                    var message = invalidQuery.Value;
-                    var dr = new DataResponse();
+                    string refId = invalidQuery.Key;
+                    string message = invalidQuery.Value;
+                    DataResponse dr = new DataResponse();
                     dr.Error = message;
                     response.Responses[refId] = dr;
                     _log.Error(message);
@@ -420,14 +420,14 @@ namespace plugin_dotnet
 
         private Result<DataResponse>[] SubscribeDataValues(Session session, Settings settings, IDataValueSubscription dataValueSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
-            var responses = new Result<DataResponse>[queries.Length];
-            var browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
+            Result<DataResponse>[] responses = new Result<DataResponse>[queries.Length];
+            BrowsePath[] browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, nsTable);
 
-            var nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
+            NodeId[] nodeIds = nodeIdsResult.Where(a => a.Success).Select(a => a.Value).ToArray();
 
-            var dataValues = dataValueSubscription.GetValues(nodeIds);
-            var results = new Result<DataResponse>[nodeIds.Length];
+            Result<DataValue>[] dataValues = dataValueSubscription.GetValues(nodeIds);
+            Result<DataResponse>[] results = new Result<DataResponse>[nodeIds.Length];
             for (int i = 0, j = 0; i < nodeIdsResult.Length; i++)
             {
                 if (nodeIdsResult[i].Success)
@@ -449,8 +449,8 @@ namespace plugin_dotnet
 
         private Result<DataResponse>[] SubscribeEvents(Session session, IEventSubscription eventSubscription, OpcUAQuery[] queries, NamespaceTable nsTable)
         {
-            var responses = new Result<DataResponse>[queries.Length];
-            var browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
+            Result<DataResponse>[] responses = new Result<DataResponse>[queries.Length];
+            BrowsePath[] browsePaths = queries.Select(a => ResolveRelativePath(a, nsTable)).ToArray();
             Result<NodeId>[] nodeIdsResult = GetNodeIds(session, browsePaths, nsTable);
 
             for (int i = 0; i < queries.Length; i++)
@@ -459,10 +459,10 @@ namespace plugin_dotnet
                 {
                     if (nodeIdsResult[i].Success)
                     {
-                        var nodeId = nodeIdsResult[i].Value;
+                        NodeId nodeId = nodeIdsResult[i].Value;
                         if (queries[i].eventQuery != null)
                         {
-                            var eventFilter = Converter.GetEventFilter(queries[i], nsTable);
+                            Opc.Ua.EventFilter eventFilter = Converter.GetEventFilter(queries[i], nsTable);
                             responses[i] = eventSubscription.GetEventData(queries[i], nodeId, eventFilter);
                         }
                         else

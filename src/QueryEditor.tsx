@@ -131,7 +131,6 @@ export class QueryEditor extends PureComponent<Props, State> {
             </SegmentFrame>
             <SegmentFrame label={'Resample Interval [s]'}>
               <Input
-                css=""
                 width={20}
                 value={this.state.resampleInterval}
                 onChange={(e) => this.onChangeResampleInterval(e)}
@@ -145,7 +144,6 @@ export class QueryEditor extends PureComponent<Props, State> {
           <>
             <SegmentFrame label={'Max Values Per Node'}>
               <Input
-                css=""
                 width={20}
                 value={this.state.maxValuesPerNode}
                 onChange={(e) => this.onChangeMaxValuesPerNode(e)}

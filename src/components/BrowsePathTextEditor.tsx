@@ -59,7 +59,6 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
 
     return this.state.edit ? (
       <Input
-        css=""
         title={this.state.indexedPath}
         value={this.state.indexedPath}
         onChange={(e) => this.onChangeIndexedPath(e)}
@@ -73,7 +72,6 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
       ></Input>
     ) : (
       <Input
-        css=""
         title={this.state.indexedPath}
         value={this.state.shortenedPath}
         placeholder={'Path'}

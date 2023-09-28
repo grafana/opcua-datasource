@@ -61,7 +61,7 @@ export class NodeTextEditor extends PureComponent<Props, State> {
 
   onSubmit = () => {
     let currentNodeId = this.getNodeId(this.state.node != null ? this.state.node.node.nodeId : null);
-    var s = nodeIdToShortString(currentNodeId, this.state.nsTable);
+    let s = nodeIdToShortString(currentNodeId, this.state.nsTable);
     if (s !== this.state.editnode) {
       this.props
         .getNodePath(this.state.editnode)
@@ -93,7 +93,6 @@ export class NodeTextEditor extends PureComponent<Props, State> {
     return this.state.edit ? (
       <div>
         <Input
-          css=""
           autoFocus={true}
           placeholder={this.props.placeholder}
           value={this.state.editnode}

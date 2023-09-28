@@ -74,7 +74,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
   }
 
   browseTypes = (nodeId: string, browseFilter: BrowseFilter): Promise<OpcUaBrowseResults[]> => {
-    var filter = JSON.stringify(browseFilter);
+    let filter = JSON.stringify(browseFilter);
     return this.props.datasource.getResource('browse', {
       nodeId: nodeId,
       nodeClassMask: NodeClass.ObjectType | NodeClass.VariableType,

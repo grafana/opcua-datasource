@@ -67,13 +67,11 @@ export class BrowserDialog extends Component<Props, State> {
         <div style={{ height: '18px' }}> </div>
         <div style={{ whiteSpace: 'nowrap' }}>
           <Checkbox
-            css=""
             label="Tree"
             checked={!this.state.table}
             onChange={(e) => this.changeBrowser(false)}
           ></Checkbox>
           <Checkbox
-            css=""
             label="Table"
             checked={this.state.table}
             onChange={(e) => this.changeBrowser(true)}
