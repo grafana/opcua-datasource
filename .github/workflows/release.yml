@@ -60,9 +60,9 @@ jobs:
 
       - name: Build backend
         run: make linux && make windows && make darwin
-        
+
       - name: Sign plugin
-        run: yarn sign --rootUrls=http://localhost:3000
+        run: yarn sign
         env:
           GRAFANA_API_KEY: ${{ secrets.GRAFANA_API_KEY }} # Requires a Grafana API key from Grafana.com.
 

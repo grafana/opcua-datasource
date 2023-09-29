@@ -1,4 +1,9 @@
 # Change Log
+## [1.3.3] - 2023-09-29
+- Updated to grafana 10
+- Various changes to support updated coding standards
+- Fixed issue #82 - Unable to fill in url-field in datasource
+
 
 ## [1.2.0-beta.1] - 2022-05-06
 - Added the ability to select timestamps from either the OPC server, or OPC client/device/source
