@@ -46,22 +46,14 @@ jobs:
       - name: Build and test frontend
         run: yarn build
 
-      - name: Check for backend
-        id: check-for-backend
-        run: |
-          if [ -d "backend" ]
-          then
-            echo "::set-output name=has-backend::true"
-          fi
-
       - name: Setup .NET
-        if: steps.check-for-backend.outputs.has-backend == 'true'
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '3.1.x'
 
       - name: Build backend
         run: make linux && make windows && make darwin
+        
       # - name: Test backend
       #   if: steps.check-for-backend.outputs.has-backend == 'true'
       #   uses: magefile/mage-action@v1

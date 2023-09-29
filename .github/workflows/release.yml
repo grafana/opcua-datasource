@@ -53,28 +53,14 @@ jobs:
       - name: Build and test frontend
         run: yarn build
 
-      - name: Check for backend
-        id: check-for-backend
-        run: |
-          if [ -f "Magefile.go" ]
-          then
-            echo "::set-output name=has-backend::true"
-          fi
-
-      - name: Test backend
-        if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: magefile/mage-action@v1
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
         with:
-          version: latest
-          args: coverage
+          dotnet-version: '3.1.x'
 
       - name: Build backend
-        if: steps.check-for-backend.outputs.has-backend == 'true'
-        uses: magefile/mage-action@v1
-        with:
-          version: latest
-          args: buildAll
-
+        run: make linux && make windows && make darwin
+        
       - name: Sign plugin
         run: yarn sign --rootUrls=http://localhost:3000
         env:
