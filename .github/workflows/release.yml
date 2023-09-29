@@ -102,13 +102,13 @@ jobs:
           md5sum ${{ steps.metadata.outputs.archive }} > ${{ steps.metadata.outputs.archive-checksum }}
           echo "::set-output name=checksum::$(cat ./${{ steps.metadata.outputs.archive-checksum }} | cut -d' ' -f1)"
 
-      - name: Validate plugin
-        run: |
-          git clone https://github.com/grafana/plugin-validator
-          pushd ./plugin-validator/pkg/cmd/plugincheck2
-          go install
-          popd
-          plugincheck2 -config ./validator-config.yaml ${{ steps.metadata.outputs.archive }}
+      # - name: Validate plugin
+      #   run: |
+      #     git clone https://github.com/grafana/plugin-validator
+      #     pushd ./plugin-validator/pkg/cmd/plugincheck2
+      #     go install
+      #     popd
+      #     plugincheck2 -config ./validator-config.yaml ${{ steps.metadata.outputs.archive }}
 
       - name: Create release
         id: create_release

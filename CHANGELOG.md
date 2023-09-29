@@ -1,5 +1,5 @@
 # Change Log
-## [1.3.5] - 2023-09-29
+## [1.3.6] - 2023-09-29
 - Updated to grafana 10
 - Various changes to support updated coding standards
 - Fixed issue #82 - Unable to fill in url-field in datasource
