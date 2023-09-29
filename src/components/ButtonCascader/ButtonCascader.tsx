@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, stylesFactory, useTheme } from '@grafana/ui';
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 
 // @ts-ignore
 import RCCascader from 'rc-cascader';

@@ -102,21 +102,21 @@ namespace plugin_dotnet
 
         private void ReapSubscription()
         {
-            var removedMonitoredItems = new List<MonitoredItem>();
+            List<MonitoredItem> removedMonitoredItems = new List<MonitoredItem>();
             try
             {
-                var now = DateTimeOffset.UtcNow;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
                 lock (_eventData)
                 {
-                    var keys = _eventData.Keys;
-                    foreach (var key in keys)
+                    ICollection<NodeId> keys = _eventData.Keys;
+                    foreach (NodeId key in keys)
                     {
                         if (_eventData.TryGetValue(key, out List<EventFilterValues> values))
                         {
                             for (int i = values.Count; i >= 0; i--)
                             {
-                                var eventFilterValue = values[i];
-                                var ts = now.Subtract(eventFilterValue.LastRead);
+                                EventFilterValues eventFilterValue = values[i];
+                                TimeSpan ts = now.Subtract(eventFilterValue.LastRead);
                                 if (ts.CompareTo(_maxReadInterval) > 0)
                                 {
                                     values.RemoveAt(i);
@@ -183,7 +183,7 @@ namespace plugin_dotnet
         private MonitoredItem AddMonitorItem(NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
         {
 
-            var monitorItem = CreateMonitoredItem(startNodeId, eventFilter);
+            MonitoredItem monitorItem = CreateMonitoredItem(startNodeId, eventFilter);
             monitorItem.Notification += MonitorItem_Notification;
             _subscription.AddItem(monitorItem);
             _subscription.ApplyChanges();
@@ -210,22 +210,22 @@ namespace plugin_dotnet
                 {
                     return;
                 }
-                var filter = monitoredItem.Filter as Opc.Ua.EventFilter;
+                Opc.Ua.EventFilter filter = monitoredItem.Filter as Opc.Ua.EventFilter;
 
                 if (filter != null)
                 {
-                    var values = GetEventFilterValues(monitoredItem.StartNodeId, filter);
+                    EventFilterValues values = GetEventFilterValues(monitoredItem.StartNodeId, filter);
                     if (values != null)
                     {
-                        var eventType = (NodeId)notification.EventFields[notification.EventFields.Count - 1].Value;
-                        var sourceNode = (NodeId)notification.EventFields[notification.EventFields.Count - 2].Value;
-                        var key = new SourceAndEventTypeKey(sourceNode, eventType);
+                        NodeId eventType = (NodeId)notification.EventFields[notification.EventFields.Count - 1].Value;
+                        NodeId sourceNode = (NodeId)notification.EventFields[notification.EventFields.Count - 2].Value;
+                        SourceAndEventTypeKey key = new SourceAndEventTypeKey(sourceNode, eventType);
                         lock (_eventData)
                         {
                             List<EventFilterValues> eventFilterValuesList;
                             if (_eventData.TryGetValue(monitoredItem.StartNodeId, out eventFilterValuesList))
                             {
-                                var eventFilterValues = eventFilterValuesList.FirstOrDefault(a => a.Filter.IsEqual(filter));
+                                EventFilterValues eventFilterValues = eventFilterValuesList.FirstOrDefault(a => a.Filter.IsEqual(filter));
                                 if (eventFilterValues != null)
                                 {
                                     eventFilterValues.Values[key] = notification.EventFields;
@@ -247,7 +247,7 @@ namespace plugin_dotnet
             {
                 if (_eventData.TryGetValue(startNodeId, out List<EventFilterValues> values))
                 {
-                    var vals = values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
+                    EventFilterValues vals = values.FirstOrDefault(a => a.Filter.IsEqual(eventFilter));
                     if (vals != null)
                     {
                         vals.LastRead = DateTimeOffset.UtcNow;
@@ -260,14 +260,14 @@ namespace plugin_dotnet
 
         public Result<DataResponse> GetEventData(OpcUAQuery query, NodeId startNodeId, Opc.Ua.EventFilter eventFilter)
         {
-            var nodeCache = _nodeCacheFactory.Create(_session);
+            INodeCache nodeCache = _nodeCacheFactory.Create(_session);
             eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "SourceNode");
             eventFilter.AddSelectClause(ObjectTypeIds.BaseEventType, "EventType");
 
-            var eventFilterValues = GetEventFilterValues(startNodeId, eventFilter);
+            EventFilterValues eventFilterValues = GetEventFilterValues(startNodeId, eventFilter);
             if (eventFilterValues == null)
             {
-                var monitorItem = AddMonitorItem(startNodeId, eventFilter);
+                MonitoredItem monitorItem = AddMonitorItem(startNodeId, eventFilter);
                 eventFilterValues = new EventFilterValues(monitorItem, query, eventFilter);
                 if (!TryAddEventFilterValues(startNodeId, eventFilterValues))
                 {

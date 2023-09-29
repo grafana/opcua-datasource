@@ -82,18 +82,18 @@ namespace plugin_dotnet
 
         private void ReapSubscribedValues()
         {
-            var removedMonitoredItems = new List<MonitoredItem>();
+            List<MonitoredItem> removedMonitoredItems = new List<MonitoredItem>();
             try 
             { 
-                var now = DateTimeOffset.UtcNow;
+                DateTimeOffset now = DateTimeOffset.UtcNow;
                 lock (_subscribedValues)
                 {
-                    var keys = _subscribedValues.Keys;
-                    foreach (var key in keys)
+                    Dictionary<NodeId, VariableValue>.KeyCollection keys = _subscribedValues.Keys;
+                    foreach (NodeId key in keys)
                     {
                         if (_subscribedValues.TryGetValue(key, out VariableValue value))
                         {
-                            var ts = now.Subtract(value.LastRead);
+                            TimeSpan ts = now.Subtract(value.LastRead);
                             if (ts.CompareTo(_maxReadInterval) > 0)
                             {
                                 _subscribedValues.Remove(key);
@@ -123,15 +123,15 @@ namespace plugin_dotnet
 
         private void Subscribe(NodeId[] nodeIds)
         {
-            var monItems = new List<MonitoredItem>();
-            var newNodeIds = new List<NodeId>();
+            List<MonitoredItem> monItems = new List<MonitoredItem>();
+            List<NodeId> newNodeIds = new List<NodeId>();
             lock (_subscribedValues)
             {
                 for (int i = 0; i < nodeIds.Length; i++)
                 {
                     if (!_subscribedValues.ContainsKey(nodeIds[i]))
                     { 
-                        var monitoredItem = CreateMonitoredItem(nodeIds[i]);
+                        MonitoredItem monitoredItem = CreateMonitoredItem(nodeIds[i]);
                         monitoredItem.Notification += MonitoredItem_Notification;
                         monItems.Add(monitoredItem);
                         newNodeIds.Add(nodeIds[i]);
@@ -154,7 +154,7 @@ namespace plugin_dotnet
         {
             try
             {
-                var dataValues = _session.ReadNodeValues(nodeIds);
+                DataValue[] dataValues = _session.ReadNodeValues(nodeIds);
                 lock (_subscribedValues)
                 {
                     for (int i = 0; i < dataValues.Length; i++)
@@ -194,7 +194,7 @@ namespace plugin_dotnet
         public Result<DataValue>[] GetValues(NodeId[] nodeIds)
         {
             Subscribe(nodeIds);
-            var result = new Result<DataValue>[nodeIds.Length];
+            Result<DataValue>[] result = new Result<DataValue>[nodeIds.Length];
             lock (_subscribedValues)
             {
                 for (int i = 0; i < nodeIds.Length; i++)

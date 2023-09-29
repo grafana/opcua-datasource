@@ -34,9 +34,9 @@ namespace plugin_dotnet
 
         public static NodeInfo ConvertToNodeInfo(Opc.Ua.Node node, NamespaceTable namespaceTable)
         {
-            var nsUrl = namespaceTable.GetString(node.NodeId.NamespaceIndex);
-            var nsNodeId = new NSNodeId() { id = node.NodeId.ToString(), namespaceUrl = nsUrl };
-            var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
+            string nsUrl = namespaceTable.GetString(node.NodeId.NamespaceIndex);
+            NSNodeId nsNodeId = new NSNodeId() { id = node.NodeId.ToString(), namespaceUrl = nsUrl };
+            string nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
             return new NodeInfo() { browseName = GetQualifiedName(node.BrowseName, namespaceTable), 
                 displayName = node.DisplayName?.Text, nodeClass = (uint)node.NodeClass, nodeId = nid };
         }
@@ -44,9 +44,9 @@ namespace plugin_dotnet
 
         public static BrowseResultsEntry ConvertToBrowseResult(ReferenceDescription referenceDescription, NamespaceTable namespaceTable)
 		{
-            var nsUrl = namespaceTable.GetString(referenceDescription.NodeId.NamespaceIndex);
-            var nsNodeId = new NSNodeId() { id = referenceDescription.NodeId.ToString(), namespaceUrl = nsUrl };
-            var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
+            string nsUrl = namespaceTable.GetString(referenceDescription.NodeId.NamespaceIndex);
+            NSNodeId nsNodeId = new NSNodeId() { id = referenceDescription.NodeId.ToString(), namespaceUrl = nsUrl };
+            string nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
             return new BrowseResultsEntry(
 				referenceDescription.DisplayName.ToString(),
                 GetQualifiedName(referenceDescription.BrowseName, namespaceTable),
@@ -58,9 +58,9 @@ namespace plugin_dotnet
 
         public static string GetNodeIdAsJson(Opc.Ua.NodeId nodeId, NamespaceTable namespaceTable)
         {
-            var nsUrl = namespaceTable.GetString(nodeId.NamespaceIndex);
-            var nsNodeId = new NSNodeId() { id = nodeId.ToString(), namespaceUrl = nsUrl };
-            var nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
+            string nsUrl = namespaceTable.GetString(nodeId.NamespaceIndex);
+            NSNodeId nsNodeId = new NSNodeId() { id = nodeId.ToString(), namespaceUrl = nsUrl };
+            string nid = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
             return nid;
         }
 
@@ -79,7 +79,7 @@ namespace plugin_dotnet
                 return NodeId.Parse(nid);
             }
 
-            var idx = (ushort)namespaceTable.GetIndex(nsNodeId.namespaceUrl);
+            ushort idx = (ushort)namespaceTable.GetIndex(nsNodeId.namespaceUrl);
             if(idx < ushort.MaxValue)
                 return new NodeId(nId.Identifier, idx);
 
@@ -91,14 +91,14 @@ namespace plugin_dotnet
             ushort nsIdx;
             if (ushort.TryParse(qm.namespaceUrl, out nsIdx))
                 return new Opc.Ua.QualifiedName(qm.name, nsIdx);
-            var insIdx = string.IsNullOrWhiteSpace(qm.namespaceUrl) ? 0 : namespaceTable.GetIndex(qm.namespaceUrl);
+            int insIdx = string.IsNullOrWhiteSpace(qm.namespaceUrl) ? 0 : namespaceTable.GetIndex(qm.namespaceUrl);
             return new Opc.Ua.QualifiedName(qm.name, (ushort)insIdx);
 
         }
 
         internal static QualifiedName GetQualifiedName(Opc.Ua.QualifiedName qm, NamespaceTable namespaceTable)
         {
-            var url = namespaceTable.GetString(qm.NamespaceIndex);
+            string url = namespaceTable.GetString(qm.NamespaceIndex);
             return new QualifiedName() { name = qm.Name, namespaceUrl = url };
 
         }
@@ -106,11 +106,11 @@ namespace plugin_dotnet
 
         public static Opc.Ua.QualifiedName[] GetBrowsePath(QualifiedName[] browsePath, NamespaceTable namespaceTable)
         {
-            var qms = new Opc.Ua.QualifiedName[browsePath.Length];
+            Opc.Ua.QualifiedName[] qms = new Opc.Ua.QualifiedName[browsePath.Length];
             for (int i = 0; i < browsePath.Length; i++)
             {
-                var bp = browsePath[i];
-                var nsIdx = string.IsNullOrWhiteSpace(bp.namespaceUrl) ? 0 : namespaceTable.GetIndex(bp.namespaceUrl);
+                QualifiedName bp = browsePath[i];
+                int nsIdx = string.IsNullOrWhiteSpace(bp.namespaceUrl) ? 0 : namespaceTable.GetIndex(bp.namespaceUrl);
                 qms[i] = new Opc.Ua.QualifiedName(bp.name, (ushort)nsIdx); ;
             }
             return qms;
@@ -118,10 +118,10 @@ namespace plugin_dotnet
 
         private static LiteralOperand GetLiteralOperand(LiteralOp literop, NamespaceTable namespaceTable)
         {
-            var nodeId = Converter.GetNodeId(literop.typeId, namespaceTable);
+            NodeId nodeId = Converter.GetNodeId(literop.typeId, namespaceTable);
             if (_dataTypeConverter.TryGetValue(nodeId, out Func<string, NamespaceTable, object> converter))
             {
-                var val = converter(literop.value, namespaceTable);
+                object val = converter(literop.value, namespaceTable);
                 return new LiteralOperand(val);
             }
             return new LiteralOperand(literop.value);
@@ -147,7 +147,7 @@ namespace plugin_dotnet
                     return GetLiteralOperand(JsonSerializer.Deserialize<LiteralOp>(operand.value), namespaceTable);
                 case FilterOperandEnum.Element:
                     {
-                        var elementOp = JsonSerializer.Deserialize<ElementOp>(operand.value);
+                        ElementOp elementOp = JsonSerializer.Deserialize<ElementOp>(operand.value);
                         return new ElementOperand(elementOp.index);
                     }
                 case FilterOperandEnum.SimpleAttribute:
@@ -159,7 +159,7 @@ namespace plugin_dotnet
 
         internal static object[] GetOperands(EventFilter f, NamespaceTable namespaceTable)
         {
-            var operands = new object[f.operands.Length];
+            object[] operands = new object[f.operands.Length];
             for (int i = 0; i < f.operands.Length; i++)
                 operands[i] = GetOperand(f.operands[i], namespaceTable);
             return operands;
@@ -168,13 +168,13 @@ namespace plugin_dotnet
 
         internal static Opc.Ua.EventFilter GetEventFilter(OpcUAQuery query, NamespaceTable namespaceTable)
         {
-            var eventFilter = new Opc.Ua.EventFilter();
+            Opc.Ua.EventFilter eventFilter = new Opc.Ua.EventFilter();
             if (query.eventQuery?.eventColumns != null)
             {
-                foreach (var column in query.eventQuery.eventColumns)
+                foreach (EventColumn column in query.eventQuery.eventColumns)
                 {
-                    var bp = Converter.GetBrowsePath(column.browsePath, namespaceTable);
-                    var path = SimpleAttributeOperand.Format(bp);
+                    Opc.Ua.QualifiedName[] bp = Converter.GetBrowsePath(column.browsePath, namespaceTable);
+                    string path = SimpleAttributeOperand.Format(bp);
                     eventFilter.AddSelectClause(ObjectTypes.BaseEventType, path, Attributes.Value);
                 }
             }
@@ -184,7 +184,7 @@ namespace plugin_dotnet
             {
                 for (int i = 0; i < query.eventQuery.eventFilters.Length; i++)
                 {
-                    var filter = query.eventQuery.eventFilters[i];
+                    EventFilter filter = query.eventQuery.eventFilters[i];
                     eventFilter.WhereClause.Push(filter.oper, GetOperands(filter, namespaceTable));
                 }
             }

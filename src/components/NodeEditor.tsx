@@ -81,7 +81,7 @@ export class NodeEditor extends PureComponent<Props, State> {
   };
 
   onChangeNode(node: OpcUaNodeInfo, path: QualifiedName[]) {
-    var nodePath: NodePath = { node: node, browsePath: path };
+    let nodePath: NodePath = { node: node, browsePath: path };
     this.setState({ node: node }, () => this.props.onChangeNode(nodePath));
   }
 

@@ -21,7 +21,7 @@ namespace plugin_dotnet
 
 		public override bool Equals(object obj)
 		{
-			var other = obj as ReadRawKey;
+			ReadRawKey other = obj as ReadRawKey;
 			if (other != null)
 			{
 				return this.StartTime.Equals(other.StartTime) && this.EndTime.Equals(other.EndTime) && this.MaxValues == other.MaxValues;
@@ -57,7 +57,7 @@ namespace plugin_dotnet
 		public double ResampleInterval { get; }
 		public override bool Equals(object obj)
 		{
-			var other = obj as ReadProcessedKey;
+			ReadProcessedKey other = obj as ReadProcessedKey;
 			if (other != null)
 			{
 				return this.StartTime.Equals(other.StartTime) && this.EndTime.Equals(other.EndTime) && this.ResampleInterval.Equals(other.ResampleInterval) && Aggregate.Equals(other.Aggregate);
@@ -89,7 +89,7 @@ namespace plugin_dotnet
 
 		public override bool Equals(object obj)
 		{
-			var other = obj as ReadEventKey;
+			ReadEventKey other = obj as ReadEventKey;
 			if (other != null)
 			{
 				return this.StartTime.Equals(other.StartTime) && this.EndTime.Equals(other.EndTime) && this.NumValuesPerNode.Equals(other.NumValuesPerNode);

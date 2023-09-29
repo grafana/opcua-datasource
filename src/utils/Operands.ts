@@ -29,7 +29,7 @@ export class EventFilterOperatorUtil {
 
   static GetLiteralString(op: LiteralOp, nsTable: string[]): string {
     let nsNodeId: NSNodeId = JSON.parse(op.typeId);
-    var s = nodeIdToShortString(nsNodeId, nsTable);
+    let s = nodeIdToShortString(nsNodeId, nsTable);
     return op.value + ' [' + s + ']';
   }
 

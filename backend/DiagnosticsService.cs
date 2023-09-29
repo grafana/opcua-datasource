@@ -29,7 +29,7 @@ namespace plugin_dotnet
             log.Debug("Check Health Request {0}", request);
 
             Settings settings = RawSettingsParser.Parse(request.PluginContext.DataSourceInstanceSettings);
-            var connection = _connections.Get(settings);
+            IConnection connection = _connections.Get(settings);
             log.Debug("Check Health Request Connection {0}", connection);
 
             CheckHealthResponse checkHealthResponse = new CheckHealthResponse

@@ -43,13 +43,13 @@ export function stringToBrowsePath(path: string, nsTable: string[]): QualifiedNa
   if (path.length === 0) {
     return [];
   }
-  var paths = path.split('/');
+  let paths = path.split('/');
   let browsepath: QualifiedName[] = paths.map((a: string) => toQualifiedNameFromIndex(a, nsTable));
   return browsepath;
 }
 
 function toQualifiedNameFromIndex(path: string, nsTable: string[]): QualifiedName {
-  var ns = path.split(':');
+  let ns = path.split(':');
   if (ns.length > 1) {
     let idx = parseInt(ns[0], 10);
     let namespaceUrl = '';
@@ -62,7 +62,7 @@ function toQualifiedNameFromIndex(path: string, nsTable: string[]): QualifiedNam
 }
 
 export function toQualifiedName(path: string): QualifiedName {
-  var ns = path.split(':');
+  let ns = path.split(':');
   if (ns.length > 1) {
     return { name: ns[1].trim(), namespaceUrl: ns[0].trim() };
   }

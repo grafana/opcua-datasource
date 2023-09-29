@@ -104,10 +104,10 @@ namespace plugin_dotnet
 
             try
             {
-                var readRes = _session.ReadAttributes(nodeId, new[] { attributeId });
+                Result<object>[] readRes = _session.ReadAttributes(nodeId, new[] { attributeId });
                 if (readRes[0].Success)
                 {
-                    var value = readRes[0].Value;
+                    object value = readRes[0].Value;
                     if (value != null && value is T)
                     {
                         lock (_nodeAttributes)
@@ -211,15 +211,15 @@ namespace plugin_dotnet
 
         private void CreateConnection(Settings settings, Session session)
         {
-            var subscriptionReaper = new SubscriptionReaper(_log, 60000);
+            SubscriptionReaper subscriptionReaper = new SubscriptionReaper(_log, 60000);
 
-            var eventDataResponse = new EventDataResponse(_log);
-            var eventSubscription = new EventSubscription(_log, subscriptionReaper, eventDataResponse, _nodeCacheFactory, session, new TimeSpan(0, 60, 0));
-            var dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
+            EventDataResponse eventDataResponse = new EventDataResponse(_log);
+            EventSubscription eventSubscription = new EventSubscription(_log, subscriptionReaper, eventDataResponse, _nodeCacheFactory, session, new TimeSpan(0, 60, 0));
+            DataValueSubscription dataValueSubscription = new DataValueSubscription(_log, subscriptionReaper, session, new TimeSpan(0, 10, 0));
 
             lock (connections)
             {
-                var conn = new Connection(session, settings, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
+                Connection conn = new Connection(session, settings, eventSubscription, dataValueSubscription, subscriptionReaper, eventDataResponse);
                 connections[key: settings.ID] = conn;
                 subscriptionReaper.Start();
             }
@@ -237,10 +237,10 @@ namespace plugin_dotnet
                     X509Certificate2 certWithKey = CertificateFactory.CreateCertificateWithPEMPrivateKey(certificate, Encoding.ASCII.GetBytes(settings.TLSClientKey));
                     CertificateIdentifier certificateIdentifier = new CertificateIdentifier(certWithKey);
 
-                    var userIdentity = new UserIdentity(certWithKey);
+                    UserIdentity userIdentity = new UserIdentity(certWithKey);
 
 
-                    var appConfig = _applicationConfiguration();
+                    ApplicationConfiguration appConfig = _applicationConfiguration();
                     appConfig.SecurityConfiguration.ApplicationCertificate = certificateIdentifier;
                     session = _sessionFactory.CreateSession(settings.URL, "Grafana Session", userIdentity, true, false, appConfig);
                     CreateConnection(settings, session);

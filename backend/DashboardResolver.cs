@@ -48,8 +48,8 @@ namespace plugin_dotnet
 
 		private static string ConvertToNodeIdKey(ExpandedNodeId nodeId, NamespaceTable nsTable)
 		{
-			var nodeIdPart = ExpandedNodeId.ToNodeId(nodeId, nsTable);
-			var nsNodeId = new NSNodeId() { id = nodeIdPart.ToString(), namespaceUrl = nsTable.GetString(nodeId.NamespaceIndex) };
+			NodeId nodeIdPart = ExpandedNodeId.ToNodeId(nodeId, nsTable);
+			NSNodeId nsNodeId = new NSNodeId() { id = nodeIdPart.ToString(), namespaceUrl = nsTable.GetString(nodeId.NamespaceIndex) };
 			string nsNodeIdJson = System.Text.Json.JsonSerializer.Serialize(nsNodeId);
 
 			return nsNodeIdJson;
@@ -57,15 +57,15 @@ namespace plugin_dotnet
 
 		private static string ConvertNodeIdToJson(ExpandedNodeId nodeId, NamespaceTable nsTable)
 		{
-			var nodeIdPart = ExpandedNodeId.ToNodeId(nodeId, nsTable);
-			var nsIdNodeId = new NsNodeIdentifier() { NamespaceUrl = nsTable.GetString(nodeId.NamespaceIndex), IdType = nodeIdPart.IdType, Identifier = nodeIdPart.Identifier.ToString() };
+			NodeId nodeIdPart = ExpandedNodeId.ToNodeId(nodeId, nsTable);
+			NsNodeIdentifier nsIdNodeId = new NsNodeIdentifier() { NamespaceUrl = nsTable.GetString(nodeId.NamespaceIndex), IdType = nodeIdPart.IdType, Identifier = nodeIdPart.Identifier.ToString() };
 			string typeNodeIdJson = System.Text.Json.JsonSerializer.Serialize(nsIdNodeId);
 			return typeNodeIdJson;
 		}
 
 		private Opc.Ua.ExpandedNodeId GetSuperType(Session uaConnection,  Opc.Ua.ExpandedNodeId typeNodeId, Opc.Ua.NamespaceTable nsTable)
 		{
-			var nId = ExpandedNodeId.ToNodeId(typeNodeId, nsTable);
+			NodeId nId = ExpandedNodeId.ToNodeId(typeNodeId, nsTable);
 			_ = uaConnection.Browse(null, null, nId, 1, Opc.Ua.BrowseDirection.Inverse, "i=45", false, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType),
 				out _, out Opc.Ua.ReferenceDescriptionCollection references);
 
@@ -83,9 +83,9 @@ namespace plugin_dotnet
 			if (dashboard != null)
 				return (dashboard.Name, dashKeys);
 
-			var nId = Converter.GetNodeId(nodeId, nsTable);
+			NodeId nId = Converter.GetNodeId(nodeId, nsTable);
 
-			var typeNodeId = GetType(uaConnection, nId);
+			ExpandedNodeId typeNodeId = GetType(uaConnection, nId);
 
 			(dashboard, dashKeys) = ResolveDashboardByTypeIntClasstype(uaConnection, nId, typeNodeId, perspective, nsTable);
 			if (dashboard != null)
@@ -128,22 +128,22 @@ namespace plugin_dotnet
 		private (DashboardData dashboard, string[] dashKeys) ResolveDashboardByTypeIntClasstype(Session uaConnection, 
 			NodeId nId, ExpandedNodeId typeNodeId, string perspective, NamespaceTable nsTable)
 		{
-			var interfaces = GetInterfaces(uaConnection, nsTable, nId);
+			IList<ExpandedNodeId> interfaces = GetInterfaces(uaConnection, nsTable, nId);
 
-			var classTypes = GetClassTypes(uaConnection, nsTable, nId);
+			IList<ExpandedNodeId> classTypes = GetClassTypes(uaConnection, nsTable, nId);
 
 			if (interfaces.Count > 0 || classTypes.Count > 0)
 			{
 				DashboardData dashboard;
 				string[] dashKeys;
 
-				var interfacesAndClassTypes = new List<ExpandedNodeId>(interfaces);
+				List<ExpandedNodeId> interfacesAndClassTypes = new List<ExpandedNodeId>(interfaces);
 				interfacesAndClassTypes.AddRange(classTypes);
 
 				if (typeNodeId != null)
 				{
 					//Type and ALL interfaces/classtypes
-					var typeAndInterfaces = new List<ExpandedNodeId>(interfacesAndClassTypes)
+					List<ExpandedNodeId> typeAndInterfaces = new List<ExpandedNodeId>(interfacesAndClassTypes)
 					{
 						typeNodeId
 					};
@@ -154,7 +154,7 @@ namespace plugin_dotnet
 						return (dashboard, dashKeys);
 
 					//Type and ANY interfaces/classtypes
-					foreach (var iFace in interfacesAndClassTypes)
+					foreach (ExpandedNodeId iFace in interfacesAndClassTypes)
 					{
 						(dashboard, dashKeys) = ResolveDashboard(new[] { typeNodeId, iFace }, perspective, nsTable);
 
@@ -170,7 +170,7 @@ namespace plugin_dotnet
 					return (dashboard, dashKeys);
 
 				//ANY interfaces/classtypes
-				foreach (var iFace in interfacesAndClassTypes)
+				foreach (ExpandedNodeId iFace in interfacesAndClassTypes)
 				{
 					(dashboard, dashKeys) = ResolveDashboard(new[] { iFace }, perspective, nsTable);
 
@@ -198,11 +198,11 @@ namespace plugin_dotnet
 
 		private IList<ExpandedNodeId> GetClassTypes(Session uaConnection, NamespaceTable nsTable, NodeId nId)
 		{
-			var classTypes = new List<ExpandedNodeId>();
+			List<ExpandedNodeId> classTypes = new List<ExpandedNodeId>();
 
 			if (IsNodePresent(uaConnection, UaConstants.DefinedByEquipmentClass, nsTable))
 			{
-				var definedByEquipmentClass = Converter.GetNodeId(UaConstants.DefinedByEquipmentClass, nsTable);
+				NodeId definedByEquipmentClass = Converter.GetNodeId(UaConstants.DefinedByEquipmentClass, nsTable);
 				uaConnection.Browse(null, null, nId, int.MaxValue, BrowseDirection.Forward, definedByEquipmentClass, true, (uint)(NodeClass.ObjectType), out _, out ReferenceDescriptionCollection classReferences);
 				if (classReferences.Count > 0)
 				{
@@ -217,7 +217,7 @@ namespace plugin_dotnet
 
 		private IList<ExpandedNodeId> GetInterfaces(Session uaConnection, NamespaceTable nsTable, NodeId nId)
 		{
-			var interfaces = new List<ExpandedNodeId>();
+			List<ExpandedNodeId> interfaces = new List<ExpandedNodeId>();
 
 			if (IsNodePresent(uaConnection, UaConstants.HasInterface, nsTable))
 			{
@@ -236,8 +236,8 @@ namespace plugin_dotnet
 		{
 			try
 			{
-				var nId = Converter.GetNodeId(nodeId, nsTable);
-				var readRes = uaConnection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName });
+				NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+				Result<object>[] readRes = uaConnection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName });
 
 				return readRes.Length > 0;
 			}
@@ -251,7 +251,7 @@ namespace plugin_dotnet
 		{
 			if(data.InterfacesIds?.Length > 0)
 			{
-				var nIdJsons = new List<string>(data.InterfacesIds);
+				List<string> nIdJsons = new List<string>(data.InterfacesIds);
 				if (data.UseType)
 					nIdJsons.Add(data.TypeNodeIdJson);
 
@@ -267,7 +267,7 @@ namespace plugin_dotnet
 
 		public UaResult RemoveDashboardMapping(DashboardMappingData data)
 		{
-			var nIdJsons = new List<string>();
+			List<string> nIdJsons = new List<string>();
 
 			if (data.InterfacesIds?.Length > 0)
 				nIdJsons.AddRange(data.InterfacesIds);

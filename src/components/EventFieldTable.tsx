@@ -98,7 +98,6 @@ export class EventFieldTable extends PureComponent<Props, State> {
                   </TableCell>
                   <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                     <Input
-                      css=""
                       value={row.alias}
                       onChange={(e) => this.props.onChangeAlias(e.currentTarget.value, index)}
                     ></Input>
@@ -126,7 +125,6 @@ export class EventFieldTable extends PureComponent<Props, State> {
                 </TableCell>
                 <TableCell style={{ color: txt, border: 0, padding: 0 }}>
                   <Input
-                    css=""
                     value={this.state.new.alias}
                     onChange={(e) => this.onChangeNewAlias(e.currentTarget.value)}
                   ></Input>

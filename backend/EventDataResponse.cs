@@ -45,7 +45,7 @@ namespace plugin_dotnet
         {
             try
             {
-                var node = nodeCache.GetBrowseName(nodeId);
+                Opc.Ua.QualifiedName node = nodeCache.GetBrowseName(nodeId);
                 if (node != null)
                 {
                     return node.ToString();
@@ -66,7 +66,7 @@ namespace plugin_dotnet
 
         private static uint[] CreateLookup32()
         {
-            var result = new uint[256];
+            uint[] result = new uint[256];
             for (int i = 0; i < 256; i++)
             {
                 string s = i.ToString("X2");
@@ -77,11 +77,11 @@ namespace plugin_dotnet
 
         private static string ByteArrayToHexViaLookup32(byte[] bytes)
         {
-            var lookup32 = _lookup32;
-            var result = new char[bytes.Length * 2];
+            uint[] lookup32 = _lookup32;
+            char[] result = new char[bytes.Length * 2];
             for (int i = 0; i < bytes.Length; i++)
             {
-                var val = lookup32[bytes[i]];
+                uint val = lookup32[bytes[i]];
                 result[2 * i] = (char)val;
                 result[2 * i + 1] = (char)(val >> 16);
             }
@@ -105,7 +105,7 @@ namespace plugin_dotnet
                 else
                     return typeof(string);
             }
-            var simplifiedBrowsePath = path.ToString();
+            string simplifiedBrowsePath = path.ToString();
             if (_typeForFieldName.TryGetValue(simplifiedBrowsePath, out Type type))
                 return type;
             return typeof(string);
@@ -115,7 +115,7 @@ namespace plugin_dotnet
         {
             if (browsePath != null && browsePath.Length == 1 && (string.Compare(browsePath[0].namespaceUrl, "http://opcfoundation.org/UA/") == 0))
             {
-                var fieldName = browsePath[0].name;
+                string fieldName = browsePath[0].name;
                 if (_converter.TryGetValue(fieldName, out Func<INodeCache, object, object> conv))
                     return conv(nodeCache, value);
             }
@@ -159,7 +159,7 @@ namespace plugin_dotnet
 
         private static string GetFieldName(QualifiedName[] browsePath)
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < browsePath.Length; i++)
             {
                 if (sb.Length > 0)
@@ -172,12 +172,12 @@ namespace plugin_dotnet
 
         internal static Dictionary<int, Field> AddEventFields(DataFrame dataFrame, OpcUAQuery query)
         {
-            var fields = new Dictionary<int, Field>();
+            Dictionary<int, Field> fields = new Dictionary<int, Field>();
             for (int i = 0; i < query.eventQuery.eventColumns.Length; i++)
             {
-                var col = query.eventQuery.eventColumns[i];
-                var type = GetTypeForField(col.browsePath);
-                var field = dataFrame.AddField(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias, type);
+                EventColumn col = query.eventQuery.eventColumns[i];
+                Type type = GetTypeForField(col.browsePath);
+                Field field = dataFrame.AddField(string.IsNullOrEmpty(col.alias) ? GetFieldName(col.browsePath) : col.alias, type);
                 field.Config.Filterable = true;
                 fields.Add(i, field);
 
@@ -191,10 +191,10 @@ namespace plugin_dotnet
         {
             for (int k = 0; k < eventFields.Count; k++)
             {
-                var field = eventFields[k];
+                Variant field = eventFields[k];
                 if (fields.TryGetValue(k, out Field dataField))
                 {
-                    var path = query.eventQuery.eventColumns[k].browsePath;
+                    QualifiedName[] path = query.eventQuery.eventColumns[k].browsePath;
                     dataField.Append(GetDataFieldValue(dataField, GetValueForField(path, nodeCache, field.Value)));
                 }
             }
@@ -203,10 +203,10 @@ namespace plugin_dotnet
 
         public Result<DataResponse> CreateEventSubscriptionDataResponse(ICollection<VariantCollection> events, OpcUAQuery query, INodeCache nodeCache)
         {
-            var dataResponse = new DataResponse();
-            var dataFrame = new DataFrame(query.refId);
-            var fields = AddEventFields(dataFrame, query);
-            foreach (var ev in events)
+            DataResponse dataResponse = new DataResponse();
+            DataFrame dataFrame = new DataFrame(query.refId);
+            Dictionary<int, Field> fields = AddEventFields(dataFrame, query);
+            foreach (VariantCollection ev in events)
             {
                 FillEventDataFrame(fields, ev, query, nodeCache);
             }
@@ -220,13 +220,13 @@ namespace plugin_dotnet
         {
             if (historyEventResult.Success)
             {
-                var historyEvent = historyEventResult.Value;
-                var dataResponse = new DataResponse();
-                var dataFrame = new DataFrame(query.refId);
-                var fields = AddEventFields(dataFrame, query);
+                HistoryEvent historyEvent = historyEventResult.Value;
+                DataResponse dataResponse = new DataResponse();
+                DataFrame dataFrame = new DataFrame(query.refId);
+                Dictionary<int, Field> fields = AddEventFields(dataFrame, query);
                 if (historyEvent.Events.Count > 0)
                 {
-                    foreach (var e in historyEvent.Events)
+                    foreach (HistoryEventFieldList e in historyEvent.Events)
                     {
                         FillEventDataFrame(fields, e.EventFields, query, nodeCache);
                     }

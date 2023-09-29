@@ -8,7 +8,7 @@ namespace plugin_dotnet
     {
         internal static Opc.Ua.ApplicationConfiguration CreateApplicationConfiguration()
         {
-            var certificateValidator = new Opc.Ua.CertificateValidator();
+            Opc.Ua.CertificateValidator certificateValidator = new Opc.Ua.CertificateValidator();
             certificateValidator.CertificateValidation += (sender, eventArgs) =>
             {
                 if (Opc.Ua.ServiceResult.IsGood(eventArgs.Error))

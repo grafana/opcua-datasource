@@ -55,13 +55,13 @@ namespace plugin_dotnet
 
             try
             {
-                var nId = Converter.GetNodeId(nodeId, nsTable);
+                NodeId nId = Converter.GetNodeId(nodeId, nsTable);
 
-                var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName});
+                Result<object>[] readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName});
 
                 bool present = readRes.Length > 0;
 
-                var result = JsonSerializer.Serialize(present);
+                string result = JsonSerializer.Serialize(present);
                 response.Code = 200;
                 response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                 _log.Debug($"We got a result for '{nodeId}' from IsNodePresent => {0}", result);
@@ -71,7 +71,7 @@ namespace plugin_dotnet
             catch(Exception e)
 			{
                 _log.Debug($"IsNodePresent for '{nodeId}' is false: ", e.Message);
-                var result = JsonSerializer.Serialize(false);
+                string result = JsonSerializer.Serialize(false);
                 response.Code = 200;
                 response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                 return response;
@@ -88,7 +88,7 @@ namespace plugin_dotnet
                 namespaces[i] = nsTable.GetString(i);
             }
 
-            var result = JsonSerializer.Serialize(namespaces);
+            string result = JsonSerializer.Serialize(namespaces);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
 
@@ -101,11 +101,11 @@ namespace plugin_dotnet
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
             string referenceId = HttpUtility.UrlDecode(queryParams["referenceId"]);
 
-            var nId = Converter.GetNodeId(nodeId, nsTable);
-            var rId = Converter.GetNodeId(referenceId, nsTable);
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+            NodeId rId = Converter.GetNodeId(referenceId, nsTable);
             connection.Browse(null, null, nId, int.MaxValue, Opc.Ua.BrowseDirection.Forward, rId, true,
                 (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection targets);
-            var result = JsonSerializer.Serialize(targets.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+            string result = JsonSerializer.Serialize(targets.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.Debug("We got a result from browse ref targets => {0}", result);
@@ -117,9 +117,9 @@ namespace plugin_dotnet
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            var nId = Converter.GetNodeId(nodeId, nsTable);
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
             connection.Browse(null, null, nId, 1, Opc.Ua.BrowseDirection.Forward, "i=40", true, (uint) (Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType), out byte[] cont, out Opc.Ua.ReferenceDescriptionCollection references);
-            var result = JsonSerializer.Serialize(Converter.ConvertToBrowseResult(references[0], nsTable));
+            string result = JsonSerializer.Serialize(Converter.ConvertToBrowseResult(references[0], nsTable));
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.Debug("We got a result from browse => {0}", result);
@@ -142,17 +142,17 @@ namespace plugin_dotnet
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            var nId = Converter.GetNodeId(nodeId, nsTable);
-            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.Variable));
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+            ReferenceDescriptionCollection browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.Variable));
             NodeId superType = null;
             while ((superType = GetSuperType(connection, nId, nsTable)) != null)
             {
-                var superBrowseResult = connection.Browse(superType, (uint)(Opc.Ua.NodeClass.Variable));
+                ReferenceDescriptionCollection superBrowseResult = connection.Browse(superType, (uint)(Opc.Ua.NodeClass.Variable));
                 browseResult.AddRange(superBrowseResult);
                 nId = superType;
             }
-            var ordered = browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(a => a.browseName.name).ToArray();
-            var result = JsonSerializer.Serialize(ordered);
+            BrowseResultsEntry[] ordered = browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(a => a.browseName.name).ToArray();
+            string result = JsonSerializer.Serialize(ordered);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.Debug("We got a result from browse => {0}", result);
@@ -164,13 +164,13 @@ namespace plugin_dotnet
         private CallResourceResponse GetNamespaceIndices(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
         {
             CallResourceResponse response = new CallResourceResponse();
-            var nodeId = Variables.Server_NamespaceArray;
-            var dv = connection.ReadValue(nodeId);
+            NodeId nodeId = Variables.Server_NamespaceArray;
+            DataValue dv = connection.ReadValue(nodeId);
 
             if (Opc.Ua.StatusCode.IsGood(dv.StatusCode))
             {
-                var ns = dv.Value as string[];
-                var result = JsonSerializer.Serialize(ns);
+                string[] ns = dv.Value as string[];
+                string result = JsonSerializer.Serialize(ns);
                 response.Code = 200;
                 response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
                 return response;
@@ -183,9 +183,9 @@ namespace plugin_dotnet
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            var nId = Converter.GetNodeId(nodeId, nsTable);
-            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
-            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+            ReferenceDescriptionCollection browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
+            string result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.Debug("We got a result from browse => {0}", result);
@@ -196,9 +196,9 @@ namespace plugin_dotnet
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            var nId = Converter.GetNodeId(nodeId, nsTable);
-            var browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
-            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+            ReferenceDescriptionCollection browseResult = connection.Browse(nId, (uint)(Opc.Ua.NodeClass.ObjectType | Opc.Ua.NodeClass.VariableType));
+            string result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.Debug("We got a result from browse => {0}", result);
@@ -207,7 +207,7 @@ namespace plugin_dotnet
 
         private uint GetMaxResults(BrowseFilter browseFilter)
         {
-            var max = browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue;
+            uint max = browseFilter != null ? (uint)browseFilter.maxResults : uint.MaxValue;
             if (max > 0)
                 return max;
             return uint.MaxValue;
@@ -217,7 +217,7 @@ namespace plugin_dotnet
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            var mask = queryParams["nodeClassMask"];
+            string mask = queryParams["nodeClassMask"];
 
             string filter = queryParams["browseFilter"];
             BrowseFilter browseFilter = null;
@@ -226,19 +226,19 @@ namespace plugin_dotnet
                 browseFilter = JsonSerializer.Deserialize<BrowseFilter>(filter);
             }
 
-            var hasMask = !string.IsNullOrWhiteSpace(mask);
+            bool hasMask = !string.IsNullOrWhiteSpace(mask);
             uint nodeClassMask = 0;
             if (hasMask)
             {
                 if (!uint.TryParse(mask, out nodeClassMask))
                     hasMask = false;
             }
-            var nId = Converter.GetNodeId(nodeId, nsTable);
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
             IEnumerable<ReferenceDescription> browseResult = connection.Browse(nId, hasMask ? nodeClassMask : (int)(NodeClass.Object | NodeClass.Variable), GetMaxResults(browseFilter));
             if (!string.IsNullOrEmpty(browseFilter?.browseName))
                 browseResult = browseResult.Where(a => a.BrowseName.Name.Contains(browseFilter.browseName));
 
-            var result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(refdesc => refdesc.displayName).ToArray());
+            string result = JsonSerializer.Serialize(browseResult.Select(a => Converter.ConvertToBrowseResult(a, nsTable)).OrderBy(refdesc => refdesc.displayName).ToArray());
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             _log.Debug("We got a result from browse => {0}", result);
@@ -247,12 +247,12 @@ namespace plugin_dotnet
 
         private NodeInfo ReadNodeInfo(Session connection, NamespaceTable nsTable, string nodeId)
         {
-            var nId = Converter.GetNodeId(nodeId, nsTable);
-            var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
-            var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
-            var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
-            var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
-            var nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), displayName = displayName.Text, nodeClass = (uint)nodeClass, nodeId = nodeId };
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+            Result<object>[] readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
+            Opc.Ua.QualifiedName browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
+            LocalizedText displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
+            NodeClass nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
+            NodeInfo nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), displayName = displayName.Text, nodeClass = (uint)nodeClass, nodeId = nodeId };
             return nodeInfo;
         }
 
@@ -261,8 +261,8 @@ namespace plugin_dotnet
         {
             CallResourceResponse response = new CallResourceResponse();
             string nodeId = HttpUtility.UrlDecode(queryParams["nodeId"]);
-            var nodeInfo = ReadNodeInfo(connection, nsTable, nodeId);
-            var result = JsonSerializer.Serialize(nodeInfo);
+            NodeInfo nodeInfo = ReadNodeInfo(connection, nsTable, nodeId);
+            String result = JsonSerializer.Serialize(nodeInfo);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             return response;
@@ -280,7 +280,7 @@ namespace plugin_dotnet
         private QualifiedName[] FindBrowsePath(Session connection, NodeId id, NodeId rootId, Opc.Ua.QualifiedName browseName, NamespaceTable nsTable)
 		{
             HashSet<NodeId> set = new HashSet<NodeId>();
-            var browsePath = new List<QualifiedName>();
+            List<QualifiedName> browsePath = new List<QualifiedName>();
             set.Add(id);
             browsePath.Add(Converter.GetQualifiedName(browseName, nsTable));
             bool moreParents = true;
@@ -296,8 +296,8 @@ namespace plugin_dotnet
                 moreParents = referenceDescriptions.Count > 0;
                 if (moreParents)
                 {
-                    var refDesc = referenceDescriptions[0];
-                    var nodeId = ExpandedNodeId.ToNodeId(refDesc.NodeId, nsTable);
+                    ReferenceDescription refDesc = referenceDescriptions[0];
+                    NodeId nodeId = ExpandedNodeId.ToNodeId(refDesc.NodeId, nsTable);
                     if (!rootId.Equals(nodeId))
                     {
                         id = nodeId;
@@ -328,20 +328,20 @@ namespace plugin_dotnet
             }
 
             string rootId = HttpUtility.UrlDecode(queryParams["rootId"]);
-            var nId = Converter.GetNodeId(nodeId, nsTable);
-            var rId = ObjectIds.RootFolder;
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
+            NodeId rId = ObjectIds.RootFolder;
             if (!string.IsNullOrEmpty(rootId))
                 rId = Converter.GetNodeId(rootId, nsTable);
-            var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
+            Result<object>[] readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
             if (!readRes[0].Success)
                 throw new ArgumentException(readRes[0].Error + " StatusCode: " + readRes[0].StatusCode.ToString());
 
-            var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
-            var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
-            var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
-            var nodePath = FindBrowsePath(connection, nId, rId, browseName, nsTable);
+            Opc.Ua.QualifiedName browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
+            LocalizedText displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
+            NodeClass nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
+            QualifiedName[] nodePath = FindBrowsePath(connection, nId, rId, browseName, nsTable);
 
-            var nodeInfo = new NodeInfo()
+            NodeInfo nodeInfo = new NodeInfo()
             {
                 browseName = Converter.GetQualifiedName(browseName, nsTable),
                 displayName = displayName.Text,
@@ -349,8 +349,8 @@ namespace plugin_dotnet
                 nodeId = Converter.GetNodeIdAsJson(nId, nsTable)
             };
 
-            var np = new NodePath() { node = nodeInfo, browsePath = nodePath };
-            var result = JsonSerializer.Serialize(np);
+            NodePath np = new NodePath() { node = nodeInfo, browsePath = nodePath };
+            string result = JsonSerializer.Serialize(np);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             return response;
@@ -361,16 +361,16 @@ namespace plugin_dotnet
         private CallResourceResponse TranslateBrowsePathToNode(CallResourceRequest request, Session connection, NameValueCollection queryParams, NamespaceTable nsTable)
         {
             CallResourceResponse response = new CallResourceResponse();
-            var body = request.Body.ToString(Encoding.UTF8);
-            var relativeBrowsePath = JsonSerializer.Deserialize<RelativeBrowsePath>(body);
-            var rootId = relativeBrowsePath.startNode;
-            var bp = relativeBrowsePath.browsePath;
+            string body = request.Body.ToString(Encoding.UTF8);
+            RelativeBrowsePath relativeBrowsePath = JsonSerializer.Deserialize<RelativeBrowsePath>(body);
+            string rootId = relativeBrowsePath.startNode;
+            QualifiedName[] bp = relativeBrowsePath.browsePath;
 
-            var bpColl = new BrowsePathCollection();
+            BrowsePathCollection bpColl = new BrowsePathCollection();
 
-            var browsePath = new BrowsePath();
+            BrowsePath browsePath = new BrowsePath();
             browsePath.StartingNode = Converter.GetNodeId(rootId, nsTable);
-            var relativePaths = bp.Select(qm => new RelativePathElement() { TargetName = Converter.GetQualifiedName(qm, nsTable), IsInverse=false, IncludeSubtypes = true, ReferenceTypeId = Opc.Ua.ReferenceTypeIds.HierarchicalReferences });
+            IEnumerable<RelativePathElement> relativePaths = bp.Select(qm => new RelativePathElement() { TargetName = Converter.GetQualifiedName(qm, nsTable), IsInverse=false, IncludeSubtypes = true, ReferenceTypeId = Opc.Ua.ReferenceTypeIds.HierarchicalReferences });
             browsePath.RelativePath.Elements.AddRange(relativePaths);
             bpColl.Add(browsePath);
             connection.TranslateBrowsePathsToNodeIds(null, bpColl, out BrowsePathResultCollection results, out DiagnosticInfoCollection diagnosticInfos);
@@ -378,10 +378,10 @@ namespace plugin_dotnet
                 throw new ArgumentException(results[0].StatusCode.ToString());
             if (results[0].Targets.Count == 0)
                 throw new ArgumentException("Could find node for browse path.");
-            var nodeId = ExpandedNodeId.ToNodeId(results[0].Targets[0].TargetId, nsTable);
+            NodeId nodeId = ExpandedNodeId.ToNodeId(results[0].Targets[0].TargetId, nsTable);
 
-            var nodeInfo = ReadNodeInfo(connection, nsTable, Converter.GetNodeIdAsJson(nodeId, nsTable));
-            var result = JsonSerializer.Serialize(nodeInfo);
+            NodeInfo nodeInfo = ReadNodeInfo(connection, nsTable, Converter.GetNodeIdAsJson(nodeId, nsTable));
+            string result = JsonSerializer.Serialize(nodeInfo);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             return response;
@@ -399,28 +399,28 @@ namespace plugin_dotnet
                 response.Body = ByteString.CopyFrom("", Encoding.ASCII);
                 return response;
             }
-            var nId = Converter.GetNodeId(nodeId, nsTable);
+            NodeId nId = Converter.GetNodeId(nodeId, nsTable);
 
-            var readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.DataType });
+            Result<object>[] readRes = connection.ReadAttributes(nId, new[] { Opc.Ua.Attributes.DataType });
             if (!readRes[0].Success)
                 throw new ArgumentException(readRes[0].Error + " StatusCode: " + readRes[0].StatusCode.ToString());
 
-            var dataTypeNodeId = (Opc.Ua.NodeId)readRes[0].Value;
+            NodeId dataTypeNodeId = (Opc.Ua.NodeId)readRes[0].Value;
 
             readRes = connection.ReadAttributes(dataTypeNodeId, new[] { Opc.Ua.Attributes.BrowseName, Opc.Ua.Attributes.DisplayName, Opc.Ua.Attributes.NodeClass });
-            var browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
-            var displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
-            var nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
-            var nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), 
+            Opc.Ua.QualifiedName browseName = (Opc.Ua.QualifiedName)readRes[0].Value;
+            LocalizedText displayName = (Opc.Ua.LocalizedText)readRes[1].Value;
+            NodeClass nodeClass = (Opc.Ua.NodeClass)readRes[2].Value;
+            NodeInfo nodeInfo = new NodeInfo() { browseName = Converter.GetQualifiedName(browseName, nsTable), 
                 displayName = displayName.Text, 
                 nodeClass = (uint)nodeClass, 
                 nodeId = Converter.GetNodeIdAsJson(dataTypeNodeId, nsTable)
             };
 
-            var nodePath = FindBrowsePath(connection, dataTypeNodeId, Opc.Ua.DataTypeIds.BaseDataType, browseName, nsTable);
+            QualifiedName[] nodePath = FindBrowsePath(connection, dataTypeNodeId, Opc.Ua.DataTypeIds.BaseDataType, browseName, nsTable);
 
-            var np = new NodePath() { node = nodeInfo, browsePath = nodePath };
-            var result = JsonSerializer.Serialize(np);
+            NodePath np = new NodePath() { node = nodeInfo, browsePath = nodePath };
+            string result = JsonSerializer.Serialize(np);
             response.Code = 200;
             response.Body = ByteString.CopyFrom(result, Encoding.ASCII);
             return response;
@@ -433,7 +433,7 @@ namespace plugin_dotnet
             _log.Debug("Call Resource {0} | {1}", request, context);
             try
             {
-                var resourceUrl = request.Url;
+                string resourceUrl = request.Url;
                 if (!string.IsNullOrEmpty(request.Url) && !request.Url.StartsWith("/"))
                     resourceUrl = string.Concat("/", request.Url);
 
@@ -441,14 +441,14 @@ namespace plugin_dotnet
                 Uri uri = new Uri(fullUrl);
                 NameValueCollection queryParams = HttpUtility.ParseQueryString(uri.Query);
                 Settings settings = RawSettingsParser.Parse(request.PluginContext.DataSourceInstanceSettings);
-                var connection = _connections.Get(settings).Session;
+                Session connection = _connections.Get(settings).Session;
 
                 connection.FetchNamespaceTables();
-                var nsTable = connection.NamespaceUris;
+                NamespaceTable nsTable = connection.NamespaceUris;
                 Func<CallResourceRequest, Session, NameValueCollection, NamespaceTable, CallResourceResponse> resourceHandler;
                 if (_resourceHandlers.TryGetValue(request.Path, out resourceHandler))
                 {
-                    var response = resourceHandler(request, connection, queryParams, nsTable);
+                    CallResourceResponse response = resourceHandler(request, connection, queryParams, nsTable);
                     responseStream.WriteAsync(response);
                     return Task.CompletedTask;
                 }
@@ -463,21 +463,21 @@ namespace plugin_dotnet
 
         private static string ConvertNodeIdToJson(string nodeId, NamespaceTable nsTable)
         {
-            var uaNodeId = Converter.GetNodeId(nodeId, nsTable);
-            var url = nsTable.GetString(uaNodeId.NamespaceIndex);
+            NodeId uaNodeId = Converter.GetNodeId(nodeId, nsTable);
+            string url = nsTable.GetString(uaNodeId.NamespaceIndex);
 
             string identifier;
             if (uaNodeId.IdType == IdType.Opaque)
             {
-                var opaque = (byte[])uaNodeId.Identifier;
+                byte[] opaque = (byte[])uaNodeId.Identifier;
                 identifier = Encoding.UTF8.GetString(opaque, 0, opaque.Length);
             }
             else {
                 identifier = uaNodeId.Identifier.ToString();
             }
 
-            var targetNodeId = new NsNodeIdentifier { NamespaceUrl = url, IdType = uaNodeId.IdType, Identifier = identifier };
-            var targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
+            NsNodeIdentifier targetNodeId = new NsNodeIdentifier { NamespaceUrl = url, IdType = uaNodeId.IdType, Identifier = identifier };
+            string targetNodeIdJson = JsonSerializer.Serialize(targetNodeId);
             return targetNodeIdJson;
         }
 

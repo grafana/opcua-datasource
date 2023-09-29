@@ -39,9 +39,9 @@ function deserializeEventOperand(filterOperand: FilterOperandSer): FilterOperand
 }
 
 export function createFilterTree(eventTypesNode: string, eventFilters: EventFilter[]): EventFilter[] {
-  var eventFilterTree: EventFilter[] = [];
+  let eventFilterTree: EventFilter[] = [];
   if (eventTypesNode != null) {
-    var literal: LiteralOp = { typeId: 'i=17', value: eventTypesNode };
+    let literal: LiteralOp = { typeId: 'i=17', value: eventTypesNode };
 
     let filterEventType: EventFilter = {
       oper: FilterOperator.OfType,
@@ -55,14 +55,14 @@ export function createFilterTree(eventTypesNode: string, eventFilters: EventFilt
     eventFilterTree.push(filterEventType);
   }
 
-  var rootIdx = 0;
-  for (var i = 0; i < eventFilters.length; i++) {
+  let rootIdx = 0;
+  for (let i = 0; i < eventFilters.length; i++) {
     eventFilterTree.push(eventFilters[i]);
-    var left: ElementOp = { index: rootIdx };
-    var right: ElementOp = {
+    let left: ElementOp = { index: rootIdx };
+    let right: ElementOp = {
       index: eventFilterTree.length - 1,
     };
-    var and: EventFilter = {
+    let and: EventFilter = {
       oper: FilterOperator.And,
       operands: [
         { type: FilterOperandEnum.Element, value: left },
