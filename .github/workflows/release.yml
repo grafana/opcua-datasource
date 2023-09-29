@@ -62,7 +62,7 @@ jobs:
         run: make linux && make windows && make darwin
 
       - name: Sign plugin
-        run: yarn sign
+        run: yarn sign --rootUrls=localhost:3000
         env:
           GRAFANA_ACCESS_POLICY_TOKEN: ${{ secrets.GRAFANA_ACCESS_POLICY_TOKEN }} # Requires a Grafana API key from Grafana.com.
 
