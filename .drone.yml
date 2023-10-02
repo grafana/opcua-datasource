@@ -16,15 +16,14 @@ steps:
         - mkdir ci
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
-      image: grafana/grafana-plugin-ci:1.2.1-alpine
+      image: jitesoft/node-yarn:18
       name: initialize
     - commands:
-        - ./node_modules/.bin/grafana-toolkit plugin:ci-build
-        - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+        - yarn build
         - ls -alR ci
       depends_on:
         - initialize
-      image: grafana/grafana-plugin-ci:1.2.1-alpine
+      image: jitesoft/node-yarn:18
       name: build-and-test-frontend
     - commands:
         - ./scripts/ci-build-plugin.sh
@@ -50,7 +49,7 @@ steps:
       environment:
         SRCCLR_API_TOKEN:
             from_secret: srcclr_api_token
-      image: grafana/grafana-plugin-ci:1.2.1-alpine
+      image: jitesoft/node-yarn:18
       name: security-scan
     - commands:
         - ./scripts/ci-package-plugin.sh
