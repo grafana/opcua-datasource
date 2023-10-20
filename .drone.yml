@@ -9,14 +9,10 @@ platform:
     os: linux
 steps:
     - commands:
-          #- if [ -z "$GRABPL_VERSION" ]; then GRABPL_VERSION=2.2.7; fi
-          #- mkdir -p bin
-          #- curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v$GRABPL_VERSION/grabpl
-          #- chmod +x bin/grabpl
-          #- mkdir ci
-          #- nvm use 18.18.2
-          #- npm i -g yarn || true
-          #- ln -s /opt/google-cloud-sdk/platform/bundledpythonunix/bin/python3 /usr/bin/python3
+        - if [ -z "$GRABPL_VERSION" ]; then GRABPL_VERSION=2.2.7; fi
+        - mkdir -p bin
+        - curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v$GRABPL_VERSION/grabpl
+        - chmod +x bin/grabpl
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
       image: srclosson/grafana-plugin-ci:1.9.6 
@@ -29,15 +25,15 @@ steps:
       image: srclosson/grafana-plugin-ci:1.9.6
       name: build-and-test-frontend
     - commands:
-        - ./scripts/ci-build-plugin.sh
+        - yarn build
+        - mkdir -p ci/jobs/build-and-test-frontend/
+        - mv -v dist ci/jobs/build-and-test-frontend/
       depends_on:
         - initialize
       image: mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim
       name: build-backend
     - commands:
         - echo "Starting veracode scan..."
-        - apk add curl
-        - '# Increase heap size or the scanner will die.'
         - export _JAVA_OPTIONS=-Xmx4g
         - mkdir -p ci/jobs/security_scan
         - curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --skip-compile --quick --allow-dirty
