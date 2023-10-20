@@ -16,6 +16,7 @@ steps:
         - mkdir ci
         - which yarn
         - find / -name yarn 
+        - npm i -g yarn
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
       image: grafana/grafana-plugin-ci:latest 
