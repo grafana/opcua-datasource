@@ -20,7 +20,7 @@ steps:
         - ln -s /opt/google-cloud-sdk/platform/bundledpythonunix/bin/python3 /usr/bin/python3
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
-      image: grafana/grafana-plugin-ci:latest 
+      image: node:21-bullseye-slim 
       name: initialize
     - commands:
         - yarn build
