@@ -59,7 +59,7 @@ jobs:
           dotnet-version: '3.1.x'
 
       - name: Build backend
-        run: make darwin
+        run: make windows
 
       - name: Sign plugin
         run: yarn sign --rootUrls=localhost:3000
