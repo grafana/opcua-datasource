@@ -178,8 +178,9 @@ steps:
       image: srclosson/grafana-plugin-ci:1.9.6
       name: initialize
     - commands:
-        - ./node_modules/.bin/grafana-toolkit plugin:ci-build
-        - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+        - yarn build
+        - mkdir -p ci/jobs/build-and-test-frontend
+        - mv -v dist ci/jobs/build-and-test/frontend/
       depends_on:
         - initialize
       image: srclosson/grafana-plugin-ci:1.9.6
@@ -192,8 +193,6 @@ steps:
       name: build-backend
     - commands:
         - echo "Starting veracode scan..."
-        - apk add curl
-        - '# Increase heap size or the scanner will die.'
         - export _JAVA_OPTIONS=-Xmx4g
         - mkdir -p ci/jobs/security_scan
         - curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --skip-compile --quick --allow-dirty
