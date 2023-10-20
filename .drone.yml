@@ -16,6 +16,7 @@ steps:
         - . /root/.nvm/nvm.sh
         - mkdir ci
         - nvm use 18.18.2
+        - npm i -g yarn || true
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
       image: grafana/grafana-plugin-ci:latest 
