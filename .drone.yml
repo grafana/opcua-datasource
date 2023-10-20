@@ -17,6 +17,7 @@ steps:
         - mkdir ci
         - nvm use 18.18.2
         - npm i -g yarn || true
+        - ln -s /opt/google-cloud-sdk/platform/bundledpythonunix/bin/python3 /usr/bin/python3
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
       image: grafana/grafana-plugin-ci:latest 
