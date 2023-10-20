@@ -52,7 +52,7 @@ steps:
       environment:
         SRCCLR_API_TOKEN:
             from_secret: srcclr_api_token
-      image: jitesoft/node-yarn:18
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: security-scan
     - commands:
         - ./scripts/ci-package-plugin.sh
@@ -62,7 +62,7 @@ steps:
       environment:
         GRAFANA_API_KEY:
             from_secret: grafana_api_key
-      image: grafana/grafana-build:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: package
     - commands:
         - apt-get update --allow-releaseinfo-change
@@ -115,13 +115,13 @@ steps:
       environment:
         GCP_KEY:
             from_secret: gcp_key
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: upload-artifacts
     - commands:
         - if [ -f failed ]; then return 1; else return 0; fi
       depends_on:
         - upload-artifacts
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: check-e2e
 trigger:
     event:
@@ -146,7 +146,7 @@ steps:
       environment:
         GCP_KEY:
             from_secret: gcp_key
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: report-build
 trigger:
     branch:
@@ -175,14 +175,14 @@ steps:
         - mkdir ci
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: initialize
     - commands:
         - ./node_modules/.bin/grafana-toolkit plugin:ci-build
         - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
       depends_on:
         - initialize
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: build-and-test-frontend
     - commands:
         - ./scripts/ci-build-plugin.sh
@@ -208,7 +208,7 @@ steps:
       environment:
         SRCCLR_API_TOKEN:
             from_secret: srcclr_api_token
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: security-scan
     - commands:
         - ./scripts/ci-package-plugin.sh
@@ -218,7 +218,7 @@ steps:
       environment:
         GRAFANA_API_KEY:
             from_secret: grafana_api_key
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: package
     - commands:
         - apt-get update
@@ -271,13 +271,13 @@ steps:
       environment:
         GCP_KEY:
             from_secret: gcp_key
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: upload-artifacts
     - commands:
         - if [ -f failed ]; then return 1; else return 0; fi
       depends_on:
         - upload-artifacts
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: check-e2e
     - commands:
         - PLUGIN_NAME=`jq -r .id ci/jobs/package/dist/plugin.json`
@@ -320,7 +320,7 @@ steps:
       environment:
         GCP_KEY:
             from_secret: gcp_key
-      image: grafana/grafana-plugin-ci:latest
+      image: srclosson/grafana-plugin-ci:1.9.6
       name: report-build
 trigger:
     branch:
