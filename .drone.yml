@@ -14,6 +14,7 @@ steps:
         - curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v$GRABPL_VERSION/grabpl
         - chmod +x bin/grabpl
         - mkdir ci
+        - npm install --global yarn
         - yarn install --frozen-lockfile --no-progress
         - rm -rf node_modules/@grafana/data/node_modules
       image: grafana/grafana-plugin-ci:latest 
