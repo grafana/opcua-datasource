@@ -13,7 +13,7 @@ steps:
         - mkdir -p bin
         - curl -fL -o bin/grabpl https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v$GRABPL_VERSION/grabpl
         - chmod +x bin/grabpl
-        - source $HOME/.nvm/nvm.sh
+        - . /root/.nvm/nvm.sh
         - mkdir ci
         - nvm use 18.18.2
         - yarn install --frozen-lockfile --no-progress
