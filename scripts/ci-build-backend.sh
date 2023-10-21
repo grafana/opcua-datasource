@@ -10,11 +10,13 @@ set -e
 
 # Build Linux
 [ ! -d dist ] && mkdir -pv dist || echo "Linux build: dist already created"
+[ ! -d ci/jobs/build_backend/linux ] && mkdir -pv ci/jobs/build_backend/linux || echo "linux ci directory already created"
 dotnet publish ./backend/.linux.build.csproj -r linux-x64 --self-contained true
 mv -v dist ci/jobs/build_backend/linux
 
 # Build Windows
 [ ! -d dist ] && mkdir -pv dist || echo "Windows build: dist already created"
+[ ! -d ci/jobs/build_backend/windows ] && mkdir -pv ci/jobs/build_backend/windows || echo "windows ci directory already created"
 dotnet publish ./backend/.win.build.csproj -r win-x64 --self-contained true
 mv -v dist ci/jobs/build_backend/windows
 
