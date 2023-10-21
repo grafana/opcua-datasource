@@ -18,16 +18,13 @@ steps:
       image: srclosson/grafana-plugin-ci:1.9.6 
       name: initialize
     - commands:
-        - yarn build
-        - mkdir -p ci/jobs/build-and-test-frontend/
-        - mv -v dist ci/jobs/build-and-test-frontend/
-        - ls -alR ci
+        - ./scripts/ci-build-frontend.sh
       depends_on:
         - initialize
       image: srclosson/grafana-plugin-ci:1.9.6
       name: build-and-test-frontend
     - commands:
-        - ./scripts/ci-build-plugin.sh
+        - ./scripts/ci-build-backend.sh
       depends_on:
         - initialize
       image: mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim
