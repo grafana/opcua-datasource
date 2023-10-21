@@ -53,8 +53,8 @@ steps:
         - build-and-test-frontend
         - build-backend
       environment:
-        GRAFANA_API_KEY:
-            from_secret: grafana_api_key
+        GRAFANA_ACCESS_POLICY_TOKEN:
+            from_secret: grafana_access_policy_token
       image: srclosson/grafana-plugin-ci:1.9.6
       name: package
     - commands:
