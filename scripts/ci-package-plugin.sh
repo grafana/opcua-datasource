@@ -17,10 +17,10 @@ ci_package() {
   echo "Plugin Name: ${PLUGIN_NAME}"
   echo "Plugin Version: ${VERSION}"
   
-  cd ci/dist
+  cd ci/dist/grafana-opcua-datasource
   npx @grafana/sign-plugin@latest
   zip -r grafana-opcua-datasource_${build}_${arch}.zip grafana-opcua-datasource
-  cd ../.. 
+  cd ../../.. 
   mv ci/dist/grafana-opcua-datasource_${build}_${arch}.zip ci/packages
 }
 
