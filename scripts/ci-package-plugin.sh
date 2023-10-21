@@ -11,6 +11,12 @@ ci_package() {
 
   mv -v ci/jobs/build_backend/$build/dist ci/dist/grafana-opcua-datasource
   cp -rfv ci/jobs/build-and-test-frontend/dist/ ci/dist/grafana-opcua-datasource
+
+  PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+  echo "Plugin Name: ${PLUGIN_NAME}"
+  echo "Plugin Version: ${VERSION}"
+  
   cd ci/dist
   npx @grafana/sign-plugin@latest
   zip -r grafana-opcua-datasource_${build}_${arch}.zip grafana-opcua-datasource
@@ -20,10 +26,6 @@ ci_package() {
 
 
 
-PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
-VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
-echo "Plugin Name: ${PLUGIN_NAME}"
-echo "Plugin Version: ${VERSION}"
 
 ci_package "linux" "amd64"
 ci_package "windows" "amd64"
