@@ -7,6 +7,8 @@ ci_package() {
   arch="$2"
 
   [ -d ci/dist/grafana-opcua-datasource ] && /bin/rm -rf ci/dist/grafana-opcua-datasource || echo "no dist dir found. Good."
+  [ ! -d ci/dist ] && mkdir -pv ci/dit || echo "dist dir alread created. Good."
+
   mv -v ci/jobs/build_backend/$build/dist ci/dist/grafana-opcua-datasource
   cp -rfv ci/jobs/build-and-test-frontend/dist/ ci/dist/grafana-opcua-datasource
   cd ci/dist
