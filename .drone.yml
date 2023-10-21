@@ -19,9 +19,9 @@ steps:
       name: initialize
     - commands:
         - yarn build
-        - ls -alR
         - mkdir -p ci/jobs/build-and-test-frontend/
         - mv -v dist ci/jobs/build-and-test-frontend/
+        - ls -alR ci
       depends_on:
         - initialize
       image: srclosson/grafana-plugin-ci:1.9.6
