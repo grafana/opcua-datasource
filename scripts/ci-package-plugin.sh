@@ -18,7 +18,7 @@ ci_package() {
   echo "Plugin Version: ${VERSION}"
   
   cd ci/dist/grafana-opcua-datasource
-  npx @grafana/sign-plugin@latest
+  npx @grafana/sign-plugin@latest --rootUrls="http://localhost:3000"
   zip -r grafana-opcua-datasource_${build}_${arch}.zip grafana-opcua-datasource
   cd ../../.. 
   mv ci/dist/grafana-opcua-datasource_${build}_${arch}.zip ci/packages
