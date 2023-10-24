@@ -42,9 +42,6 @@ steps:
       depends_on:
         - build-and-test-frontend
         - build-backend
-      environment:
-        SRCCLR_API_TOKEN:
-            from_secret: srcclr_api_token
       image: srclosson/grafana-plugin-ci:1.9.6
       name: security-scan
     - commands:
