@@ -153,9 +153,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
               rootNodeId={this.props.eventTypeNodeId}
               onChangeBrowsePath={(bp) => this.browsePathChanged(bp)}
               browse={(nodeId) => this.browseEventFields(nodeId)}
-            >
-              {' '}
-            </BrowsePathEditor>
+            />
           </SegmentFrame>
         );
     }
