@@ -35,11 +35,4 @@ mv -v ci/jobs/build_backend/linux/dist ci/dist/grafana-opcua-datasource
 mv -v ci/jobs/build_backend/windows/dist ci/dist/grafana-opcua-datasource
 cp -rfv ci/jobs/build-and-test-frontend/dist/ ci/dist/grafana-opcua-datasource
 
-if [ -d \"/build/dist\" ]; then
-  mkdir -p ci/jobs/package
-  mv /build/dist ci/jobs/package/
-else
-  ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
-fi
-
 ./bin/grabpl plugin package
