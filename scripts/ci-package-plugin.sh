@@ -28,6 +28,13 @@ ci_package() {
 # ci_package "linux" "amd64"
 # ci_package "windows" "amd64"
 
+[ -d ci/dist/grafana-opcua-datasource ] && /bin/rm -rf ci/dist/grafana-opcua-datasource || echo "no dist dir found. Good."
+[ ! -d ci/dist ] && mkdir -pv ci/dist || echo "dist dir alread created. Good."
+
+mv -v ci/jobs/build_backend/linux/dist ci/dist/grafana-opcua-datasource
+mv -v ci/jobs/build_backend/windows/dist ci/dist/grafana-opcua-datasource
+cp -rfv ci/jobs/build-and-test-frontend/dist/ ci/dist/grafana-opcua-datasource
+
 if [ -d \"/build/dist\" ]; then
   mkdir -p ci/jobs/package
   mv /build/dist ci/jobs/package/

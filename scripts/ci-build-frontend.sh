@@ -9,5 +9,5 @@ set -e
 
 # Build Frontend
 yarn build
-mv dist /build/
+mv dist ci/jobs/build-and-test-frontend
 
