@@ -15,14 +15,7 @@
       "name": "srclosson@gmail.com",
       "url": "https://github.com/srclosson"
     },
-    "keywords": [
-      "opc",
-      "opcua",
-      "ua",
-      "da",
-      "hda",
-      "ae"
-    ],
+    "keywords": ["opc", "opcua", "ua", "da", "hda", "ae"],
     "logos": {
       "small": "img/opc_logo.png",
       "large": "img/opc_logo.png"
@@ -45,5 +38,22 @@
     "grafanaVersion": "7.0.x",
     "grafanaDependency": ">=7.5.4",
     "plugins": []
+  },
+  "build": {
+    "backend": [
+      {
+        "os": "linux",
+        "arch": "amd64",
+        "image": "grafana/grafana-plugin-ci:latest",
+        "commands": ["make linux"]
+      },
+      {
+        "os": "windows",
+        "arch": "amd64",
+        "platformOS": "linux",
+        "image": "grafana/grafana-plugin-ci:latest",
+        "commands": ["make windows"]
+      }
+    ]
   }
 }
