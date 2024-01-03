@@ -19,7 +19,7 @@ Currently used in production and under active maintenance
 * Alarms & Conditions (AC / AE)
 
 ## What needs to be implemented
-* OPCUA DA Subscriptions: These are the ones where you will not need to hit the refresh button. If you have subscribed to a datapoint at 500ms, you will get an unsolicited update every 500ms. 
+* OPCUA DA Subscriptions: These are the ones where you will not need to hit the refresh button. If you have subscribed to a data point at 500ms, you will get an unsolicited update every 500ms. 
 * Password authentication
 * Two-way communication with the OPC UA server (currently read only)
 

@@ -44,8 +44,8 @@ export function stringToBrowsePath(path: string, nsTable: string[]): QualifiedNa
     return [];
   }
   let paths = path.split('/');
-  let browsepath: QualifiedName[] = paths.map((a: string) => toQualifiedNameFromIndex(a, nsTable));
-  return browsepath;
+  let browsePath: QualifiedName[] = paths.map((a: string) => toQualifiedNameFromIndex(a, nsTable));
+  return browsePath;
 }
 
 function toQualifiedNameFromIndex(path: string, nsTable: string[]): QualifiedName {

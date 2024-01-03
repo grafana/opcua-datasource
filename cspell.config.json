@@ -1,0 +1,31 @@
+{
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "src/components/TreeEditor.css",
+    "backend/obj/**",
+    "backend/bin/**",
+    "mage_output_file.go"
+  ],
+  "words": [
+    "Acked",
+    "antd",
+    "Cascader",
+    "COMIOP",
+    "dashboardmapping",
+    "dataframe",
+    "dataproxy",
+    "datasource",
+    "datasources",
+    "Matrikon",
+    "Nodeclass",
+    "nodename",
+    "opcua",
+    "Prediktor",
+    "qname",
+    "qnames",
+    "TLDR",
+    "typecheck"
+  ],
+  "language": "en-US"
+}

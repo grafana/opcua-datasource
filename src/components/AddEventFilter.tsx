@@ -34,7 +34,7 @@ export interface Props {
 }
 
 type State = {
-  oper: FilterOperator;
+  operator: FilterOperator;
   browsePath: QualifiedName[];
   value: string;
   typeId: NodePath;
@@ -45,7 +45,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      oper: FilterOperator.GreaterThan,
+      operator: FilterOperator.GreaterThan,
       browsePath: [],
       typeId: {
         browsePath: [],
@@ -76,7 +76,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
         { type: FilterOperandEnum.SimpleAttribute, value: attr },
         { type: FilterOperandEnum.Literal, value: literal },
       ];
-      let evFilter: EventFilter = { oper: this.state.oper, operands: operands.slice() };
+      let evFilter: EventFilter = { operator: this.state.operator, operands: operands.slice() };
       this.props.add(evFilter);
     }
   }
@@ -84,7 +84,7 @@ export class AddEventFilter extends PureComponent<Props, State> {
   changeOperator(event: { target: any }) {
     const target = event.target;
     const value = parseInt(target.value, 10) as FilterOperator;
-    this.setState({ oper: value });
+    this.setState({ operator: value });
   }
 
   changeValueType(event: { target: any }) {
@@ -108,8 +108,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
   renderDropdown() {
     return (
       <SegmentFrame label="Operator" marginLeft>
-        <select onChange={(e) => this.changeOperator(e)} defaultValue={this.state.oper}>
-          {EventFilterOperatorUtil.operNames.map((n, idx) => {
+        <select onChange={(e) => this.changeOperator(e)} defaultValue={this.state.operator}>
+          {EventFilterOperatorUtil.operatorNames.map((n, idx) => {
             return (
               <option key={`EventFilterOption-${idx}`} value={idx}>
                 {n}
@@ -133,8 +133,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
       .catch((err) => console.log(err));
   }
 
-  renderOperandsBeforeOperator(oper: FilterOperator) {
-    switch (oper) {
+  renderOperandsBeforeOperator(operator: FilterOperator) {
+    switch (operator) {
       case FilterOperator.GreaterThan:
       case FilterOperator.GreaterThanOrEqual:
       case FilterOperator.LessThan:
@@ -162,8 +162,8 @@ export class AddEventFilter extends PureComponent<Props, State> {
     return <></>;
   }
 
-  renderOperandsAfterOperator(oper: FilterOperator) {
-    switch (oper) {
+  renderOperandsAfterOperator(operator: FilterOperator) {
+    switch (operator) {
       case FilterOperator.GreaterThan:
       case FilterOperator.GreaterThanOrEqual:
       case FilterOperator.LessThan:
@@ -173,15 +173,15 @@ export class AddEventFilter extends PureComponent<Props, State> {
           <>
             <SegmentFrame label="Value Type" marginLeft>
               <NodeEditor
-                id={'nodeeditor'}
+                id={'nodeEditor'}
                 closeBrowser={(id: string) => this.setState({ browserOpened: null })}
                 isBrowserOpen={(id: string) => this.state.browserOpened === id}
                 openBrowser={(id: string) => this.setState({ browserOpened: id })}
                 getNamespaceIndices={() => this.props.getNamespaceIndices()}
                 theme={this.props.theme}
                 browse={(node, filter) => this.browseDataTypes(node, filter)}
-                getNodePath={(nodeid, rootId) => this.getNodePath(nodeid, rootId)}
-                readNode={(nodeid) => this.readNode(nodeid)}
+                getNodePath={(nodeId, rootId) => this.getNodePath(nodeId, rootId)}
+                readNode={(nodeId) => this.readNode(nodeId)}
                 onChangeNode={(node) => this.onChangeValueTypeNode(node)}
                 rootNodeId="i=24"
                 placeholder="Value type node"
@@ -230,9 +230,9 @@ export class AddEventFilter extends PureComponent<Props, State> {
           () => this.setState({ browserOpened: null })
         )}
         <br />
-        {this.renderOperandsBeforeOperator(this.state.oper)}
+        {this.renderOperandsBeforeOperator(this.state.operator)}
         {this.renderDropdown()}
-        {this.renderOperandsAfterOperator(this.state.oper)}
+        {this.renderOperandsAfterOperator(this.state.operator)}
         <Button onClick={() => this.addFilter()}>Add Filter</Button>
       </div>
     );

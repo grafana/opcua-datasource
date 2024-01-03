@@ -53,7 +53,7 @@ export class BrowserDialog extends Component<Props, State> {
           data-id="Treeview-CloseSpan"
           onClick={() => this.handleClose()}
           onMouseOver={this.handleHoverClose}
-          onMouseOut={this.handleUnhoverClose}
+          onMouseOut={this.handleUnHoverClose}
           //ref={(spn) => (this.closeSpan = spn)}
           style={{
             //border: this.props.theme.colors.border1,
@@ -109,8 +109,8 @@ export class BrowserDialog extends Component<Props, State> {
         }
         ignoreRootNode={true}
         rootNodeId={this.props.rootNodeId}
-        onNodeSelectedChanged={(node, browsepath) => {
-          this.props.onNodeSelectedChanged(node, browsepath);
+        onNodeSelectedChanged={(node, browsePath) => {
+          this.props.onNodeSelectedChanged(node, browsePath);
         }}
       ></BrowserTree>
     );
@@ -126,8 +126,8 @@ export class BrowserDialog extends Component<Props, State> {
         browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
         ignoreRootNode={true}
         rootNodeId={this.props.rootNodeId}
-        onNodeSelectedChanged={(node, browsepath) => {
-          this.props.onNodeSelectedChanged(node, browsepath);
+        onNodeSelectedChanged={(node, browsePath) => {
+          this.props.onNodeSelectedChanged(node, browsePath);
         }}
       ></BrowserTable>
     );
@@ -147,5 +147,5 @@ export class BrowserDialog extends Component<Props, State> {
 
   handleHoverClose = () => {};
 
-  handleUnhoverClose = () => {};
+  handleUnHoverClose = () => {};
 }

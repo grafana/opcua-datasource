@@ -70,8 +70,6 @@ export class BrowserTable extends Component<Props, State> {
 
   handleHoverClose = () => {};
 
-  handleUnhoverClose = () => {};
-
   nodeSelect = (node: OpcUaBrowseResults, browsePath: QualifiedName[]) => {
     this.props.onNodeSelectedChanged(node, browsePath);
     if (this.props.closeOnSelect) {

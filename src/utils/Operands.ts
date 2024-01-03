@@ -3,7 +3,7 @@ import { nodeIdToShortString } from './NodeId';
 import { browsePathToShortString } from './QualifiedName';
 
 export class EventFilterOperatorUtil {
-  static operNames: string[] = [
+  static operatorNames: string[] = [
     '==',
     'IsNull',
     '>',
@@ -23,8 +23,8 @@ export class EventFilterOperatorUtil {
     'BitwiseAnd',
     'BitwiseOr',
   ];
-  static GetString(oper: FilterOperator): string {
-    return EventFilterOperatorUtil.operNames[oper];
+  static GetString(operator: FilterOperator): string {
+    return EventFilterOperatorUtil.operatorNames[operator];
   }
 
   static GetLiteralString(op: LiteralOp, nsTable: string[]): string {

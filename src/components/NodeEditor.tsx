@@ -70,8 +70,8 @@ export class NodeEditor extends PureComponent<Props, State> {
             browse={(nodeId, filter) => this.props.browse(nodeId, filter)}
             ignoreRootNode={true}
             rootNodeId={rootNodeId}
-            onNodeSelectedChanged={(node, browsepath) => {
-              this.onChangeNode(node, browsepath);
+            onNodeSelectedChanged={(node, browsePath) => {
+              this.onChangeNode(node, browsePath);
             }}
           ></BrowserDialog>
         </div>

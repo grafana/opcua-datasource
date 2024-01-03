@@ -86,14 +86,14 @@ export class QueryEditor extends PureComponent<Props, State> {
     });
   }
 
-  onChangeField = (field: string, sval: SelectableValue<any> | string, ...args: any[]) => {
+  onChangeField = (field: string, selectValue: SelectableValue<any> | string, ...args: any[]) => {
     const { query, onChange, onRunQuery } = this.props;
     const changes: Record<string, any> = {};
 
-    if (typeof sval === 'string') {
-      changes[field] = sval;
+    if (typeof selectValue === 'string') {
+      changes[field] = selectValue;
     } else {
-      changes[field] = sval.value;
+      changes[field] = selectValue.value;
     }
 
     onChange({ ...query, ...changes });

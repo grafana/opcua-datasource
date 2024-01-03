@@ -91,7 +91,7 @@ export interface OpcUaNodeDefinition {
 }
 
 export interface EventFilter {
-  oper: FilterOperator;
+  operator: FilterOperator;
   operands: FilterOperand[];
 }
 
@@ -101,7 +101,7 @@ export interface FilterOperand {
 }
 
 export interface EventFilterSer {
-  oper: FilterOperator;
+  operator: FilterOperator;
   operands: FilterOperandSer[];
 }
 

@@ -57,7 +57,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
       }
       deserializedEventFilters.splice(0, 1);
     }
-    let nodepath: NodePath = {
+    let nodePath: NodePath = {
       browsePath: [],
       node: { browseName: { name: '', namespaceUrl: '' }, displayName: '', nodeClass: -1, nodeId: eventTypeNodeId },
     };
@@ -65,7 +65,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
       eventFields: this.buildEventFields(this.props.query?.eventQuery?.eventColumns),
       eventFilters: deserializedEventFilters,
       browserOpened: null,
-      node: nodepath,
+      node: nodePath,
     };
 
     if (eventTypeNodeId !== '') {
@@ -184,7 +184,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
             getNamespaceIndices={() => this.getNamespaceIndices()}
             theme={this.props.theme}
             rows={this.state.eventFilters}
-            ondelete={(idx: number) => {
+            onDelete={(idx: number) => {
               this.handleDeleteEventFilter(idx);
             }}
           />
@@ -277,7 +277,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
         )}
         <SegmentFrame label="Event Type">
           <NodeEditor
-            id={'eventtypeeditor'}
+            id={'eventTypeEditor'}
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
             openBrowser={(id: string) => this.setState({ browserOpened: id })}
@@ -289,7 +289,7 @@ export class EventQueryEditor extends PureComponent<Props, State> {
             getNodePath={(nodeId, rootId) => this.getNodePath(nodeId, rootId)}
             readNode={(n) => this.readNode(n)}
             browse={(nodeId, filter) => this.browseTypes(nodeId, filter)}
-            onChangeNode={(nodepath) => this.setState({ node: nodepath }, () => this.updateEventQuery())}
+            onChangeNode={(nodePath) => this.setState({ node: nodePath }, () => this.updateEventQuery())}
           ></NodeEditor>
         </SegmentFrame>
         <br />
