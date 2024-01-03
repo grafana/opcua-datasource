@@ -1,0 +1,59 @@
+{
+  "type": "datasource",
+  "name": "OPC UA (Unified Architecture)",
+  "id": "grafana-opcua-datasource",
+  "metrics": true,
+  "annotations": true,
+  "backend": true,
+  "executable": "gpx_opcua",
+  "alerting": true,
+  "streaming": true,
+  "category": "enterprise",
+  "info": {
+    "description": "A Grafana datasource that reads data from OPC UA Servers",
+    "author": {
+      "name": "srclosson@gmail.com",
+      "url": "https://github.com/srclosson"
+    },
+    "keywords": ["opc", "opcua", "ua", "da", "hda", "ae"],
+    "logos": {
+      "small": "img/opc_logo.png",
+      "large": "img/opc_logo.png"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/opcua-datasource"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/opcua-datasource/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "1.3.7",
+    "updated": "2024-01-03"
+  },
+  "dependencies": {
+    "grafanaVersion": "7.0.x",
+    "grafanaDependency": ">=7.5.4",
+    "plugins": []
+  },
+  "build": {
+    "backend": [
+      {
+        "os": "linux",
+        "arch": "amd64",
+        "image": "mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim",
+        "commands": ["./scripts/ci-build-linux.sh"]
+      },
+      {
+        "os": "windows",
+        "arch": "amd64",
+        "platformOS": "linux",
+        "image": "mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim",
+        "commands": ["./scripts/ci-build-windows.sh"]
+      }
+    ]
+  }
+}
