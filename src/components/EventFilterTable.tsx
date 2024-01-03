@@ -13,7 +13,7 @@ import { EventFilterOperatorUtil } from '../utils/Operands';
 export interface Props {
   rows: EventFilter[];
   theme: GrafanaTheme | null;
-  ondelete(idx: number): void;
+  onDelete(idx: number): void;
   getNamespaceIndices(): Promise<string[]>;
 }
 
@@ -38,7 +38,7 @@ export class EventFilterTable extends PureComponent<Props, State> {
           {EventFilterOperatorUtil.GetOperandString(row.operands[0], this.state.nsTable)}
         </TableCell>
         <TableCell style={{ color: txt, border: 0, padding: 0 }}>
-          {EventFilterOperatorUtil.GetString(row.oper)}
+          {EventFilterOperatorUtil.GetString(row.operator)}
         </TableCell>
         <TableCell style={{ color: txt, border: 0, padding: 0 }}>
           {EventFilterOperatorUtil.GetOperandString(row.operands[1], this.state.nsTable)}
@@ -58,7 +58,7 @@ export class EventFilterTable extends PureComponent<Props, State> {
           height={imageHeight}
           viewBox="0 0 24 24"
           fill="currentColor"
-          onClick={() => this.props.ondelete(index)}
+          onClick={() => this.props.onDelete(index)}
         >
           <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z"></path>
         </svg>
@@ -70,12 +70,12 @@ export class EventFilterTable extends PureComponent<Props, State> {
     return (
       <TableRow style={{ height: 14 }} key={index}>
         <TableCell align="right" style={{ color: txt, border: 0, padding: 0 }}>
-          {row.oper}
+          {row.operator}
         </TableCell>
-        {row.operands.map((oper, idx) => (
+        {row.operands.map((operand, idx) => (
           <TableCell key={`EventFilterTable-${idx}`} style={{ color: txt, border: 0, padding: 0 }}>
             {' '}
-            {EventFilterOperatorUtil.GetOperandString(oper, this.state.nsTable)}{' '}
+            {EventFilterOperatorUtil.GetOperandString(operand, this.state.nsTable)}{' '}
           </TableCell>
         ))}
       </TableRow>
@@ -110,7 +110,7 @@ export class EventFilterTable extends PureComponent<Props, State> {
             </TableHead>
             <TableBody style={{ backgroundColor: bg, color: txt }}>
               {this.props.rows.map((row, index) => {
-                switch (row.oper) {
+                switch (row.operator) {
                   case FilterOperator.GreaterThan:
                   case FilterOperator.GreaterThanOrEqual:
                   case FilterOperator.LessThan:

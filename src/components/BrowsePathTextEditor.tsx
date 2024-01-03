@@ -24,10 +24,10 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
     if (typeof browsePath === 'undefined') {
       browsePath = [];
     }
-    let shortendPath = browsePath.map((p) => p.name).join('/');
+    let shortenedPath = browsePath.map((p) => p.name).join('/');
 
     this.state = {
-      shortenedPath: shortendPath,
+      shortenedPath,
       indexedPath: '',
       nsTable: [],
       nsTableFetched: false,
@@ -49,10 +49,10 @@ export class BrowsePathTextEditor extends PureComponent<Props, State> {
     }
 
     if (!this.state.edit) {
-      let shortendPath = browsePath.map((p) => p.name).join('/');
+      let shortenedPath = browsePath.map((p) => p.name).join('/');
       let indexedPath = browsePathToString(browsePath, this.state.nsTable);
       this.setState({
-        shortenedPath: shortendPath,
+        shortenedPath,
         indexedPath: indexedPath,
       });
     }

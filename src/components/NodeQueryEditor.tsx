@@ -30,7 +30,7 @@ type State = {
 
   alias: string;
   templateVariable: string;
-  relativepath: QualifiedName[];
+  relativePath: QualifiedName[];
   browserOpened: string | null;
 };
 
@@ -59,7 +59,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
     this.state = {
       useTemplate: this.props.query.useTemplate,
       templateVariable: tempVar,
-      relativepath: this.props.query.relativePath,
+      relativePath: this.props.query.relativePath,
       node: nodePath,
       alias: alias,
       browserOpened: null,
@@ -68,7 +68,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
 
   onChangeRelativePath = (relativePath: QualifiedName[]) => {
     const { query, onChange, onRunQuery } = this.props;
-    this.setState({ relativepath: relativePath }, () => {
+    this.setState({ relativePath: relativePath }, () => {
       onChange({
         ...query,
         relativePath,
@@ -132,7 +132,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       return (
         <div onBlur={(e) => console.log('onBlur', e)}>
           <NodeEditor
-            id={'instanceeditor'}
+            id={'instanceEditor'}
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
             openBrowser={(id: string) => this.setState({ browserOpened: id })}
@@ -144,7 +144,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             getNodePath={(nodeId, rootId) => this.getNodePath(nodeId, rootId)}
             readNode={(n) => this.readNode(n)}
             browse={(nodeId, filter) => this.browse(nodeId, filter)}
-            onChangeNode={(nodepath) => this.onChangeNode(nodepath)}
+            onChangeNode={(nodePath) => this.onChangeNode(nodePath)}
           ></NodeEditor>
         </div>
       );
@@ -152,7 +152,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
       return (
         <div>
           <NodeEditor
-            id={'typeeditor'}
+            id={'typeEditor'}
             closeBrowser={(id: string) => this.setState({ browserOpened: null })}
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
             openBrowser={(id: string) => this.setState({ browserOpened: id })}
@@ -164,16 +164,16 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             getNodePath={(nodeId, rootId) => this.getNodePath(nodeId, rootId)}
             readNode={(n) => this.readNode(n)}
             browse={(nodeId, filter) => this.browseTypes(nodeId, filter)}
-            onChangeNode={(nodepath) => this.onChangeTemplateType(nodepath)}
+            onChangeNode={(nodePath) => this.onChangeTemplateType(nodePath)}
           ></NodeEditor>
         </div>
       );
     }
   }
-  onChangeNode(nodepath: NodePath): void {
+  onChangeNode(nodePath: NodePath): void {
     const { onChange, query, onRunQuery } = this.props;
-    this.setState({ node: nodepath }, () => {
-      onChange({ ...query, nodePath: nodepath });
+    this.setState({ node: nodePath }, () => {
+      onChange({ ...query, nodePath: nodePath });
       onRunQuery();
     });
   }
@@ -225,7 +225,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
   }
 
   renderBrowsePathEditor() {
-    const { relativepath, node } = this.state;
+    const { relativePath, node } = this.state;
     let browseNodeId: string = node.node.nodeId;
 
     if (this.state.useTemplate) {
@@ -238,7 +238,7 @@ export class NodeQueryEditor extends PureComponent<Props, State> {
             isBrowserOpen={(id: string) => this.state.browserOpened === id}
             openBrowser={(id: string) => this.setState({ browserOpened: id })}
             getNamespaceIndices={() => this.getNamespaceIndices()}
-            browsePath={relativepath}
+            browsePath={relativePath}
             browse={(nodeId, filter) => this.browse(nodeId, filter)}
             onChangeBrowsePath={(relativePath) => this.onChangeRelativePath(relativePath)}
             rootNodeId={browseNodeId}

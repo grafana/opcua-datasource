@@ -24,8 +24,8 @@ type Props = {
   getNamespaceIndices(): Promise<string[]>;
   deleteField(idx: number): void;
   addField(newCol: EventColumn): void;
-  moveFieldUp(inded: number): void;
-  moveFieldDown(inded: number): void;
+  moveFieldUp(index: number): void;
+  moveFieldDown(index: number): void;
   theme: GrafanaTheme | null;
 };
 

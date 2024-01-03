@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import { SegmentFrame } from './SegmentFrame';
 
 export interface AddEventFieldFormProps {
-  add(browsename: string, alias: string): void;
+  add(browseName: string, alias: string): void;
 }
 
 type State = {
-  browsename: string;
+  browseName: string;
   alias: string;
 };
 
@@ -14,7 +14,7 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
   constructor(props: AddEventFieldFormProps) {
     super(props);
     this.state = {
-      browsename: '',
+      browseName: '',
       alias: '',
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -23,7 +23,7 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
   }
 
   handleSubmit(event: { preventDefault: () => void }) {
-    this.props.add(this.state.browsename, this.state.alias);
+    this.props.add(this.state.browseName, this.state.alias);
     event.preventDefault();
   }
 
@@ -32,7 +32,7 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
     const value = target.value;
 
     this.setState({
-      browsename: value,
+      browseName: value,
     });
   }
 
@@ -51,7 +51,7 @@ export class AddEventFieldForm extends PureComponent<AddEventFieldFormProps, Sta
         <br />
         <form onSubmit={this.handleSubmit}>
           <SegmentFrame label="Browse name">
-            <input name="browsename" type="input" value={this.state.browsename} onChange={this.changeBrowseName} />
+            <input name="browseName" type="input" value={this.state.browseName} onChange={this.changeBrowseName} />
           </SegmentFrame>
           <SegmentFrame label="Alias" marginLeft>
             <input name="alias" type="input" value={this.state.alias} onChange={this.changeAlias} />

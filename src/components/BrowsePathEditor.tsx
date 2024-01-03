@@ -58,8 +58,8 @@ export class BrowsePathEditor extends PureComponent<Props, State> {
             getNamespaceIndices={() => this.props.getNamespaceIndices()}
             ignoreRootNode={true}
             rootNodeId={rootNodeId}
-            onNodeSelectedChanged={(node, browsepath) => {
-              this.props.onChangeBrowsePath(browsepath);
+            onNodeSelectedChanged={(node, browsePath) => {
+              this.props.onChangeBrowsePath(browsePath);
             }}
           ></BrowserDialog>
         </div>

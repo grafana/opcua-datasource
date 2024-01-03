@@ -15,14 +15,14 @@ function serializeEventOperand(filterOperand: FilterOperand): FilterOperandSer {
 
 export function serializeEventFilter(eventFilter: EventFilter): EventFilterSer {
   return {
-    oper: eventFilter.oper,
+    operator: eventFilter.operator,
     operands: eventFilter.operands.map((evf) => serializeEventOperand(evf)),
   };
 }
 
 export function deserializeEventFilter(eventFilter: EventFilterSer): EventFilter {
   return {
-    oper: eventFilter.oper,
+    operator: eventFilter.operator,
     operands: eventFilter.operands.map((evf) => deserializeEventOperand(evf)),
   };
 }
@@ -44,7 +44,7 @@ export function createFilterTree(eventTypesNode: string, eventFilters: EventFilt
     let literal: LiteralOp = { typeId: 'i=17', value: eventTypesNode };
 
     let filterEventType: EventFilter = {
-      oper: FilterOperator.OfType,
+      operator: FilterOperator.OfType,
       operands: [
         {
           type: FilterOperandEnum.Literal,
@@ -63,7 +63,7 @@ export function createFilterTree(eventTypesNode: string, eventFilters: EventFilt
       index: eventFilterTree.length - 1,
     };
     let and: EventFilter = {
-      oper: FilterOperator.And,
+      operator: FilterOperator.And,
       operands: [
         { type: FilterOperandEnum.Element, value: left },
         { type: FilterOperandEnum.Element, value: right },
@@ -78,7 +78,7 @@ export function createFilterTree(eventTypesNode: string, eventFilters: EventFilt
 //deep copy
 export function copyEventFilter(r: EventFilter): EventFilter {
   return {
-    oper: r.oper,
+    operator: r.operator,
     operands: r.operands.slice(),
   };
 }

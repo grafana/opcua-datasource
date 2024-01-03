@@ -18,7 +18,7 @@ type State = {
   edit: boolean;
   nsTable: string[];
   nsTableFetched: boolean;
-  editnode: string;
+  editNode: string;
   preEditNode: string;
 };
 
@@ -30,7 +30,7 @@ export class NodeTextEditor extends PureComponent<Props, State> {
       node: null,
       nsTable: [],
       nsTableFetched: false,
-      editnode: '',
+      editNode: '',
       preEditNode: '',
     };
   }
@@ -55,25 +55,25 @@ export class NodeTextEditor extends PureComponent<Props, State> {
     if (nsNodeId != null) {
       this.setState({ edit: false }, () => this.props.onNodeChanged(nodePath.node, nodePath.browsePath));
     } else {
-      this.setState({ edit: false, editnode: this.state.preEditNode });
+      this.setState({ edit: false, editNode: this.state.preEditNode });
     }
   }
 
   onSubmit = () => {
     let currentNodeId = this.getNodeId(this.state.node != null ? this.state.node.node.nodeId : null);
     let s = nodeIdToShortString(currentNodeId, this.state.nsTable);
-    if (s !== this.state.editnode) {
+    if (s !== this.state.editNode) {
       this.props
-        .getNodePath(this.state.editnode)
+        .getNodePath(this.state.editNode)
         .then((result) => this.onUpdateNode(result))
-        .catch((r) => this.setState({ editnode: this.state.preEditNode, edit: false }));
+        .catch((r) => this.setState({ editNode: this.state.preEditNode, edit: false }));
     } else {
       this.setState({ edit: false });
     }
   };
 
   onChange = (e: React.FormEvent<HTMLInputElement>) => {
-    this.setState({ editnode: e.currentTarget.value });
+    this.setState({ editNode: e.currentTarget.value });
   };
 
   render() {
@@ -86,8 +86,8 @@ export class NodeTextEditor extends PureComponent<Props, State> {
 
     if (this.state.node === null || !areNodesEqual(this.props.node.node, this.state.node.node)) {
       let nodeId = this.getNodeId(this.props.node.node.nodeId);
-      let editnode = nodeIdToShortString(nodeId, this.state.nsTable);
-      this.setState({ node: this.props.node, editnode: editnode, preEditNode: editnode });
+      let editNode = nodeIdToShortString(nodeId, this.state.nsTable);
+      this.setState({ node: this.props.node, editNode, preEditNode: editNode });
     }
 
     return this.state.edit ? (
@@ -95,7 +95,7 @@ export class NodeTextEditor extends PureComponent<Props, State> {
         <Input
           autoFocus={true}
           placeholder={this.props.placeholder}
-          value={this.state.editnode}
+          value={this.state.editNode}
           onBlur={() => this.onSubmit()}
           onChange={(e) => this.onChange(e)}
           onKeyPress={(k) => {

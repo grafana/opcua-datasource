@@ -6,7 +6,7 @@ import { css } from '@emotion/css';
 import { onChangeCascader, onLoadDataCascader } from './optionMappings';
 
 interface CascaderProps {
-  /** The seperator between levels in the search */
+  /** The separator between levels in the search */
   separator?: string;
   placeholder?: string;
   options?: CascaderOption[];
