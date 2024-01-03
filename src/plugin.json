@@ -44,15 +44,15 @@
       {
         "os": "linux",
         "arch": "amd64",
-        "image": "grafana/grafana-plugin-ci:latest",
-        "commands": ["make linux"]
+        "image": "mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim",
+        "commands": ["dotnet publish ./backend/.linux.build.csproj -r linux-x64 --self-contained true"]
       },
       {
         "os": "windows",
         "arch": "amd64",
         "platformOS": "linux",
-        "image": "grafana/grafana-plugin-ci:latest",
-        "commands": ["make windows"]
+        "image": "mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim",
+        "commands": ["dotnet publish ./backend/.win.build.csproj -r win-x64 --self-contained true"]
       }
     ]
   }
