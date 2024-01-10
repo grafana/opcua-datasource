@@ -3,7 +3,7 @@
 ## STATUS
 
 > [!CAUTION]
-> This plugin is now deprecated and no longer maintained by Grafana Labs. If you are interested to use this plugin, you can either use the [older version from the catalog](https://grafana.com/grafana/plugins/grafana-opcua-datasource/?tab=installation) or download from the [github releases page](https://github.com/grafana/opcua-datasource/releases) or fork the repository and build on your own. Reach out to [Grafana Community Forum](https://community.grafana.com/) if you need any further assistance on this plugin.
+> This plugin is now deprecated. This deprecation means that this plugin won't receive any feature updates or bug fixes except critical security fixes. After 6 months (End of June 2024), the plugin will reach EOL and there won't be any fixes afterwards. Existing installations of the plugin will continue to work. Reach out to [Grafana Community Forum](https://community.grafana.com/) if you need any further assistance on this plugin.
 
 ## Introduction
 
