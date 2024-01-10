@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.3.8] - 2024-01-10
+- Plugin officially marked as deprecated. This deprecation means that this plugin won’t receive any feature updates or bug fixes except critical security fixes. After 6 months (End of June 2024), the plugin will reach EOL and there won’t be any fixes afterwards.
+
 ## [1.3.7] - 2024-01-03
 - 1.3.6 was not published properly, so this is a re-release of 1.3.6
 
